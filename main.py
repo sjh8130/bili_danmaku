@@ -38,8 +38,21 @@ def AV_to_BV(input_AV):
 def getDanmu(cid, segment_index):
     url = 'https://api.bilibili.com/x/v2/dm/web/seg.so?type=1&oid=' + cid + '&segment_index=' + str(segment_index)
 
-    time.sleep(2)
+    time.sleep(1)
     danmu = requests.get(url, headers=headers)
+    try:
+        if json.loads(danmu.content)["code"] == -412:
+            print("-412 BAN")
+            sys.exit(1)
+    except EnvironmentError:
+        print(1)
+
+    try:
+        if json.loads(danmu.content)["code"] == -400:
+            print("-400 ERR")
+            sys.exit(1)
+    except EnvironmentError:
+        print(1)
 
     danmaku_seg = dm_pb2.DmSegMobileReply()
     danmaku_seg.ParseFromString(danmu.content)
@@ -81,19 +94,20 @@ if __name__ == '__main__':
             duration = int(json_Data_page[i]["duration"])
             cid = str(json_Data_page[i]["cid"])
             P_Title = str(json_Data_page[i]["part"])
-            print(bvid, avid, "P", str(i+1), "/", len(json_Data_page), cid, duration, math.ceil(duration/360), main_Title, "|",P_Title)
+            print(bvid, avid, "P", str(i+1), "/", len(json_Data_page), cid, duration, math.ceil(duration/360), main_Title, "|", P_Title)
         sys.exit(1)
 
     for i in range(0, len(json_Data_page)):
         duration = int(json_Data_page[i]["duration"])
         cid = str(json_Data_page[i]["cid"])
         P_Title = str(json_Data_page[i]["part"])
-        print(bvid, avid, "P", str(i+1), "/", len(json_Data_page), cid, duration, math.ceil(duration/360), main_Title, "|",P_Title)
-        progress_bar = tqdm(total=math.ceil(duration/360), leave=False, ncols=100)
+        print(bvid, avid, "P", str(i+1), "/", len(json_Data_page), cid, duration, math.ceil(duration/360), main_Title, "|", P_Title)
+        progress_bar = tqdm(total=math.ceil(duration/360), leave=True, ncols=100)
         for segments in range(1, math.ceil(duration/360)+1):
             # print(vid, segment_index)
             ans = getDanmu(cid, segments)
-            with open(bvid+"_" + avid + "_P" + str(i+1) + "_" + cid + "_" + main_Title + "P_Title_" + P_Title + ".json", "a", encoding="utf-8") as f:
+            File_Name = str(bvid + "_" + avid + "_P" + str(i+1) + "_" + cid + "_" + main_Title + "_pTitle_" + P_Title + ".json").replace("/","_")
+            with open(File_Name, "a", encoding="utf-8") as f:
                 f.write(json.dumps(ans, ensure_ascii=False))
             progress_bar.update(1)
         progress_bar.close()
