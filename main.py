@@ -39,23 +39,30 @@ def getDanmu(cid, segment_index):
     url = 'https://api.bilibili.com/x/v2/dm/web/seg.so?type=1&oid=' + cid + '&segment_index=' + str(segment_index)
 
     time.sleep(1)
-    danmu = requests.get(url, headers=headers)
+    danmu = requests.get(url, headers=headers).content
     try:
-        if json.loads(danmu.content)["code"] == -412:
-            print("-412 BAN")
-            sys.exit(1)
-    except EnvironmentError:
-        print(1)
-
-    try:
-        if json.loads(danmu.content)["code"] == -400:
-            print("-400 ERR")
-            sys.exit(1)
-    except EnvironmentError:
-        print(1)
+        if json.loads(danmu)["code"] == -412:
+            print("         #    #    ###       #####   ###  ##  #")
+            print("        ##   ##   #   #      #    # #   # # # #")
+            print("       # #    #       #      #    # #   # #  ##")
+            print("##### #  #    #     ##       #####  #   # #   #")
+            print("      #####   #    #         #    # ##### #   #")
+            print("         #    #   #          #    # #   # #   #")
+            print("         #   ###  #####      #####  #   # #   #")
+        if json.loads(danmu)["code"] == -400:
+            print("         #   ###   ###       #####  ####  #### ")
+            print("        ##  #   # #   #      #      #   # #   #")
+            print("       # #  #  ## #  ##      #      #   # #   #")
+            print("##### #  #  # # # # # #      ####   ####  #### ")
+            print("      ##### ##  # ##  #      #      #  #  #  # ")
+            print("         #  #   # #   #      #      #   # #   #")
+            print("         #   ###   ###       #####  #   # #   #")
+        sys.exit(1)
+    except UnicodeDecodeError:
+        time.sleep(0)
 
     danmaku_seg = dm_pb2.DmSegMobileReply()
-    danmaku_seg.ParseFromString(danmu.content)
+    danmaku_seg.ParseFromString(danmu)
 
     danmuobj = json.loads(MessageToJson(danmaku_seg))
 
@@ -94,15 +101,17 @@ if __name__ == '__main__':
             duration = int(json_Data_page[i]["duration"])
             cid = str(json_Data_page[i]["cid"])
             P_Title = str(json_Data_page[i]["part"])
-            print(bvid, avid, "P", str(i+1), "/", len(json_Data_page), cid, duration, math.ceil(duration/360), main_Title, "|", P_Title)
+            show_string = "{0}|{1}|P{2}/{3}|cid_{4}|duration={5}s|{6} segments|{7}|{8}".format(bvid,avid,str(i+1),len(json_Data_page),cid,duration,math.ceil(duration/360),main_Title,P_Title)
+            print(show_string)
         sys.exit(1)
 
     for i in range(0, len(json_Data_page)):
         duration = int(json_Data_page[i]["duration"])
         cid = str(json_Data_page[i]["cid"])
         P_Title = str(json_Data_page[i]["part"])
-        print(bvid, avid, "P", str(i+1), "/", len(json_Data_page), cid, duration, math.ceil(duration/360), main_Title, "|", P_Title)
-        progress_bar = tqdm(total=math.ceil(duration/360), leave=True, ncols=100)
+        show_string = "{0}|{1}|P{2}/{3}|cid_{4}|duration={5}s|{6} segments|{7}|{8}".format(bvid,avid,str(i+1),len(json_Data_page),cid,duration,math.ceil(duration/360),main_Title,P_Title)
+        print(show_string)
+        progress_bar = tqdm(total=math.ceil(duration/360), leave=False)
         for segments in range(1, math.ceil(duration/360)+1):
             # print(vid, segment_index)
             ans = getDanmu(cid, segments)
@@ -112,8 +121,3 @@ if __name__ == '__main__':
             progress_bar.update(1)
         progress_bar.close()
     sys.exit(0)
-
-"""
-}]}{"elems": [{
-}, {
-"""
