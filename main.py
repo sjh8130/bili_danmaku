@@ -63,53 +63,46 @@ def getDanmu(cid: str, segment_index: str):
     try:
         if json.loads(danmu)["code"] == -412:
             print_ERROR_412()
+            return b""
         if json.loads(danmu)["code"] == -400:
             print_ERROR_400()
-        return ""
+            return b""
     except UnicodeDecodeError:
         pass
-
-    danmaku_seg = dm_pb2.DmSegMobileReply()
-    danmaku_seg.ParseFromString(danmu)
-
-    danmuobj = json.loads(MessageToJson(danmaku_seg))
-
-    return danmuobj
+    return danmu
 
 
 def get_BAS_danmu(avid: str, cid: str):
     url_1 = f'https://api.bilibili.com/x/v2/dm/web/view?type=1&oid={cid}&pid={avid}'
     data_1 = requests.get(url_1, headers=headers).content
-    if json.loads(data_1)["code"] == -412:
-        print_ERROR_412()
-        return ""
-    if json.loads(data_1)["code"] == -400:
-        print_ERROR_400()
-        return ""
+    try:
+        if json.loads(data_1)["code"] == -412:
+            print_ERROR_412()
+            return b""
+        if json.loads(data_1)["code"] == -400:
+            print_ERROR_400()
+            return b""
+    except UnicodeDecodeError:
+        pass
 
     data_2 = dm_pb2.DmWebViewReply()
     data_2.ParseFromString(data_1)
-    data_3 = json.loads(MessageToJson(data_2))["specialDms"]
+    try:
+        data_3 = json.loads(MessageToJson(data_2))["specialDms"]
+    except KeyError:
+        return b""
     if len(data_3) == 0:
-        return ""
-
-    str_ = ""
+        return b""
 
     for i in data_3:
         data = requests.get(i, headers=headers).content
         if json.loads(data)["code"] == -412:
             print_ERROR_412()
-            return ""
+            return b""
         if json.loads(data)["code"] == -400:
             print_ERROR_400()
-            return ""
-
-        danmaku_seg = dm_pb2.DmSegMobileReply()
-        danmaku_seg.ParseFromString(data)
-        data_c = json.loads(MessageToJson(danmaku_seg))
-        if data_c != "" and data_c != "{}":
-            str_ += json.dumps(data_c, ensure_ascii=False)
-    return str_
+            return b""
+    return data
 
 
 if __name__ == '__main__':
@@ -133,17 +126,17 @@ if __name__ == '__main__':
     """
     url = "https://api.bilibili.com/x/web-interface/view?bvid=" + bvid
     json_Resp = requests.get(url, headers=headers).content
+    json_List = json.loads(json_Resp)
 
-    if json.loads(json_Resp)["code"] == -412:
+    if json_List["code"] == -412:
         print(bvid, avid)
         print_ERROR_412()
         sys.exit(1)
-    if json.loads(json_Resp)["code"] == -400:
+    if json_List["code"] == -400:
         print(bvid, avid)
         print_ERROR_400()
         sys.exit(1)
 
-    json_List = json.loads(json_Resp)
     json_Data = json_List["data"]
     sub_Items = json_Data["pages"]
     mainTitle = json_Data["title"]
@@ -153,35 +146,34 @@ if __name__ == '__main__':
             duration = int(sub_Items[i]["duration"])
             cid = str(sub_Items[i]["cid"])
             P_Title = str(sub_Items[i]["part"])
-            show_string = "{0}|{1}|P{2}/{3}|{4}|{5}|{6}|{7}|{8}".format(bvid, avid, str(
-                i+1), len(sub_Items), cid, duration, math.ceil(duration/360), mainTitle, P_Title)
+            show_string = "{0}|{1}|P{2}/{3}|{4}|{5}|{6}|{7}|{8}".format(bvid, avid, str(i+1), len(sub_Items), cid, duration, math.ceil(duration/360), mainTitle, P_Title)
             print(show_string)
             print("No danmu")
         sys.exit(1)
 
     for i in range(0, len(sub_Items)):
+        danmaku_Items = b""
+        temp_Binary = b""
+        temp_Binary = dm_pb2.DmSegMobileReply()
         duration = int(sub_Items[i]["duration"])
         cid = str(sub_Items[i]["cid"])
         P_Title = str(sub_Items[i]["part"])
-        show_string = "{0}|{1}|P{2}/{3}|{4}|{5}|{6}|{7}|{8}".format(bvid, avid, str(
-            i+1), len(sub_Items), cid, duration, math.ceil(duration/360), mainTitle, P_Title)
+        show_string = "{0}|{1}|P{2}/{3}|{4}|{5}|{6}|{7}|{8}".format(bvid, avid, str(i+1), len(sub_Items), cid, duration, math.ceil(duration/360), mainTitle, P_Title)
         print(show_string)
-        progress_bar = tqdm(total=math.ceil(duration/360), leave=False)
+        progress_bar = tqdm(total=math.ceil(duration/360)+1, leave=False)
 
-        File_Name = str(bvid + "_" + avid + "_P" + str(i+1) + "_" + cid +
-                        "_" + mainTitle + "_pTitle_" + P_Title + ".json").replace("/", "_")
+        File_Name = str(bvid + "_" + avid + "_P" + str(i+1) + "_" + cid + "_" + mainTitle + "_pTitle_" + P_Title + ".json").replace("/", "_")
 
         BAS_dm = get_BAS_danmu(avid=avid_in, cid=cid)
-        if BAS_dm != "" and BAS_dm != "{}":
-            with open(File_Name, "a", encoding="utf-8") as f:
-                f.write(BAS_dm)
+        danmaku_Items += BAS_dm
+        progress_bar.update(1)
 
         for segments in range(1, math.ceil(duration/360)+1):
             ans = getDanmu(cid, str(segments))
-            ans = json.dumps(ans, ensure_ascii=False)
-            if ans != "{}" and ans != "":
-                with open(File_Name, "a", encoding="utf-8") as f:
-                    f.write(ans)
+            danmaku_Items += ans
+        temp_Binary.ParseFromString(danmaku_Items)
+        with open(File_Name, "a", encoding="utf-8") as f:
+            f.write(json.dumps(json.loads(MessageToJson(temp_Binary)), ensure_ascii=False))
 
             progress_bar.update(1)
         progress_bar.close()
