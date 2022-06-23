@@ -7,31 +7,6 @@ a = {}
 with open(sys.argv[1], "r", encoding="utf-8")as f:
     a = f.read()
 
-# print(a)
-# print("================================================================")
-
-# a = "{" + a.lstrip("{}")
-# a = a.rstrip("{}") + "}"
-
-# for h in range(1209):   # max single video duration 10h. current max:120h46m0s  BV1j x411 P7AP
-#     a = a.replace("{}{}{\"elems\": [", "{}{\"elems\": [")
-
-# progress_bar = tqdm(total=600, leave=False)
-# for h in range(600):
-#     a = a.replace("{}{}{\"elems\": [", "{}{\"elems\": [")
-#     progress_bar.update(1)
-# progress_bar.close()
-
-# a = a.replace("}]}{}{\"elems\": [{", "}, {")
-a = a.replace("}]}{\"elems\": [{", "}, {")
-# a = a.replace("}]}\n{\"elems\": [{", "}, {")
-# a = a.replace("}]}\n\t{\"elems\": [{", "}, {")
-# a = a.replace("}]}\n  {\"elems\": [{", "}, {")
-# a = a.replace("}]}\n    {\"elems\": [{", "}, {")
-
-# print(a)
-# json.decoder.JSONDecodeError: Extra data: line *** column *** (char ***)
-# During handling of the above exception, another exception occurred:
 try:
     jsonData = json.loads(a)
 except json.decoder.JSONDecodeError:
@@ -104,8 +79,6 @@ for i in range((len(jsonData["elems"]))):
     # ================================ pool ================================
     danmakuType = str(0)
 
-
-
     item = "\t<d p=\"{0},{1},{2},{3},{4},{5},{6},{7},{8}\">{9}</d>\n".format(progress, mode, fontsize, color, ctime, danmakuType, midHash, id, weight, content)
     XML_items += item
     progress_bar.update(1)
@@ -115,4 +88,4 @@ XML_items += "</i>"
 
 with open(sys.argv[1].replace(".json", ".xml"), "w", encoding="utf-8")as g:
     g.write(XML_items)
-# print(XML_items)
+    g.close()
