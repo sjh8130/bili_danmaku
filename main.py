@@ -59,27 +59,29 @@ def getDanmu(cid: str, segment_index: str):
     url = f'https://api.bilibili.com/x/v2/dm/web/seg.so?type=1&oid={cid}&segment_index={segment_index}'
 
     time.sleep(1)
-    danmu = requests.get(url, headers=headers).content
+    danmu_proto = requests.get(url, headers=headers).content
     try:
-        if json.loads(danmu)["code"] == -412:
+        status_code = json.loads(danmu_proto)["code"]
+        if status_code == -412:
             print_ERROR_412()
             return b""
-        if json.loads(danmu)["code"] == -400:
+        if status_code == -400:
             print_ERROR_400()
             return b""
     except UnicodeDecodeError:
         pass
-    return danmu
+    return danmu_proto
 
 
 def get_BAS_danmu(avid: str, cid: str):
     url_1 = f'https://api.bilibili.com/x/v2/dm/web/view?type=1&oid={cid}&pid={avid}'
     data_1 = requests.get(url_1, headers=headers).content
     try:
-        if json.loads(data_1)["code"] == -412:
+        status_code = json.loads(data_1)["code"]
+        if status_code == -412:
             print_ERROR_412()
             return b""
-        if json.loads(data_1)["code"] == -400:
+        if status_code == -400:
             print_ERROR_400()
             return b""
     except UnicodeDecodeError:
@@ -93,29 +95,35 @@ def get_BAS_danmu(avid: str, cid: str):
         return b""
     if len(data_3) == 0:
         return b""
-
+    BAS_danmu_proto = b""
     for i in data_3:
         data = requests.get(i, headers=headers).content
         time.sleep(1)
         try:
-            if json.loads(data)["code"] == -412:
+            status_code = json.loads(data)["code"]
+            if status_code == -412:
                 print_ERROR_412()
                 return b""
-            if json.loads(data)["code"] == -400:
+            if status_code == -400:
                 print_ERROR_400()
                 return b""
         except UnicodeDecodeError:
+            BAS_danmu_proto += data
             pass
-    return data
+    return BAS_danmu_proto
 
 
 if __name__ == '__main__':
-    start_time = time.time()
+    # start_time = time.time()
     if sys.argv[1].find("https://www.bilibili.com/video/") == 0:
         vid = sys.argv[1].lstrip("https://www.bilibili.com/video/")
+    elif sys.argv[1].find("http://www.bilibili.com/video/") == 0:
+        vid = sys.argv[1].lstrip("http://www.bilibili.com/video/")
+    elif sys.argv[1].find("https://b23.tv/BV1") == 0:
+        vid = sys.argv[1].lstrip("https://b23.tv/")
     else:
         vid = sys.argv[1]
-
+    vid = vid.split("?")[0].split("/")[0]
     if vid.find("av") == 0:
         avid = vid
         avid_in = int(avid.lstrip("av"))
@@ -136,60 +144,61 @@ if __name__ == '__main__':
     if json_List["code"] == -412:
         print(bvid, avid)
         print_ERROR_412()
-        print("time used:", time.time()-start_time)
+        # print("总计用时:", time.time()-start_time) # 性能测试
         sys.exit(1)
     if json_List["code"] == -400:
         print(bvid, avid)
         print_ERROR_400()
-        print("time used:", time.time()-start_time)
+        # print("总计用时:", time.time()-start_time) # 性能测试
         sys.exit(1)
 
     json_Data = json_List["data"]
     sub_Items = json_Data["pages"]
     mainTitle = json_Data["title"]
+    sub_Items_Len = len(sub_Items)
 
     if json_List["data"]["stat"]["danmaku"] == 0:
-        for i in range(0, len(sub_Items)):
+        for i in range(sub_Items_Len):
             duration = int(sub_Items[i]["duration"])
             cid = str(sub_Items[i]["cid"])
             P_Title = str(sub_Items[i]["part"])
-            show_string = "{0}|{1}|P{2}/{3}|{4}|{5}|{6}|{7}|{8}".format(bvid, avid, str(i+1), len(sub_Items), cid, duration, math.ceil(duration/360), mainTitle, P_Title)
+            show_string = "{0}|{1}|P{2}/{3}|{4}|{5}|{6}|{7}|{8}".format(bvid, avid, str(i+1), sub_Items_Len, cid, duration, math.ceil(duration/360), mainTitle, P_Title)
             print(show_string)
             print("No danmu")
-            print("time used:", time.time()-start_time)
+            # print("总计用时:", time.time()-start_time) # 性能测试
         sys.exit(1)
 
-    for i in range(0, len(sub_Items)):
-        p_start_time = time.time()
-        danmaku_Items = b""
-        temp_Binary = b""
-        temp_Binary = dm_pb2.DmSegMobileReply()
+    for i in range(sub_Items_Len):
+        # 分P开始时间 = time.time() # 性能测试
+        Danmaku_Binary = b""
+        Temp_Binary = b""
+        Temp_Binary = dm_pb2.DmSegMobileReply()
         duration = int(sub_Items[i]["duration"])
         cid = str(sub_Items[i]["cid"])
         P_Title = str(sub_Items[i]["part"])
-        show_string = "{0}|{1}|P{2}/{3}|{4}|{5}|{6}|{7}|{8}".format(bvid, avid, str(i+1), len(sub_Items), cid, duration, math.ceil(duration/360), mainTitle, P_Title)
+        show_string = "{0}|{1}|P{2}/{3}|{4}|{5}|{6}|{7}|{8}".format(bvid, avid, str(i+1), sub_Items_Len, cid, duration, math.ceil(duration/360), mainTitle, P_Title)
         print(show_string)
 
         File_Name = str(bvid + "_" + avid + "_P" + str(i+1) + "_" + cid + "_" + mainTitle + "_pTitle_" + P_Title + ".json").replace("/", "_")
 
-        bas_time = time.time()
-        print("BAS Start")
-        BAS_dm = get_BAS_danmu(avid=avid_in, cid=cid)
-        danmaku_Items += BAS_dm
-        print("BAS OK, time used:", time.time()-bas_time)
+        # BAS开始时间 = time.time() # 性能测试
+        BAS_danmu = get_BAS_danmu(avid=avid_in, cid=cid)
+        Danmaku_Binary += BAS_danmu
+        # BAS结束时间 = time.time() # 性能测试
 
-        progress_bar = tqdm(total=math.ceil(duration/360), leave=False)
+        Progress_Bar = tqdm(total=math.ceil(duration/360), leave=False)
 
-        for segments in range(1, math.ceil(duration/360)+1):
-            ans = getDanmu(cid, str(segments))
-            danmaku_Items += ans
-            progress_bar.update(1)
-        temp_Binary.ParseFromString(danmaku_Items)
-        progress_bar.close()
-        with open(File_Name, "a", encoding="utf-8") as f:
-            write_time = time.time()
-            print("Writing")
-            f.write(json.dumps(json.loads(MessageToJson(temp_Binary)), ensure_ascii=False))
-        print("p-time used:", time.time()-p_start_time, "write time:", time.time()-write_time)
-    print("Total time used:", time.time()-start_time)
+        for segments in range(math.ceil(duration/360)):
+            Danmaku_sub_Items = getDanmu(cid, str(segments+1))
+            Danmaku_Binary += Danmaku_sub_Items
+            Progress_Bar.update(1)
+        Temp_Binary.ParseFromString(Danmaku_Binary)
+        Progress_Bar.close()
+        with open(File_Name, "w", encoding="utf-8") as f:
+            # 写入开始时间 = time.time() # 性能测试
+            # print("开始写入") # 性能测试
+            f.write(json.dumps(json.loads(MessageToJson(Temp_Binary)), ensure_ascii=False))
+        # 分P结束时间 = time.time() # 性能测试
+        # print(f"分P {i+1}用时: {分P结束时间-分P开始时间}, BAS用时: {BAS结束时间-BAS开始时间} 写入用时: {分P结束时间-写入开始时间}") # 性能测试
+    # print("总计用时:", time.time()-start_time) # 性能测试
     sys.exit(0)
