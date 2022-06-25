@@ -151,6 +151,7 @@ if __name__ == '__main__':
 	json_Data = json_List["data"]
 	sub_Items = json_Data["pages"]
 	mainTitle = json_Data["title"]
+	mainTitle_escape = mainTitle.replace("_","＿").replace("\\", "＼").replace("/", "／").replace(":", "：").replace("*","＊").replace("?", "？").replace("<", "＜").replace(">", "＞").replace("|", "｜")	# \/:*?"<>|
 	sub_Items_Len = len(sub_Items)
 
 	if json_List["data"]["stat"]["danmaku"] == 0:
@@ -172,10 +173,10 @@ if __name__ == '__main__':
 		duration = int(sub_Items[i]["duration"])
 		cid = str(sub_Items[i]["cid"])
 		P_Title = str(sub_Items[i]["part"])
+		P_Title_escape = P_Title.replace("_","＿").replace("\\", "＼").replace("/", "／").replace(":", "：").replace("*","＊").replace("?", "？").replace("<", "＜").replace(">", "＞").replace("|", "｜")
 		show_string = "{0}|{1}|P{2}/{3}|{4}|{5}|{6}|{7}|{8}".format(bvid, avid, str(i+1), sub_Items_Len, cid, duration, math.ceil(duration/360), mainTitle, P_Title)
 		print(show_string)
-
-		File_Name = str(bvid + "_" + avid + "_P" + str(i+1) + "_" + cid + "_" + mainTitle + "_pTitle_" + P_Title + ".json").replace("/", "_")
+		File_Name = str(bvid + "_" + avid + "_P" + str(i+1) + "_" + cid + "_" + mainTitle_escape + "_pTitle_" + P_Title_escape + ".json")
 
 		# BAS开始时间 = time.time()					# 性能测试
 		BAS_danmu = get_BAS_danmu(avid=avid_in, cid=cid)
