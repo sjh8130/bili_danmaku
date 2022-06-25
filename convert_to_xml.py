@@ -4,12 +4,12 @@ import re
 from tqdm import tqdm
 import time
 
-start_time = time.time()
+Start_Time = time.time()
 jsonData = ""
-HDD_Write_Count = 0
 input_file = sys.argv[1]
-outputFile = input_file.replace(".json", ".xml")
-write_split = 20000     # 磁盘IO <<----小----  分块大小 ----大---->> 处理时间
+outputFile = input_file.rstrip(".json")+".xml"
+# HDD_Write_Count = 0       # 分段写入计数
+# write_split = 20000     # 磁盘IO <<----小----  分块大小 ----大---->> 处理时间 # 分段写入计数
 
 with open(input_file, "r", encoding="utf-8")as f:
     jsonData = f.read()
@@ -17,27 +17,30 @@ with open(input_file, "r", encoding="utf-8")as f:
 try:
     jsonData = json.loads(jsonData)
 except json.decoder.JSONDecodeError:
-    print(
-        "\033[41m==============================ERROR=============================\033[0m")
-    if len(jsonData) == 1 or len(jsonData) == 0:
+    print("\033[41m==============================ERROR=============================\033[0m")
+    if len(jsonData) <= 2:
         print("\033[41m Empty File\033[0m")
-    else:
-        pass
+    print("总计用时:", time.time()-Start_Time)
     sys.exit(1)
 
-cid = re.split("_", sys.argv[1])[3]
-item = ""
+cid = re.split("_", input_file)[3]
+XML_item = ""
 
 with open(outputFile, "w", encoding="utf-8")as first_clear:
     first_clear.write("")
-    HDD_Write_Count += 1
+    # HDD_Write_Count += 1 # 分段写入计数
     first_clear.close()
 
+# counter = 0           # 性能分析
+# Time_Array = {}       # 性能分析
+# time2 = time.time()   # 性能分析
+danmu_count = len(jsonData["elems"])
+XML_Data = f"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<i>\n\t<chatserver>chat.bilibili.com</chatserver>\n\t<chatid>{cid}</chatid>\n\t<mission>0</mission>\n\t<maxlimit>8000</maxlimit>\n\t<state>0</state>\n\t<real_name>0</real_name>\n\t<source>k-v</source>\n"
 
-XML_items = f"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<i>\n\t<chatserver>chat.bilibili.com</chatserver>\n\t<chatid>{cid}</chatid>\n\t<mission>0</mission>\n\t<maxlimit>8000</maxlimit>\n\t<state>0</state>\n\t<real_name>0</real_name>\n\t<source>k-v</source>\n"
+if danmu_count >= 85000:print("提示：弹幕数量大于 85,000 会导致程序运行缓慢")
 
-progress_bar = tqdm(total=(len(jsonData["elems"])), leave=False)
-for i in range((len(jsonData["elems"]))):
+Progress_Bar = tqdm(total=danmu_count, leave=False)
+for i in range(danmu_count):
     # ================================ content ================================
     try:
         content = jsonData["elems"][i]["content"]
@@ -92,22 +95,29 @@ for i in range((len(jsonData["elems"]))):
     except KeyError:
         pool = 0
 
-    item = "\t<d p=\"{0},{1},{2},{3},{4},{5},{6},{7},{8}\">{9}</d>\n".format(progress, mode, fontsize, color, ctime, pool, midHash, id, weight - 1, content)
-    XML_items += item
-    if i % write_split == 0:
-        with open(outputFile, "a", encoding="utf-8")as h:
-            h.write(XML_items)
-            HDD_Write_Count += 1
-            XML_items = ""
+    XML_item = "\t<d p=\"{0},{1},{2},{3},{4},{5},{6},{7},{8}\">{9}</d>\n".format(progress, mode, fontsize, color, ctime, pool, midHash, id, weight - 1, content)
+    XML_Data += XML_item
+    # if i % write_split == 0:
+    #     with open(outputFile, "a", encoding="utf-8")as split_write:
+    #         split_write.write(XML_Data)
+    #         HDD_Write_Count += 1 # 分段写入计数
+    #         XML_Data = ""
 
-    progress_bar.update(1)
-progress_bar.close()
+    # if i % 1000 == 0:                                             #性能分析
+    #     time1 = time.time()                                       #性能分析
+    #     Time_Array[counter] = time1-time2                         #性能分析
+    #     counter += 1                                              #性能分析
+    #     time2 = time.time()                                       #性能分析
+    Progress_Bar.update(1)
+Progress_Bar.close()
 
-XML_items += "</i>"
+XML_Data += "</i>"
 
-with open(outputFile, "a", encoding="utf-8")as g:
-    g.write(XML_items)
-    HDD_Write_Count += 1
-    g.close()
-end_time = time.time()
-print(f"Write Split: {write_split}\tDisk Writes Count: {HDD_Write_Count-1}\tTime Used: {end_time-start_time}")
+with open(outputFile, "a", encoding="utf-8")as Final_Write:
+    Final_Write.write(XML_Data)
+    # HDD_Write_Count += 1 # 分段写入计数
+    Final_Write.close()
+End_Time = time.time()
+# print("Time_Array:",Time_Array)                                   #性能分析
+# print(f"写入分块大小: {write_split}\t磁盘写入计数: {HDD_Write_Count}\t总计用时: {End_Time-Start_Time}")
+print(f"总计用时: {End_Time-Start_Time}")
