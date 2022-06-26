@@ -115,14 +115,10 @@ def get_BAS_danmu(avid: str, cid: str):
 
 if __name__ == '__main__':
 	# start_time = time.time()
-	if sys.argv[1].find("https://www.bilibili.com/video/") == 0:
-		vid = sys.argv[1].lstrip("https://www.bilibili.com/video/")
-	elif sys.argv[1].find("http://www.bilibili.com/video/") == 0:
-		vid = sys.argv[1].lstrip("http://www.bilibili.com/video/")
-	elif sys.argv[1].find("https://b23.tv/BV1") == 0:
-		vid = sys.argv[1].lstrip("https://b23.tv/")
-	else:
-		vid = sys.argv[1]
+	if sys.argv[1].find("https://www.bilibili.com/video/") == 0:vid = sys.argv[1].lstrip("https://www.bilibili.com/video/")
+	elif sys.argv[1].find("http://www.bilibili.com/video/") == 0:vid = sys.argv[1].lstrip("http://www.bilibili.com/video/")
+	elif sys.argv[1].find("https://b23.tv/BV1") == 0:vid = sys.argv[1].lstrip("https://b23.tv/")
+	else:vid = sys.argv[1]
 	vid = vid.split("?")[0].split("/")[0]
 	if vid.find("av") == 0:
 		avid = vid
@@ -194,7 +190,7 @@ if __name__ == '__main__':
 		with open(File_Name, "w", encoding="utf-8") as f:
 			# 写入开始时间 = time.time()			# 性能测试
 			# print("开始写入")						# 性能测试
-			f.write(json.dumps(json.loads(MessageToJson(Temp_Binary)), ensure_ascii=False))
+			f.write(json.dumps(json.loads(MessageToJson(Temp_Binary)), ensure_ascii=False).replace("\x08","").replace("\x17",""))
 		# 分P结束时间 = time.time() # 性能测试
 		# print(f"分P {i+1}用时: {分P结束时间-分P开始时间}, BAS用时: {BAS结束时间-BAS开始时间} 写入用时: {分P结束时间-写入开始时间}") # 性能测试
 	# print("总计用时:", time.time()-start_time) # 性能测试
