@@ -17,5 +17,5 @@
 参考来源：  
 
 [bilibili-API-collect]( https://github.com/SocialSisterYi/bilibili-API-collect )
-1.	protobuf解码[bilibili-API-collect::danmaku_proto]( https://github.com/SocialSisterYi/bilibili-API-collect/danmaku/danmaku_proto.md )
-2.	XML格式[bilibili-API-collect::danmaku_xml.md]( https://github.com/SocialSisterYi/bilibili-API-collect/danmaku/danmaku_xml.md )
+1.	protobuf解码[bilibili-API-collect::danmaku_proto]( https://github.com/SocialSisterYi/bilibili-API-collect/blob/master/danmaku/danmaku_proto.md )
+2.	XML格式[bilibili-API-collect::danmaku_xml.md]( https://github.com/SocialSisterYi/bilibili-API-collect/blob/master/danmaku/danmaku_xml.md )
