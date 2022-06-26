@@ -1,8 +1,0 @@
-Disk Writes: 6	Time Used  : 0.9701986312866211
-Disk Writes: 4	Time Used  : 1.957733392715454
-Disk Writes: 3	Time Used  : 3.6777355670928955
-Disk Writes: 2	Time Used  : 3.6677627563476562
-Disk Writes: 15394      Time Used  : 2.2878243923187256
-Disk Writes: 15394      Time Used : 2.5207340717315674
-Disk Writes: 3080       Time Used: 0.6507821083068848
-Disk Writes: 309        Time Used: 0.26305317878723145
