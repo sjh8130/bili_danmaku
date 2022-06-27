@@ -43,25 +43,26 @@ for i in range(danmu_count):
 	except KeyError: color = 0
 	midHash = jsonData["elems"][i]["midHash"]
 	ctime = jsonData["elems"][i]["ctime"]
-	weight = jsonData["elems"][i]["weight"]
+	try: weight = jsonData["elems"][i]["weight"]
+	except KeyError: weight = 11
 	# try: idstr = jsonData["elems"][i]["idstr"]
 	# except KeyError: idstr = "0"# ,print("\n idstr    ERROR", 1)
-	id = jsonData["elems"][i]["id"]
-	# if id != idstr:print("\n id idstr mismatch:", id, idstr)
+	id_ = jsonData["elems"][i]["id"]
+	# if id_ != idstr:print("\n id idstr mismatch:", id_, idstr)
 	try: pool = jsonData["elems"][i]["pool"]
 	except KeyError: pool = 0
-
-	XML_item = "\t<d p=\"{0},{1},{2},{3},{4},{5},{6},{7},{8}\">{9}</d>\n".format(progress, mode, fontsize, color, ctime, pool, midHash, id, weight - 1, content)
+	if pool == 2: content = content.replace("\n", "\\n").replace("\r\n", "\\n")
+	XML_item = "\t<d p=\"{0},{1},{2},{3},{4},{5},{6},{7},{8}\">{9}</d>\n".format(progress, mode, fontsize, color, ctime, pool, midHash, id_, weight, content)
 	XML_Data_2nd_Cache += XML_item
 	if i % Split_SIZE == 0:
 		XML_Data_1st_Cache += XML_Data_2nd_Cache
 		XML_Data_2nd_Cache = ""
-		print(f"\r进度：{i}/{danmu_count}，用时：",format(time.time()-Start_Time,".5f"),end="")
+		print(f"\r进度：{i}/{danmu_count}，用时：{round(time.time()-Start_Time,4 )}",end="")
 
 XML_Data_1st_Cache += XML_Data_2nd_Cache
-XML_Data_1st_Cache += "</i>"
+XML_Data_1st_Cache += "</i>\n"
 with open(outputFile, "w", encoding="utf-8")as Final_Write:
 	Final_Write.write(XML_Data_1st_Cache)
 	Final_Write.close()
 End_Time = time.time()
-print(f"\r总计用时: {End_Time-Start_Time}          ")
+print(f"\r总计用时: {round(End_Time-Start_Time, 6)}              ")
