@@ -27,32 +27,62 @@ XML_Data_1st_Cache = f"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<i>\n\t<chats
 XML_Data_2nd_Cache = ""
 
 for i in range(danmu_count):
-	try: content = jsonData["elems"][i]["content"]
-	except KeyError:
-		# print("\n\033[43m content   ERROR", jsonData["elems"][i]["id"], "\033[0m")
-		continue
-		# content = "_CONTENT_ERROR_"
+	Sub_Item = jsonData["elems"][i]
+
+	try: content = Sub_Item["content"]		# string content = 7;
+	except KeyError: continue
 	content = content.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
 
-	try: progress = jsonData["elems"][i]["progress"]
+	string_not_used_1 = ""
+	string_not_used_2 = ""
+	string_not_used_3 = ""
+
+	try: progress = Sub_Item["progress"]	# int32 progress = 2;
 	except KeyError: progress = 0.0
-	progress = format(progress/1000, ".5f")
-	mode = jsonData["elems"][i]["mode"]
-	fontsize = jsonData["elems"][i]["fontsize"]
-	try: color = jsonData["elems"][i]["color"]
+
+	progress = format(progress/1000, ".5f")	# int32 progress = 2;
+	mode = Sub_Item["mode"]					# int32 mode = 3;
+	fontsize = Sub_Item["fontsize"]			# int32 fontsize = 4;
+
+	try: color = Sub_Item["color"]			# uint32 color = 5;
 	except KeyError: color = 0
-	midHash = jsonData["elems"][i]["midHash"]
-	ctime = jsonData["elems"][i]["ctime"]
-	try: weight = jsonData["elems"][i]["weight"]
+
+	midHash = Sub_Item["midHash"]			# string midHash = 6;
+	ctime = Sub_Item["ctime"]				# int64 ctime = 8;
+
+	try: weight = Sub_Item["weight"]		# int32 weight = 9;
 	except KeyError: weight = 11
-	# try: idstr = jsonData["elems"][i]["idstr"]
-	# except KeyError: idstr = "0"# ,print("\n idstr    ERROR", 1)
-	id_ = jsonData["elems"][i]["id"]
+
+	try: attr = Sub_Item["attr"]			# int32 attr = 13;
+	except KeyError: attr = 0
+	if attr == 0: string_not_used_1 = "<!-- DANMU -->"
+	if attr == 1: string_not_used_1 = "<!-- 保护弹幕 -->"
+	if attr == 2: string_not_used_1 = "<!-- 直播弹幕 -->"
+	if attr == 3: string_not_used_1 = "<!-- 保护弹幕+直播弹幕 -->"
+	if attr == 4: string_not_used_1 = "<!-- 高赞弹幕 -->"
+	if attr == 5: string_not_used_1 = "<!-- 保护弹幕+高赞弹幕 -->"
+	if attr == 6: string_not_used_1 = "<!-- 直播弹幕+高赞弹幕 -->"
+	if attr == 7: string_not_used_1 = "<!-- 保护弹幕+直播弹幕+高赞弹幕 -->"
+
+	try: action = Sub_Item["action"]		# string action = 10;
+	except KeyError: pass
+
+	try: animation = Sub_Item["animation"]	# string animation = 22;
+	except KeyError: pass
+
+	try: idstr = Sub_Item["idstr"]			# string idStr = 12;
+	except KeyError: idstr = "0" # ,print("\n idstr    ERROR", 1)
+
+	try: id_ = Sub_Item["id"]				# int64 id = 1;
+	except KeyError: pass
+
 	# if id_ != idstr:print("\n id idstr mismatch:", id_, idstr)
-	try: pool = jsonData["elems"][i]["pool"]
+
+	try: pool = Sub_Item["pool"]			# int32 pool = 11;
 	except KeyError: pool = 0
 	if pool == 2: content = content.replace("\n", "\\n").replace("\r\n", "\\n")
-	XML_item = "\t<d p=\"{0},{1},{2},{3},{4},{5},{6},{7},{8}\">{9}</d>\n".format(progress, mode, fontsize, color, ctime, pool, midHash, id_, weight, content)
+
+	XML_item = "\t<d p=\"{0},{1},{2},{3},{4},{5},{6},{7},{8}\">{9}</d>{10}\n".format(progress, mode, fontsize, color, ctime, pool, midHash, id_, weight, content, string_not_used_1)
 	XML_Data_2nd_Cache += XML_item
 	if i % Split_SIZE == 0:
 		XML_Data_1st_Cache += XML_Data_2nd_Cache

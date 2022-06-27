@@ -55,7 +55,7 @@ def downloader(url):
 def getDanmu(cid: str, segment_index: str):
 	url = f'https://api.bilibili.com/x/v2/dm/web/seg.so?type=1&oid={cid}&segment_index={segment_index}'
 	if is_ERROR: return b""																					# 错误停机
-	time.sleep(1)
+	time.sleep(0.7)
 	return downloader(url)
 
 
@@ -104,6 +104,8 @@ if __name__ == '__main__':
 	json_Data = json_List["data"]
 	sub_Items = json_Data["pages"]
 	mainTitle = json_Data["title"]
+	publish_D = str(json_Data["pubdate"])
+	if mainTitle == "": mainTitle = "Fake_MainTitle"
 	mainTitle_escape = mainTitle.replace("_","＿").replace("\\", "＼").replace("/", "／").replace(":", "：").replace("*","＊").replace("?", "？").replace("<", "＜").replace(">", "＞").replace("|", "｜")	# \/:*?"<>|
 	sub_Items_Len = len(sub_Items)
 
@@ -112,7 +114,7 @@ if __name__ == '__main__':
 			duration = int(sub_Items[i]["duration"])
 			cid = str(sub_Items[i]["cid"])
 			P_Title = str(sub_Items[i]["part"])
-			show_string = "{0}|{1}|P{2}/{3}|{4}|{5}|{6}|{7}|{8}".format(bvid, avid, i+1, sub_Items_Len, cid, duration, math.ceil(duration/360), mainTitle, P_Title)
+			show_string = publish_D+"|{0}|{1}|P{2}/{3}|{4}|{5}|{6}|{7}|{8}".format(bvid, avid, i+1, sub_Items_Len, cid, duration, math.ceil(duration/360), mainTitle, P_Title)
 			print(show_string)
 		print("No danmu")
 		print("总计用时:", time.time()-开始时间)								# 性能测试
@@ -127,13 +129,15 @@ if __name__ == '__main__':
 		duration = int(sub_Items[i]["duration"])
 		cid = str(sub_Items[i]["cid"])
 		P_Title = str(sub_Items[i]["part"])
+		if mainTitle == P_Title: P_Title = ""
 		P_Title_escape = P_Title.replace("_","＿").replace("\\", "＼").replace("/", "／").replace(":", "：").replace("*","＊").replace("?", "？").replace("<", "＜").replace(">", "＞").replace("|", "｜")
 		show_string = "{0}|{1}|P{2}/{3}|{4}|{5}|{6}|{7}|{8}".format(bvid, avid, i+1, sub_Items_Len, cid, duration, math.ceil(duration/360), mainTitle, P_Title)
 		print(show_string)
-		File_Name = f"{bvid}_{avid}_P{i+1}_{cid}_{mainTitle_escape}_{P_Title_escape}.json"
+		File_Name = f"[{publish_D}][{bvid}][{avid}][P{i+1}][{cid}] {mainTitle_escape}_{P_Title_escape}".rstrip("_")+".json"
 
 		BAS开始时间 = time.time()												# 性能测试
 		BAS_danmu = get_BAS_danmu(avid=avid_in, cid=cid)
+		if is_ERROR: print(f"[BAS_danmu]: {bvid}|{avid}|{cid}")												# 错误停机
 		Danmaku_Binary += BAS_danmu
 		BAS结束时间 = time.time()												# 性能测试
 
