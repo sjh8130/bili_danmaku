@@ -98,7 +98,7 @@ if __name__ == '__main__':
 	json_List = json.loads(json_Resp)
 
 	if is_ERROR:																							# 错误停机
-		print(f"[{bvid}|{avid}]Error Code: {json_List['code']}")
+		print(f"[{bvid}|{avid}]Error: {json_List['data']}")
 		print("总计用时:", time.time()-开始时间)								# 性能测试
 		sys.exit(1)
 
