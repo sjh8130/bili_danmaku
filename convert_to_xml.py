@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 import json
 import sys
 import re
@@ -5,11 +6,21 @@ import time
 
 Start_Time = time.time()
 jsonData = ""
-input_file = sys.argv[1]
-outputFile = input_file.rstrip(".json")+".xml"
+try:
+	input_PATH = sys.argv[1]
+except IndexError:
+	print("No Input")
+	sys.exit(1)
+
+PathSuffix = re.split("//", input_PATH)[-1]					# Unix,Linux,Windows
+if len(re.split("//", input_PATH)) >1:
+	PathSuffix = re.split("\\\\", input_PATH)[-1]			# Windows
+PathPrefix = input_PATH.rstrip(PathSuffix)
+outputFile = PathPrefix + PathSuffix.rstrip(".json")+".xml"
+
 Split_SIZE = 2500
 
-with open(input_file, "r", encoding="utf-8")as f:
+with open(input_PATH, "r", encoding="utf-8")as f:
 	jsonData = f.read()
 
 try: jsonData = json.loads(jsonData)
@@ -18,8 +29,14 @@ except json.decoder.JSONDecodeError:
 	if len(jsonData) <= 2:	print("\033[41m Empty File\033[0m")
 	print("总计用时:", time.time()-Start_Time)
 	sys.exit(1)
-
-cid = re.split("_", input_file)[3]
+try:
+	cid = re.split("_", PathSuffix)[4]							# publistTime_BV**_av**_P*_cid_Title_P-Title.json
+except IndexError:
+	pass
+try:
+	cid = re.split("\]",re.split("\]\[", PathSuffix)[3])[0]		# [BV**][av**][P*][cid]Title_P-Title.json
+except IndexError:
+	cid = "ERROR"
 XML_item = ""
 
 danmu_count = len(jsonData["elems"])
@@ -33,7 +50,7 @@ for i in range(danmu_count):
 	except KeyError: continue
 	content = content.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
 
-	string_not_used_1 = ""
+	string_attr = ["<!-- DANMU -->","<!-- 保护弹幕 -->","<!-- 直播弹幕 -->","<!-- 保护弹幕+直播弹幕 -->","<!-- 高赞弹幕 -->","<!-- 保护弹幕+高赞弹幕 -->","<!-- 保护弹幕+直播弹幕+高赞弹幕 -->"]
 	string_not_used_2 = ""
 	string_not_used_3 = ""
 
@@ -55,14 +72,6 @@ for i in range(danmu_count):
 
 	try: attr = Sub_Item["attr"]			# int32 attr = 13;
 	except KeyError: attr = 0
-	if attr == 0: string_not_used_1 = "<!-- DANMU -->"
-	if attr == 1: string_not_used_1 = "<!-- 保护弹幕 -->"
-	if attr == 2: string_not_used_1 = "<!-- 直播弹幕 -->"
-	if attr == 3: string_not_used_1 = "<!-- 保护弹幕+直播弹幕 -->"
-	if attr == 4: string_not_used_1 = "<!-- 高赞弹幕 -->"
-	if attr == 5: string_not_used_1 = "<!-- 保护弹幕+高赞弹幕 -->"
-	if attr == 6: string_not_used_1 = "<!-- 直播弹幕+高赞弹幕 -->"
-	if attr == 7: string_not_used_1 = "<!-- 保护弹幕+直播弹幕+高赞弹幕 -->"
 
 	try: action = Sub_Item["action"]		# string action = 10;
 	except KeyError: pass
@@ -82,7 +91,7 @@ for i in range(danmu_count):
 	except KeyError: pool = 0
 	if pool == 2: content = content.replace("\n", "\\n").replace("\r\n", "\\n")
 
-	XML_item = "\t<d p=\"{0},{1},{2},{3},{4},{5},{6},{7},{8}\">{9}</d>{10}\n".format(progress, mode, fontsize, color, ctime, pool, midHash, id_, weight, content, string_not_used_1)
+	XML_item = "\t<d p=\"{0},{1},{2},{3},{4},{5},{6},{7},{8}\">{9}</d>{10}\n".format(progress, mode, fontsize, color, ctime, pool, midHash, id_, weight, content, string_attr[attr])
 	XML_Data_2nd_Cache += XML_item
 	if i % Split_SIZE == 0:
 		XML_Data_1st_Cache += XML_Data_2nd_Cache
@@ -95,4 +104,4 @@ with open(outputFile, "w", encoding="utf-8")as Final_Write:
 	Final_Write.write(XML_Data_1st_Cache)
 	Final_Write.close()
 End_Time = time.time()
-print(f"\r总计用时: {round(End_Time-Start_Time, 6)}              ")
+print(f"\r总计用时：{round(End_Time-Start_Time, 6)}                   ")
