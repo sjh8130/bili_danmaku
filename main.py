@@ -156,7 +156,7 @@ if __name__ == '__main__':
 		写入开始时间 = time.time()												# 性能测试
 		with open(File_Name, "w", encoding="utf-8") as f:
 			if is_ERROR: print("[File]: 开始写入")								# 性能测试
-			Write_Data = json.dumps(json.loads(MessageToJson(Temp_Binary)), ensure_ascii=False).replace("\u0008","").replace("\u0017","")
+			Write_Data = json.dumps(json.loads(MessageToJson(Temp_Binary)), ensure_ascii=False)
 			if Write_Data == "{}":
 				pass
 			else:

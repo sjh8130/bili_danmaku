@@ -5,6 +5,7 @@ import re
 import time
 
 def ATTR_TYPE(attr:int):
+	return ""
 	o = ""
 	b = "0000000000" + bin(attr).lstrip("0b")
 	if b[-1] == "1": o += "保护 "
@@ -22,7 +23,6 @@ def ATTR_TYPE(attr:int):
 	return o
 
 Start_Time = time.time()
-jsonData = ""
 try:
 	input_PATH = sys.argv[1]
 except IndexError:
@@ -41,22 +41,17 @@ try:
 		jsonData = f.read()
 except FileNotFoundError:
 	print("File Not Found")
+	sys.exit(1)
 
 try: jsonData = json.loads(jsonData)
 except json.decoder.JSONDecodeError:
 	print("====ERROR====")
-	if len(jsonData) <= 2:	print("Empty File")
+	if len(jsonData) <= 2: print("Empty File")
 	print("总计用时:", time.time()-Start_Time)
 	sys.exit(1)
-try:
-	cid = re.split("_", PathSuffix)[4]							# publistTime_BV**_av**_P*_cid_Title_P-Title.json
-except IndexError:
-	pass
-try:
-	cid = re.split("\]",re.split("\]\[", PathSuffix)[3])[0]		# [BV**][av**][P*][cid]Title_P-Title.json
-except IndexError:
-	cid = "ERROR"
-XML_item = ""
+
+cid = re.split("\]",re.split("\]\[", PathSuffix)[4])[0]		# [publishtTime][BV**][av**][P*][cid]Title_P-Title.json
+
 danmu_count = len(jsonData["elems"])
 XML_Data_1st_Cache = f"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<i>\n\t<chatserver>chat.bilibili.com</chatserver>\n\t<chatid>{cid}</chatid>\n\t<mission>0</mission>\n\t<maxlimit>8000</maxlimit>\n\t<state>0</state>\n\t<real_name>0</real_name>\n\t<source>k-v</source>\n"
 XML_Data_2nd_Cache = ""
@@ -66,16 +61,12 @@ for i in range(danmu_count):
 
 	try: content = Sub_Item["content"]		# string content = 7;
 	except KeyError: continue
-	content = content.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace("\u0008","")
-
-	
-	string_not_used_2 = ""
-	string_not_used_3 = ""
+	content = content.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace("\u0008","").replace("\u0017","")
 
 	try: progress = Sub_Item["progress"]	# int32 progress = 2;
-	except KeyError: progress = 0.0
+	except KeyError: progress = 0
+	progress = format(progress/1000, ".5f")
 
-	progress = format(progress/1000, ".5f")	# int32 progress = 2;
 	mode = Sub_Item["mode"]					# int32 mode = 3;
 	fontsize = Sub_Item["fontsize"]			# int32 fontsize = 4;
 
@@ -91,14 +82,14 @@ for i in range(danmu_count):
 	try: attr = Sub_Item["attr"]			# int32 attr = 13;
 	except KeyError: attr = 0
 
-	try: action = Sub_Item["action"]		# string action = 10;
-	except KeyError: pass
+	# try: action = Sub_Item["action"]		# string action = 10;
+	# except KeyError: pass
 
-	try: animation = Sub_Item["animation"]	# string animation = 22;
-	except KeyError: pass
+	# try: animation = Sub_Item["animation"]	# string animation = 22;
+	# except KeyError: pass
 
-	try: idstr = Sub_Item["idstr"]			# string idStr = 12;
-	except KeyError: idstr = "0" # ,print("\n idstr    ERROR", 1)
+	# try: idstr = Sub_Item["idstr"]			# string idStr = 12;
+	# except KeyError: idstr = "0" # ,print("\n idstr    ERROR", 1)
 
 	try: id_ = Sub_Item["id"]				# int64 id = 1;
 	except KeyError: pass
@@ -118,8 +109,8 @@ for i in range(danmu_count):
 
 XML_Data_1st_Cache += XML_Data_2nd_Cache
 XML_Data_1st_Cache += "</i>\n"
-with open(outputFile, "w", encoding="utf-8")as Final_Write:
-	Final_Write.write(XML_Data_1st_Cache)
-	Final_Write.close()
+with open(outputFile, "w", encoding="utf-8")as g:
+	g.write(XML_Data_1st_Cache)
+	g.close()
 End_Time = time.time()
 print(f"\r总计用时：{round(End_Time-Start_Time, 6)}                   ")
