@@ -134,7 +134,7 @@ if __name__ == '__main__':
 		P_Title_escape = P_Title.replace("_","＿").replace("\\", "＼").replace("/", "／").replace(":", "：").replace("*","＊").replace("?", "？").replace("<", "＜").replace(">", "＞").replace("|", "｜")
 		show_string = "{0}|{1}|P{2}/{3}|{4}|{5}|{6}|{7}|{8}".format(bvid, avid, i+1, sub_Items_Len, cid, duration, math.ceil(duration/360), mainTitle, P_Title)
 		print(show_string)
-		File_Name = f"[{publish_D}][{bvid}][{avid}][P{i+1}][{cid}] {mainTitle_escape}_{P_Title_escape}".rstrip("_")+".json"
+		File_Name = f"[{publish_D}][{bvid}][{avid}][P{i+1}][{cid}]{mainTitle_escape}_{P_Title_escape}".rstrip("_")+".json"	#[1656432000][BV1**4*1*7*][av*********][P*][]
 
 		BAS开始时间 = time.time()												# 性能测试
 		BAS_danmu = get_BAS_danmu(avid=avid_in, cid=cid)
@@ -156,7 +156,7 @@ if __name__ == '__main__':
 		写入开始时间 = time.time()												# 性能测试
 		with open(File_Name, "w", encoding="utf-8") as f:
 			if is_ERROR: print("[File]: 开始写入")								# 性能测试
-			Write_Data = json.dumps(json.loads(MessageToJson(Temp_Binary)), ensure_ascii=False).replace("\x08","").replace("\x17","")
+			Write_Data = json.dumps(json.loads(MessageToJson(Temp_Binary)), ensure_ascii=False).replace("\u0008","").replace("\u0017","")
 			if Write_Data == "{}":
 				pass
 			else:
