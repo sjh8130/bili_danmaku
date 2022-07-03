@@ -5,7 +5,7 @@ import re
 import time
 
 def ATTR_TYPE(attr:int):
-	return ""
+	# return ""
 	o = ""
 	b = "0000000000" + bin(attr).lstrip("0b")
 	if b[-1] == "1": o += "保护 "
@@ -35,7 +35,7 @@ if len(re.split("//", input_PATH)) >1:
 PathPrefix = input_PATH.rstrip(PathSuffix)
 outputFile = PathPrefix + PathSuffix.rstrip(".json")+".xml"
 
-Split_SIZE = 2500
+Split_SIZE = 4100
 try:
 	with open(input_PATH, "r", encoding="utf-8")as f:
 		jsonData = f.read()
@@ -60,7 +60,7 @@ for i in range(danmu_count):
 	Sub_Item = jsonData["elems"][i]
 
 	try: content = Sub_Item["content"]		# string content = 7;
-	except KeyError: continue
+	except KeyError: content = ""
 	content = content.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace("\u0008","").replace("\u0017","")
 
 	try: progress = Sub_Item["progress"]	# int32 progress = 2;
@@ -105,7 +105,7 @@ for i in range(danmu_count):
 	if i % Split_SIZE == 0:
 		XML_Data_1st_Cache += XML_Data_2nd_Cache
 		XML_Data_2nd_Cache = ""
-		print(f"\r进度：{i}/{danmu_count}，用时：{round(time.time()-Start_Time,4 )}",end="")
+		print(f"\rProgress: {i}/{danmu_count}, Time: {round(time.time()-Start_Time,3)}",end="")
 
 XML_Data_1st_Cache += XML_Data_2nd_Cache
 XML_Data_1st_Cache += "</i>\n"
@@ -113,4 +113,4 @@ with open(outputFile, "w", encoding="utf-8")as g:
 	g.write(XML_Data_1st_Cache)
 	g.close()
 End_Time = time.time()
-print(f"\r总计用时：{round(End_Time-Start_Time, 6)}                   ")
+print(f"\r总计用时：{round(End_Time-Start_Time, 4)}                     ")
