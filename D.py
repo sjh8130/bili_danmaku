@@ -145,6 +145,7 @@ def get_BAS_danmaku(avid: str, cid: str):
 
 
 def XML_Process(data):
+	if data == "{}": return ""
 	jsonData = json.loads(data)
 	XML_Data_2nd = ""
 	danmu_count = len(jsonData["elems"])
@@ -276,13 +277,14 @@ if __name__ == '__main__':
 	for i in range(sub_Items_Len):
 		if is_ERROR and flag_Error_Stop: break
 		分P开始时间 = time.time()
-		if not flag_NO_Json: Danmaku_Binary = b""
-		if not flag_NO_Json: Temp_Binary = dm_pb2.DmSegMobileReply()
+		if not flag_NO_Json: 
+			Danmaku_Binary = b""
+			Temp_Binary = dm_pb2.DmSegMobileReply()
 		duration = int(sub_Items[i]["duration"])
 		segment_count = math.ceil(duration/360)
 		cid = str(sub_Items[i]["cid"])
 		if not flag_NO_XML: XML_Write_Data = f"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<i>\n\t<chatserver>chat.bilibili.com</chatserver>\n\t<chatid>{cid}</chatid>\n\t<mission>0</mission>\n\t<maxlimit>8000</maxlimit>\n\t<state>0</state>\n\t<real_name>0</real_name>\n\t<source>k-v</source>\n"
-		if not flag_NO_XML: XML_Data_Empty = f"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<i>\n\t<chatserver>chat.bilibili.com</chatserver>\n\t<chatid>{cid}</chatid>\n\t<mission>0</mission>\n\t<maxlimit>8000</maxlimit>\n\t<state>0</state>\n\t<real_name>0</real_name>\n\t<source>k-v</source>\n</i>\n"
+		if not flag_NO_XML: XML_Data_Empty = XML_Write_Data
 		P_Title = str(sub_Items[i]["part"])
 		if mainTitle == P_Title: P_Title = ""
 		P_Title_escape = P_Title.replace("_", "＿").replace("\\", "＼").replace("/", "／").replace(":", "：").replace("*", "＊").replace("?", "？").replace("<", "＜").replace(">", "＞").replace("|", "｜")
@@ -309,8 +311,10 @@ if __name__ == '__main__':
 		if not flag_Many_Logs: Progress_Bar = tqdm(total=segment_count, leave=False, unit='chunks')
 		for segments in range(segment_count):
 			if is_ERROR and flag_Error_Stop: break
-			Danmaku_sub_Items = get_danmaku(cid, str(segments+1))
-			if is_ERROR or flag_Many_Logs: print(f"[danmaku]: P{i+1}/{sub_Items_Len}::{segments}/{segment_count}")
+			try:
+				Danmaku_sub_Items = get_danmaku(cid, str(segments+1))
+			except json.decoder.JSONDecodeError:
+				Danmaku_sub_Items = b""
 			if not flag_NO_Json: Danmaku_Binary += Danmaku_sub_Items
 			if not flag_NO_XML:
 				XML_T1 = time.time()
@@ -320,27 +324,32 @@ if __name__ == '__main__':
 				XML_T2 = time.time()
 				XML_Time += XML_T2 - XML_T1
 			if not flag_Many_Logs:Progress_Bar.update(1)
+			if is_ERROR or flag_Many_Logs: print(f"[danmaku]: P{i+1}/{sub_Items_Len}::{segments+1}/{segment_count}")
 		if not flag_Many_Logs:Progress_Bar.close()
 
 		写入开始时间 = time.time()
-		if not flag_NO_Json: Temp_Binary.ParseFromString(Danmaku_Binary)
 		if not flag_NO_Json:
-			with open(File_Name+".json", "w", encoding="utf-8") as f:
-				if is_ERROR or flag_Many_Logs: print(f"[File_JSON P{i+1}]: 开始写入")
-				Json_Write_Data = json.dumps(json.loads(MessageToJson(Temp_Binary)), ensure_ascii=False)
-				if Json_Write_Data == "{}": continue
-				else: f.write(Json_Write_Data)
+			Temp_Binary.ParseFromString(Danmaku_Binary)
+			Json_Write_Data = json.dumps(json.loads(MessageToJson(Temp_Binary)), ensure_ascii=False)
+			if Json_Write_Data == "{}" or Json_Write_Data == "":
+				print(f"[File_JSON P{i+1}]: No Data",end="\t")
+			else:
+				with open(File_Name+".json", "w", encoding="utf-8") as f:
+					if is_ERROR or flag_Many_Logs: print(f"[File_JSON P{i+1}]: 开始写入",end="\t")
+					f.write(Json_Write_Data)
 		if not flag_NO_XML:
-			with open(File_Name+".xml", "w", encoding="utf-8") as x:
-				XML_Write_Data += "</i>\n"
-				if is_ERROR or flag_Many_Logs: print(f"[File_XML  P{i+1}]: 开始写入")
-				if XML_Write_Data == XML_Data_Empty: continue
-				else: x.write(XML_Write_Data)
+			if XML_Write_Data == XML_Data_Empty:
+				print(f"[File_XML  P{i+1}]: No Data")
+			else:
+				with open(File_Name+".xml", "w", encoding="utf-8") as x:
+					XML_Write_Data += "</i>\n"
+					if is_ERROR or flag_Many_Logs: print(f"[File_XML  P{i+1}]: 开始写入")
+					x.write(XML_Write_Data)
 
 		分P结束时间 = time.time()
 		if is_ERROR or flag_Timer or flag_Many_Logs:
-			print(f"分P {i+1}用时: {分P结束时间-分P开始时间}, BAS用时: {BAS结束时间-BAS开始时间}，写入用时: {分P结束时间-写入开始时间}，XML: {XML_Time}，RT:{分P结束时间-分P开始时间-segment_count*SLEEP_TIME}，Wait:{SLEEP_TIME*segment_count}")  
+			print(f"P{i+1}: {分P结束时间-分P开始时间}, BAS: {BAS结束时间-BAS开始时间}，W: {分P结束时间-写入开始时间}，XML: {XML_Time}，RT:{分P结束时间-分P开始时间-segment_count*SLEEP_TIME}，Wait:{SLEEP_TIME*segment_count}")  
 
 	if is_ERROR or flag_Timer or flag_Many_Logs:
-		print(f"{bvid}|{avid} 总计用时: {time.time()-开始时间}")
+		print(f"{bvid}|{avid} Time: {time.time()-开始时间}")
 	sys.exit(0)
