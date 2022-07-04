@@ -18,7 +18,7 @@ def ATTR_TYPE(attr:int):
 	if b[-8] == "1": o += "伍 "
 	if b[-9] == "1": o += "陆 "
 	if b[-10] == "1": o += "柒 "
-	if o == "" : return ""
+	if o == "" : return "<!-- DM -->"
 	o = "<!-- " + o + "-->"
 	return o
 
@@ -88,13 +88,15 @@ for i in range(danmu_count):
 	# try: animation = Sub_Item["animation"]	# string animation = 22;
 	# except KeyError: pass
 
-	# try: idstr = Sub_Item["idstr"]			# string idStr = 12;
-	# except KeyError: idstr = "0" # ,print("\n idstr    ERROR", 1)
-
 	try: id_ = Sub_Item["id"]				# int64 id = 1;
 	except KeyError: pass
 
-	# if id_ != idstr:print("\n id idstr mismatch:", id_, idstr)
+	try: idStr = Sub_Item["idStr"]			# string idStr = 12;
+	except KeyError:
+		idStr = "0"
+		print("\n idstr    ERROR", id_)
+
+	if id_ != idStr:print("\n id idstr mismatch:", id_, idStr)
 
 	try: pool = Sub_Item["pool"]			# int32 pool = 11;
 	except KeyError: pool = 0
