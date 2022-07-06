@@ -32,8 +32,7 @@ except IndexError:
 PathSuffix = re.split("//", input_PATH)[-1]					# Unix,Linux,Windows
 if len(re.split("//", input_PATH)) >1:
 	PathSuffix = re.split("\\\\", input_PATH)[-1]			# Windows
-PathPrefix = input_PATH.rstrip(PathSuffix)
-outputFile = PathPrefix + PathSuffix.rstrip(".json")+".xml"
+outputFile = input_PATH.rstrip(".json")+".xml"
 
 Split_SIZE = 4100
 try:
@@ -82,21 +81,21 @@ for i in range(danmu_count):
 	try: attr = Sub_Item["attr"]			# int32 attr = 13;
 	except KeyError: attr = 0
 
-	# try: action = Sub_Item["action"]		# string action = 10;
-	# except KeyError: pass
+	try: action = Sub_Item["action"]		# string action = 10;
+	except KeyError: pass
 
-	# try: animation = Sub_Item["animation"]	# string animation = 22;
-	# except KeyError: pass
+	try: animation = Sub_Item["animation"]	# string animation = 22;
+	except KeyError: pass
 
 	try: id_ = Sub_Item["id"]				# int64 id = 1;
-	except KeyError: pass
+	except KeyError: id_ = "0"
 
 	try: idStr = Sub_Item["idStr"]			# string idStr = 12;
 	except KeyError:
 		idStr = "0"
-		print("\n idstr    ERROR", id_)
+		print(f"\n idStr ERROR: {id_}")
 
-	if id_ != idStr:print("\n id idstr mismatch:", id_, idStr)
+	if id_ != idStr:print("\n id idStr mismatch:", id_, idStr)
 
 	try: pool = Sub_Item["pool"]			# int32 pool = 11;
 	except KeyError: pool = 0
