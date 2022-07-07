@@ -10,7 +10,7 @@ import sys
 from tqdm import tqdm
 
 headers = {'User-Agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.66 Safari/537.36 Edg/103.0.1264.44"}
-SLEEP_TIME = 0.7
+SLEEP_TIME = 1
 BV_AV_table = 'fZodR9XQDSUm21yCkr6zBqiveYah8bt4xsWpHnJE7jL5VG3guMTKNPAwcF'
 BV_AV_base58_dic = {}
 for BV_AV_base58_i in range(58): BV_AV_base58_dic[BV_AV_table[BV_AV_base58_i]] = BV_AV_base58_i
@@ -70,7 +70,7 @@ def danmaku_ATTR_TYPE(attr: int):
 	if b[-9] == "1": o += "陆 "
 	if b[-10] == "1": o += "柒 "
 	if o == "": return "<!-- DM -->"
-	o = "<!-- " + o + "-->"
+	o = f"<!-- {o}-->"
 	return o
 
 
@@ -105,8 +105,8 @@ def downloader(url):
 		if status_code != 0:
 			global is_ERROR
 			is_ERROR = True
-		if flag_Many_Logs or status_code != 0: print(f"[NET]: Error Code {status_code}")
-	except UnicodeDecodeError: pass
+	except UnicodeDecodeError: status_code = 0
+	if flag_Many_Logs or status_code != 0: print(f"[NET]: Status Code {resp.status_code}, Json Code {status_code}")
 	return resp.content
 
 
@@ -138,7 +138,7 @@ def get_BAS_danmaku(avid: str, cid: str):
 		if flag_Many_Logs: print("[BAS_DL]: DL", end="\t")
 		if is_ERROR and flag_Error_Stop: break
 		BAS_Binary += data
-		dump_Binary(cid=cid, str1="BAS", str2=str(k), data=data)
+		dump_Binary(cid=cid, str1="BAS", str2=f"{k}", data=data)
 		k+=1
 	return BAS_Binary
 
@@ -148,8 +148,8 @@ def XML_Process(data):
 	global flag_Ext_XML_Data
 	jsonData = json.loads(data)
 	XML_Data_2nd = ""
-	danmu_count = len(jsonData["elems"])
-	for i in range(danmu_count):
+	danmaku_count = len(jsonData["elems"])
+	for i in range(danmaku_count):
 		Sub_Item = jsonData["elems"][i]
 
 		try: content = Sub_Item["content"]		# string content = 7;
@@ -216,7 +216,7 @@ def XML_Process(data):
 			# if pool == 0: spec_tag += "pool:Regular"		# NOT Tested
 			if pool == 1: spec_tag += "pool:SubTitle"		# NOT Tested
 			if pool == 2: spec_tag += "pool:BAS|Code"		# NOT Tested
-			if spec_tag != "": spec_tag = "<!-- "+spec_tag+" -->"
+			if spec_tag != "": spec_tag = f"<!-- {spec_tag} -->"
 
 		XML_item = "\t<d p=\"{0},{1},{2},{3},{4},{5},{6},{7},{8}\">{9}</d>{10}{11}\n".format(progress, mode, fontsize, color, sendtime, pool, midHash, id_, weight, content, danmaku_ATTR_TYPE(attr), spec_tag)
 		XML_Data_2nd += XML_item
@@ -237,15 +237,15 @@ if __name__ == '__main__':
 	is_ERROR = False
 	try: Program_FLAG(sys.argv[2])
 	except IndexError:
-		flag_Timer = True
-		flag_Zero_Stop = False
-		flag_Many_Logs = False
-		flag_Ext_XML_Data = True
-		flag_NO_Json = False
-		flag_NO_XML = False
-		flag_Dump_Binary = False
-		flag9 = False
-		flag_Error_Stop = True
+		flag_Timer = True			# 计时器
+		flag_Zero_Stop = False		# 0弹幕停机
+		flag_Many_Logs = False		# 日志
+		flag_Ext_XML_Data = True	# 输出 其他信息到 XML 文件
+		flag_NO_Json = False		# 不输出 Json
+		flag_NO_XML = False			# 不输出 XML
+		flag_Dump_Binary = False	# 输出 Protobuf 二进制文件
+		flag9 = False				# 未使用
+		flag_Error_Stop = False		# 错误停机
 	vid = sys.argv[1]
 	if flag_NO_Json and flag_NO_XML and not flag_Dump_Binary:
 		print("?????????")
@@ -256,26 +256,30 @@ if __name__ == '__main__':
 	vid = vid.split("?")[0].split("/")[0]
 	if vid.find("av") == 0:
 		avid = vid
+		vid_I=1
 		avid_in = int(avid.lstrip("av"))
 		bvid = AV_to_BV(avid_in)
 	else:
 		bvid = vid
+		vid_I=2
 		avid_in = BV_to_AV(bvid)
-		avid = "av" + str(avid_in)
-	url = "https://api.bilibili.com/x/web-interface/view?bvid=" + bvid
+		avid = f"av{avid_in}"
+	url = f"https://api.bilibili.com/x/web-interface/view?bvid={bvid}"
 	if flag_Many_Logs: print(f"[Info]: {bvid}")
 	json_Resp = downloader(url)
-	json_List = json.loads(json_Resp)
 
 	if is_ERROR and flag_Error_Stop:
-		print(f"[{bvid}|{avid}]Error: {json_List['data']}")
+		print(f"[{bvid}|{avid}]Error: {json_Resp}")
 		print("总计用时:", time.time()-开始时间)
 		sys.exit(1)
 
-	json_Data = json_List["data"]
+	json_Data = json.loads(json_Resp)["data"]
 	sub_Items = json_Data["pages"]
 	mainTitle = json_Data["title"]
 	publish_D = str(json_Data["pubdate"])
+
+	if vid_I == 1 and (json_Data["bvid"] != bvid): print(f"[bvid]: bvid mismatch {json_Data['bvid']}|{bvid}")
+	if vid_I == 2 and (json_Data["aid"] != avid_in): print(f"[avid]: avid mismatch {json_Data['aid']}|{avid_in}")
 
 	if mainTitle == "": mainTitle = "Fake_MainTitle"
 	mainTitle_escape = mainTitle.replace("_", "＿").replace("\\", "＼").replace("/", "／").replace(":", "：").replace("*", "＊").replace("?", "？").replace("<", "＜").replace(">", "＞").replace("|", "｜")  # \/:*?"<>|
@@ -287,7 +291,7 @@ if __name__ == '__main__':
 			duration = int(sub_Items[i]["duration"])
 			cid = str(sub_Items[i]["cid"])
 			P_Title = str(sub_Items[i]["part"])
-			show_string = publish_D+"|{0}|{1}|P{2}/{3}|{4}|{5}|{6}|{7}|{8}".format(bvid, avid, i+1, sub_Items_Len, cid, duration, math.ceil(duration/360), mainTitle, P_Title)
+			show_string = f"{publish_D}|{bvid}|{avid}|P{i+1}/{sub_Items_Len}|{cid}|{duration}|{math.ceil(duration/360)}|{mainTitle}|{P_Title}"
 			print(show_string)
 		print("总计用时:", time.time()-开始时间)
 		sys.exit(1)
@@ -306,7 +310,7 @@ if __name__ == '__main__':
 		P_Title = str(sub_Items[i]["part"])
 		if mainTitle == P_Title: P_Title = ""
 		P_Title_escape = P_Title.replace("_", "＿").replace("\\", "＼").replace("/", "／").replace(":", "：").replace("*", "＊").replace("?", "？").replace("<", "＜").replace(">", "＞").replace("|", "｜")
-		show_string = "{0}|{1}|P{2}/{3}|{4}|{5}|{6}|{7}|{8}".format(bvid, avid, i+1, sub_Items_Len, cid, duration, segment_count, mainTitle, P_Title)
+		show_string = f"{publish_D}|{bvid}|{avid}|P{i+1}/{sub_Items_Len}|{cid}|{duration}|{math.ceil(duration/360)}|{mainTitle}|{P_Title}"
 		print(show_string)
 		File_Name = f"[{publish_D}][{bvid}][{avid}][P{i+1}][{cid}]{mainTitle_escape}_{P_Title_escape}".rstrip("_")
 		# [1656432000][BV1**4*1*7*][av*********][P*]MainTitle_P-Title [1656432000][BV1**4*1*7*][av*********][P*]MainTitle
@@ -353,14 +357,14 @@ if __name__ == '__main__':
 			Json_Write_Data = json.dumps(json.loads(MessageToJson(Temp_Binary)), ensure_ascii=False)
 			if Json_Write_Data == "{}" or Json_Write_Data == "": print(f"[File_JSON P{i+1}]: No Data", end="\t")
 			else:
-				with open(File_Name+".json", "w", encoding="utf-8") as f:
+				with open(f"{File_Name}.json", "w", encoding="utf-8") as f:
 					if is_ERROR or flag_Many_Logs: print(f"[File_JSON P{i+1}]: 开始写入", end="\t")
 					f.write(Json_Write_Data)
 		if not flag_NO_XML:
 			if XML_Write_Data == XML_Data_Empty:
 				print(f"[File_XML  P{i+1}]: No Data")
 			else:
-				with open(File_Name+".xml", "w", encoding="utf-8") as x:
+				with open(f"{File_Name}.xml", "w", encoding="utf-8") as x:
 					XML_Write_Data += "</i>\n"
 					if is_ERROR or flag_Many_Logs: print(f"[File_XML  P{i+1}]: 开始写入")
 					x.write(XML_Write_Data)
