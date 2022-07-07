@@ -99,15 +99,15 @@ def AV_to_BV(input_AV: int):
 def downloader(url):
 	if flag_Many_Logs: print(f"[NET]: {url}", end="\t")
 	time.sleep(SLEEP_TIME)
-	contents = requests.get(url, headers=headers).content
+	resp = requests.get(url, headers=headers)
 	try:
-		status_code = json.loads(contents)["code"]
+		status_code = json.loads(resp.content)["code"]
 		if status_code != 0:
 			global is_ERROR
 			is_ERROR = True
 		if flag_Many_Logs or status_code != 0: print(f"[NET]: Error Code {status_code}")
 	except UnicodeDecodeError: pass
-	return contents
+	return resp.content
 
 
 def get_danmaku(cid: str, segment_index: str):
@@ -124,6 +124,7 @@ def get_BAS_danmaku(avid: str, cid: str):
 	if is_ERROR and flag_Error_Stop: return b""
 	data_2 = dm_pb2.DmWebViewReply()
 	data_2.ParseFromString(data_1)
+	dump_Binary(cid=cid, str1="BAS", str2="Info", data=data_1)
 	try:
 		data_3 = json.loads(MessageToJson(data_2))["specialDms"]
 	except KeyError:
@@ -131,11 +132,14 @@ def get_BAS_danmaku(avid: str, cid: str):
 	if len(data_3) == 0:
 		return b""
 	BAS_Binary = b""
+	k = 1
 	for i in data_3:
 		data = downloader(i)
 		if flag_Many_Logs: print("[BAS_DL]: DL", end="\t")
 		if is_ERROR and flag_Error_Stop: break
 		BAS_Binary += data
+		dump_Binary(cid=cid, str1="BAS", str2=str(k), data=data)
+		k+=1
 	return BAS_Binary
 
 
@@ -157,13 +161,14 @@ def XML_Process(data):
 		progress = format(progress/1000, ".5f")
 
 		mode = Sub_Item["mode"]					# int32 mode = 3;
+		# 1/2/3:regular	4:buttom	5:top	6:reverse(disable)	7:advance	8:code	9:BAS
 		fontsize = Sub_Item["fontsize"]			# int32 fontsize = 4;
-
+		# 18/25/36
 		try: color = Sub_Item["color"]			# uint32 color = 5;
 		except KeyError: color = 0
 
 		midHash = Sub_Item["midHash"]			# string midHash = 6;
-		ctime = Sub_Item["ctime"]				# int64 ctime = 8;
+		sendtime = Sub_Item["ctime"]				# int64 ctime = 8;
 
 		try: weight = Sub_Item["weight"]		# int32 weight = 9;
 		except KeyError: weight = 11
@@ -194,9 +199,26 @@ def XML_Process(data):
 
 		try: pool = Sub_Item["pool"]			# int32 pool = 11;
 		except KeyError: pool = 0
+		# 0:regular	1:subtitle	2:special(BAS/code)
 		if pool == 2: content = content.replace("\n", "\\n").replace("\r\n", "\\n")
+		spec_tag = ""
+		if flag_Ext_XML_Data:
+			if mode == 0: spec_tag += "mode:ERROR"			# NOT Tested
+			# if mode == 1: spec_tag += "mode:Normal"		# Tested
+			# if mode == 2: spec_tag += "mode:Normal"		# Tested
+			# if mode == 3: spec_tag += "mode:Normal"		# Tested
+			# if mode == 4: spec_tag += "mode:Bottom"		# Tested
+			# if mode == 5: spec_tag += "mode:Top"			# Tested
+			if mode == 6: spec_tag += "mode:Reverse!!!!"	# NOT Tested
+			if mode == 7: spec_tag += "mode:!!Advanced!!"	# Tested
+			if mode == 8: spec_tag += "mode:!!Code!!"		# NOT Tested
+			if mode == 9: spec_tag += "mode:!!BAS!!"		# NOT Tested
+			# if pool == 0: spec_tag += "pool:Regular"		# NOT Tested
+			if pool == 1: spec_tag += "pool:SubTitle"		# NOT Tested
+			if pool == 2: spec_tag += "pool:BAS|Code"		# NOT Tested
+			if spec_tag != "": spec_tag = "<!-- "+spec_tag+" -->"
 
-		XML_item = "\t<d p=\"{0},{1},{2},{3},{4},{5},{6},{7},{8}\">{9}</d>{10}\n".format(progress, mode, fontsize, color, ctime, pool, midHash, id_, weight, content, danmaku_ATTR_TYPE(attr))
+		XML_item = "\t<d p=\"{0},{1},{2},{3},{4},{5},{6},{7},{8}\">{9}</d>{10}{11}\n".format(progress, mode, fontsize, color, sendtime, pool, midHash, id_, weight, content, danmaku_ATTR_TYPE(attr), spec_tag)
 		XML_Data_2nd += XML_item
 	return XML_Data_2nd
 
@@ -204,7 +226,7 @@ def XML_Process(data):
 def dump_Binary(cid, str1, str2, data: bin):
 	if flag_Dump_Binary: pass
 	else: return
-	if len(data) == 0: pass
+	if len(data) == 0: return
 	else:
 		with open(f"[{cid}]_[{str1}]_[{str2}].bin", "wb") as d: d.write(data)
 
@@ -215,10 +237,10 @@ if __name__ == '__main__':
 	is_ERROR = False
 	try: Program_FLAG(sys.argv[2])
 	except IndexError:
-		flag_Timer = False
+		flag_Timer = True
 		flag_Zero_Stop = False
-		flag_Many_Logs = True
-		flag_Ext_XML_Data = False
+		flag_Many_Logs = False
+		flag_Ext_XML_Data = True
 		flag_NO_Json = False
 		flag_NO_XML = False
 		flag_Dump_Binary = False
@@ -295,7 +317,7 @@ if __name__ == '__main__':
 		if len(BAS_danmaku) == 0:
 			if flag_Many_Logs: print(f"[BAS P{i+1}]:\tNo BAS Danmaku")
 		else:
-			dump_Binary(cid=cid, str2="BAS", str1="BAS", data=BAS_danmaku)
+			# dump_Binary(cid=cid, str1="BAS", str2="BAS", data=BAS_danmaku)
 			if not flag_NO_XML:
 				XML_Ti = time.time()
 				xml_t1 = dm_pb2.DmSegMobileReply()
@@ -311,7 +333,7 @@ if __name__ == '__main__':
 			if is_ERROR and flag_Error_Stop: break
 			try: Danmaku_sub_Items = get_danmaku(cid, str(segments+1))
 			except json.decoder.JSONDecodeError: Danmaku_sub_Items = b""
-			if flag_Dump_Binary: dump_Binary(cid=cid, str1="DM", str2=segments + 1, data=Danmaku_sub_Items)
+			dump_Binary(cid=cid, str1="DM", str2=segments + 1, data=Danmaku_sub_Items)
 			if not flag_NO_Json: Danmaku_Binary += Danmaku_sub_Items
 			if not flag_NO_XML:
 				XML_Ti = time.time()
