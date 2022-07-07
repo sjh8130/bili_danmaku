@@ -18,7 +18,8 @@ def ATTR_TYPE(attr:int):
 	if b[-8] == "1": o += "伍 "
 	if b[-9] == "1": o += "陆 "
 	if b[-10] == "1": o += "柒 "
-	if o == "" : return "<!-- DM -->"
+	# if o == "" : return "<!-- DM -->"
+	if o == "" : return ""
 	o = "<!-- " + o + "-->"
 	return o
 
@@ -57,7 +58,7 @@ XML_Data_2nd_Cache = ""
 
 for i in range(danmu_count):
 	Sub_Item = jsonData["elems"][i]
-
+	spec_tag = ""
 	try: content = Sub_Item["content"]		# string content = 7;
 	except KeyError: content = ""
 	content = content.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace("\u0008","").replace("\u0017","")
@@ -73,10 +74,10 @@ for i in range(danmu_count):
 	except KeyError: color = 0
 
 	midHash = Sub_Item["midHash"]			# string midHash = 6;
-	ctime = Sub_Item["ctime"]				# int64 ctime = 8;
+	sendtime = Sub_Item["ctime"]				# int64 ctime = 8;
 
-	try: weight = Sub_Item["weight"]		# int32 weight = 9;
-	except KeyError: weight = 11
+	try: ban_weight = Sub_Item["weight"]		# int32 weight = 9;
+	except KeyError: ban_weight = 11
 
 	try: attr = Sub_Item["attr"]			# int32 attr = 13;
 	except KeyError: attr = 0
@@ -101,7 +102,25 @@ for i in range(danmu_count):
 	except KeyError: pool = 0
 	if pool == 2: content = content.replace("\n", "\\n").replace("\r\n", "\\n")
 
-	XML_item = "\t<d p=\"{0},{1},{2},{3},{4},{5},{6},{7},{8}\">{9}</d>{10}\n".format(progress, mode, fontsize, color, ctime, pool, midHash, id_, weight, content, ATTR_TYPE(attr))
+	# Mode	1/2/3:regular	4:buttom	5:top	6:reverse(disable)	7:advance	8:code	9:BAS
+	# Pool	0:regular	1:subtitle	2:special(BAS/code)
+	if True:
+		if mode == 0: spec_tag += "mode:ERROR"
+		# if mode == 1: spec_tag += "mode:Normal-1"
+		if mode == 2: spec_tag += "mode:Normal-2"
+		if mode == 3: spec_tag += "mode:Normal-3"
+		# if mode == 4: spec_tag += "mode:Bottom"
+		# if mode == 5: spec_tag += "mode:Top"
+		if mode == 6: spec_tag += "mode:Reverse!!!!"
+		if mode == 7: spec_tag += "mode:!!Advanced!!"
+		if mode == 8: spec_tag += "mode:!!Code!!"
+		if mode == 9: spec_tag += "mode:!!BAS!!"
+		# if pool == 0: spec_tag += "pool:Regular"
+		if pool == 1: spec_tag += "pool:SubTitle"
+		if pool == 2: spec_tag += "pool:BAS|Code"
+		if spec_tag != "": spec_tag = "<!-- "+spec_tag+" -->"
+
+	XML_item = "\t<d p=\"{0},{1},{2},{3},{4},{5},{6},{7},{8}\">{9}</d>{10}{11}\n".format(progress, mode, fontsize, color, sendtime, pool, midHash, id_, ban_weight, content, ATTR_TYPE(attr), spec_tag)
 	XML_Data_2nd_Cache += XML_item
 	if i % Split_SIZE == 0:
 		XML_Data_1st_Cache += XML_Data_2nd_Cache
