@@ -53,14 +53,14 @@ def downloader(url):
 	return contents
 
 
-def getDanmu(cid: str, segment_index: str):
+def getDanmaku(cid: str, segment_index: str):
 	url = f'https://api.bilibili.com/x/v2/dm/web/seg.so?type=1&oid={cid}&segment_index={segment_index}'
 	if is_ERROR: return b""																					# 错误停机
 	time.sleep(0.7)
 	return downloader(url)
 
 
-def get_BAS_danmu(avid: str, cid: str):
+def get_BAS_danmaku(avid: str, cid: str):
 	url_1 = f'https://api.bilibili.com/x/v2/dm/web/view?type=1&oid={cid}&pid={avid}'
 	data_1 = downloader(url_1)
 	data_2 = dm_pb2.DmWebViewReply()
@@ -91,9 +91,8 @@ if __name__ == '__main__':
 	else:
 		bvid = vid
 		avid_in = BV_to_AV(bvid)
-		avid = "av" + str(avid_in)
-
-	url = "https://api.bilibili.com/x/web-interface/view?bvid=" + bvid
+		avid = f"av{avid_in}"
+	url = f"https://api.bilibili.com/x/web-interface/view?bvid={bvid}"
 	json_Resp = downloader(url)
 	json_List = json.loads(json_Resp)
 
@@ -111,13 +110,13 @@ if __name__ == '__main__':
 	sub_Items_Len = len(sub_Items)
 
 	if json_List["data"]["stat"]["danmaku"] == 0:
+		print("No danmaku")
 		for i in range(sub_Items_Len):
 			duration = int(sub_Items[i]["duration"])
 			cid = str(sub_Items[i]["cid"])
 			P_Title = str(sub_Items[i]["part"])
-			show_string = publish_D+"|{0}|{1}|P{2}/{3}|{4}|{5}|{6}|{7}|{8}".format(bvid, avid, i+1, sub_Items_Len, cid, duration, math.ceil(duration/360), mainTitle, P_Title)
+			show_string = f"{publish_D}|{bvid}|{avid}|P{i+1}/{sub_Items_Len}|{cid}|{duration}|{math.ceil(duration/360)}|{mainTitle}|{P_Title}"
 			print(show_string)
-		print("No danmu")
 		print("总计用时:", time.time()-开始时间)								# 性能测试
 		sys.exit(1)
 
@@ -132,14 +131,14 @@ if __name__ == '__main__':
 		P_Title = str(sub_Items[i]["part"])
 		if mainTitle == P_Title: P_Title = ""
 		P_Title_escape = P_Title.replace("_","＿").replace("\\", "＼").replace("/", "／").replace(":", "：").replace("*","＊").replace("?", "？").replace("<", "＜").replace(">", "＞").replace("|", "｜")
-		show_string = "{0}|{1}|P{2}/{3}|{4}|{5}|{6}|{7}|{8}".format(bvid, avid, i+1, sub_Items_Len, cid, duration, math.ceil(duration/360), mainTitle, P_Title)
+		show_string = f"{publish_D}|{bvid}|{avid}|P{i+1}/{sub_Items_Len}|{cid}|{duration}|{math.ceil(duration/360)}|{mainTitle}|{P_Title}"
 		print(show_string)
 		File_Name = f"[{publish_D}][{bvid}][{avid}][P{i+1}][{cid}]{mainTitle_escape}_{P_Title_escape}".rstrip("_")+".json"	#[1656432000][BV1**4*1*7*][av*********][P*][]
 
 		BAS开始时间 = time.time()												# 性能测试
-		BAS_danmu = get_BAS_danmu(avid=avid_in, cid=cid)
-		if is_ERROR: print(f"[BAS_danmu]: {bvid}|{avid}|{cid}")												# 错误停机
-		Danmaku_Binary += BAS_danmu
+		BAS_danmaku = get_BAS_danmaku(avid=avid_in, cid=cid)
+		if is_ERROR: print(f"[BAS_Danmaku]: {bvid}|{avid}|{cid}")												# 错误停机
+		Danmaku_Binary += BAS_danmaku
 		BAS结束时间 = time.time()												# 性能测试
 
 		Progress_Bar = tqdm(total=math.ceil(duration/360), leave=False)
@@ -147,10 +146,10 @@ if __name__ == '__main__':
 		for segments in range(math.ceil(duration/360)):
 			if is_ERROR: break																				# 错误停机
 			try:
-				Danmaku_sub_Items = getDanmu(cid, str(segments+1))
+				Danmaku_sub_Items = getDanmaku(cid, str(segments+1))
 			except json.decoder.JSONDecodeError:
 				Danmaku_sub_Items = b""
-			if is_ERROR: print(f"[danmu]: P{i+1}/{sub_Items_Len}::{segments}/{math.ceil(duration/360)}")	# 错误停机
+			if is_ERROR: print(f"[Danmaku]: P{i+1}/{sub_Items_Len}::{segments}/{math.ceil(duration/360)}")	# 错误停机
 			Danmaku_Binary += Danmaku_sub_Items
 			Progress_Bar.update(1)
 		Temp_Binary.ParseFromString(Danmaku_Binary)
