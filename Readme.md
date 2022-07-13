@@ -1,21 +1,65 @@
 # bili_danmu
 
-## main.py 下载弹幕
+## D.py 下载弹幕
 使用方法:  
-`main.py "av号"`  
-`main.py "bv号"`  
-`main.py "av号网址"`  
-`main.py "bv号网址"`  
-
-输出文件: `[发布时间][BV号][av号][分P][cid]主标题_分P标题.json`  
-
+`D.py "av号|bv号|av号网址|bv号网址" [开关]`  
+***
+`876543210 开关`  
+`________1` 计时器  
+`_______1_` 错误停机  
+`______1__` 无弹幕停机  
+`_____1___` 日志  
+`____1____` 输出 其他信息到 XML 文件  
+`___1_____` 不输出 Json  
+`__1______` 不输出 XML  
+`_1_______` 输出 Protobuf 二进制文件  
+`1________` 模拟运行  
+***
+输出文件:  
+`[发布时间][BV号][av号][分P][cid]主标题.json`  
+`[发布时间][BV号][av号][分P][cid]主标题_分P标题.json`  
+***
 ## convert_to_xml.py 转换为主站格式XML
 使用方法:  
 `convert_to_xml.py ****.json"`  
 输出文件：`****.xml`  
 `for /r . %a in (*.json) do convert_to_xml.py "%a"`  
+***
 
-参考来源：  
+## Json:
+```JS
+{"elems": [
+	{
+		"id": "1234567890123456789",		// 弹幕ID
+		"progress": 1,						// 弹幕出现时间
+		"mode": 1,							// 弹幕类型
+		"fontsize": 25,						// 弹幕字号
+		"color": 16777215,					// 弹幕颜色
+		"midHash": "XXXXXXXX",				// 发送着mid hash (CRC32 mid)
+		"content": "*****",					// 弹幕内容
+		"ctime": "123456789",				// 发送时间
+		"weight": 11,						// 屏蔽等级 [1,11]
+		"action": "?????"					// 
+		"pool": 1							// 弹幕池
+		"idStr": "1234567890123456789",		// 弹幕ID
+		"attr": 1,							// 弹幕属性位
+		"test14": "1234567890"				// 数字
+		"test15": "?????"					// 
+		"test16": "?????"					// 
+		"test17": "?????"					// 
+		"test18": "?????"					// 
+		"test19": "?????"					// 
+		"test20": "0"						// 字符串 "0"
+		"test21": "0"						// 字符串 "0"
+		"test23": "?????"					// 
+		"animation": "?????"				// 字符串
+	}
+	// ......
+	]
+}
+```
+
+## 参考来源：  
 
 [bilibili-API-collect]( https://github.com/SocialSisterYi/bilibili-API-collect )
 1.	protobuf解码[bilibili-API-collect::danmaku_proto.md]( https://github.com/SocialSisterYi/bilibili-API-collect/blob/master/danmaku/danmaku_proto.md )
