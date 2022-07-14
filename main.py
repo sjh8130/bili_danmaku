@@ -124,7 +124,6 @@ if __name__ == '__main__':
 		if is_ERROR: break																					# 错误停机
 		分P开始时间 = time.time()												# 性能测试
 		Danmaku_Binary = b""
-		Temp_Binary = b""
 		Temp_Binary = dm_pb2.DmSegMobileReply()
 		duration = int(sub_Items[i]["duration"])
 		cid = str(sub_Items[i]["cid"])
@@ -156,11 +155,15 @@ if __name__ == '__main__':
 		Progress_Bar.close()
 
 		写入开始时间 = time.time()												# 性能测试
-		Write_Data = json.dumps(json.loads(MessageToJson(Temp_Binary)), ensure_ascii=False)
+		j1 = json.loads(MessageToJson(Temp_Binary))
+		j1["info"] = {}
+		j1["info"]["duration"] = duration
+		j1["info"]["cid"] = cid
+		j1["info"]["segment_count"] = math.ceil(duration/360)
+		Write_Data = json.dumps(j1, ensure_ascii=False)
 		if not(Write_Data == "{}" or Write_Data == ""):
-			with open(File_Name, "w", encoding="utf-8") as f:
-				if is_ERROR: print("[File]: 开始写入")								# 性能测试
-				f.write(Write_Data)
+			if is_ERROR: print("[File]: 开始写入")								# 性能测试
+			open(File_Name, "w", encoding="utf-8").write(Write_Data)
 		分P结束时间 = time.time()												# 性能测试
 		if is_ERROR: print(f"分P{i+1} : {分P结束时间-分P开始时间}, BAS用时: {BAS结束时间-BAS开始时间}，写入用时: {分P结束时间-写入开始时间}")	# 性能测试
 	if is_ERROR: print(f"{bvid}|{avid} 总计用时: {time.time()-开始时间}")		# 性能测试

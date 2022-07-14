@@ -25,20 +25,15 @@ def ATTR_TYPE(attr:int):
 
 Start_Time = time.time()
 try:
-	input_PATH = sys.argv[1]
+	input_File = sys.argv[1]
 except IndexError:
 	print("No Input")
 	sys.exit(1)
 
-PathSuffix = re.split("//", input_PATH)[-1]					# Unix,Linux,Windows
-if len(re.split("//", input_PATH)) >1:
-	PathSuffix = re.split("\\\\", input_PATH)[-1]			# Windows
-outputFile = input_PATH.rstrip(".json")+".xml"
+outputFile = input_File.rstrip(".json")+".xml"
 
-Split_SIZE = 4100
-try:
-	with open(input_PATH, "r", encoding="utf-8")as f:
-		jsonData = f.read()
+SPLIT_SIZE = 4100
+try: jsonData = open(input_File, "r", encoding="utf-8").read()
 except FileNotFoundError:
 	print("File Not Found")
 	sys.exit(1)
@@ -49,15 +44,14 @@ except json.decoder.JSONDecodeError:
 	if len(jsonData) <= 2: print("Empty File")
 	print("总计用时:", time.time()-Start_Time)
 	sys.exit(1)
-
-cid = re.split("\]",re.split("\]\[", PathSuffix)[4])[0]		# [publishtTime][BV**][av**][P*][cid]Title_P-Title.json
-
+i = 1
+cid = jsonData["info"]["cid"]
+maxlimit = jsonData["info"]["segment_count"]*6000
 danmu_count = len(jsonData["elems"])
-XML_Data_1st_Cache = f"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<i>\n\t<chatserver>chat.bilibili.com</chatserver>\n\t<chatid>{cid}</chatid>\n\t<mission>0</mission>\n\t<maxlimit>8000</maxlimit>\n\t<state>0</state>\n\t<real_name>0</real_name>\n\t<source>k-v</source>\n"
+XML_Data_1st_Cache = f"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<i>\n\t<chatserver>chat.bilibili.com</chatserver>\n\t<chatid>{cid}</chatid>\n\t<mission>0</mission>\n\t<maxlimit>{maxlimit}</maxlimit>\n\t<state>0</state>\n\t<real_name>0</real_name>\n\t<source>k-v</source>\n"
 XML_Data_2nd_Cache = ""
 
-for i in range(danmu_count):
-	Sub_Item = jsonData["elems"][i]
+for Sub_Item in jsonData["elems"]:
 	spec_tag = ""
 	try: content = Sub_Item["content"]		# string content = 7;
 	except KeyError: content = ""
@@ -122,15 +116,14 @@ for i in range(danmu_count):
 
 	XML_item = "\t<d p=\"{0},{1},{2},{3},{4},{5},{6},{7},{8}\">{9}</d>{10}{11}\n".format(progress, mode, fontsize, color, sendtime, pool, midHash, id_, ban_weight, content, ATTR_TYPE(attr), spec_tag)
 	XML_Data_2nd_Cache += XML_item
-	if i % Split_SIZE == 0:
+	i += 1
+	if i % SPLIT_SIZE == 0:
 		XML_Data_1st_Cache += XML_Data_2nd_Cache
 		XML_Data_2nd_Cache = ""
 		print(f"\rProgress: {i}/{danmu_count}, Time: {round(time.time()-Start_Time,3)}",end="")
 
 XML_Data_1st_Cache += XML_Data_2nd_Cache
 XML_Data_1st_Cache += "</i>\n"
-with open(outputFile, "w", encoding="utf-8")as g:
-	g.write(XML_Data_1st_Cache)
-	g.close()
+open(outputFile, "w", encoding="utf-8").write(XML_Data_1st_Cache)
 End_Time = time.time()
-print(f"\r总计用时：{round(End_Time-Start_Time, 4)}                     ")
+print(f"\r{danmu_count}, 总计用时：{round(End_Time-Start_Time, 4)}                     ")
