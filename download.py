@@ -5,7 +5,7 @@ import time
 from google.protobuf.json_format import MessageToJson
 import requests
 import json
-import dm_pb2
+import zzzz
 import sys
 from tqdm import tqdm
 
@@ -107,15 +107,13 @@ def downloader(url_DL):
 		if status_code != 0:
 			global is_ERROR
 			is_ERROR = True
-			global Progress_Bar
-			Progress_Bar.close()
 	except UnicodeDecodeError: status_code = 0
 	if flag_Many_Logs or status_code != 0: print(f"[NET]: HTTP {resp.status_code}, Json Code {status_code}", end="\t")
 	return resp.content
 
 
 def FAKE_downloader(cid, str1, str2, url_Fake_DL):
-	if flag_Many_Logs: print(f"[NET]: {url_Fake_DL}", end="\t")
+	if flag_Many_Logs: print(f"[NET]? {url_Fake_DL}", end="\t")
 	time.sleep(SLEEP_TIME)
 	time.sleep(SLEEP_TIME_Fake_NET)
 	try:
@@ -123,8 +121,7 @@ def FAKE_downloader(cid, str1, str2, url_Fake_DL):
 			resp = ff.read()
 			Fake_status_code = 200
 	except FileNotFoundError:
-		if str1 == "BAS":
-			return b""
+		resp =  b""
 		Fake_status_code = 404
 
 	global wait_count
@@ -136,8 +133,6 @@ def FAKE_downloader(cid, str1, str2, url_Fake_DL):
 		if status_code != 0:
 			global is_ERROR
 			is_ERROR = True
-			global Progress_Bar
-			Progress_Bar.close()
 	except UnicodeDecodeError: status_code = 0
 	if flag_Many_Logs or status_code != 0: print(f"[NET]? HTTP {Fake_status_code}, Json Code {status_code}", end="\t")
 	return resp
@@ -157,17 +152,17 @@ def get_BAS_danmaku(avid: str, cid: str):
 	if flag_Test_Run: data_1 = FAKE_downloader(cid=cid,str1="BAS", str2="INFO", url_Fake_DL=url_BAS_INFO)
 	else: data_1 = downloader(url_BAS_INFO)
 
-	if flag_Many_Logs: print("[BAS_DL]: Info", end="\t")
-	if is_ERROR and flag_Error_Stop: return b""
-	data_2 = dm_pb2.DmWebViewReply()
+	if flag_Many_Logs: print("[BAS_DL]: Info")
+	if is_ERROR or flag_Error_Stop: return b""
+	data_2 = zzzz.DmWebViewReply()
 	data_2.ParseFromString(data_1)
 	dump_Binary(cid=cid, str1="BAS", str2="Info", data=data_1)
 	try: data_3 = json.loads(MessageToJson(data_2))["specialDms"]
 	except KeyError: 
-		if flag_Many_Logs: print(f"[BAS P{i+1}]:\tNo BAS Danmaku")
+		if flag_Many_Logs: print(f"[BAS P{i+1}]: No BAS Danmaku")
 		return b""
 	if len(data_3) == 0: 
-		if flag_Many_Logs: print(f"[BAS P{i+1}]:\tNo BAS Danmaku")
+		if flag_Many_Logs: print(f"[BAS P{i+1}]: No BAS Danmaku")
 		return b""
 	print(f"[BAS P{i+1}]{len(data_3)}")
 	BAS_Binary = b""
@@ -286,6 +281,7 @@ if __name__ == '__main__':
 	flag_NO_XML = False			# 不输出 XML
 	flag_Dump_Binary_ = False	# 输出 Protobuf 二进制文件
 	flag_Test_Run = False		# 模拟运行
+	flag_BAS = True
 	try: 
 		P_flag = sys.argv[2]
 		Program_FLAG(P_flag)
@@ -345,7 +341,7 @@ if __name__ == '__main__':
 		分P开始时间 = time.time()
 		if (not flag_NO_Json):
 			Danmaku_Binary = b""
-			Temp_Binary = dm_pb2.DmSegMobileReply()
+			Temp_Binary = zzzz.DmSegMobileReply()
 		duration = int(sub_Items[i]["duration"])
 		segment_count = math.ceil(duration/360)
 		cid = str(sub_Items[i]["cid"])
@@ -358,23 +354,25 @@ if __name__ == '__main__':
 		show_string = f"\n{publish_D}|{bvid}|{avid}|P{i+1}/{sub_Items_Len}|{cid}|{duration}|{math.ceil(duration/360)}|{mainTitle}|{P_Title}"
 		print(show_string)
 		File_Name = f"[{publish_D}][{bvid}][{avid}][P{i+1}][{cid}]{mainTitle_escape}_{P_Title_escape}".rstrip("_")
-		# [1656432000][BV1**4*1*7*][av*********][P*]MainTitle_P-Title [1656432000][BV1**4*1*7*][av*********][P*]MainTitle
+		# [1656432000][BV1**4*1*7*][av*********][P*][cid]MainTitle_P-Title
+		# [1656432000][BV1**4*1*7*][av*********][P*][cid]MainTitle
 		XML_Time = 0
 		BAS开始时间 = time.time()
-		if flag_Many_Logs: print(f"[BAS]: {bvid}|{avid}|{cid}|P{i+1}")
-		BAS_danmaku = get_BAS_danmaku(avid=avid_in, cid=cid)
-		if len(BAS_danmaku) == 0: pass
-		else:
-			# dump_Binary(cid=cid, str1="BAS", str2="ALL", data=BAS_danmaku)
-			if (not flag_NO_XML):
-				XML_Ti = time.time()
-				xml_t1 = dm_pb2.DmSegMobileReply()
-				xml_t1.ParseFromString(BAS_danmaku)
-				xml_t2 = MessageToJson(xml_t1)
-				XML_Write_Data += XML_Process(xml_t2)
-				XML_Tim = time.time()
-				XML_Time += XML_Tim - XML_Ti
-			if (not flag_NO_Json): Danmaku_Binary += BAS_danmaku
+		if flag_BAS:
+			if flag_Many_Logs: print(f"[BAS]: {bvid}|{avid}|{cid}|P{i+1}")
+			BAS_danmaku = get_BAS_danmaku(avid=avid_in, cid=cid)
+			if len(BAS_danmaku) == 0: pass
+			else:
+				# dump_Binary(cid=cid, str1="BAS", str2="ALL", data=BAS_danmaku)
+				if (not flag_NO_XML):
+					XML_Ti = time.time()
+					xml_t1 = zzzz.DmSegMobileReply()
+					xml_t1.ParseFromString(BAS_danmaku)
+					xml_t2 = MessageToJson(xml_t1)
+					XML_Write_Data += XML_Process(xml_t2)
+					XML_Tim = time.time()
+					XML_Time += XML_Tim - XML_Ti
+				if (not flag_NO_Json): Danmaku_Binary += BAS_danmaku
 		BAS结束时间 = time.time()
 		if not flag_Many_Logs: Progress_Bar = tqdm(total=segment_count, leave=False, unit='chunks')
 		for segments in range(segment_count):
@@ -385,14 +383,13 @@ if __name__ == '__main__':
 			if (not flag_NO_Json): Danmaku_Binary += Danmaku_sub_Items
 			if (not flag_NO_XML):
 				XML_Ti = time.time()
-				xml_t1 = dm_pb2.DmSegMobileReply()
+				xml_t1 = zzzz.DmSegMobileReply()
 				xml_t1.ParseFromString(Danmaku_sub_Items)
 				XML_Write_Data += XML_Process(MessageToJson(xml_t1))
 				XML_Tim = time.time()
 				XML_Time += XML_Tim - XML_Ti
 			if (not flag_Many_Logs):Progress_Bar.update(1)
 			if is_ERROR or flag_Many_Logs: print(f"[danmaku]: P{i+1}/{sub_Items_Len}::{segments+1}/{segment_count}")
-		if (not flag_Many_Logs):Progress_Bar.close()
 
 		if (not flag_Test_Run): dump_Binary(cid=cid, str1="ALL", str2="ALL", data=Danmaku_Binary)
 		写入开始时间 = time.time()
