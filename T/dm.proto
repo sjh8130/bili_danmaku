@@ -169,7 +169,7 @@ message DanmakuElem {
     // bit0:保护 bit1:直播 bit2:高赞
     int32 attr = 13;
     //
-    uint64 user_mid = 14;
+    uint64 usermid = 14;
     uint32 zan_count = 15;
     uint64 test16 = 16;
     uint64 test17 = 17;
