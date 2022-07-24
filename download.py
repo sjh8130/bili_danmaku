@@ -1,17 +1,20 @@
 #!/usr/bin/python3
 # 系统十分稳定，所有代码不要随便动.JPG
+from google.protobuf.json_format import MessageToJson
+from tqdm import tqdm
+import requests
+
+import zzzz
+
 import math
 import time
-from google.protobuf.json_format import MessageToJson
-import requests
 import json
-import zzzz
 import sys
-from tqdm import tqdm
+import io
+import gzip
 
 headers = {'User-Agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.66 Safari/537.36 Edg/103.0.1264.44"}
-SLEEP_TIME = 0.8
-SLEEP_TIME_Fake_NET = 0.230
+SLEEP_TIME = 0.75
 BV_AV_table = 'fZodR9XQDSUm21yCkr6zBqiveYah8bt4xsWpHnJE7jL5VG3guMTKNPAwcF'
 BV_AV_base58_dic = {}
 for BV_AV_base58_i in range(58): BV_AV_base58_dic[BV_AV_table[BV_AV_base58_i]] = BV_AV_base58_i
@@ -23,10 +26,10 @@ NET_count_all = 0
 
 
 def Program_FLAG(flag: str):
+	if flag == "-1": return
 	if flag.find("0b") == 0: b = flag
 	else: b = bin(int(flag))
 	b = "0000000000" + b.lstrip("0b")
-	b = b.lstrip("0")
 	global flag_Timer
 	global flag_Error_Stop
 	global flag_Zero_Stop
@@ -37,24 +40,24 @@ def Program_FLAG(flag: str):
 	global flag_Dump_Binary_
 	global flag_Test_Run
 	if b[-1] == "1": flag_Timer = True
-	else: flag_Timer = False
-	if b[-2] == "1": flag_Error_Stop = False
-	else: flag_Error_Stop = False
+	if b[-2] == "1": flag_Error_Stop = True
 	if b[-3] == "1": flag_Zero_Stop = True
-	else: flag_Zero_Stop = False
 	if b[-4] == "1": flag_Many_Logs = True
-	else: flag_Many_Logs = False
 	if b[-5] == "1": flag_Ext_XML_Data = True
-	else: flag_Ext_XML_Data = False
 	if b[-6] == "1": flag_NO_Json = True
-	else: flag_NO_Json = False
 	if b[-7] == "1": flag_NO_XML = True
-	else: flag_NO_XML = False
 	if b[-8] == "1": flag_Dump_Binary_ = True
-	else: flag_Dump_Binary_ = False
 	if b[-9] == "1": flag_Test_Run = True
-	else: flag_Test_Run = False
-	print(f"[FLAG]: {b}", end="\t")
+	if b[-1] == "0": flag_Timer = False
+	if b[-2] == "0": flag_Error_Stop = False
+	if b[-3] == "0": flag_Zero_Stop = False
+	if b[-4] == "0": flag_Many_Logs = False
+	if b[-5] == "0": flag_Ext_XML_Data = False
+	if b[-6] == "0": flag_NO_Json = False
+	if b[-7] == "0": flag_NO_XML = False
+	if b[-8] == "0": flag_Dump_Binary_ = False
+	if b[-9] == "0": flag_Test_Run = False
+	if flag_Many_Logs: print(f"[FLAG]: {b}", end="\t")
 
 
 def danmaku_ATTR_TYPE(attr: int):
@@ -72,7 +75,7 @@ def danmaku_ATTR_TYPE(attr: int):
 	if b[-8] == "1": o += "伍 "
 	if b[-9] == "1": o += "陆 "
 	if b[-10] == "1": o += "柒 "
-	if o == "": return "<!-- DM -->"
+	if o == "": return ""
 	o = f"<!-- {o}-->"
 	return o
 
@@ -109,12 +112,12 @@ def downloader(url_DL: str):
 			global is_ERROR
 			is_ERROR = True
 	except UnicodeDecodeError: status_code = 0
-	if flag_Many_Logs or status_code != 0: print(f"[NET]: HTTP {resp.status_code}, Json Code {status_code}", end="\t")
+	if flag_Many_Logs or status_code != 0 or resp.status_code != 200: print(f"[NET]: HTTP {resp.status_code}, Json Code {status_code}", end="\t")
 	return resp.content
 
 
 def FAKE_downloader(str0:str, str1:str, str2:str, url_Fake_DL:str):
-	if flag_Many_Logs: print(f"[NET]? {url_Fake_DL}", end="\t")
+	if flag_Many_Logs: print(f"[NET]? {url_Fake_DL}     ", end="\t")
 	try:
 		resp = open(f"[{bvid}]_[{str0}]_[{str1}]_[{str2}].bin", "rb").read()
 		Fake_status_code = 200
@@ -126,8 +129,9 @@ def FAKE_downloader(str0:str, str1:str, str2:str, url_Fake_DL:str):
 	NET_count += 1
 	global NET_count_all
 	NET_count_all += 1
-	status_code = 0
-	if flag_Many_Logs or status_code != 0: print(f"[NET]? HTTP {Fake_status_code}, Json Code {status_code}", end="\t")
+	try: status_code = json.loads(resp)["code"]
+	except UnicodeDecodeError: status_code = 0
+	if flag_Many_Logs or status_code != 0 or Fake_status_code != 200: print(f"[NET]? HTTP {Fake_status_code}, Json Code {status_code}", end="\t")
 	return resp
 
 
@@ -135,6 +139,7 @@ def get_danmaku(cid: str, segment_index: str):
 	url_Danmaku = f'https://api.bilibili.com/x/v2/dm/web/seg.so?type=1&oid={cid}&segment_index={segment_index}'
 	if flag_Test_Run: content = FAKE_downloader(str0=cid, str1="Danmaku", str2=segment_index, url_Fake_DL=url_Danmaku)
 	else: content = downloader(url_Danmaku)
+	dump_Data(str0=cid, str1="Danmaku", str2=segment_index, data=content)
 	if is_ERROR and flag_Error_Stop: return b""
 	return content
 
@@ -155,7 +160,7 @@ def get_BAS_danmaku(avid: str, cid: str):
 		if flag_Many_Logs: print(f"[BAS P{i+1}]: No BAS Danmaku")
 		return b""
 	if len(data_3) == 0:
-		if flag_Many_Logs: print(f"[BAS P{i+1}]: No BAS Danmaku")
+		if flag_Many_Logs: print(f"[BAS P{i+1}]: Empty")
 		return b""
 	print(f"[BAS P{i+1}]{len(data_3)}")
 	BAS_Binary = b""
@@ -175,14 +180,12 @@ def get_BAS_danmaku(avid: str, cid: str):
 def XML_Process(data):
 	if data == "{}": return ""
 	global flag_Ext_XML_Data
-	global XML_Danmaku_Count
 	jsonData = json.loads(data)
 	XML_Data_2nd = ""
-	XML_Danmaku_Count += len(jsonData["elems"])
 	for Sub_Item in jsonData["elems"]:
 		try: content = Sub_Item["content"]			# string content = 7;
 		except KeyError: content = ""
-		content = content.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace("\u0008", "").replace("\u0017", "")
+		content = content.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace("\x00", " ").replace("\x08", " ").replace("\x14", " ").replace("\x17", " ")
 
 		try: progress = Sub_Item["progress"] 		 # int32 progress = 2;
 		except KeyError: progress = 0
@@ -218,9 +221,7 @@ def XML_Process(data):
 		except KeyError: id_ = "0"
 
 		try: idStr = Sub_Item["idStr"]				# string idStr = 12;
-		except KeyError:
-			idStr = "0"
-			if flag_Many_Logs: print(f"idStr ERROR: {id_}")
+		except KeyError: idStr = "0"
 
 		if id_ != idStr: print("\n id&idStr mismatch:", id_, idStr)
 
@@ -229,21 +230,6 @@ def XML_Process(data):
 		# 0:regular	1:subtitle	2:special(BAS/code)
 		content = content.replace("\n", "\\n").replace("\r\n", "\\n")
 		spec_tag = ""
-		if flag_Ext_XML_Data:
-			if mode == 0: spec_tag += "mode:ERROR"			# NOT Tested
-			# if mode == 1: spec_tag += "mode:Normal"		# Tested
-			# if mode == 2: spec_tag += "mode:Normal"		# NOT Tested
-			# if mode == 3: spec_tag += "mode:Normal"		# NOT Tested
-			# if mode == 4: spec_tag += "mode:Bottom"		# Tested
-			# if mode == 5: spec_tag += "mode:Top"			# Tested
-			if mode == 6: spec_tag += "mode:Reverse!!!!"	# NOT Tested | Unused
-			# if mode == 7: spec_tag += "mode:!!Advanced!!"	# Tested
-			if mode == 8: spec_tag += "mode:!!Code!!"		# NOT Tested
-			if mode == 9: spec_tag += "mode:!!BAS!!"		# NOT Tested
-			# if pool == 0: spec_tag += "pool:Regular"		# Tested
-			if pool == 1: spec_tag += "pool:SubTitle"		# NOT Tested
-			if pool == 2: spec_tag += "pool:BAS|Code"		# NOT Tested
-			if spec_tag != "": spec_tag = f"<!-- {spec_tag} -->"
 
 		XML_item = "\t<d p=\"{0},{1},{2},{3},{4},{5},{6},{7},{8}\">{9}</d>{10}{11}\n".format(progress, mode, fontsize, color, sendtime, pool, midHash, id_, weight, content, danmaku_ATTR_TYPE(attr), spec_tag)
 		XML_Data_2nd += XML_item
@@ -271,10 +257,9 @@ if __name__ == '__main__':
 	flag_Dump_Binary_ = False	# 输出 Protobuf 二进制文件
 	flag_Test_Run = False		# 模拟运行
 	flag_BAS = True
-	try:
-		P_flag = sys.argv[2]
-		Program_FLAG(P_flag)
-	except IndexError: pass
+	try: P_flag = sys.argv[2]
+	except IndexError: P_flag = "0"
+	Program_FLAG(P_flag)
 	if flag_Test_Run: print("[Test Run]: ================================ ")
 	vid = sys.argv[1]
 	if flag_NO_Json and flag_NO_XML and (not flag_Dump_Binary_):
@@ -314,7 +299,6 @@ if __name__ == '__main__':
 	if json_Data["aid"] != avid_in: print(f"[avid]: avid mismatch av{json_Data['aid']}|{avid}")
 
 	if mainTitle == "": mainTitle = "Fake_MainTitle"
-	mainTitle_escape = mainTitle.replace("_", "＿").replace("\\", "＼").replace("/", "／").replace(":", "：").replace("*", "＊").replace("?", "？").replace("<", "＜").replace(">", "＞").replace("|", "｜")	# \/:*?"<>|
 	sub_Items_Len = len(sub_Items)
 
 	if json_Data["stat"]["danmaku"] == 0 and flag_Zero_Stop:
@@ -337,15 +321,14 @@ if __name__ == '__main__':
 		duration = int(sub_Items[i]["duration"])
 		segment_count = math.ceil(duration/360)
 		cid = str(sub_Items[i]["cid"])
-		XML_Danmaku_Count = 0
 		if (not flag_NO_XML): XML_Write_Data = f"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<i>\n\t<chatserver>chat.bilibili.com</chatserver>\n\t<chatid>{cid}</chatid>\n\t<mission>0</mission>\n\t<maxlimit>{6000*segment_count}</maxlimit>\n\t<state>0</state>\n\t<real_name>0</real_name>\n\t<source>k-v</source>\n"
 		if (not flag_NO_XML): XML_Data_Empty = XML_Write_Data
 		P_Title = str(sub_Items[i]["part"])
 		if mainTitle == P_Title: P_Title = ""
-		P_Title_escape = P_Title.replace("_", "＿").replace("\\", "＼").replace("/", "／").replace(":", "：").replace("*", "＊").replace("?", "？").replace("<", "＜").replace(">", "＞").replace("|", "｜")
 		show_string = f"\n{publish_D}|{bvid}|{avid}|P{i+1}/{sub_Items_Len}|{cid}|{duration}|{math.ceil(duration/360)}|{mainTitle}|{P_Title}"
 		print(show_string)
-		File_Name = f"[{publish_D}][{bvid}][{avid}][P{i+1}][{cid}]{mainTitle_escape}_{P_Title_escape}".rstrip("_")
+		File_Name = f"[{publish_D}][{bvid}][{avid}][P{i+1}][{cid}]{mainTitle.replace('_', '＿')}_{P_Title.replace('_', '＿')}".rstrip("_")
+		File_Name = File_Name.replace("\\", "＼").replace("/", "／").replace(":", "：").replace("*", "＊").replace("?", "？").replace("<", "＜").replace(">", "＞").replace("|", "｜").replace("\"","＂")	# \/:*?"<>|
 		# [1656432000][BV1**4*1*7*][av*********][P*][cid]MainTitle_P-Title
 		# [1656432000][BV1**4*1*7*][av*********][P*][cid]MainTitle
 		XML_Time = 0
@@ -365,12 +348,11 @@ if __name__ == '__main__':
 					XML_Time += XML_Tim - XML_Ti
 				if (not flag_NO_Json): Danmaku_Binary += BAS_danmaku
 		BAS结束时间 = time.time()
-		if not flag_Many_Logs: Progress_Bar = tqdm(total=segment_count, leave=False, unit='chunks')
+		if not flag_Many_Logs: Progress_Bar = tqdm(total=segment_count, leave=False, unit='chunks', ascii=True, ncols=100)
 		for segments in range(segment_count):
 			if is_ERROR and flag_Error_Stop: break
 			try: Danmaku_sub_Items = get_danmaku(cid, str(segments+1))
 			except json.decoder.JSONDecodeError: Danmaku_sub_Items = b""
-			dump_Data(str0=cid, str1="Danmaku", str2=segments + 1, data=Danmaku_sub_Items)
 			if (not flag_NO_Json): Danmaku_Binary += Danmaku_sub_Items
 			if (not flag_NO_XML):
 				XML_Ti = time.time()
@@ -382,18 +364,30 @@ if __name__ == '__main__':
 			if (not flag_Many_Logs): Progress_Bar.update(1)
 			if is_ERROR or flag_Many_Logs: print(f"[danmaku]: P{i+1}/{sub_Items_Len}::{segments+1}/{segment_count}")
 		if (not flag_Many_Logs):Progress_Bar.close()
-		if (is_ERROR or flag_Timer or flag_Many_Logs) and (not flag_NO_XML): print(f"[XML]: Danmaku Count {XML_Danmaku_Count}")
 		dump_Data(str0=cid, str1="Danmaku", str2="ALL", data=Danmaku_Binary)
 		JSON_Time = time.time()
 		if (not flag_NO_Json):
 			if flag_Many_Logs: print(f"[File_JSON P{i+1}]: PROC start", end="\t")
 			Temp_Binary.ParseFromString(Danmaku_Binary)
 			j1 = json.loads(MessageToJson(Temp_Binary))
+			danmaku_count = len(j1["elems"])
+			Danmaku_Binary = b""
+			Temp_Binary = zzzz.DmSegMobileReply()
 			j1["info"] = {}
+			j1["info"]["owner_name"] = json_Data['owner']['name']
+			j1["info"]["owner_mid"] = json_Data['owner']['mid']
+			j1["info"]["bvid"] = json_Data['bvid']
+			j1["info"]["avid"] = json_Data['aid']
+			j1["info"]["V_Name"] = mainTitle
+			j1["info"]["pubdate"] = json_Data['pubdate']
+			j1["info"]["ctime"] = json_Data['ctime']
+			j1["info"]["P_Name"] = P_Title
 			j1["info"]["duration"] = duration
 			j1["info"]["cid"] = cid
 			j1["info"]["segment_count"] = segment_count
+			j1["info"]["danmaku_count"] = danmaku_count
 			Json_Write_Data = json.dumps(j1, ensure_ascii=False)
+			j1 = {}
 			if flag_Many_Logs: print(f"[File_JSON P{i+1}]: PROC end--", end="\t")
 		写入开始时间 = time.time()
 		if (not flag_NO_Json):
@@ -401,20 +395,22 @@ if __name__ == '__main__':
 				if is_ERROR or flag_Many_Logs: print(f"[File_JSON P{i+1}]: No Data", end="\t")
 			else:
 				if is_ERROR or flag_Many_Logs: print(f"[File_JSON P{i+1}]: 开始写入", end="\t")
-				open(f"{File_Name}.json", "w", encoding="utf-8").write(Json_Write_Data)
+				io.TextIOWrapper(gzip.open(File_Name+".json.gz",'wb'),encoding='utf-8').writelines(Json_Write_Data)
+				Json_Write_Data = ""
 		Time_Point_ = time.time()
 		if (not flag_NO_XML):
 			if XML_Write_Data == XML_Data_Empty: 
 				if is_ERROR or flag_Many_Logs: print(f"[File_XML  P{i+1}]: No Data")
 			else:
 				if is_ERROR or flag_Many_Logs: print(f"[File_XML  P{i+1}]: 开始写入")
-				open(f"{File_Name}.xml", "w", encoding="utf-8").write(XML_Write_Data + "</i>\n")
+				open(File_Name+".xml", "w", encoding="utf-8").write(XML_Write_Data + "</i>\n")
+				XML_Write_Data = ""
 		else: print()
 
 		分P结束时间 = time.time()
-		if is_ERROR or flag_Timer or flag_Many_Logs: print(f"P{i+1}: {分P结束时间-分P开始时间}，BAS: {BAS结束时间-BAS开始时间}，Write: {分P结束时间-写入开始时间}，JSON: {写入开始时间-JSON_Time}，XML: {分P结束时间-Time_Point_}，XML_P: {XML_Time}，Wait:{NET_count*SLEEP_TIME}，Net:{NET_count}")
+		if flag_Timer or flag_Many_Logs: print(f"P{i+1}: {分P结束时间-分P开始时间}，BAS: {BAS结束时间-BAS开始时间}，Write: {分P结束时间-写入开始时间}，JSON: {写入开始时间-JSON_Time}，XML: {分P结束时间-Time_Point_}，XML_P: {XML_Time}，Wait:{NET_count*SLEEP_TIME}，Net:{NET_count}，Danmaku:{danmaku_count}")
 		NET_count = 0
 	if is_ERROR or flag_Timer or flag_Many_Logs:
-		End_Time = time.time()
-		print(f"{bvid}|{avid} Time: {End_Time-开始时间} Wait:{NET_count_all*SLEEP_TIME} Net:{NET_count_all} SLEEP:{SLEEP_TIME}")
+		结束时间 = time.time()
+		print(f"{bvid}|{avid} Time: {结束时间-开始时间} Net:{NET_count_all} Wait:{NET_count_all*SLEEP_TIME} SLEEP:{SLEEP_TIME}")
 	sys.exit(0)

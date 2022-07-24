@@ -3,7 +3,10 @@
 ## download.py 下载弹幕
 使用方法:  
 `download.py "av号|bv号|av号网址|bv号网址" [开关]`  
-***
+输出文件:  
+`[发布时间][BVid][avid][选集][cid]主标题.json.gz`  
+`[发布时间][BVid][avid][选集][cid]主标题_分P标题.json.gz`  
+
 `876543210 开关`  
 `________1` 计时器  
 `_______1_` 错误停机  
@@ -14,17 +17,12 @@
 `__1______` 不输出 XML  
 `_1_______` 输出 Protobuf 二进制文件  
 `1________` 模拟运行  
-***
-输出文件:  
-`[发布时间][BV号][av号][分P][cid]主标题.json`  
-`[发布时间][BV号][av号][分P][cid]主标题_分P标题.json`  
-***
-## convert_to_xml.py 转换为主站格式XML
+
+## convert_to_xml.py 转换为XML
 使用方法:  
 `convert_to_xml.py ****.json"`  
 输出文件：`****.xml`  
 `for /r . %a in (*.json) do convert_to_xml.py "%a"`  
-***
 
 ## Json:
 ```JS
@@ -43,16 +41,16 @@
         "pool": 1                           // 弹幕池
         "idStr": "1234567890123456789",     // 弹幕ID
         "attr": 1,                          // 弹幕属性位
-        "usermid": "1234567890"             // 发送者mid
-        "zanCount": "0"                     // 👍 数量
-        "test16": ""                        // .
-        "test17": ""                        // .
-        "test18": ""                        // .
-        "test19": ""                        // .
-        "test20": "0"                       // 字符串 "0"
-        "test21": "0"                       // 字符串 "0"
+        "usermid": "1234567890",            // 发送者mid
+        "zanCount": "0",                    // 点赞数量
+        "test16": "",                       // int test16 === test17
+        "test17": "",                       // int test16 === test17
+        "test18": "",                       // .
+        "test19": "",                       // .
+        "test20": "",                       // string test20 === test21
+        "test21": "",                       // string test20 === test21
+        "animation": "",                    // .
         "test23": ""                        // .
-        "animation": ""                     // .
     }
     // ......
     ]
@@ -62,5 +60,5 @@
 ## 参考来源：  
 
 [bilibili-API-collect]( https://github.com/SocialSisterYi/bilibili-API-collect )
-1.	protobuf解码[bilibili-API-collect::danmaku_proto.md]( https://github.com/SocialSisterYi/bilibili-API-collect/blob/master/danmaku/danmaku_proto.md )
-2.	XML格式[bilibili-API-collect::danmaku_xml.md]( https://github.com/SocialSisterYi/bilibili-API-collect/blob/master/danmaku/danmaku_xml.md )
+1.	protobuf解码 [bilibili-API-collect::danmaku_proto.md]( https://github.com/SocialSisterYi/bilibili-API-collect/blob/master/danmaku/danmaku_proto.md )
+2.	XML格式 [bilibili-API-collect::danmaku_xml.md]( https://github.com/SocialSisterYi/bilibili-API-collect/blob/master/danmaku/danmaku_xml.md )

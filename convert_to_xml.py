@@ -1,8 +1,8 @@
 #!/usr/bin/python3
 import json
 import sys
-import re
 import time
+import gzip
 
 def ATTR_TYPE(attr:int):
 	# return ""
@@ -29,33 +29,43 @@ try:
 except IndexError:
 	print("No Input")
 	sys.exit(1)
+print(input_File)
+if input_File.index(".gz") == len(input_File)-3:
+	outputFile = input_File.rstrip(".json.gz")+".xml"
+	infile = gzip.open(input_File, "rb").read()
+else:
+	outputFile = input_File.rstrip(".json")+".xml"
+	infile = open(input_File, "r", encoding="utf-8").read()
 
-outputFile = input_File.rstrip(".json")+".xml"
+SPLIT_2ND_SIZE = 4000
+SPLIT_3RD_SIZE = 40000
 
-SPLIT_SIZE = 4100
-try: jsonData = open(input_File, "r", encoding="utf-8").read()
-except FileNotFoundError:
-	print("File Not Found")
-	sys.exit(1)
+dedup_Table = []
 
-try: jsonData = json.loads(jsonData)
-except json.decoder.JSONDecodeError:
-	print("====ERROR====")
-	if len(jsonData) <= 2: print("Empty File")
-	print("总计用时:", time.time()-Start_Time)
-	sys.exit(1)
+jsonData = json.loads(infile)
+infile = None
 i = 1
-cid = jsonData["info"]["cid"]
-maxlimit = jsonData["info"]["segment_count"]*6000
+try: cid = jsonData["info"]["cid"]
+except KeyError: cid = 0
+try: maxlimit = jsonData["info"]["segment_count"]*6000
+except KeyError: maxlimit = 6000
 danmu_count = len(jsonData["elems"])
 XML_Data_1st_Cache = f"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<i>\n\t<chatserver>chat.bilibili.com</chatserver>\n\t<chatid>{cid}</chatid>\n\t<mission>0</mission>\n\t<maxlimit>{maxlimit}</maxlimit>\n\t<state>0</state>\n\t<real_name>0</real_name>\n\t<source>k-v</source>\n"
 XML_Data_2nd_Cache = ""
-
+XML_Data_3rd_Cache = ""
 for Sub_Item in jsonData["elems"]:
+	try: id_ = Sub_Item["id"]				# int64 id = 1;
+	except KeyError: id_ = "0"
+
+	# # Deduplication
+	# if id_ in dedup_Table:
+	# 	continue
+	# dedup_Table.append(id_)
+
 	spec_tag = ""
 	try: content = Sub_Item["content"]		# string content = 7;
 	except KeyError: content = ""
-	content = content.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace("\u0008","").replace("\u0017","")
+	content = content.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace("\x00", " ").replace("\x08", " ").replace("\x14", " ").replace("\x17", " ")
 
 	try: progress = Sub_Item["progress"]	# int32 progress = 2;
 	except KeyError: progress = 0
@@ -82,48 +92,29 @@ for Sub_Item in jsonData["elems"]:
 	try: animation = Sub_Item["animation"]	# string animation = 22;
 	except KeyError: pass
 
-	try: id_ = Sub_Item["id"]				# int64 id = 1;
-	except KeyError: id_ = "0"
-
 	try: idStr = Sub_Item["idStr"]			# string idStr = 12;
-	except KeyError:
-		idStr = "0"
-		print(f"\n idStr ERROR: {id_}")
+	except KeyError: idStr = "0"
 
 	if id_ != idStr:print("\n id idStr mismatch:", id_, idStr)
 
 	try: pool = Sub_Item["pool"]			# int32 pool = 11;
 	except KeyError: pool = 0
-	if pool == 2: content = content.replace("\n", "\\n").replace("\r\n", "\\n")
-
-	# Mode	1/2/3:regular	4:buttom	5:top	6:reverse(disable)	7:advance	8:code	9:BAS
-	# Pool	0:regular	1:subtitle	2:special(BAS/code)
-	if True:
-		if mode == 0: spec_tag += "mode:ERROR"
-		# if mode == 1: spec_tag += "mode:Normal-1"
-		if mode == 2: spec_tag += "mode:Normal-2"
-		if mode == 3: spec_tag += "mode:Normal-3"
-		# if mode == 4: spec_tag += "mode:Bottom"
-		# if mode == 5: spec_tag += "mode:Top"
-		if mode == 6: spec_tag += "mode:Reverse!!!!"
-		if mode == 7: spec_tag += "mode:!!Advanced!!"
-		if mode == 8: spec_tag += "mode:!!Code!!"
-		if mode == 9: spec_tag += "mode:!!BAS!!"
-		# if pool == 0: spec_tag += "pool:Regular"
-		if pool == 1: spec_tag += "pool:SubTitle"
-		if pool == 2: spec_tag += "pool:BAS|Code"
-		if spec_tag != "": spec_tag = "<!-- "+spec_tag+" -->"
+	content = content.replace("\n", "\\n").replace("\r", "\\r")
 
 	XML_item = "\t<d p=\"{0},{1},{2},{3},{4},{5},{6},{7},{8}\">{9}</d>{10}{11}\n".format(progress, mode, fontsize, color, sendtime, pool, midHash, id_, ban_weight, content, ATTR_TYPE(attr), spec_tag)
-	XML_Data_2nd_Cache += XML_item
+	XML_Data_3rd_Cache += XML_item
 	i += 1
-	if i % SPLIT_SIZE == 0:
+	if i % SPLIT_3RD_SIZE == 0:
 		XML_Data_1st_Cache += XML_Data_2nd_Cache
 		XML_Data_2nd_Cache = ""
-		print(f"\rProgress: {i}/{danmu_count}, Time: {round(time.time()-Start_Time,3)}",end="")
+	if i % SPLIT_2ND_SIZE == 0:
+		XML_Data_2nd_Cache += XML_Data_3rd_Cache
+		XML_Data_3rd_Cache = ""
+		print(f"\rProgress: {1+len(dedup_Table)}|{i}/{danmu_count}, Time: {round(time.time()-Start_Time,3)}",end="")
 
+XML_Data_2nd_Cache += XML_Data_3rd_Cache
 XML_Data_1st_Cache += XML_Data_2nd_Cache
 XML_Data_1st_Cache += "</i>\n"
 open(outputFile, "w", encoding="utf-8").write(XML_Data_1st_Cache)
 End_Time = time.time()
-print(f"\r{danmu_count}, 总计用时：{round(End_Time-Start_Time, 4)}                     ")
+print(f"\r{1+len(dedup_Table)}|{danmu_count}, 总计用时：{round(End_Time-Start_Time, 4)}                     ")
