@@ -3,3 +3,5 @@
 *.xml
 *.bin
 *.7z
+*.json.gz
+*.tmp

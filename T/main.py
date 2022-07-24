@@ -1,15 +1,18 @@
 #!/usr/bin/python3
 from google.protobuf.json_format import MessageToJson
-import json
+
 import dm_pb2
+
+import json
 import sys
 import time
+import gzip
+import io
 
 if __name__ == '__main__':
 	time1 = time.time()
 
-	with open(sys.argv[1], "rb") as inp:
-		Danmaku_Binary = inp.read()
+	Danmaku_Binary = open(sys.argv[1], "rb").read()
 
 	time2 = time.time()
 
@@ -22,9 +25,7 @@ if __name__ == '__main__':
 
 	time4 = time.time()
 
-	with open("out.json", "w", encoding="utf-8") as f:
-		f.write(Write_Data)
-
+	io.TextIOWrapper(gzip.open("out.json.gz",'wb'),encoding='utf-8').writelines(Write_Data)
 	time5 = time.time()
 
 	print(f"ALL:{time5-time1}, Write: {time5-time4}, Json: {time4-time3}, Proto: {time3-time2}, Read: {time2-time1}")
