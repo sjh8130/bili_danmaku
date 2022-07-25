@@ -98,18 +98,6 @@
 {"id":"581XXXXXXXX414080","ctime":"16XX998765","idStr":"581XXXXXXXX414080","test16":"3XXXXXXXX3","test17":"3XXXXXXXX3"},
 {}]
 ```
-```
-https://app.bilibili.com/
-2017-12-14  Android5.20.0   弹幕点赞功能上线，为精彩弹幕点赞
-2018-01-30  iPhone5.22.1
-
-2018-09-21  Android5.32.0   轻点弹幕即可点赞、举报！你看这个弹幕，真的很漂亮哦！（警告）
-2018-09-18  iPhone5.32.0
-2018-10-26  iPad2.0
-
-2021-04-08  Android6.22.0   高赞弹幕支持海报分享，一键分享我的高光时刻
-2021-04-08  iPhone6.22.0
-```
 ## 参考来源：  
 
 [bilibili-API-collect]( https://github.com/SocialSisterYi/bilibili-API-collect )
