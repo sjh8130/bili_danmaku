@@ -367,7 +367,7 @@ if __name__ == '__main__':
 		dump_Data(str0=cid, str1="Danmaku", str2="ALL", data=Danmaku_Binary)
 		JSON_Time = time.time()
 		if (not flag_NO_Json):
-			if flag_Many_Logs: print(f"[File_JSON P{i+1}]: PROC start", end="\t")
+			if flag_Many_Logs: print(f"[File_JSON P{i+1}]: PROC start")
 			Temp_Binary.ParseFromString(Danmaku_Binary)
 			j1 = json.loads(MessageToJson(Temp_Binary))
 			danmaku_count = len(j1["elems"])
@@ -388,13 +388,13 @@ if __name__ == '__main__':
 			j1["info"]["danmaku_count"] = danmaku_count
 			Json_Write_Data = json.dumps(j1, ensure_ascii=False)
 			j1 = {}
-			if flag_Many_Logs: print(f"[File_JSON P{i+1}]: PROC end--", end="\t")
+			if flag_Many_Logs: print(f"[File_JSON P{i+1}]: PROC end--")
 		写入开始时间 = time.time()
 		if (not flag_NO_Json):
 			if Json_Write_Data == "{}" or Json_Write_Data == "":
-				if is_ERROR or flag_Many_Logs: print(f"[File_JSON P{i+1}]: No Data", end="\t")
+				if is_ERROR or flag_Many_Logs: print(f"[File_JSON P{i+1}]: No Data")
 			else:
-				if is_ERROR or flag_Many_Logs: print(f"[File_JSON P{i+1}]: 开始写入", end="\t")
+				if is_ERROR or flag_Many_Logs: print(f"[File_JSON P{i+1}]: 开始写入")
 				io.TextIOWrapper(gzip.open(File_Name+".json.gz",'wb'),encoding='utf-8').writelines(Json_Write_Data)
 				Json_Write_Data = ""
 		Time_Point_ = time.time()
