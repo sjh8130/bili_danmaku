@@ -29,13 +29,12 @@ try:
 except IndexError:
 	print("No Input")
 	sys.exit(1)
-print(input_File)
-if input_File.index(".gz") == len(input_File)-3:
-	outputFile = input_File.rstrip(".json.gz")+".xml"
+
+try:
 	infile = gzip.open(input_File, "rb").read()
-else:
-	outputFile = input_File.rstrip(".json")+".xml"
+except gzip.BadGzipFile:
 	infile = open(input_File, "r", encoding="utf-8").read()
+outputFile = input_File.rstrip(".gz").rstrip(".json")+".xml"
 
 SPLIT_2ND_SIZE = 4000
 SPLIT_3RD_SIZE = 40000
@@ -65,20 +64,24 @@ for Sub_Item in jsonData["elems"]:
 	spec_tag = ""
 	try: content = Sub_Item["content"]		# string content = 7;
 	except KeyError: content = ""
-	content = content.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace("\x00", " ").replace("\x08", " ").replace("\x14", " ").replace("\x17", " ")
 
 	try: progress = Sub_Item["progress"]	# int32 progress = 2;
 	except KeyError: progress = 0
-	progress = format(progress/1000, ".5f")
 
-	mode = Sub_Item["mode"]					# int32 mode = 3;
-	fontsize = Sub_Item["fontsize"]			# int32 fontsize = 4;
+	try: mode = Sub_Item["mode"]					# int32 mode = 3;
+	except KeyError: mode = 1
+
+	try: fontsize = Sub_Item["fontsize"]			# int32 fontsize = 4;
+	except KeyError: fontsize = 25
 
 	try: color = Sub_Item["color"]			# uint32 color = 5;
 	except KeyError: color = 0
 
-	midHash = Sub_Item["midHash"]			# string midHash = 6;
-	sendtime = Sub_Item["ctime"]				# int64 ctime = 8;
+	try: midHash = Sub_Item["midHash"]			# string midHash = 6;
+	except KeyError: midHash = "ffffffff"
+
+	try: sendtime = Sub_Item["ctime"]				# int64 ctime = 8;
+	except KeyError: sendtime = "1262275200"
 
 	try: ban_weight = Sub_Item["weight"]		# int32 weight = 9;
 	except KeyError: ban_weight = 11
@@ -86,20 +89,21 @@ for Sub_Item in jsonData["elems"]:
 	try: attr = Sub_Item["attr"]			# int32 attr = 13;
 	except KeyError: attr = 0
 
-	try: action = Sub_Item["action"]		# string action = 10;
-	except KeyError: pass
+	# try: action = Sub_Item["action"]		# string action = 10;
+	# except KeyError: pass
 
-	try: animation = Sub_Item["animation"]	# string animation = 22;
-	except KeyError: pass
+	# try: animation = Sub_Item["animation"]	# string animation = 22;
+	# except KeyError: pass
 
-	try: idStr = Sub_Item["idStr"]			# string idStr = 12;
-	except KeyError: idStr = "0"
-
-	if id_ != idStr:print("\n id idStr mismatch:", id_, idStr)
+	# try: idStr = Sub_Item["idStr"]			# string idStr = 12;
+	# except KeyError: idStr = "0"
+	# if id_ != idStr:print("\n id idStr mismatch:", id_, idStr)
 
 	try: pool = Sub_Item["pool"]			# int32 pool = 11;
 	except KeyError: pool = 0
-	content = content.replace("\n", "\\n").replace("\r", "\\r")
+
+	progress = format(progress/1000, ".5f")
+	content = content.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace("\x00", " ").replace("\x08", " ").replace("\x14", " ").replace("\x17", " ").replace("\n", "\\n").replace("\r", "\\r")
 
 	XML_item = "\t<d p=\"{0},{1},{2},{3},{4},{5},{6},{7},{8}\">{9}</d>{10}{11}\n".format(progress, mode, fontsize, color, sendtime, pool, midHash, id_, ban_weight, content, ATTR_TYPE(attr), spec_tag)
 	XML_Data_3rd_Cache += XML_item
