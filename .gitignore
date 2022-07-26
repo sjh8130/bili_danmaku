@@ -6,3 +6,9 @@
 *.json.gz
 *.tmp
 T/dm_pb2.py
+*.xlsx
+T/xxx.py
+x1.py
+x2.py
+T/Test_Split_size_convert_to_xml.py
+11.py
