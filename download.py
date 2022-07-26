@@ -4,7 +4,10 @@ from google.protobuf.json_format import MessageToJson
 from tqdm import tqdm
 import requests
 
-import zzzz
+try:
+	import zzzz as dm_pb2
+except ModuleNotFoundError:
+	import dm_pb2
 
 import math
 import time
@@ -123,7 +126,7 @@ def downloader(url_DL: str):
 	return resp.content
 
 
-def FAKE_downloader(str0:str, str1:str, str2:str, url_Fake_DL:str):
+def FAKE_downloader(str0: str, str1: str, str2: str, url_Fake_DL: str):
 	if flag_Many_Logs: print(f"[NET]? {url_Fake_DL}     ", end="\t")
 	try:
 		resp = open(f"[{bvid}]_[{str0}]_[{str1}]_[{str2}].bin", "rb").read()
@@ -137,7 +140,8 @@ def FAKE_downloader(str0:str, str1:str, str2:str, url_Fake_DL:str):
 	NET_count_all += 1
 	try: status_code = json.loads(resp)["code"]
 	except UnicodeDecodeError: status_code = 0
-	except json.decoder.JSONDecodeError: status_code = 404
+	except json.decoder.JSONDecodeError:
+		if Fake_status_code == 404: status_code = 404
 	if flag_Many_Logs or status_code != 0 or Fake_status_code != 200: print(f"[NET]? HTTP {Fake_status_code}, Json Code {status_code}", end="\t")
 	return resp
 
@@ -159,7 +163,7 @@ def get_BAS_danmaku(avid: str, cid: str):
 
 	if flag_Many_Logs: print(f"[BAS_DL]: Info {bvid}|{avid}|{cid}|P{i+1}")
 	if is_ERROR or flag_Error_Stop: return b""
-	data_2 = zzzz.DmWebViewReply()
+	data_2 = dm_pb2.DmWebViewReply()
 	data_2.ParseFromString(data_1)
 	dump_Data(str0=cid, str1="BAS", str2="Info", data=data_1)
 	try: data_3 = json.loads(MessageToJson(data_2))["specialDms"]
@@ -192,58 +196,62 @@ def XML_Process(data):
 	for Sub_Item in jsonData["elems"]:
 		testing_1 = None
 		spec_tag = ""
-		try: content = Sub_Item["content"]			# string content = 7;
+		try: content = Sub_Item["content"]							# string content = 7;
 		except KeyError: content = ""
 		content = content.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace("\x00", " ").replace("\x08", " ").replace("\x14", " ").replace("\x17", " ")
 
-		try: progress = Sub_Item["progress"] 		 # int32 progress = 2;
-		except KeyError: progress = 0
-		progress = format(progress/1000, ".5f")
+		try:
+			progress = Sub_Item["progress"]							# int32 progress = 2;
+			progress = format(progress/1000, ".5f")
+		except KeyError: progress = "0"
 
-		mode = Sub_Item["mode"]						# int32 mode = 3;
+		try: mode = Sub_Item["mode"]								# int32 mode = 3;
+		except KeyError: mode = "1"
 		# 1/2!/3!:regular	4:buttom	5:top	6:reverse!	7:advance	8:code	9:BAS	10:!?
-		fontsize = Sub_Item["fontsize"]				# int32 fontsize = 4;
+		try: fontsize = Sub_Item["fontsize"]						# int32 fontsize = 4;
+		except KeyError: fontsize = "25"
 		# 18/25/36
-		try: color = Sub_Item["color"]				# uint32 color = 5;
-		except KeyError: color = 0
+		try: color = Sub_Item["color"]								# uint32 color = 5;
+		except KeyError: color = "0"
 
-		midHash = Sub_Item["midHash"]				# string midHash = 6;
-		sendtime = Sub_Item["ctime"]				# int64 ctime = 8;
+		try: midHash = Sub_Item["midHash"]							# string midHash = 6;
+		except KeyError: midHash = "ffffffff"
 
-		try: weight = Sub_Item["weight"]			# int32 weight = 9;
-		except KeyError: weight = 11
+		try:
+			sendtime = Sub_Item["ctime"]							# int64 ctime = 8;
+		except KeyError:
+			sendtime = "1262275200"
+
+		try: weight = Sub_Item["weight"]							# int32 weight = 9;
+		except KeyError: weight = "11"
 		if flag_Ext_XML_Data:
 			try: attr = danmaku_ATTR_TYPE(Sub_Item["attr"])			# int32 attr = 13;
 			except KeyError: attr = "DM "
 
-			try: action = Sub_Item["action"]		# string action = 10;
+			try: action = Sub_Item["action"]						# string action = 10;
 			except KeyError: pass
 
-			try: animation = Sub_Item["animation"]	# string animation = 22;
+			try: animation = Sub_Item["animation"]					# string animation = 22;
 			except KeyError: pass
 
-			try: usermid = f"mid:{Sub_Item['usermid']} "	# string animation = 22;
+			try: usermid = f"mid:{Sub_Item['usermid']} "			# int usermid = 14;
 			except KeyError: usermid = ""
 
-			try: likes = f"likes: {Sub_Item['likes']} "	# string animation = 22;
+			try: likes = f"likes: {Sub_Item['likes']} "				# int likes = 15;
 			except KeyError: likes = ""
 
-			spec_tag = f"<!-- {attr}{usermid}{likes} -->".replace("  "," ")
-		else:
-			attr = 0
-			action = ""
-			animation = ""
+			spec_tag = f"<!-- {attr}{usermid}{likes} -->".replace("  ", " ")
 
-		try: id_ = Sub_Item["id"]					# int64 id = 1;
+		try: id_ = Sub_Item["id"]									# int64 id = 1;
 		except KeyError: id_ = "0"
 
-		try: idStr = Sub_Item["idStr"]				# string idStr = 12;
+		try: idStr = Sub_Item["idStr"]								# string idStr = 12;
 		except KeyError: idStr = "0"
 
 		if id_ != idStr: print("\n id&idStr mismatch:", id_, idStr)
 
-		try: pool = Sub_Item["pool"]			# int32 pool = 11;
-		except KeyError: pool = 0
+		try: pool = Sub_Item["pool"]								# int32 pool = 11;
+		except KeyError: pool = "0"
 		# 0:regular	1:subtitle	2:special(BAS/code)
 
 		try:	# TESTING
@@ -258,13 +266,13 @@ def XML_Process(data):
 
 		content = content.replace("\n", "\\n").replace("\r\n", "\\n")
 
-		XML_item = "\t<d p=\"{0},{1},{2},{3},{4},{5},{6},{7},{8}\">{9}</d>{10}\n".format(progress, mode, fontsize, color, sendtime, pool, midHash, id_, weight, content, spec_tag)
+		XML_item = "\t<d p=\"{0},{1},{2},{3},{4},{5},{6},{7},{8}\">{9}</d>{10}\x0a".format(progress, mode, fontsize, color, sendtime, pool, midHash, id_, weight, content, spec_tag)
 		XML_Data_2nd += XML_item
 		Sub_Item = {}
 	return XML_Data_2nd
 
 
-def dump_Data(str0:str, str1:str, str2:str, data: bin, force:bool=False):
+def dump_Data(str0: str, str1: str, str2: str, data: bin, force: bool = False):
 	if flag_Dump_Binary and ((not flag_Test_Run) or force): pass
 	else: return
 	if len(data) == 0: return
@@ -348,18 +356,18 @@ if __name__ == '__main__':
 		分P开始时间 = time.time()
 		Danmaku_Binary = b""
 		if (not flag_NO_Json):
-			Temp_Binary = zzzz.DmSegMobileReply()
+			Temp_Binary = dm_pb2.DmSegMobileReply()
 		duration = int(sub_Items[i]["duration"])
 		segment_count = math.ceil(duration/360)
 		cid = str(sub_Items[i]["cid"])
-		if (not flag_NO_XML): XML_Write_Data = f"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<i>\n\t<chatserver>chat.bilibili.com</chatserver>\n\t<chatid>{cid}</chatid>\n\t<mission>0</mission>\n\t<maxlimit>{6000*segment_count}</maxlimit>\n\t<state>0</state>\n\t<real_name>0</real_name>\n\t<source>k-v</source>\n"
+		if (not flag_NO_XML): XML_Write_Data = f"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\x0a<i>\x0a\t<chatserver>chat.bilibili.com</chatserver>\x0a\t<chatid>{cid}</chatid>\x0a\t<mission>0</mission>\x0a\t<maxlimit>{6000*segment_count}</maxlimit>\x0a\t<state>0</state>\x0a\t<real_name>0</real_name>\x0a\t<source>k-v</source>\x0a"
 		if (not flag_NO_XML): XML_Data_Empty = XML_Write_Data
 		P_Title = str(sub_Items[i]["part"])
 		if mainTitle == P_Title: P_Title = ""
 		show_string = f"\n{publish_D}|{bvid}|{avid}|P{i+1}/{sub_Items_Len}|{cid}|{duration}|{math.ceil(duration/360)}|{mainTitle}|{P_Title}"
 		print(show_string)
 		File_Name = f"[{publish_D}][{bvid}][{avid}][P{i+1}][{cid}]{mainTitle.replace('_', '＿')}_{P_Title.replace('_', '＿')}".rstrip("_")
-		File_Name = File_Name.replace("\\", "＼").replace("/", "／").replace(":", "：").replace("*", "＊").replace("?", "？").replace("<", "＜").replace(">", "＞").replace("|", "｜").replace("\"","＂")	# \/:*?"<>|
+		File_Name = File_Name.replace("\\", "＼").replace("/", "／").replace(":", "：").replace("*", "＊").replace("?", "？").replace("<", "＜").replace(">", "＞").replace("|", "｜").replace("\"", "＂")	# \/:*?"<>|
 		# [1656432000][BV1**4*1*7*][av*********][P*][cid]MainTitle_P-Title
 		# [1656432000][BV1**4*1*7*][av*********][P*][cid]MainTitle
 		XML_Time = 0
@@ -370,7 +378,7 @@ if __name__ == '__main__':
 			else:
 				if (not flag_NO_XML):
 					XML_Ti = time.time()
-					xml_t1 = zzzz.DmSegMobileReply()
+					xml_t1 = dm_pb2.DmSegMobileReply()
 					xml_t1.ParseFromString(BAS_danmaku)
 					xml_t2 = MessageToJson(xml_t1)
 					XML_Write_Data += XML_Process(xml_t2)
@@ -386,7 +394,7 @@ if __name__ == '__main__':
 			Danmaku_Binary += Danmaku_sub_Items
 			if (not flag_NO_XML):
 				XML_Ti = time.time()
-				xml_t1 = zzzz.DmSegMobileReply()
+				xml_t1 = dm_pb2.DmSegMobileReply()
 				xml_t1.ParseFromString(Danmaku_sub_Items)
 				XML_Write_Data += XML_Process(MessageToJson(xml_t1))
 				XML_Tim = time.time()
@@ -401,7 +409,7 @@ if __name__ == '__main__':
 			Temp_Binary.ParseFromString(Danmaku_Binary)
 			j1 = json.loads(MessageToJson(Temp_Binary))
 			danmaku_count = len(j1["elems"])
-			Temp_Binary = zzzz.DmSegMobileReply()
+			Temp_Binary = dm_pb2.DmSegMobileReply()
 			if 1:
 				j1["info"] = {}
 				j1["info"]["owner_name"] = json_Data['owner']['name']
@@ -417,7 +425,7 @@ if __name__ == '__main__':
 				j1["info"]["segment_count"] = segment_count
 				j1["info"]["danmaku_count"] = danmaku_count
 
-			Json_Write_Data = json.dumps(j1, ensure_ascii=False).replace("}, {\"id\"", "},\x0a{\"id\"")
+			Json_Write_Data = json.dumps(j1, ensure_ascii=False).replace("}, {\"id\"", "},\x0a{\"id\"").replace(", \"test20\": \"0\", \"test21\": \"0\"", "")
 			j1 = {}
 			if flag_Many_Logs: print(f"[File_JSON P{i+1}]: PROC end--")
 		写入开始时间 = time.time()
@@ -426,16 +434,16 @@ if __name__ == '__main__':
 				if is_ERROR or flag_Many_Logs: print(f"[File_JSON P{i+1}]: No Data")
 			else:
 				if is_ERROR or flag_Many_Logs: print(f"[File_JSON P{i+1}]: 开始写入")
-				if flag_gzip: io.TextIOWrapper(gzip.open(File_Name+".json.gz",'wb', compresslevel=9), encoding='utf-8').writelines(Json_Write_Data)
+				if flag_gzip: io.TextIOWrapper(gzip.open(File_Name+".json.gz", 'wb', compresslevel=9), encoding='utf-8').writelines(Json_Write_Data)
 				else: open(f"{File_Name}.json", "w", encoding="utf-8").write(Json_Write_Data)
 				Json_Write_Data = ""
 		Time_Point_ = time.time()
 		if (not flag_NO_XML):
-			if XML_Write_Data == XML_Data_Empty: 
+			if XML_Write_Data == XML_Data_Empty:
 				if is_ERROR or flag_Many_Logs: print(f"[File_XML  P{i+1}]: No Data")
 			else:
 				if is_ERROR or flag_Many_Logs: print(f"[File_XML  P{i+1}]: 开始写入")
-				open(File_Name+".xml", "w", encoding="utf-8").write(XML_Write_Data + "</i>\n")
+				open(File_Name+".xml", "w", encoding="utf-8").write(XML_Write_Data + "</i>\x0a")
 				XML_Write_Data = ""
 		else: print()
 		Danmaku_Binary = b""
