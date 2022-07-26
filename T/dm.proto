@@ -170,15 +170,17 @@ message DanmakuElem {
     int32 attr = 13;
     //
     uint64 usermid = 14;
-    uint32 zan_count = 15;
+    uint32 likes = 15;
     uint64 test16 = 16;
     uint64 test17 = 17;
-    uint64 test18 = 18;
-    uint64 test19 = 19;
+    uint32 test18 = 18;
+    // 19 : testing
+    bytes test19 = 19;
     string test20 = 20;
     string test21 = 21;
-    string test23 = 23;
     string animation = 22;
+    // 23: unknown
+    bytes test23 = 23;
 }
 
 // 弹幕ai云屏蔽条目

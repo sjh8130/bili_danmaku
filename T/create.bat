@@ -1,0 +1,1 @@
+protoc dm.proto --python_out=.

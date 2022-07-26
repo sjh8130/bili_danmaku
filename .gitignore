@@ -5,3 +5,4 @@
 *.7z
 *.json.gz
 *.tmp
+T/dm_pb2.py
