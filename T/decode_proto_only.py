@@ -1,7 +1,9 @@
 #!/usr/bin/python3
 from google.protobuf.json_format import MessageToJson
-
-import dm_pb2
+try:
+	import zzzz as dm_pb2
+except ModuleNotFoundError:
+	import dm_pb2
 
 import json
 import sys
@@ -25,7 +27,7 @@ if __name__ == '__main__':
 
 	time4 = time.time()
 
-	open("out.json", 'w', encoding='utf-8').write(Write_Data.replace("}, {\"id\"", "},\x0a{\"id\""))
+	open("out.json", 'w', encoding='utf-8').write(Write_Data.replace("}, {\"id\"", "},\x0a{\"id\"").replace(", \"test20\": \"0\", \"test21\": \"0\"", ""))
 	# io.TextIOWrapper(gzip.open("out.json.gz",'wb'),encoding='utf-8').writelines(Write_Data)
 	time5 = time.time()
 
