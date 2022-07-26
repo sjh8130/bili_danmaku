@@ -5,22 +5,18 @@ import time
 import gzip
 
 def ATTR_TYPE(attr:int):
-	# return ""
 	o = ""
 	b = "0000000000" + bin(attr).lstrip("0b")
-	if b[-1] == "1": o += "保护 "
-	if b[-2] == "1": o += "直播 "
-	if b[-3] == "1": o += "高赞 "
-	if b[-4] == "1": o += "壹 "
-	if b[-5] == "1": o += "贰 "
-	if b[-6] == "1": o += "叁 "
-	if b[-7] == "1": o += "肆 "
-	if b[-8] == "1": o += "伍 "
-	if b[-9] == "1": o += "陆 "
-	if b[-10] == "1": o += "柒 "
-	# if o == "" : return "<!-- DM -->"
-	if o == "" : return ""
-	o = "<!-- " + o + "-->"
+	if b[-1 ] == "1": o += "保护|"
+	if b[-2 ] == "1": o += "直播|"
+	if b[-3 ] == "1": o += "高赞|"
+	if b[-4 ] == "1": o += "壹|"
+	if b[-5 ] == "1": o += "贰|"	# Y
+	if b[-6 ] == "1": o += "叁|"
+	if b[-7 ] == "1": o += "肆|"
+	if b[-8 ] == "1": o += "伍|"
+	if b[-9 ] == "1": o += "陆|"	# Y
+	if b[-10] == "1": o += "柒|"
 	return o
 
 Start_Time = time.time()
@@ -86,14 +82,28 @@ for Sub_Item in jsonData["elems"]:
 	try: ban_weight = Sub_Item["weight"]		# int32 weight = 9;
 	except KeyError: ban_weight = 11
 
-	try: attr = Sub_Item["attr"]			# int32 attr = 13;
-	except KeyError: attr = 0
+	try: attr = ATTR_TYPE(Sub_Item["attr"])			# int32 attr = 13;
+	except KeyError: attr = "DM "
 
 	# try: action = Sub_Item["action"]		# string action = 10;
 	# except KeyError: pass
 
 	# try: animation = Sub_Item["animation"]	# string animation = 22;
 	# except KeyError: pass
+
+	try: usermid = f"mid:{Sub_Item['usermid']} "	# string animation = 22;
+	except KeyError: usermid = ""
+
+	try: likes = f"likes:{Sub_Item['likes']} "	# string animation = 22;
+	except KeyError: likes = ""
+
+	try: dm_reply = f"replies:{Sub_Item['test18']} "	# string animation = 22;
+	except KeyError: dm_reply = ""
+
+	try: dm_reply_to = f"reply_to:{Sub_Item['test16']} "	# string animation = 22;
+	except KeyError: dm_reply_to = ""
+
+	spec_tag = f"<!-- {attr}{usermid}{likes}{dm_reply}{dm_reply_to}-->"
 
 	# try: idStr = Sub_Item["idStr"]			# string idStr = 12;
 	# except KeyError: idStr = "0"
@@ -105,7 +115,7 @@ for Sub_Item in jsonData["elems"]:
 	progress = format(progress/1000, ".5f")
 	content = content.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace("\x00", " ").replace("\x08", " ").replace("\x14", " ").replace("\x17", " ").replace("\n", "\\n").replace("\r", "\\r")
 
-	XML_item = "\t<d p=\"{0},{1},{2},{3},{4},{5},{6},{7},{8}\">{9}</d>{10}{11}\n".format(progress, mode, fontsize, color, sendtime, pool, midHash, id_, ban_weight, content, ATTR_TYPE(attr), spec_tag)
+	XML_item = "\t<d p=\"{0},{1},{2},{3},{4},{5},{6},{7},{8}\">{9}</d>{10}\n".format(progress, mode, fontsize, color, sendtime, pool, midHash, id_, ban_weight, content, spec_tag)
 	XML_Data_3rd_Cache += XML_item
 	i += 1
 	if i % SPLIT_3RD_SIZE == 0:
@@ -115,6 +125,7 @@ for Sub_Item in jsonData["elems"]:
 		XML_Data_2nd_Cache += XML_Data_3rd_Cache
 		XML_Data_3rd_Cache = ""
 		print(f"\rProgress: {1+len(dedup_Table)}|{i}/{danmu_count}, Time: {round(time.time()-Start_Time,3)}",end="")
+	Sub_Item = {}
 
 XML_Data_2nd_Cache += XML_Data_3rd_Cache
 XML_Data_1st_Cache += XML_Data_2nd_Cache
