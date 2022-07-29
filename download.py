@@ -30,7 +30,7 @@ BV_AV_xor = 177451812
 BV_AV_add = 8728348608
 NET_count = -1
 NET_count_all = 0
-
+err_sign = ""
 
 def Program_FLAG(flag: str):
 	if flag == "-1": return
@@ -48,28 +48,28 @@ def Program_FLAG(flag: str):
 	global flag_Test_Run
 	global flag_BAS
 	global flag_gzip
-	if b[-1] == "1": flag_Timer = True
-	if b[-2] == "1": flag_Error_Stop = True
-	if b[-3] == "1": flag_Zero_Stop = True
-	if b[-4] == "1": flag_Many_Logs = True
-	if b[-5] == "1": flag_Ext_XML_Data = True
-	if b[-6] == "1": flag_NO_Json = True
-	if b[-7] == "1": flag_NO_XML = True
-	if b[-8] == "1": flag_Dump_Binary = True
-	if b[-9] == "1": flag_Test_Run = True
-	if b[-1] == "0": flag_Timer = False
-	if b[-2] == "0": flag_Error_Stop = False
-	if b[-3] == "0": flag_Zero_Stop = False
-	if b[-4] == "0": flag_Many_Logs = False
-	if b[-5] == "0": flag_Ext_XML_Data = False
-	if b[-6] == "0": flag_NO_Json = False
-	if b[-7] == "0": flag_NO_XML = False
-	if b[-8] == "0": flag_Dump_Binary = False
-	if b[-9] == "0": flag_Test_Run = False
+	if b[-1 ] == "1": flag_Timer = True
+	if b[-2 ] == "1": flag_Error_Stop = True
+	if b[-3 ] == "1": flag_Zero_Stop = True
+	if b[-4 ] == "1": flag_Many_Logs = True
+	if b[-5 ] == "1": flag_Ext_XML_Data = True
+	if b[-6 ] == "1": flag_NO_Json = True
+	if b[-7 ] == "1": flag_NO_XML = True
+	if b[-8 ] == "1": flag_Dump_Binary = True
+	if b[-9 ] == "1": flag_Test_Run = True
+	if b[-1 ] == "0": flag_Timer = False
+	if b[-2 ] == "0": flag_Error_Stop = False
+	if b[-3 ] == "0": flag_Zero_Stop = False
+	if b[-4 ] == "0": flag_Many_Logs = False
+	if b[-5 ] == "0": flag_Ext_XML_Data = False
+	if b[-6 ] == "0": flag_NO_Json = False
+	if b[-7 ] == "0": flag_NO_XML = False
+	if b[-8 ] == "0": flag_Dump_Binary = False
+	if b[-9 ] == "0": flag_Test_Run = False
 
 	if b[-10] == "1": flag_BAS = True
-	if b[-10] == "0": flag_BAS = False
 	if b[-11] == "1": flag_gzip = True
+	if b[-10] == "0": flag_BAS = False
 	if b[-11] == "0": flag_gzip = False
 	if flag_Many_Logs: print(f"[FLAG]: {b}", end="\t")
 
@@ -80,15 +80,15 @@ def Danmaku_ATTR_TYPE(attr: int):
 	if attr == 0: return "DM "
 	o = ""
 	b = "0000000000" + bin(attr).lstrip("0b")
-	if b[-1] == "1": o += "保护 "
-	if b[-2] == "1": o += "直播 "
-	if b[-3] == "1": o += "高赞 "
-	if b[-4] == "1": o += "壹 "
-	if b[-5] == "1": o += "贰 "	# Y
-	if b[-6] == "1": o += "叁 "
-	if b[-7] == "1": o += "肆 "
-	if b[-8] == "1": o += "伍 "
-	if b[-9] == "1": o += "陆 "	# Y
+	if b[-1 ] == "1": o += "保护 "
+	if b[-2 ] == "1": o += "直播 "
+	if b[-3 ] == "1": o += "高赞 "
+	if b[-4 ] == "1": o += "壹 "
+	if b[-5 ] == "1": o += "贰 "	# Y 硬核会员 不显示？
+	if b[-6 ] == "1": o += "叁 "
+	if b[-7 ] == "1": o += "肆 "	# Y 硬核会员 不显示？
+	if b[-8 ] == "1": o += "伍 "
+	if b[-9 ] == "1": o += "陆 "	# Y
 	if b[-10] == "1": o += "柒 "
 	return o
 
@@ -145,7 +145,7 @@ def FAKE_Downloader(str0: str, str1: str, str2: str, url_Fake_DL: str):
 	except UnicodeDecodeError: status_code = 0
 	except json.decoder.JSONDecodeError:
 		if Fake_status_code == 404: status_code = 404
-	if flag_Many_Logs or status_code != 0 or Fake_status_code != 200: print(f"[NET]? HTTP {Fake_status_code}, Json Code {status_code}", end="\t")
+	if flag_Many_Logs or status_code != 0 or Fake_status_code != 200: print(f"[NET]? File {Fake_status_code}, Json Code {status_code}", end="\t")
 	return resp
 
 
@@ -174,9 +174,8 @@ def get_BAS_Danmaku(avid: str, cid: str):
 		if flag_Many_Logs: print(f"[BAS P{i+1}]: No BAS Danmaku")
 		return b""
 	if len(data_3) == 0:
-		if flag_Many_Logs: print(f"[BAS P{i+1}]: Empty")
+		if flag_Many_Logs: print(f"[BAS P{i+1}]: Have BAS, But 0 len")
 		return b""
-	# print(f"[BAS P{i+1}]{len(data_3)}")
 	BAS_Binary = b""
 	k = 1
 	for URL_BAS_Data in data_3:
@@ -197,45 +196,52 @@ def XML_Process(data):
 	jsonData = json.loads(data)
 	XML_Data_2nd = ""
 	for Sub_Item in jsonData["elems"]:
-		testing_1 = None
+		testing_1 = None	# unused!Testing
 		spec_tag = ""
-		try: content = Sub_Item["content"]							# string content = 7;
-		except KeyError: content = ""
-		content = content.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace("\x00", " ").replace("\x08", " ").replace("\x14", " ").replace("\x17", " ")
+		try: id_ = Sub_Item["id"]									# int64 id = 1;
+		except KeyError: id_ = "0"
 
-		try:
-			progress = Sub_Item["progress"]							# int32 progress = 2;
-			progress = format(progress/1000, ".5f")
-		except KeyError: progress = "0"
+		try: progress = Sub_Item["progress"]						# int32 progress = 2;
+		except KeyError: progress = 0
 
 		try: mode = Sub_Item["mode"]								# int32 mode = 3;
 		except KeyError: mode = "1"
 		# 1/2!/3!:regular	4:buttom	5:top	6:reverse!	7:advance	8:code	9:BAS	10:!?
+
 		try: fontsize = Sub_Item["fontsize"]						# int32 fontsize = 4;
 		except KeyError: fontsize = "25"
 		# 18/25/36
+
 		try: color = Sub_Item["color"]								# uint32 color = 5;
 		except KeyError: color = "0"
 
 		try: midHash = Sub_Item["midHash"]							# string midHash = 6;
 		except KeyError: midHash = "ffffffff"
 
-		try:
-			sendtime = Sub_Item["ctime"]							# int64 ctime = 8;
-		except KeyError:
-			sendtime = "1262275200"
+		try: content = Sub_Item["content"]							# string content = 7;
+		except KeyError: content = ""
+
+		try: sendtime = Sub_Item["ctime"]							# int64 ctime = 8;
+		except KeyError: sendtime = "1262275200"
 
 		try: weight = Sub_Item["weight"]							# int32 weight = 9;
 		except KeyError: weight = "9"
-		if flag_Ext_XML_Data:
-			try: attr = Danmaku_ATTR_TYPE(Sub_Item["attr"])			# int32 attr = 13;
-			except KeyError: attr = "DM "
 
+		try: pool = Sub_Item["pool"]								# int32 pool = 11;
+		except KeyError: pool = "0"
+		# 0:regular	1:subtitle	2:special(BAS/code)
+
+		try: idStr = Sub_Item["idStr"]								# string idStr = 12;
+		except KeyError: idStr = "0"
+
+		if id_ != idStr: print("\n id&idStr mismatch:", id_, idStr)
+
+		if flag_Ext_XML_Data:
 			try: action = Sub_Item["action"]						# string action = 10;
 			except KeyError: pass
 
-			try: animation = Sub_Item["animation"]					# string animation = 22;
-			except KeyError: pass
+			try: attr = Danmaku_ATTR_TYPE(Sub_Item["attr"])			# int32 attr = 13;
+			except KeyError: attr = "DM "
 
 			try: usermid = f"mid:{Sub_Item['usermid']} "			# int usermid = 14;
 			except KeyError: usermid = ""
@@ -243,22 +249,13 @@ def XML_Process(data):
 			try: likes = f"Likes: {Sub_Item['likes']} "				# int likes = 15;
 			except KeyError: likes = ""
 
-			try: replyCount = f"Reply: {Sub_Item['replyCount']} "	# int replyCount = 15;
+			try: replyCount = f"Reply: {Sub_Item['replyCount']} "	# int replyCount = 18;
 			except KeyError: replyCount = ""
 
+			try: animation = Sub_Item["animation"]					# string animation = 22;
+			except KeyError: pass
+
 			spec_tag = f"<!-- {attr}{usermid}{likes}{replyCount} -->".replace("  ", " ")
-
-		try: id_ = Sub_Item["id"]									# int64 id = 1;
-		except KeyError: id_ = "0"
-
-		try: idStr = Sub_Item["idStr"]								# string idStr = 12;
-		except KeyError: idStr = "0"
-
-		if id_ != idStr: print("\n id&idStr mismatch:", id_, idStr)
-
-		try: pool = Sub_Item["pool"]								# int32 pool = 11;
-		except KeyError: pool = "0"
-		# 0:regular	1:subtitle	2:special(BAS/code)
 
 		try:	# TESTING
 			testing_1 = sub_Items["test19"]
@@ -270,9 +267,11 @@ def XML_Process(data):
 			print(f"{id_} Have 23!!!!!!!!!!!")
 		except: pass
 
-		content = content.replace("\n", "\\n").replace("\r", "\\r")
+		content = content.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace("\x00", " ").replace("\x08", " ").replace("\x14", " ").replace("\x17", " ").replace("\n", "\\n").replace("\r", "\\r")
+		progress = format(progress/1000, ".5f")
 
-		XML_item = "\t<d p=\"{0},{1},{2},{3},{4},{5},{6},{7},{8}\">{9}</d>{10}\x0a".format(progress, mode, fontsize, color, sendtime, pool, midHash, id_, weight, content, spec_tag)
+		# XML_item = "\t<d p=\"{0},{1},{2},{3},{4},{5},{6},{7},{8}\">{9}</d>{10}\x0a".format(progress, mode, fontsize, color, sendtime, pool, midHash, id_, weight, content, spec_tag)
+		XML_item = f"\t<d p=\"{progress},{mode},{fontsize},{color},{sendtime},{pool},{midHash},{id_},{weight}\">{content}</d>{spec_tag}\x0a"
 		XML_Data_2nd += XML_item
 		Sub_Item = {}
 	return XML_Data_2nd
