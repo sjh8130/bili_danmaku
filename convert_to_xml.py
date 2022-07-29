@@ -79,8 +79,8 @@ for Sub_Item in jsonData["elems"]:
 	try: sendtime = Sub_Item["ctime"]				# int64 ctime = 8;
 	except KeyError: sendtime = "1262275200"
 
-	try: ban_weight = Sub_Item["weight"]			# int32 weight = 9;
-	except KeyError: ban_weight = 11
+	try: weight = Sub_Item["weight"]			# int32 weight = 9;
+	except KeyError: weight = 11
 
 	try: action = Sub_Item["action"]				# string action = 10;
 	except KeyError: pass
@@ -122,7 +122,8 @@ for Sub_Item in jsonData["elems"]:
 	progress = format(progress/1000, ".5f")
 	content = content.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace("\x00", " ").replace("\x08", " ").replace("\x14", " ").replace("\x17", " ").replace("\n", "\\n").replace("\r", "\\r")
 
-	XML_item = "\t<d p=\"{0},{1},{2},{3},{4},{5},{6},{7},{8}\">{9}</d>{10}\x0a".format(progress, mode, fontsize, color, sendtime, pool, midHash, id_, ban_weight, content, spec_tag)
+	# XML_item = "\t<d p=\"{0},{1},{2},{3},{4},{5},{6},{7},{8}\">{9}</d>{10}\x0a".format(progress, mode, fontsize, color, sendtime, pool, midHash, id_, weight, content, spec_tag)
+	XML_item = f"\t<d p=\"{progress},{mode},{fontsize},{color},{sendtime},{pool},{midHash},{id_},{weight}\">{content}</d>{spec_tag}\x0a"
 	XML_Data_3rd_Cache += XML_item
 	i += 1
 	if i % SPLIT_3RD_SIZE == 0:
