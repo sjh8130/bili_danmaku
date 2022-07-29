@@ -16,7 +16,11 @@ import sys
 import io
 import gzip
 
-headers = {'User-Agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.66 Safari/537.36 Edg/103.0.1264.44"}
+headers = {
+	'User-Agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.66 Safari/537.36 Edg/103.0.1264.44",
+	'origin': "https://www.bilibili.com",
+	'referer': "https://www.bilibili.com"
+	}
 SLEEP_TIME = 0.75
 BV_AV_table = 'fZodR9XQDSUm21yCkr6zBqiveYah8bt4xsWpHnJE7jL5VG3guMTKNPAwcF'
 BV_AV_base58_dic = {}
@@ -29,7 +33,6 @@ NET_count_all = 0
 
 
 def Program_FLAG(flag: str):
-	print("[P_Flag]")
 	if flag == "-1": return
 	if flag.find("0b") == 0: b = flag
 	else: b = bin(int(flag))
@@ -71,7 +74,7 @@ def Program_FLAG(flag: str):
 	if flag_Many_Logs: print(f"[FLAG]: {b}", end="\t")
 
 
-def danmaku_ATTR_TYPE(attr: int):
+def Danmaku_ATTR_TYPE(attr: int):
 	global flag_Ext_XML_Data
 	if (not flag_Ext_XML_Data): return ""
 	if attr == 0: return "DM "
@@ -108,7 +111,7 @@ def AV_to_BV(input_AV: int):
 	return ''.join(result)
 
 
-def downloader(url_DL: str):
+def Downloader(url_DL: str):
 	if flag_Many_Logs: print(f"[NET]: {url_DL}", end="\t")
 	time.sleep(SLEEP_TIME)
 	resp = requests.get(url_DL, headers=headers)
@@ -126,7 +129,7 @@ def downloader(url_DL: str):
 	return resp.content
 
 
-def FAKE_downloader(str0: str, str1: str, str2: str, url_Fake_DL: str):
+def FAKE_Downloader(str0: str, str1: str, str2: str, url_Fake_DL: str):
 	if flag_Many_Logs: print(f"[NET]? {url_Fake_DL}     ", end="\t")
 	try:
 		resp = open(f"[{bvid}]_[{str0}]_[{str1}]_[{str2}].bin", "rb").read()
@@ -146,20 +149,20 @@ def FAKE_downloader(str0: str, str1: str, str2: str, url_Fake_DL: str):
 	return resp
 
 
-def get_danmaku(cid: str, segment_index: str):
+def get_Danmaku(cid: str, segment_index: str):
 	url_Danmaku = f'https://api.bilibili.com/x/v2/dm/web/seg.so?type=1&oid={cid}&segment_index={segment_index}'
-	if flag_Test_Run: content = FAKE_downloader(str0=cid, str1="Danmaku", str2=segment_index, url_Fake_DL=url_Danmaku)
-	else: content = downloader(url_Danmaku)
+	if flag_Test_Run: content = FAKE_Downloader(str0=cid, str1="Danmaku", str2=segment_index, url_Fake_DL=url_Danmaku)
+	else: content = Downloader(url_Danmaku)
 	dump_Data(str0=cid, str1="Danmaku", str2=segment_index, data=content)
 	if is_ERROR and flag_Error_Stop: return b""
 	return content
 
 
-def get_BAS_danmaku(avid: str, cid: str):
+def get_BAS_Danmaku(avid: str, cid: str):
 	url_BAS_INFO = f'https://api.bilibili.com/x/v2/dm/web/view?type=1&oid={cid}&pid={avid}'
 
-	if flag_Test_Run: data_1 = FAKE_downloader(str0=cid, str1="BAS", str2="INFO", url_Fake_DL=url_BAS_INFO)
-	else: data_1 = downloader(url_BAS_INFO)
+	if flag_Test_Run: data_1 = FAKE_Downloader(str0=cid, str1="BAS", str2="INFO", url_Fake_DL=url_BAS_INFO)
+	else: data_1 = Downloader(url_BAS_INFO)
 
 	if flag_Many_Logs: print(f"[BAS_DL]: Info {bvid}|{avid}|{cid}|P{i+1}")
 	if is_ERROR or flag_Error_Stop: return b""
@@ -177,8 +180,8 @@ def get_BAS_danmaku(avid: str, cid: str):
 	BAS_Binary = b""
 	k = 1
 	for URL_BAS_Data in data_3:
-		if flag_Test_Run: data = FAKE_downloader(str0=cid, str1="BAS", str2=f"{k}", url_Fake_DL=URL_BAS_Data)
-		else: data = downloader(URL_BAS_Data)
+		if flag_Test_Run: data = FAKE_Downloader(str0=cid, str1="BAS", str2=f"{k}", url_Fake_DL=URL_BAS_Data)
+		else: data = Downloader(URL_BAS_Data)
 
 		if flag_Many_Logs: print("[BAS_DL]: DL", end="\t")
 		if is_ERROR and flag_Error_Stop: break
@@ -223,9 +226,9 @@ def XML_Process(data):
 			sendtime = "1262275200"
 
 		try: weight = Sub_Item["weight"]							# int32 weight = 9;
-		except KeyError: weight = "11"
+		except KeyError: weight = "9"
 		if flag_Ext_XML_Data:
-			try: attr = danmaku_ATTR_TYPE(Sub_Item["attr"])			# int32 attr = 13;
+			try: attr = Danmaku_ATTR_TYPE(Sub_Item["attr"])			# int32 attr = 13;
 			except KeyError: attr = "DM "
 
 			try: action = Sub_Item["action"]						# string action = 10;
@@ -237,10 +240,13 @@ def XML_Process(data):
 			try: usermid = f"mid:{Sub_Item['usermid']} "			# int usermid = 14;
 			except KeyError: usermid = ""
 
-			try: likes = f"likes: {Sub_Item['likes']} "				# int likes = 15;
+			try: likes = f"Likes: {Sub_Item['likes']} "				# int likes = 15;
 			except KeyError: likes = ""
 
-			spec_tag = f"<!-- {attr}{usermid}{likes} -->".replace("  ", " ")
+			try: replyCount = f"Reply: {Sub_Item['replyCount']} "	# int replyCount = 15;
+			except KeyError: replyCount = ""
+
+			spec_tag = f"<!-- {attr}{usermid}{likes}{replyCount} -->".replace("  ", " ")
 
 		try: id_ = Sub_Item["id"]									# int64 id = 1;
 		except KeyError: id_ = "0"
@@ -264,7 +270,7 @@ def XML_Process(data):
 			print(f"{id_} Have 23!!!!!!!!!!!")
 		except: pass
 
-		content = content.replace("\n", "\\n").replace("\r\n", "\\n")
+		content = content.replace("\n", "\\n").replace("\r", "\\r")
 
 		XML_item = "\t<d p=\"{0},{1},{2},{3},{4},{5},{6},{7},{8}\">{9}</d>{10}\x0a".format(progress, mode, fontsize, color, sendtime, pool, midHash, id_, weight, content, spec_tag)
 		XML_Data_2nd += XML_item
@@ -319,13 +325,13 @@ if __name__ == '__main__':
 		url_Main = f"https://api.bilibili.com/x/web-interface/view?bvid={bvid}"
 	if flag_Many_Logs: print(f"[Info]: {bvid}|{avid}")
 
-	if flag_Test_Run: json_Resp = FAKE_downloader(str0="0", str1="Video", str2="INFO", url_Fake_DL=url_Main)
-	else: json_Resp = downloader(url_Main)
+	if flag_Test_Run: json_Resp = FAKE_Downloader(str0="0", str1="Video", str2="INFO", url_Fake_DL=url_Main)
+	else: json_Resp = Downloader(url_Main)
 
 	dump_Data(str0="0", str1="Video", str2="INFO", data=json_Resp)
 	if is_ERROR and flag_Error_Stop:
 		print(f"[{bvid}|{avid}]Error: {json_Resp}")
-		print("总计用时:", time.time()-开始时间)
+		print("总计用时:", round(time.time()-开始时间, 3))
 		sys.exit(1)
 
 	json_Data = json.loads(json_Resp)["data"]
@@ -347,7 +353,7 @@ if __name__ == '__main__':
 			P_Title = str(sub_Items[i]["part"])
 			show_string = f"{publish_D}|{bvid}|{avid}|P{i+1}/{sub_Items_Len}|{cid}|{duration}|{math.ceil(duration/360)}|{mainTitle}|{P_Title}"
 			print(show_string)
-		print("总计用时:", time.time()-开始时间)
+		print("总计用时:", round(time.time()-开始时间, 3))
 		sys.exit(1)
 
 	for i in range(sub_Items_Len):
@@ -355,8 +361,7 @@ if __name__ == '__main__':
 		if is_ERROR and flag_Error_Stop: break
 		分P开始时间 = time.time()
 		Danmaku_Binary = b""
-		if (not flag_NO_Json):
-			Temp_Binary = dm_pb2.DmSegMobileReply()
+		if (not flag_NO_Json): Temp_Binary = dm_pb2.DmSegMobileReply()
 		duration = int(sub_Items[i]["duration"])
 		segment_count = math.ceil(duration/360)
 		cid = str(sub_Items[i]["cid"])
@@ -364,7 +369,7 @@ if __name__ == '__main__':
 		if (not flag_NO_XML): XML_Data_Empty = XML_Write_Data
 		P_Title = str(sub_Items[i]["part"])
 		if mainTitle == P_Title: P_Title = ""
-		show_string = f"\n{publish_D}|{bvid}|{avid}|P{i+1}/{sub_Items_Len}|{cid}|{duration}|{math.ceil(duration/360)}|{mainTitle}|{P_Title}"
+		show_string = f"{publish_D}|{bvid}|{avid}|P{i+1}/{sub_Items_Len}|{cid}|{duration}|{math.ceil(duration/360)}|{mainTitle}|{P_Title}"
 		print(show_string)
 		File_Name = f"[{publish_D}][{bvid}][{avid}][P{i+1}][{cid}]{mainTitle.replace('_', '＿')}_{P_Title.replace('_', '＿')}".rstrip("_")
 		File_Name = File_Name.replace("\\", "＼").replace("/", "／").replace(":", "：").replace("*", "＊").replace("?", "？").replace("<", "＜").replace(">", "＞").replace("|", "｜").replace("\"", "＂")	# \/:*?"<>|
@@ -373,7 +378,7 @@ if __name__ == '__main__':
 		XML_Time = 0
 		BAS开始时间 = time.time()
 		if flag_BAS:
-			BAS_danmaku = get_BAS_danmaku(avid=avid_in, cid=cid)
+			BAS_danmaku = get_BAS_Danmaku(avid=avid_in, cid=cid)
 			if len(BAS_danmaku) == 0: pass
 			else:
 				if (not flag_NO_XML):
@@ -389,7 +394,7 @@ if __name__ == '__main__':
 		if not flag_Many_Logs: Progress_Bar = tqdm(total=segment_count, leave=False, unit='chunks', ascii=True, ncols=100)
 		for segments in range(segment_count):
 			if is_ERROR and flag_Error_Stop: break
-			try: Danmaku_sub_Items = get_danmaku(cid, str(segments+1))
+			try: Danmaku_sub_Items = get_Danmaku(cid, str(segments+1))
 			except json.decoder.JSONDecodeError: Danmaku_sub_Items = b""
 			Danmaku_Binary += Danmaku_sub_Items
 			if (not flag_NO_XML):
@@ -424,18 +429,20 @@ if __name__ == '__main__':
 				j1["info"]["cid"] = cid
 				j1["info"]["segment_count"] = segment_count
 				j1["info"]["danmaku_count"] = danmaku_count
+				j1["info"]["File_Create_Time"] = int(time.time())
 
 			Json_Write_Data = json.dumps(j1, ensure_ascii=False).replace("}, {\"id\"", "},\x0a{\"id\"").replace(", \"test20\": \"0\", \"test21\": \"0\"", "")
 			j1 = {}
 			if flag_Many_Logs: print(f"[File_JSON P{i+1}]: PROC end--")
+		if is_ERROR: err_sign = "ERR"
 		写入开始时间 = time.time()
 		if (not flag_NO_Json):
 			if Json_Write_Data == "{}" or Json_Write_Data == "":
 				if is_ERROR or flag_Many_Logs: print(f"[File_JSON P{i+1}]: No Data")
 			else:
 				if is_ERROR or flag_Many_Logs: print(f"[File_JSON P{i+1}]: 开始写入")
-				if flag_gzip: io.TextIOWrapper(gzip.open(File_Name+".json.gz", 'wb', compresslevel=9), encoding='utf-8').writelines(Json_Write_Data)
-				else: open(f"{File_Name}.json", "w", encoding="utf-8").write(Json_Write_Data)
+				if flag_gzip: io.TextIOWrapper(gzip.open(f"{err_sign}{File_Name}.json.gz", 'wb', compresslevel=9), encoding='utf-8').writelines(Json_Write_Data)
+				else: open(f"{err_sign}{File_Name}.json", "w", encoding="utf-8").write(Json_Write_Data)
 				Json_Write_Data = ""
 		Time_Point_ = time.time()
 		if (not flag_NO_XML):
@@ -443,15 +450,15 @@ if __name__ == '__main__':
 				if is_ERROR or flag_Many_Logs: print(f"[File_XML  P{i+1}]: No Data")
 			else:
 				if is_ERROR or flag_Many_Logs: print(f"[File_XML  P{i+1}]: 开始写入")
-				open(File_Name+".xml", "w", encoding="utf-8").write(XML_Write_Data + "</i>\x0a")
+				open(f"{err_sign}{File_Name}.xml", "w", encoding="utf-8").write(XML_Write_Data + "</i>\x0a" + f"<!-- Create Time: {str(int(time.time()))} -->")
 				XML_Write_Data = ""
 		else: print()
 		Danmaku_Binary = b""
 
 		分P结束时间 = time.time()
-		if flag_Timer or flag_Many_Logs: print(f"P{i+1}: {分P结束时间-分P开始时间}，BAS: {BAS结束时间-BAS开始时间}，Write: {分P结束时间-写入开始时间}，JSON: {写入开始时间-JSON_Time}，XML: {分P结束时间-Time_Point_}，XML_P: {XML_Time}，Wait: {NET_count*SLEEP_TIME}，Net: {NET_count}，Danmaku: {danmaku_count}")
+		if flag_Timer or flag_Many_Logs: print(f"P{i+1}: {round(分P结束时间-分P开始时间, 3)}，BAS: {round(BAS结束时间-BAS开始时间, 3)}，Write: {round(分P结束时间-写入开始时间, 3)}，JSON: {round(写入开始时间-JSON_Time, 3)}，XML: {round(分P结束时间-Time_Point_, 3)}，XML_P: {round(XML_Time, 3)}，Wait: {round(NET_count*SLEEP_TIME, 2)}，Net: {NET_count}，Danmaku: {danmaku_count}")
 		NET_count = 0
 	if is_ERROR or flag_Timer or flag_Many_Logs:
 		结束时间 = time.time()
-		print(f"{bvid}|{avid} Time: {结束时间-开始时间} Net: {NET_count_all} Wait: {NET_count_all*SLEEP_TIME} SLEEP: {SLEEP_TIME}")
+		print(f"{bvid}|{avid} Time: {round(结束时间-开始时间, 3)} Net: {NET_count_all} Wait: {round(NET_count_all*SLEEP_TIME, 2)} SLEEP: {SLEEP_TIME}")
 	sys.exit(0)
