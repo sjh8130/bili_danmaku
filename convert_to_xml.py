@@ -11,9 +11,9 @@ def ATTR_TYPE(attr:int):
 	if b[-2 ] == "1": o += "直播|"
 	if b[-3 ] == "1": o += "高赞|"
 	if b[-4 ] == "1": o += "壹|"
-	if b[-5 ] == "1": o += "贰|"	# Y
+	if b[-5 ] == "1": o += "贰|"	# Y 硬核会员 不显示？
 	if b[-6 ] == "1": o += "叁|"
-	if b[-7 ] == "1": o += "肆|"
+	if b[-7 ] == "1": o += "肆|"	# Y 硬核会员 不显示？
 	if b[-8 ] == "1": o += "伍|"
 	if b[-9 ] == "1": o += "陆|"	# Y
 	if b[-10] == "1": o += "柒|"
@@ -58,9 +58,6 @@ for Sub_Item in jsonData["elems"]:
 	# dedup_Table.append(id_)
 
 	spec_tag = ""
-	try: content = Sub_Item["content"]				# string content = 7;
-	except KeyError: content = ""
-
 	try: progress = Sub_Item["progress"]			# int32 progress = 2;
 	except KeyError: progress = 0
 
@@ -76,29 +73,39 @@ for Sub_Item in jsonData["elems"]:
 	try: midHash = Sub_Item["midHash"]				# string midHash = 6;
 	except KeyError: midHash = "ffffffff"
 
+	try: content = Sub_Item["content"]				# string content = 7;
+	except KeyError: content = ""
+
 	try: sendtime = Sub_Item["ctime"]				# int64 ctime = 8;
 	except KeyError: sendtime = "1262275200"
 
 	try: ban_weight = Sub_Item["weight"]			# int32 weight = 9;
 	except KeyError: ban_weight = 11
 
-	try: attr = ATTR_TYPE(Sub_Item["attr"])			# int32 attr = 13;
-	except KeyError: attr = "DM "
-
 	try: action = Sub_Item["action"]				# string action = 10;
 	except KeyError: pass
 
-	try: animation = Sub_Item["animation"]			# string animation = 22;
-	except KeyError: pass
+	try: pool = Sub_Item["pool"]					# int32 pool = 11;
+	except KeyError: pool = 0
+
+	try: idStr = Sub_Item["idStr"]					# string idStr = 12;
+	except KeyError: idStr = "0"
+	if id_ != idStr:print("\n id idStr mismatch:", id_, idStr)
+
+	try: attr = ATTR_TYPE(Sub_Item["attr"])			# int32 attr = 13;
+	except KeyError: attr = "DM "
 
 	try: usermid = f"mid:{Sub_Item['usermid']} "	# string usermid = 14;
 	except KeyError: usermid = ""
 
-	try: likes = f"likes:{Sub_Item['likes']} "		# string likes = 15;
+	try: likes = f"Likes:{Sub_Item['likes']} "		# string likes = 15;
 	except KeyError: likes = ""
 
-	try: dm_reply = f"replies:{Sub_Item['test18']} "													# test18
-	except KeyError: dm_reply = ""
+	try: animation = Sub_Item["animation"]			# string animation = 22;
+	except KeyError: pass
+
+	try: replyCount = f"Reply:{Sub_Item['replyCount']} "												# test18
+	except KeyError: replyCount = ""
 	dm_reply_to = " "
 	try: dm_reply_to = f"reply_to:{Sub_Item['test16']} "												# test16
 	except KeyError:
@@ -111,15 +118,7 @@ for Sub_Item in jsonData["elems"]:
 					if Sub_Item['test21'] != "0": dm_reply_to = f"reply_to:{Sub_Item['test21']} "		# test21
 				except KeyError: pass
 
-	spec_tag = f"<!-- {attr}{usermid}{likes}{dm_reply}{dm_reply_to}-->".replace("  "," ")
-
-	try: idStr = Sub_Item["idStr"]					# string idStr = 12;
-	except KeyError: idStr = "0"
-	if id_ != idStr:print("\n id idStr mismatch:", id_, idStr)
-
-	try: pool = Sub_Item["pool"]					# int32 pool = 11;
-	except KeyError: pool = 0
-
+	spec_tag = f"<!-- {attr}{usermid}{likes}{replyCount}{dm_reply_to}-->".replace("  "," ")
 	progress = format(progress/1000, ".5f")
 	content = content.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace("\x00", " ").replace("\x08", " ").replace("\x14", " ").replace("\x17", " ").replace("\n", "\\n").replace("\r", "\\r")
 

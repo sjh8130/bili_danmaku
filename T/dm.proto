@@ -173,7 +173,7 @@ message DanmakuElem {
     uint32 likes = 15;
     uint64 test16 = 16;
     uint64 test17 = 17;
-    uint32 test18 = 18;
+    uint32 reply_count = 18;
     // 19 : testing
     bytes test19 = 19;
     string test20 = 20;
