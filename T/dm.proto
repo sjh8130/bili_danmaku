@@ -116,7 +116,7 @@ message CommandDm {
     // 对象视频cid
     int64 oid = 2;
     // 发送者mid
-    string mid = 3;
+    int64 mid = 3;
     // 互动弹幕指令
     string command = 4;
     // 互动弹幕正文
@@ -175,7 +175,7 @@ message DanmakuElem {
     uint64 test17 = 17;
     uint32 reply_count = 18;
     // 19 : testing
-    bytes test19 = 19;
+    uint32 user_like = 19;
     string test20 = 20;
     string test21 = 21;
     string animation = 22;
