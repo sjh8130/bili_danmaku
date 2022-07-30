@@ -80,17 +80,21 @@ def Danmaku_ATTR_TYPE(attr: int):
 	if (not flag_Ext_XML_Data): return ""
 	if attr == 0: return "DM "
 	o = ""
-	b = "0000000000" + bin(attr).lstrip("0b")
-	if b[-1 ] == "1": o += "保护 "
-	if b[-2 ] == "1": o += "直播 "
-	if b[-3 ] == "1": o += "高赞 "
-	if b[-4 ] == "1": o += "壹 "
-	if b[-5 ] == "1": o += "贰 "	# Y 硬核会员 不显示？
-	if b[-6 ] == "1": o += "叁 "
-	if b[-7 ] == "1": o += "肆 "	# Y 硬核会员 不显示？
-	if b[-8 ] == "1": o += "伍 "
-	if b[-9 ] == "1": o += "陆 "	# Y
-	if b[-10] == "1": o += "柒 "
+	b = "00000000000000000000000000000000" + bin(attr).lstrip("0b")
+	if b[-1 ] == "1": o += "保护 "	# 1
+	if b[-2 ] == "1": o += "直播 "	# 2
+	if b[-3 ] == "1": o += "高赞 "	# 4
+	if b[-4 ] == "1": o += "壹 "	# 8
+	if b[-5 ] == "1": o += "贰 "	# 16 硬核会员 不显示？
+	if b[-6 ] == "1": o += "叁 "	# 32
+	if b[-7 ] == "1": o += "肆 "	# 64 硬核会员 不显示？
+	if b[-8 ] == "1": o += "伍 "	# 128
+	if b[-9 ] == "1": o += "陆 "	# 256
+	if b[-10] == "1": o += "柒 "	# 512
+	if b[-11] == "1": o += "捌 "	# 1024
+	if b[-12] == "1": o += "玖 "	# 2048
+	if b[-13] == "1": o += "拾 "	# 4096
+	if b[-14] == "1": o += "拾壹 "	# 8192
 	return o
 
 
@@ -193,7 +197,7 @@ def XML_Process(data):
 
 		try: mode = Item_nr["mode"]								# int32 mode = 3;
 		except KeyError: mode = "1"
-		# 1/2!/3!:regular	4:buttom	5:top	6:reverse!	7:advance	8:code	9:BAS	10:!?
+		# 1/2!/3!:regular	4:buttom	5:top	6:reverse!	7:advance	8:code	9:BAS	10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31
 
 		try: fontsize = Item_nr["fontsize"]						# int32 fontsize = 4;
 		except KeyError: fontsize = "25"
@@ -387,7 +391,7 @@ if __name__ == '__main__':
 		else: DL_Data_BAS_Info = Downloader(URL_Ext_)
 		BAS_Info_Proto = dm_pb2.DmWebViewReply()
 		BAS_Info_Proto.ParseFromString(DL_Data_BAS_Info)
-		BAS_Info_Json = json.loads(MessageToJson(BAS_Info_Proto))
+		BAS_Info_Json = json.loads(MessageToJson(BAS_Info_Proto, indent=0, ensure_ascii=False))
 		dump_Data(str0=cid, str1="BAS", str2="Info", data=DL_Data_BAS_Info)
 
 		if (not flag_NO_XML): XML_Data_Empty = XML_Write_Data = f"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\x0a<i>\x0a\t<chatserver>chat.bilibili.com</chatserver>\x0a\t<chatid>{cid}</chatid>\x0a\t<mission>0</mission>\x0a\t<maxlimit>{6000*Segment_Count}</maxlimit>\x0a\t<state>0</state>\x0a\t<real_name>0</real_name>\x0a\t<source>k-v</source>\x0a"
@@ -410,7 +414,7 @@ if __name__ == '__main__':
 				XML_Ti = time.time()
 				xml_t1 = dm_pb2.DmSegMobileReply()
 				xml_t1.ParseFromString(BAS_danmaku)
-				xml_t2 = MessageToJson(xml_t1)
+				xml_t2 = MessageToJson(xml_t1, indent=0, ensure_ascii=False)
 				XML_Write_Data += XML_Process(xml_t2)
 				XML_Tim = time.time()
 				XML_Time += XML_Tim - XML_Ti
@@ -428,7 +432,7 @@ if __name__ == '__main__':
 				XML_Ti = time.time()
 				xml_t1 = dm_pb2.DmSegMobileReply()
 				xml_t1.ParseFromString(Danmaku_Binarys)
-				XML_Write_Data += XML_Process(MessageToJson(xml_t1))
+				XML_Write_Data += XML_Process(MessageToJson(xml_t1, indent=0, ensure_ascii=False))
 				XML_Tim = time.time()
 				XML_Time += XML_Tim - XML_Ti
 			if (not flag_Many_Logs): Progress_Bar.update(1)
@@ -440,7 +444,7 @@ if __name__ == '__main__':
 			if flag_Many_Logs: print(f"[File_JSON P{i+1}]: PROC start")
 			Temp_Binary = dm_pb2.DmSegMobileReply()
 			Temp_Binary.ParseFromString(Danmaku_Final_Binary)
-			j1 = json.loads(MessageToJson(Temp_Binary))
+			j1 = json.loads(MessageToJson(Temp_Binary, indent=0, ensure_ascii=False))
 			Danmaku_Count = len(j1["elems"])
 			Temp_Binary = dm_pb2.DmSegMobileReply()
 			if 1:

@@ -23,7 +23,7 @@ if __name__ == '__main__':
 
 	# time3 = time.time()
 
-	Write_Data = json.dumps(json.loads(MessageToJson(Temp_Binary)), ensure_ascii=False)
+	Write_Data = json.dumps(json.loads(MessageToJson(Temp_Binary, indent=0, ensure_ascii=False)), ensure_ascii=False)
 
 	# time4 = time.time()
 

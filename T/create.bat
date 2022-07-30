@@ -1,1 +1,1 @@
-protoc dm.proto --python_out=.
+protoc dm.proto --python_out=. --pyi_out=.

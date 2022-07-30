@@ -13,20 +13,20 @@ import io
 
 if __name__ == '__main__':
 	time1 = time.time()
-
+	print("read")
 	Danmaku_Binary = open(sys.argv[1], "rb").read()
 
 	time2 = time.time()
-
+	print("proto")
 	Temp_Binary = dm_pb2.DmSegMobileReply()
 	Temp_Binary.ParseFromString(Danmaku_Binary)
 
 	time3 = time.time()
-
-	Write_Data = json.dumps(json.loads(MessageToJson(Temp_Binary)), ensure_ascii=False)
-
+	print("json")
+	Write_Data = json.dumps(json.loads(MessageToJson(Temp_Binary, indent=0, ensure_ascii=False)), ensure_ascii=False)
+	Temp_Binary = None
 	time4 = time.time()
-
+	print("write")
 	open("out.json", 'w', encoding='utf-8').write(Write_Data.replace("}, {\"id\"", "},\x0a{\"id\"").replace(", \"test20\": \"0\", \"test21\": \"0\"", ""))
 	# io.TextIOWrapper(gzip.open("out.json.gz",'wb'),encoding='utf-8').writelines(Write_Data)
 	time5 = time.time()
