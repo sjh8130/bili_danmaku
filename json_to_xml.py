@@ -9,16 +9,16 @@ import binascii
 def ATTR_TYPE(attr:int):
 	o = ""
 	b = "0000000000" + bin(attr).lstrip("0b")
-	if b[-1 ] == "1": o += "保护|"
-	if b[-2 ] == "1": o += "直播|"
-	if b[-3 ] == "1": o += "高赞|"
-	if b[-4 ] == "1": o += "壹|"
-	if b[-5 ] == "1": o += "贰|"	# Y 硬核会员 不显示？
-	if b[-6 ] == "1": o += "叁|"
-	if b[-7 ] == "1": o += "肆|"	# Y 硬核会员 不显示？
-	if b[-8 ] == "1": o += "伍|"
-	if b[-9 ] == "1": o += "陆|"	# Y
-	if b[-10] == "1": o += "柒|"
+	if b[-1 ] == "1": o += "保护 "
+	if b[-2 ] == "1": o += "直播 "
+	if b[-3 ] == "1": o += "高赞 "
+	if b[-4 ] == "1": o += "壹 "
+	if b[-5 ] == "1": o += "贰 "	# Y 硬核会员 不显示？
+	if b[-6 ] == "1": o += "叁 "
+	if b[-7 ] == "1": o += "肆 "	# Y 硬核会员 不显示？
+	if b[-8 ] == "1": o += "伍 "
+	if b[-9 ] == "1": o += "陆 "	# Y
+	if b[-10] == "1": o += "柒 "
 	return o
 
 Start_Time = time.time()
@@ -51,10 +51,10 @@ XML_Data_1st_Cache = f"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\x0a<i>\x0a\t<c
 XML_Data_2nd_Cache = ""
 XML_Data_3rd_Cache = ""
 
-try: Last_Modified_Time = Loaded_JSON['info']['File_Create_Time']
+try: Last_Modified_Time = int(Loaded_JSON['info']['File_Create_Time'])
 except KeyError: Last_Modified_Time = int(os.stat(input_File).st_ctime)
 
-compatible_1 = False
+compatible_1:bool = False
 try:
 	Loaded_JSON["commandDms"]
 	compatible_1 = True
@@ -66,19 +66,18 @@ if compatible_1:
 		mid = Item_sp['mid']				# int64 mid = 3;
 		command = Item_sp["command"]		# string command = 4;
 		content = Item_sp["content"]		# string content = 5;
-		try: progress = Item_sp["progress"]		# int32 progress = 6;
+		try: progress = Item_sp["progress"]	# int32 progress = 6;
 		except KeyError: progress = 0
 		ctime = Item_sp["ctime"]			# string ctime = 7;
 		mtime = Item_sp["mtime"]			# string mtime = 8;
 		extra = Item_sp["extra"]			# string extra = 9;
 		idStr = Item_sp["idStr"]			# string idStr = 10
-		progress = format(progress/1000, ".5f")
 		sendtime = int(time.mktime(time.strptime(ctime, '%Y-%m-%d %H:%M:%S')))
 		midHash = hex(binascii.crc32(mid.encode())^0xFFFFFFFF).lstrip("0x").lstrip("0")
-		XML_Data_1st_Cache += f"\t<d p=\"{progress},1,25,16777215,{sendtime},999,{midHash},{id_},11\">{content}</d><!-- SPECIAL: {command}{extra} -->\x0a"
+		XML_Data_1st_Cache += f"\t<d p=\"{format(progress/1000, '.5f')},1,25,16777215,{sendtime},999,{midHash},{id_},11\">{content}</d><!-- SPECIAL: {command}{extra} -->\x0a"
 
-for Sub_Item in Loaded_JSON["elems"]:
-	try: id_ = Sub_Item["id"]						# int64 id = 1;
+for this in Loaded_JSON["elems"]:
+	try: id_ = this["id"]						# int64 id = 1;
 	except KeyError: id_ = "0"
 
 	# # Deduplication 20x time
@@ -87,64 +86,64 @@ for Sub_Item in Loaded_JSON["elems"]:
 	# dedup_Table.append(id_)
 
 	Extended_Data = ""
-	try: progress = Sub_Item["progress"]			# int32 progress = 2;
+	try: progress:int = this["progress"]			# int32 progress = 2;
 	except KeyError: progress = 0
 
-	try: mode = Sub_Item["mode"]					# int32 mode = 3;
+	try: mode:int = this["mode"]					# int32 mode = 3;
 	except KeyError: mode = 1
 
-	try: fontsize = Sub_Item["fontsize"]			# int32 fontsize = 4;
+	try: fontsize = this["fontsize"]			# int32 fontsize = 4;
 	except KeyError: fontsize = 25
 
-	try: color = Sub_Item["color"]					# uint32 color = 5;
+	try: color = this["color"]					# uint32 color = 5;
 	except KeyError: color = 0
 
-	try: midHash = Sub_Item["midHash"]				# string midHash = 6;
+	try: midHash = this["midHash"]				# string midHash = 6;
 	except KeyError: midHash = "ffffffff"
 
-	try: content = Sub_Item["content"]				# string content = 7;
+	try: content = this["content"]				# string content = 7;
 	except KeyError: content = ""
 
-	try: sendtime = Sub_Item["ctime"]				# int64 ctime = 8;
+	try: sendtime = this["ctime"]				# int64 ctime = 8;
 	except KeyError: sendtime = "1262275200"
 
-	try: weight = Sub_Item["weight"]			# int32 weight = 9;
+	try: weight = this["weight"]				# int32 weight = 9;
 	except KeyError: weight = 11
 
-	try: action = Sub_Item["action"]				# string action = 10;
+	try: action = this["action"]				# string action = 10;
 	except KeyError: pass
 
-	try: pool = Sub_Item["pool"]					# int32 pool = 11;
+	try: pool = this["pool"]					# int32 pool = 11;
 	except KeyError: pool = 0
 
-	try: idStr = Sub_Item["idStr"]					# string idStr = 12;
+	try: idStr = this["idStr"]					# string idStr = 12;
 	except KeyError: idStr = "0"
 	if id_ != idStr:print("\n id idStr mismatch:", id_, idStr)
 
-	try: attr = ATTR_TYPE(Sub_Item["attr"])			# int32 attr = 13;
+	try: attr = ATTR_TYPE(this["attr"])			# int32 attr = 13;
 	except KeyError: attr = "DM "
 
-	try: usermid = f"mid:{Sub_Item['usermid']} "	# string usermid = 14;
+	try: usermid = f"mid:{this['usermid']} "	# string usermid = 14;
 	except KeyError: usermid = ""
 
-	try: likes = f"Likes:{Sub_Item['likes']} "		# string likes = 15;
+	try: likes = f"Likes:{this['likes']} "		# string likes = 15;
 	except KeyError: likes = ""
 
-	try: animation = Sub_Item["animation"]			# string animation = 22;
+	try: animation = this["animation"]			# string animation = 22;
 	except KeyError: pass
 
-	try: replyCount = f"Reply:{Sub_Item['replyCount']} "												# replyCount
+	try: replyCount = f"Reply:{this['replyCount']} "											# replyCount
 	except KeyError: replyCount = ""
 	dm_reply_to = " "
-	try: dm_reply_to = f"reply_to:{Sub_Item['test16']} "												# test16
+	try: dm_reply_to = f"reply_to:{this['test16']} "											# test16
 	except KeyError:
-		try: dm_reply_to = f"reply_to:{Sub_Item['test17']} "											# test17
+		try: dm_reply_to = f"reply_to:{this['test17']} "										# test17
 		except KeyError:
 			try:
-				if Sub_Item['test20'] != "0": dm_reply_to = f"reply_to:{Sub_Item['test20']} "			# test20
+				if this['test20'] != "0": dm_reply_to = f"reply_to:{this['test20']} "			# test20
 			except KeyError:
 				try:
-					if Sub_Item['test21'] != "0": dm_reply_to = f"reply_to:{Sub_Item['test21']} "		# test21
+					if this['test21'] != "0": dm_reply_to = f"reply_to:{this['test21']} "		# test21
 				except KeyError: pass
 
 	Extended_Data = f"<!-- {attr}{usermid}{likes}{replyCount}{dm_reply_to}-->".replace("  "," ")
@@ -161,7 +160,7 @@ for Sub_Item in Loaded_JSON["elems"]:
 		XML_Data_2nd_Cache += XML_Data_3rd_Cache
 		XML_Data_3rd_Cache = ""
 		print(f"\rProgress: {len(dedup_Table)}|{i}/{Danmaku_Count}, Time: {round(time.time()-Start_Time,3)}",end="")
-	Sub_Item = {}
+	this = {}
 
 open(outputFile, "w", encoding="utf-8").write(XML_Data_1st_Cache+XML_Data_2nd_Cache+XML_Data_3rd_Cache+f"</i>\x0a<!-- Create Time: {Last_Modified_Time} -->")
 End_Time = time.time()

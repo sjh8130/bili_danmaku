@@ -7,16 +7,17 @@
 `[发布时间][BVid][avid][选集][cid]主标题.json.gz`  
 `[发布时间][BVid][avid][选集][cid]主标题_分P标题.json.gz`
 
-## convert_to_xml.py 转换为XML
+## json_to_xml.py 转换为XML
 使用方法:  
-`convert_to_xml.py ****.json"`  
-`convert_to_xml.py ****.json.gz"`  
+`json_to_xml.py ****.json`  
+`json_to_xml.py ****.json.gz`  
+`proto_to_xml.py ****.bin`  
 输出文件：  
 `****.xml`  
 
 `for /r . %a in (*.json) do convert_to_xml.py "%a"`  
 
-## Json:
+## json:
 ```JS
 {"elems": [
     {
@@ -49,6 +50,33 @@
 }
 ```
 
+# Proto:DanmakuElem
+| json-name  | id   | 数据类型 | protobuf-name | 来源    |
+| ---------- | ---: | ------- | ------------- | :------ |
+| id         |  1   | int64   | id            | 官方提供 |
+| progress   |  2   | int32   | progress      | 官方提供 |
+| mode       |  3   | int32   | mode          | 官方提供 |
+| fontsize   |  4   | int32   | fontsize      | 官方提供 |
+| color      |  5   | uint32  | color         | 官方提供 |
+| midHash    |  6   | string  | midHash       | 官方提供 |
+| content    |  7   | string  | content       | 官方提供 |
+| ctime      |  8   | int64   | ctime         | 官方提供 |
+| weight     |  9   | int32   | weight        | 官方提供 |
+| action     | 10   | string  | action        | 官方提供 |
+| pool       | 11   | int32   | pool          | 官方提供 |
+| idStr      | 12   | string  | idStr         | 官方提供 |
+| attr       | 13   | int32   | attr          | 官方提供 |
+| usermid    | 14   | ?int64  | usermid       | 测试 |
+| likes      | 15   | ?int64  | likes         | 测试 |
+| test16     | 16   | ?int64  | test16        | 测试：？ | reply-to-dmid-1
+| test17     | 17   | ?int64  | test17        | 测试：？ | reply-to-dmid-2
+| replyCount | 18   | ?int64  | reply_count   | 测试 |
+| test19     | 19   | ?       | test19        | 正在测试 |
+| test20     | 20   | string  | test20        | 测试：？ | reply-to-dmid-str-1
+| test21     | 21   | string  | test21        | 测试：？ | reply-to-dmid-str-2
+| animation  | 22   | string  | animation     | 官方提供 |
+| test23     | 23   | ?       | test23        | 未知 |
+
 ## 16,17,18,20,21 参考样本 
 ~~弹幕的弹幕~~
 ```XML
@@ -58,7 +86,7 @@
 <d p="223.90800,1,25,16777215,154XX13409,0,XXXXXXXX,108XXXXXXXX162500,11">bgm***</d>
 <d p="232.39600,1,25,16777215,162XX37915,0,XXXXXXXX,534XXXXXXXX356160,11">谢谢***</d>
 <d/>
-<d p="0.00000,1,45,16777215,14XX098318,1,XXXXXXXX,3XXXXXXXX3,11">text </d><!-- 高赞 -->
+<d p="0.00000,1,45,16777215,14XX098318,1,XXXXXXXX,3XXXXXXXX3,11">text </d>
 <d p="1.80800,1,25,16777215,16XX694229,0,XXXXXXXX,521XXXXXXXX935559,11">什么啊= =</d>
 <d p="5.53800,1,25,16777215,16XX955781,0,XXXXXXXX,534XXXXXXXX481728,11">怎么整成这么大的弹幕？</d>
 <d p="4.63800,1,25,16777215,16XX204771,0,XXXXXXXX,535XXXXXXXX911360,11">？？？</d>

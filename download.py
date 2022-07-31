@@ -102,14 +102,12 @@ def BV_to_AV(input_BV: str):
 	result = 0
 	for i in range(6): result += BV_AV_base58_dic[input_BV[s[i]]]*58**i
 	out = (result-BV_AV_add) ^ BV_AV_xor
-	if out <= 0:
-		print("[BV_to_AV]: invaild avid")
+	if out <= 0 or out > 2147483647: print("[BV_to_AV]: invaild avid")
 	return out
 
 
 def AV_to_BV(input_AV: int):
-	if input_AV > 2147483647:
-		print("[AV_to_BV]: avid is too big")
+	if input_AV > 2147483647: print("[AV_to_BV]: avid is too big")
 	input_AV = (input_AV ^ BV_AV_xor)+BV_AV_add
 	result = list('BV1  4 1 7  ')
 	for i in range(6): result[s[i]] = BV_AV_table[input_AV//58**i % 58]
@@ -164,7 +162,7 @@ def get_Danmaku(cid: str, Segment_Index: str):
 
 
 def get_Special_Danmaku():
-	try: special_dms_List = BAS_Info_Json["specialDms"]
+	try: special_dms_List = Extra_Info_Json["specialDms"]
 	except KeyError:
 		if flag_Many_Logs: print(f"[BAS P{i+1}]: No BAS Danmaku")
 		return b""
@@ -183,118 +181,56 @@ def get_Special_Danmaku():
 
 
 def XML_Process(data):
-	if data == "{}": return ""
-	jsonData = json.loads(data)
+	thIs:dm_pb2.DanmakuElem
 	XML_Data_2nd = ""
-	for Item_nr in jsonData["elems"]:
-		testing_1 = None	# unused!Testing
+	for thIs in data:
 		Extended_Data = ""
-		try: id_ = Item_nr["id"]									# int64 id = 1;
-		except KeyError: id_ = "0"
+		id_ = thIs.id								# int64 id = 1;
+		progress = thIs.progress					# int32 progress = 2;
+		mode = thIs.mode							# int32 mode = 3;
+		fontsize = thIs.fontsize					# int32 fontsize = 4;
+		color = thIs.color							# uint32 color = 5;
+		midHash = thIs.midHash						# string midHash = 6;
+		content = thIs.content						# string content = 7;
+		sendtime = thIs.ctime						# int64 ctime = 8;
+		weight = thIs.weight						# int32 weight = 9;
+		# action = thIs.action						# string action = 10;
+		pool = thIs.pool							# int32 pool = 11;
+		idStr = thIs.idStr							# string idStr = 12;
+		attr = Danmaku_ATTR_TYPE(thIs.attr)			# int32 attr = 13;
+		usermid = f"mid:{thIs.usermid} "			# int usermid = 14;
+		likes = f"Likes: {thIs.likes} "				# int likes = 15;
+		reply_count = f"Reply: {thIs.reply_count} "	# int reply_count = 18;
+		# animation = thIs.animation				# string animation = 22;
 
-		try: progress = Item_nr["progress"]						# int32 progress = 2;
-		except KeyError: progress = 0
-
-		try: mode = Item_nr["mode"]								# int32 mode = 3;
-		except KeyError: mode = "1"
-		# 1/2!/3!:regular	4:buttom	5:top	6:reverse!	7:advance	8:code	9:BAS	10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31
-
-		try: fontsize = Item_nr["fontsize"]						# int32 fontsize = 4;
-		except KeyError: fontsize = "25"
-		# 18/25/36
-
-		try: color = Item_nr["color"]								# uint32 color = 5;
-		except KeyError: color = "0"
-
-		try: midHash = Item_nr["midHash"]							# string midHash = 6;
-		except KeyError: midHash = "ffffffff"
-
-		try: content = Item_nr["content"]							# string content = 7;
-		except KeyError: content = ""
-
-		try: sendtime = Item_nr["ctime"]							# int64 ctime = 8;
-		except KeyError: sendtime = "1262275200"
-
-		try: weight = Item_nr["weight"]							# int32 weight = 9;
-		except KeyError: weight = "9"
-
-		try: pool = Item_nr["pool"]								# int32 pool = 11;
-		except KeyError: pool = "0"
-		# 0:regular	1:subtitle	2:special(BAS/code)
-
-		try: idStr = Item_nr["idStr"]								# string idStr = 12;
-		except KeyError: idStr = "0"
-
-		if id_ != idStr: print("\n [XML]: id&idStr mismatch:", id_, idStr)
-
-		if flag_Ext_XML_Data:
-			try: action = Item_nr["action"]						# string action = 10;
-			except KeyError: pass
-
-			try: attr = Danmaku_ATTR_TYPE(Item_nr["attr"])			# int32 attr = 13;
-			except KeyError: attr = "DM "
-
-			try: usermid = f"mid:{Item_nr['usermid']} "			# int usermid = 14;
-			except KeyError: usermid = ""
-
-			try: likes = f"Likes: {Item_nr['likes']} "				# int likes = 15;
-			except KeyError: likes = ""
-
-			try: replyCount = f"Reply: {Item_nr['replyCount']} "	# int replyCount = 18;
-			except KeyError: replyCount = ""
-
-			try: animation = Item_nr["animation"]					# string animation = 22;
-			except KeyError: pass
-
-			Extended_Data = f"<!-- {attr}{usermid}{likes}{replyCount} -->".replace("  ", " ")
-
-		try:	# TESTING
-			testing_1 = Item_nr["test19"]
-			print(f"[XML]: {id_} Have 19!!!!!!!!!!!")
-		except: pass
-
-		try:	# TESTING
-			testing_1 = Item_nr["test23"]
-			print(f"[XML]: {id_} Have 23!!!!!!!!!!!")
-		except: pass
+		if str(id_) != idStr: print("[XML]: id&idStr mismatch:", id_, idStr)
+		if flag_Ext_XML_Data: Extended_Data = f"<!-- {attr}{usermid}{likes}{reply_count} -->".replace("  ", " ")
 
 		content = content.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace("\x00", " ").replace("\x08", " ").replace("\x14", " ").replace("\x17", " ").replace("\n", "\\n").replace("\r", "\\r")
-		progress = format(progress/1000, ".5f")
 
-		# XML_item = "\t<d p=\"{0},{1},{2},{3},{4},{5},{6},{7},{8}\">{9}</d>{10}\x0a".format(progress, mode, fontsize, color, sendtime, pool, midHash, id_, weight, content, spec_tag)
-		XML_item = f"\t<d p=\"{progress},{mode},{fontsize},{color},{sendtime},{pool},{midHash},{id_},{weight}\">{content}</d>{Extended_Data}\x0a"
-		XML_Data_2nd += XML_item
-		Item_nr = {}
+		XML_Data_2nd += f"\t<d p=\"{format(progress/1000, '.5f')},{mode},{fontsize},{color},{sendtime},{pool},{midHash},{id_},{weight}\">{content}</d>{Extended_Data}\x0a"
 	return XML_Data_2nd
 
-
 def XML_Special_Process(data):
-	# return ""
+	tHis:dm_pb2.CommandDm
 	XML_Spec_Data = ""
-	for Item_sp in data:
-		id_ = Item_sp["id"]					# int64 id = 1
-		oid = Item_sp["oid"]				# int64 oid = 2;
-		mid = Item_sp['mid']				# int64 mid = 3;
-		command = Item_sp["command"]		# string command = 4;
-		content = Item_sp["content"]		# string content = 5;
-		progress = Item_sp["progress"]		# int32 progress = 6;
-		ctime = Item_sp["ctime"]			# string ctime = 7;
-		mtime = Item_sp["mtime"]			# string mtime = 8;
-		extra = Item_sp["extra"]			# string extra = 9;
-		idStr = Item_sp["idStr"]			# string idStr = 10
-
-		progress = format(progress/1000, ".5f")
-		mode = "1"
-		fontsize = "25"
-		color = "16777215"
+	for tHis in data:
+		Ex_Extended_Data = ""
+		id_ = tHis.id				# int64 id = 1
+		oid = tHis.oid				# int64 oid = 2;
+		mid = tHis.mid				# int64 mid = 3;
+		command = tHis.command		# string command = 4;
+		content = tHis.content		# string content = 5;
+		progress = tHis.progress	# int32 progress = 6;
+		ctime = tHis.ctime			# string ctime = 7;
+		mtime = tHis.mtime			# string mtime = 8;
+		extra = tHis.extra			# string extra = 9;
+		idStr = tHis.idStr			# string idStr = 10
+		if str(id_) != idStr: print("[XML_SP]: id&idStr mismatch:", id_, idStr)
 		sendtime = int(time.mktime(time.strptime(ctime, '%Y-%m-%d %H:%M:%S')))
-		pool = "999"	# 
-		midHash = hex(binascii.crc32(mid.encode())^0xFFFFFFFF).lstrip("0x").lstrip("0")
-		weight = "11"
-
-		spec_tag = f"<!-- SPECIAL: {command}{extra} -->"
-		XML_item = f"\t<d p=\"{progress},{mode},{fontsize},{color},{sendtime},{pool},{midHash},{id_},{weight}\">{content}</d>{spec_tag}\x0a"
-		XML_Spec_Data += XML_item
+		midHash = hex(binascii.crc32(str(mid).encode())^0xFFFFFFFF).lstrip("0x").lstrip("0")
+		if flag_Ext_XML_Data: Ex_Extended_Data = f"<!-- SPECIAL: {command}{extra} -->"
+		XML_Spec_Data += f"\t<d p=\"{format(progress/1000, '.5f')},1,25,16777215,{sendtime},999,{midHash},{id_},11\">{content}</d>{Ex_Extended_Data}\x0a"
 	return XML_Spec_Data
 
 
@@ -308,6 +244,7 @@ def dump_Data(str0: str, str1: str, str2: str, data: bin, force: bool = False):
 if __name__ == '__main__':
 	开始时间 = time.time()
 	# print(sys.argv)
+	# ================================ 程序设置
 	is_ERROR = False
 	flag_Timer = True			# 计时器
 	flag_Error_Stop = False		# 错误停机
@@ -319,19 +256,18 @@ if __name__ == '__main__':
 	flag_Dump_Binary = False	# 输出 Protobuf 二进制文件
 	flag_Test_Run = False		# 模拟运行
 	flag_BAS = True
-	flag_gzip = True			# 压缩为gzip
-	try:
-		P_flag = sys.argv[2]
-		Program_FLAG(P_flag)
+	flag_gzip = False			# 压缩为gzip
+	try: Program_FLAG(sys.argv[2])
 	except IndexError: pass
 	if flag_Test_Run: print("[Test Run]: ================================ ")
+	# ================================ 终端输入
 	vid = sys.argv[1]
 	if flag_NO_Json and flag_NO_XML and (not flag_Dump_Binary):
 		print("?????????")
 		sys.exit(999)
 	if vid.find("https://www.bilibili.com/video/") == 0: vid = vid.lstrip("https://www.bilibili.com/video/")
 	if vid.find("http://www.bilibili.com/video/") == 0: vid = vid.lstrip("http://www.bilibili.com/video/")
-	if vid.find("https://b23.tv/BV1") == 0: vid = vid.lstrip("https://b23.tv/")
+	if vid.find("https://b23.tv/BV1") == 0 or vid.find("https://b23.tv/av") == 0: vid = vid.lstrip("https://b23.tv/")
 	vid = vid.split("?")[0].split("/")[0]
 	if vid.find("av") == 0:
 		avid = vid
@@ -344,38 +280,36 @@ if __name__ == '__main__':
 		avid = f"av{avid_in}"
 		url_Main = f"https://api.bilibili.com/x/web-interface/view?bvid={bvid}"
 	if flag_Many_Logs: print(f"[Info]: {bvid}|{avid}")
-
+	# ================================ 视频信息（全部）
 	if flag_Test_Run: json_Resp = FAKE_Downloader(str0="0", str1="Video", str2="INFO", url_Fake_DL=url_Main)
 	else: json_Resp = Downloader(url_Main)
-
 	dump_Data(str0="0", str1="Video", str2="INFO", data=json_Resp)
 	if is_ERROR and flag_Error_Stop:
 		print(f"[{bvid}|{avid}]Error: {json_Resp}")
 		print("总计用时:", round(time.time()-开始时间, 3))
 		sys.exit(1)
-
+	# ================================ 加载
 	Json_Info = json.loads(json_Resp)["data"]
 	Item = Json_Info["pages"]
 	Main_Title = Json_Info["title"]
 	P_Date = str(Json_Info["pubdate"])
-
+	if Main_Title == "": Main_Title = "Fake_MainTitle"
+	Num_of_Videos = int(len(Item))
+	# ================================ bvid aid int32 检查
 	if Json_Info["bvid"] != bvid: print(f"[bvid]: bvid mismatch {Json_Info['bvid']}|{bvid}")
 	if Json_Info["aid"] != avid_in: print(f"[avid]: avid mismatch av{Json_Info['aid']}|{avid}")
-
-	if Main_Title == "": Main_Title = "Fake_MainTitle"
-	sub_Items_Len = int(len(Item))
-
-	if Json_Info["stat"]["danmaku"] == 0 and flag_Zero_Stop:
+	# ================================ 零弹幕停机
+	if Json_Info["stat"]["danmaku"] == 0 and flag_Zero_Stop and False:
 		print("No danmaku")
-		for i in range(sub_Items_Len):
+		for i in range(Num_of_Videos):
 			duration = int(Item[i]["duration"])
 			cid = str(Item[i]["cid"])
 			P_Title = str(Item[i]["part"])
-			print(f"{P_Date}|{bvid}|{avid}|P{i+1}/{sub_Items_Len}|{cid}|{duration}|{math.ceil(duration/360)}|{Main_Title}|{P_Title}")
+			print(f"{P_Date}|{bvid}|{avid}|P{i+1}/{Num_of_Videos}|{cid}|{duration}|{math.ceil(duration/360)}|{Main_Title}|{P_Title}")
 		print("总计用时:", round(time.time()-开始时间, 3))
 		sys.exit(1)
-
-	for i in range(sub_Items_Len):
+	# ================================ 分集处理
+	for i in range(Num_of_Videos):
 		this = Item[i]
 		cid = str(this["cid"])
 		Danmaku_Count = 0
@@ -386,41 +320,36 @@ if __name__ == '__main__':
 		Segment_Count = math.ceil(duration/360)
 
 		if flag_Many_Logs: print()
-		URL_Ext_ = f'https://api.bilibili.com/x/v2/dm/web/view?type=1&oid={cid}'
-		if flag_Test_Run: DL_Data_BAS_Info = FAKE_Downloader(str0=cid, str1="BAS", str2="INFO", url_Fake_DL=URL_Ext_)
-		else: DL_Data_BAS_Info = Downloader(URL_Ext_)
-		BAS_Info_Proto = dm_pb2.DmWebViewReply()
-		BAS_Info_Proto.ParseFromString(DL_Data_BAS_Info)
-		BAS_Info_Json = json.loads(MessageToJson(BAS_Info_Proto, indent=0, ensure_ascii=False))
-		dump_Data(str0=cid, str1="BAS", str2="Info", data=DL_Data_BAS_Info)
-
+		URL_Ext = f'https://api.bilibili.com/x/v2/dm/web/view?type=1&oid={cid}'
+		if flag_Test_Run: DL_Data_Extra_Info = FAKE_Downloader(str0=cid, str1="BAS", str2="INFO", url_Fake_DL=URL_Ext)
+		else: DL_Data_Extra_Info = Downloader(URL_Ext)
+		Extra_Info_Proto = dm_pb2.DmWebViewReply()
+		Extra_Info_Proto.ParseFromString(DL_Data_Extra_Info)
+		Extra_Info_Json = json.loads(MessageToJson(Extra_Info_Proto, indent=0, ensure_ascii=False))
+		dump_Data(str0=cid, str1="BAS", str2="Info", data=DL_Data_Extra_Info)
+		if str(Segment_Count) != Extra_Info_Json["dmSge"]["total"]: print()
 		if (not flag_NO_XML): XML_Data_Empty = XML_Write_Data = f"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\x0a<i>\x0a\t<chatserver>chat.bilibili.com</chatserver>\x0a\t<chatid>{cid}</chatid>\x0a\t<mission>0</mission>\x0a\t<maxlimit>{6000*Segment_Count}</maxlimit>\x0a\t<state>0</state>\x0a\t<real_name>0</real_name>\x0a\t<source>k-v</source>\x0a"
 		P_Title = str(this["part"])
 		if Main_Title == P_Title: P_Title = f"P{i+1}"
 		if flag_Many_Logs: print()
-		print(f"{P_Date}|{bvid}|{avid}|P{i+1}/{sub_Items_Len}|{cid}|{duration}|{math.ceil(duration/360)}|{Main_Title}|{P_Title}")
-		File_Name = f"[{P_Date}][{bvid}][{avid}][P{i+1}][{cid}]{Main_Title.replace('_', '＿')}_{P_Title.replace('_', '＿')}"
-		File_Name = File_Name.replace("\\", "＼").replace("/", "／").replace(":", "：").replace("*", "＊").replace("?", "？").replace("<", "＜").replace(">", "＞").replace("|", "｜").replace("\"", "＂")	# \/:*?"<>|
+		print(f"{P_Date}|{bvid}|{avid}|P{i+1}/{Num_of_Videos}|{cid}|{duration}|{math.ceil(duration/360)}|{Main_Title}|{P_Title}")
+		File_Name = f"[{P_Date}][{bvid}][{avid}][P{i+1}][{cid}]{Main_Title.replace('_', '＿')}_{P_Title.replace('_', '＿')}".replace("\\", "＼").replace("/", "／").replace(":", "：").replace("*", "＊").replace("?", "？").replace("<", "＜").replace(">", "＞").replace("|", "｜").replace("\"", "＂")	# \/:*?"<>|
 		# [1656432000][BV1**4*1*7*][av*********][P*][cid]MainTitle_P-Title
 		XML_Time = 0
 
-		try: XML_Write_Data += XML_Special_Process(BAS_Info_Json["commandDms"])
-		except KeyError: pass
-
 		BAS开始时间 = time.time()
+		XML_Write_Data += XML_Special_Process(Extra_Info_Proto.commandDms)
 		if flag_BAS:
 			BAS_danmaku = get_Special_Danmaku()
 			if (not flag_NO_XML):
 				XML_Ti = time.time()
 				xml_t1 = dm_pb2.DmSegMobileReply()
 				xml_t1.ParseFromString(BAS_danmaku)
-				xml_t2 = MessageToJson(xml_t1, indent=0, ensure_ascii=False)
-				XML_Write_Data += XML_Process(xml_t2)
+				XML_Write_Data += XML_Process(xml_t1.elems)
 				XML_Tim = time.time()
 				XML_Time += XML_Tim - XML_Ti
 			Danmaku_Final_Binary += BAS_danmaku
 		BAS结束时间 = time.time()
-
 
 		if not flag_Many_Logs: Progress_Bar = tqdm(total=Segment_Count, leave=False, unit='chunks', ascii=True, ncols=100)
 		for segments in range(Segment_Count):
@@ -432,11 +361,11 @@ if __name__ == '__main__':
 				XML_Ti = time.time()
 				xml_t1 = dm_pb2.DmSegMobileReply()
 				xml_t1.ParseFromString(Danmaku_Binarys)
-				XML_Write_Data += XML_Process(MessageToJson(xml_t1, indent=0, ensure_ascii=False))
+				XML_Write_Data += XML_Process(xml_t1.elems)
 				XML_Tim = time.time()
 				XML_Time += XML_Tim - XML_Ti
 			if (not flag_Many_Logs): Progress_Bar.update(1)
-			if is_ERROR or flag_Many_Logs: print(f"[danmaku]: P{i+1}/{sub_Items_Len}::{segments+1}/{Segment_Count}")
+			if is_ERROR or flag_Many_Logs: print(f"[danmaku]: P{i+1}/{Num_of_Videos}::{segments+1}/{Segment_Count}")
 		if (not flag_Many_Logs):Progress_Bar.close()
 		dump_Data(str0=cid, str1="Danmaku", str2="ALL", data=Danmaku_Final_Binary, force=True)
 		JSON_Time = time.time()
@@ -456,14 +385,15 @@ if __name__ == '__main__':
 				j1["info"]["V_Name"] = Main_Title
 				j1["info"]["pubdate"] = Json_Info['pubdate']
 				j1["info"]["ctime"] = Json_Info['ctime']
-				j1["info"]["P_Name"] = P_Title
+				j1["info"]["P_Name"] = this["part"]
 				j1["info"]["duration"] = duration
 				j1["info"]["cid"] = cid
 				j1["info"]["segment_count"] = Segment_Count
 				j1["info"]["danmaku_count"] = Danmaku_Count
 				j1["info"]["danmaku_web_reported"] = Json_Info['stat']['danmaku']
+				j1["info"]["danmaku_proto_reported"] = Extra_Info_Proto.count
 				j1["info"]["File_Create_Time"] = int(time.time())
-				try: j1["commandDms"] = BAS_Info_Json["commandDms"]
+				try: j1["commandDms"] = Extra_Info_Json["commandDms"]
 				except KeyError: j1["commandDms"] = []
 
 			Json_Write_Data = json.dumps(j1, ensure_ascii=False).replace("}, {\"id\"", "},\x0a{\"id\"").replace(", \"test20\": \"0\", \"test21\": \"0\"", "")
