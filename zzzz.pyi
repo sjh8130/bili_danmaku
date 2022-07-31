@@ -143,7 +143,7 @@ class DanmakuAIFlag(_message.Message):
     def __init__(self, dm_flags: _Optional[_Iterable[_Union[DanmakuFlag, _Mapping]]] = ...) -> None: ...
 
 class DanmakuElem(_message.Message):
-    __slots__ = ["action", "animation", "attr", "color", "content", "ctime", "fontsize", "id", "idStr", "likes", "midHash", "mode", "pool", "progress", "reply_count", "test16", "test17", "test20", "test21", "test23", "user_like", "usermid", "weight"]
+    __slots__ = ["action", "animation", "attr", "color", "content", "ctime", "fontsize", "id", "idStr", "likes", "midHash", "mode", "pool", "progress", "reply_count", "test16", "test17", "test19", "test20", "test21", "test23", "usermid", "weight"]
     ACTION_FIELD_NUMBER: _ClassVar[int]
     ANIMATION_FIELD_NUMBER: _ClassVar[int]
     ATTR_FIELD_NUMBER: _ClassVar[int]
@@ -161,11 +161,11 @@ class DanmakuElem(_message.Message):
     REPLY_COUNT_FIELD_NUMBER: _ClassVar[int]
     TEST16_FIELD_NUMBER: _ClassVar[int]
     TEST17_FIELD_NUMBER: _ClassVar[int]
+    TEST19_FIELD_NUMBER: _ClassVar[int]
     TEST20_FIELD_NUMBER: _ClassVar[int]
     TEST21_FIELD_NUMBER: _ClassVar[int]
     TEST23_FIELD_NUMBER: _ClassVar[int]
     USERMID_FIELD_NUMBER: _ClassVar[int]
-    USER_LIKE_FIELD_NUMBER: _ClassVar[int]
     WEIGHT_FIELD_NUMBER: _ClassVar[int]
     action: str
     animation: str
@@ -184,13 +184,13 @@ class DanmakuElem(_message.Message):
     reply_count: int
     test16: int
     test17: int
+    test19: bytes
     test20: str
     test21: str
     test23: bytes
-    user_like: int
     usermid: int
     weight: int
-    def __init__(self, id: _Optional[int] = ..., progress: _Optional[int] = ..., mode: _Optional[int] = ..., fontsize: _Optional[int] = ..., color: _Optional[int] = ..., midHash: _Optional[str] = ..., content: _Optional[str] = ..., ctime: _Optional[int] = ..., weight: _Optional[int] = ..., action: _Optional[str] = ..., pool: _Optional[int] = ..., idStr: _Optional[str] = ..., attr: _Optional[int] = ..., usermid: _Optional[int] = ..., likes: _Optional[int] = ..., test16: _Optional[int] = ..., test17: _Optional[int] = ..., reply_count: _Optional[int] = ..., user_like: _Optional[int] = ..., test20: _Optional[str] = ..., test21: _Optional[str] = ..., animation: _Optional[str] = ..., test23: _Optional[bytes] = ...) -> None: ...
+    def __init__(self, id: _Optional[int] = ..., progress: _Optional[int] = ..., mode: _Optional[int] = ..., fontsize: _Optional[int] = ..., color: _Optional[int] = ..., midHash: _Optional[str] = ..., content: _Optional[str] = ..., ctime: _Optional[int] = ..., weight: _Optional[int] = ..., action: _Optional[str] = ..., pool: _Optional[int] = ..., idStr: _Optional[str] = ..., attr: _Optional[int] = ..., usermid: _Optional[int] = ..., likes: _Optional[int] = ..., test16: _Optional[int] = ..., test17: _Optional[int] = ..., reply_count: _Optional[int] = ..., test19: _Optional[bytes] = ..., test20: _Optional[str] = ..., test21: _Optional[str] = ..., animation: _Optional[str] = ..., test23: _Optional[bytes] = ...) -> None: ...
 
 class DanmakuFlag(_message.Message):
     __slots__ = ["dmid", "flag"]
