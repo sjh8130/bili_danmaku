@@ -13,11 +13,11 @@ def ATTR_TYPE(attr:int):
 	if b[-2 ] == "1": o += "直播 "
 	if b[-3 ] == "1": o += "高赞 "
 	if b[-4 ] == "1": o += "壹 "
-	if b[-5 ] == "1": o += "贰 "	# Y 硬核会员 不显示？
+	if b[-5 ] == "1": o += "贰 "
 	if b[-6 ] == "1": o += "叁 "
-	if b[-7 ] == "1": o += "肆 "	# Y 硬核会员 不显示？
+	if b[-7 ] == "1": o += "肆 "
 	if b[-8 ] == "1": o += "伍 "
-	if b[-9 ] == "1": o += "陆 "	# Y
+	if b[-9 ] == "1": o += "陆 "
 	if b[-10] == "1": o += "柒 "
 	return o
 
@@ -111,7 +111,7 @@ for this in Loaded_JSON["elems"]:
 	except KeyError: weight = 11
 
 	try: action = this["action"]				# string action = 10;
-	except KeyError: pass
+	except KeyError: action = ""
 
 	try: pool = this["pool"]					# int32 pool = 11;
 	except KeyError: pool = 0
@@ -130,7 +130,7 @@ for this in Loaded_JSON["elems"]:
 	except KeyError: likes = ""
 
 	try: animation = this["animation"]			# string animation = 22;
-	except KeyError: pass
+	except KeyError: animation = ""
 
 	try: replyCount = f"Reply:{this['replyCount']} "											# replyCount
 	except KeyError: replyCount = ""
