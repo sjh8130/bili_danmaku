@@ -27,6 +27,8 @@ def Danmaku_ATTR_TYPE(attr: int):
 	if b[-14] == "1": o += "拾壹 "
 	return o
 
+def fp(a:str,b:int): return f"{a}:{b} " if b else ""
+
 SPLIT_2ND_SIZE = 4000
 SPLIT_3RD_SIZE = 40000
 XML_Data_1st_Cache = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\x0a<i>\x0a\t<chatserver>chat.bilibili.com</chatserver>\x0a\t<chatid>0</chatid>\x0a\t<mission>0</mission>\x0a\t<maxlimit>6000</maxlimit>\x0a\t<state>0</state>\x0a\t<real_name>0</real_name>\x0a\t<source>k-v</source>\x0a"
@@ -60,10 +62,11 @@ for this in itm.elems:
 	pool = this.pool
 	idStr = this.idStr
 	attr = Danmaku_ATTR_TYPE(this.attr)
-	usermid = f"mid:{this.usermid} "
-	likes = f"Likes: {this.likes} "
-	reply_count = f"Reply: {this.reply_count} "
+	usermid = fp("mid", this.usermid)
+	likes = fp("Likes", this.likes)
+	reply_count = fp("Reply", this.reply_count)	
 	animation = this.animation
+	this = None
 	if str(id_) != idStr: print("[XML]: id&idStr mismatch:", id_, idStr)
 	Extended_Data = f"<!-- {attr}{usermid}{likes}{reply_count} -->".replace("  ", " ")
 	content = content.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace("\x00", " ").replace("\x08", " ").replace("\x14", " ").replace("\x17", " ").replace("\n", "\\n").replace("\r", "\\r")
@@ -76,6 +79,8 @@ for this in itm.elems:
 		XML_Data_2nd_Cache += XML_Data_3rd_Cache
 		XML_Data_3rd_Cache = ""
 		print(f"\rProgress: {i}/{Danmaku_Count}, Time: {round(time.time()-Start_Time,3)}",end="")
-open("OUT.XML", "w", encoding="utf-8").write(XML_Data_1st_Cache+XML_Data_2nd_Cache+XML_Data_3rd_Cache+"</i>\x0a<!-- Create Time: 0 -->")
+print(f"\rProgress: {i}/{Danmaku_Count}, Time: {round(time.time()-Start_Time,3)}",end="")
+itm = None
+open("OUT.XML", "w", encoding="utf-8").write(XML_Data_1st_Cache+XML_Data_2nd_Cache+XML_Data_3rd_Cache+f"</i>\x0a<!-- Create Time: {int(Start_Time)} -->")
 End_Time = time.time()
 print(f"\r{Danmaku_Count}, 总计用时：{round(End_Time-Start_Time, 4)}                     ")
