@@ -17,21 +17,19 @@ import sys
 import io
 import gzip
 
+from my_lib.proto2xml import proto2xml
+from my_lib.bvav import BV_to_AV,AV_to_BV
+
 headers = {
 	'User-Agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.66 Safari/537.36 Edg/103.0.1264.44",
 	'origin': "https://www.bilibili.com",
 	'referer': "https://www.bilibili.com"
-	}
+}
 SLEEP_TIME = 0.75
-BV_AV_table = 'fZodR9XQDSUm21yCkr6zBqiveYah8bt4xsWpHnJE7jL5VG3guMTKNPAwcF'
-BV_AV_base58_dic = {}
-for BV_AV_base58_i in range(58): BV_AV_base58_dic[BV_AV_table[BV_AV_base58_i]] = BV_AV_base58_i
-s = [11, 10, 3, 8, 4, 6]
-BV_AV_xor = 177451812
-BV_AV_add = 8728348608
 NET_count = -1
 NET_count_all = 0
 err_sign = ""
+
 
 def Program_FLAG(flag: str):
 	if flag == "-1": return
@@ -75,49 +73,10 @@ def Program_FLAG(flag: str):
 	if flag_Many_Logs: print(f"[FLAG]: {b}")
 
 
-def Danmaku_ATTR_TYPE(attr: int):
-	global flag_Ext_XML_Data
-	if (not flag_Ext_XML_Data): return ""
-	if attr == 0: return "DM "
-	o = ""
-	b = "00000000000000000000000000000000" + bin(attr).lstrip("0b")
-	if b[-1 ] == "1": o += "保护 "	# 1
-	if b[-2 ] == "1": o += "直播 "	# 2
-	if b[-3 ] == "1": o += "高赞 "	# 4
-	if b[-4 ] == "1": o += "壹 "	# 8
-	if b[-5 ] == "1": o += "贰 "	# 16
-	if b[-6 ] == "1": o += "叁 "	# 32
-	if b[-7 ] == "1": o += "肆 "	# 64
-	if b[-8 ] == "1": o += "伍 "	# 128
-	if b[-9 ] == "1": o += "陆 "	# 256	图片弹幕
-	if b[-10] == "1": o += "柒 "	# 512
-	if b[-11] == "1": o += "捌 "	# 1024
-	if b[-12] == "1": o += "玖 "	# 2048
-	if b[-13] == "1": o += "拾 "	# 4096
-	if b[-14] == "1": o += "拾壹 "	# 8192
-	return o
-
-
-def BV_to_AV(input_BV: str):
-	result = 0
-	for i in range(6): result += BV_AV_base58_dic[input_BV[s[i]]]*58**i
-	out = (result-BV_AV_add) ^ BV_AV_xor
-	if out <= 0 or out > 0x7FFFFFFF: print("[BV_to_AV]: 2147483647")
-	return out
-
-
-def AV_to_BV(input_AV: int):
-	if input_AV > 0x7FFFFFFF: print("[AV_to_BV]: 2147483647")
-	input_AV = (input_AV ^ BV_AV_xor)+BV_AV_add
-	result = list('BV1  4 1 7  ')
-	for i in range(6): result[s[i]] = BV_AV_table[input_AV//58**i % 58]
-	return ''.join(result)
-
-
-def Downloader(url_DL: str):
-	if flag_Many_Logs: print(f"[NET]: {url_DL}", end="\t")
+def Downloader(url_Real_DL: str):
+	if flag_Many_Logs: print(f"[NET]: {url_Real_DL}     ", end="\t")
 	time.sleep(SLEEP_TIME)
-	DL_Data = requests.get(url_DL, headers=headers)
+	DL_Data = requests.get(url_Real_DL, headers=headers)
 	global NET_count
 	NET_count += 1
 	global NET_count_all
@@ -135,21 +94,21 @@ def Downloader(url_DL: str):
 def FAKE_Downloader(str0: str, str1: str, str2: str, url_Fake_DL: str):
 	if flag_Many_Logs: print(f"[NET]? {url_Fake_DL}     ", end="\t")
 	try:
-		resp = open(f"[{bvid}]_[{str0}]_[{str1}]_[{str2}].bin", "rb").read()
+		DL_Data = open(f"[{bvid}]_[{str0}]_[{str1}]_[{str2}].bin", "rb").read()
 		Fake_status_code = 200
 	except FileNotFoundError:
-		resp = b""
+		DL_Data = b""
 		Fake_status_code = 404
 	global NET_count
 	NET_count += 1
 	global NET_count_all
 	NET_count_all += 1
-	try: status_code = json.loads(resp)["code"]
+	try: status_code = json.loads(DL_Data)["code"]
 	except UnicodeDecodeError: status_code = 0
 	except json.decoder.JSONDecodeError:
 		if Fake_status_code == 404: status_code = 404
 	if flag_Many_Logs or status_code != 0 or Fake_status_code != 200: print(f"[NET]? File {Fake_status_code}, Json Code {status_code}", end="\t")
-	return resp
+	return DL_Data
 
 
 def get_Danmaku(cid: str, Segment_Index: str):
@@ -180,59 +139,36 @@ def get_Special_Danmaku():
 	return BAS_Binary
 
 
-def fp(a:str,b:int): return f"{a}:{b} " if b else ""
+def fp(a: str, b: int): return f"{a}:{b} " if b else ""
+
 
 def XML_Process(data):
-	thIs:dm_pb2.DanmakuElem
+	this: dm_pb2.DanmakuElem
 	XML_Data_2nd = ""
-	for thIs in data:
-		Extended_Data = ""
-		id_ = thIs.id								# int64 id = 1;
-		progress = thIs.progress					# int32 progress = 2;
-		mode = thIs.mode							# int32 mode = 3;
-		fontsize = thIs.fontsize					# int32 fontsize = 4;
-		color = thIs.color							# uint32 color = 5;
-		midHash = thIs.midHash						# string midHash = 6;
-		content = thIs.content						# string content = 7;
-		sendtime = thIs.ctime						# int64 ctime = 8;
-		weight = thIs.weight						# int32 weight = 9;
-		action = thIs.action						# string action = 10;
-		pool = thIs.pool							# int32 pool = 11;
-		idStr = thIs.idStr							# string idStr = 12;
-		attr = Danmaku_ATTR_TYPE(thIs.attr)			# int32 attr = 13;
-		usermid = fp("mid", thIs.usermid)			# int usermid = 14;
-		likes = fp("Likes", thIs.likes)				# int likes = 15;
-		reply_count = fp("Reply", thIs.reply_count)	# int reply_count = 18;
-		animation = thIs.animation					# string animation = 22;
-
-		if str(id_) != idStr: print("[XML]: id&idStr mismatch:", id_, idStr)
-		if flag_Ext_XML_Data: Extended_Data = f"<!-- {attr}{usermid}{likes}{reply_count} -->".replace("  ", " ")
-
-		content = content.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace("\x00", " ").replace("\x08", " ").replace("\x14", " ").replace("\x17", " ").replace("\n", "\\n").replace("\r", "\\r")
-
-		XML_Data_2nd += f"\t<d p=\"{format(progress/1000, '.5f')},{mode},{fontsize},{color},{sendtime},{pool},{midHash},{id_},{weight}\">{content}</d>{Extended_Data}\x0a"
+	for this in data: XML_Data_2nd += proto2xml(this, exdata=flag_Ext_XML_Data, enable_weight=False)
 	return XML_Data_2nd
 
+
 def XML_Special_Process(data):
-	tHis:dm_pb2.CommandDm
+	this: dm_pb2.CommandDm
 	XML_Spec_Data = ""
-	for tHis in data:
-		Ex_Extended_Data = ""
-		id_ = tHis.id				# int64 id = 1
-		oid = tHis.oid				# int64 oid = 2;
-		mid = tHis.mid				# int64 mid = 3;
-		command = tHis.command		# string command = 4;
-		content = tHis.content		# string content = 5;
-		progress = tHis.progress	# int32 progress = 6;
-		ctime = tHis.ctime			# string ctime = 7;
-		mtime = tHis.mtime			# string mtime = 8;
-		extra = tHis.extra			# string extra = 9;
-		idStr = tHis.idStr			# string idStr = 10
+	for this in data:
+		Ex_Extra_Data = ""
+		id_ = this.id				# int64 id = 1
+		oid = this.oid				# int64 oid = 2;
+		mid = this.mid				# int64 mid = 3;
+		command = this.command		# string command = 4;
+		content = this.content		# string content = 5;
+		progress = this.progress	# int32 progress = 6;
+		ctime = this.ctime			# string ctime = 7;
+		mtime = this.mtime			# string mtime = 8;
+		extra = this.extra			# string extra = 9;
+		idStr = this.idStr			# string idStr = 10
 		if str(id_) != idStr: print("[XML_SP]: id&idStr mismatch:", id_, idStr)
 		sendtime = int(time.mktime(time.strptime(ctime, '%Y-%m-%d %H:%M:%S')))
-		midHash = hex(binascii.crc32(str(mid).encode())^0xFFFFFFFF).lstrip("0x").lstrip("0")
-		if flag_Ext_XML_Data: Ex_Extended_Data = f"<!-- SPECIAL: {command}{extra} -->"
-		XML_Spec_Data += f"\t<d p=\"{format(progress/1000, '.5f')},1,25,16777215,{sendtime},999,{midHash},{id_},11\">{content}</d>{Ex_Extended_Data}\x0a"
+		midHash = hex(binascii.crc32(str(mid).encode()) ^ 0xFFFFFFFF).lstrip("0x").lstrip("0")
+		if flag_Ext_XML_Data: Ex_Extra_Data = f"<!-- SPECIAL: {command}{extra} -->"
+		XML_Spec_Data += f"\t<d p=\"{format(progress/1000, '.5f')},1,25,16777215,{sendtime},999,{midHash},{id_},11\">{content}</d>{Ex_Extra_Data}\x0a"
 	return XML_Spec_Data
 
 
@@ -257,7 +193,7 @@ if __name__ == '__main__':
 	flag_NO_XML = False			# 不输出 XML
 	flag_Dump_Binary = False	# 输出 Protobuf 二进制文件
 	flag_Test_Run = False		# 模拟运行
-	flag_BAS = True
+	flag_BAS = True				# 
 	flag_gzip = False			# 压缩为gzip
 	try: Program_FLAG(sys.argv[2])
 	except IndexError: pass
@@ -287,7 +223,7 @@ if __name__ == '__main__':
 	else: json_Resp = Downloader(url_Main)
 	dump_Data(str0="0", str1="Video", str2="INFO", data=json_Resp)
 	if is_ERROR and flag_Error_Stop:
-		print(f"[{bvid}|{avid}]Error: {json.loads(json_Resp)['message']}")
+		print(f"\n[{bvid}|{avid}]Error: {json.loads(json_Resp)['message']}")
 		print("总计用时:", round(time.time()-开始时间, 3))
 		sys.exit(1)
 	# ================================ 加载
@@ -329,7 +265,7 @@ if __name__ == '__main__':
 		Extra_Info_Proto.ParseFromString(DL_Data_Extra_Info)
 		Extra_Info_Json = json.loads(MessageToJson(Extra_Info_Proto, indent=0, ensure_ascii=False))
 		dump_Data(str0=cid, str1="BAS", str2="Info", data=DL_Data_Extra_Info)
-		if Segment_Count != Extra_Info_Proto.dm_sge.total : print(f"[segments_calc P{i+1}]:err {Segment_Count}|{Extra_Info_Proto.dm_sge.total}")
+		if Segment_Count != Extra_Info_Proto.dm_sge.total: print(f"[segments_calc P{i+1}]:err {Segment_Count}|{Extra_Info_Proto.dm_sge.total}")
 		if (not flag_NO_XML): XML_Data_Empty = XML_Write_Data = f"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\x0a<i>\x0a\t<chatserver>chat.bilibili.com</chatserver>\x0a\t<chatid>{cid}</chatid>\x0a\t<mission>0</mission>\x0a\t<maxlimit>{6000*Segment_Count}</maxlimit>\x0a\t<state>0</state>\x0a\t<real_name>0</real_name>\x0a\t<source>k-v</source>\x0a"
 		P_Title = str(This["part"])
 		if Main_Title == P_Title: P_Title = f"P{i+1}"
@@ -340,12 +276,12 @@ if __name__ == '__main__':
 		XML_Time = 0
 
 		BAS开始时间 = XML_Ti = time.time()
-		if (not flag_NO_XML):XML_Write_Data += XML_Special_Process(Extra_Info_Proto.commandDms)
+		if (not flag_NO_XML): XML_Write_Data += XML_Special_Process(Extra_Info_Proto.commandDms)
 		if flag_BAS:
 			BAS_danmaku = get_Special_Danmaku()
 			xml_t1 = dm_pb2.DmSegMobileReply()
 			xml_t1.ParseFromString(BAS_danmaku)
-			if (not flag_NO_XML):XML_Write_Data += XML_Process(xml_t1.elems)
+			if (not flag_NO_XML): XML_Write_Data += XML_Process(xml_t1.elems)
 			Danmaku_Final_Binary += BAS_danmaku
 		XML_Tim = BAS结束时间 = time.time()
 		XML_Time += XML_Tim - XML_Ti
@@ -365,7 +301,7 @@ if __name__ == '__main__':
 				XML_Time += XML_Tim - XML_Ti
 			if (not flag_Many_Logs): Progress_Bar.update(1)
 			if flag_Many_Logs: print(f"[danmaku]: P{i+1}/{Num_of_Videos}::{segments+1}/{Segment_Count}")
-		if (not flag_Many_Logs):Progress_Bar.close()
+		if (not flag_Many_Logs): Progress_Bar.close()
 		dump_Data(str0=cid, str1="Danmaku", str2="ALL", data=Danmaku_Final_Binary, force=True)
 		JSON_Time = time.time()
 		if (not flag_NO_Json):

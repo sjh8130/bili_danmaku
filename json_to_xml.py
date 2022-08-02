@@ -5,21 +5,7 @@ import time
 import gzip
 import os
 import binascii
-
-def ATTR_TYPE(attr:int):
-	o = ""
-	b = "0000000000" + bin(attr).lstrip("0b")
-	if b[-1 ] == "1": o += "保护 "
-	if b[-2 ] == "1": o += "直播 "
-	if b[-3 ] == "1": o += "高赞 "
-	if b[-4 ] == "1": o += "壹 "
-	if b[-5 ] == "1": o += "贰 "
-	if b[-6 ] == "1": o += "叁 "
-	if b[-7 ] == "1": o += "肆 "
-	if b[-8 ] == "1": o += "伍 "
-	if b[-9 ] == "1": o += "陆 "
-	if b[-10] == "1": o += "柒 "
-	return o
+from my_lib.json2xml import json2xml
 
 Start_Time = time.time()
 try:
@@ -36,8 +22,6 @@ outputFile = input_File.rstrip(".gz").rstrip(".json")+".xml"
 
 SPLIT_2ND_SIZE = 4000
 SPLIT_3RD_SIZE = 40000
-
-dedup_Table = []
 
 Loaded_JSON = json.loads(infile)
 infile = None
@@ -77,81 +61,7 @@ if compatible_1:
 		XML_Data_1st_Cache += f"\t<d p=\"{format(progress/1000, '.5f')},1,25,16777215,{sendtime},999,{midHash},{id_},11\">{content}</d><!-- SPECIAL: {command}{extra} -->\x0a"
 
 for this in Loaded_JSON["elems"]:
-	try: id_ = this["id"]						# int64 id = 1;
-	except KeyError: id_ = "0"
-
-	# # Deduplication 20x time
-	# if id_ in dedup_Table:
-	# 	continue
-	# dedup_Table.append(id_)
-
-	Extended_Data = ""
-	try: progress:int = this["progress"]			# int32 progress = 2;
-	except KeyError: progress = 0
-
-	try: mode:int = this["mode"]					# int32 mode = 3;
-	except KeyError: mode = 1
-
-	try: fontsize = this["fontsize"]			# int32 fontsize = 4;
-	except KeyError: fontsize = 25
-
-	try: color = this["color"]					# uint32 color = 5;
-	except KeyError: color = 0
-
-	try: midHash = this["midHash"]				# string midHash = 6;
-	except KeyError: midHash = "ffffffff"
-
-	try: content = this["content"]				# string content = 7;
-	except KeyError: content = ""
-
-	try: sendtime = this["ctime"]				# int64 ctime = 8;
-	except KeyError: sendtime = "1262275200"
-
-	try: weight = this["weight"]				# int32 weight = 9;
-	except KeyError: weight = 11
-
-	try: action = this["action"]				# string action = 10;
-	except KeyError: action = ""
-
-	try: pool = this["pool"]					# int32 pool = 11;
-	except KeyError: pool = 0
-
-	try: idStr = this["idStr"]					# string idStr = 12;
-	except KeyError: idStr = "0"
-	if id_ != idStr:print("\n id idStr mismatch:", id_, idStr)
-
-	try: attr = ATTR_TYPE(this["attr"])			# int32 attr = 13;
-	except KeyError: attr = "DM "
-
-	try: usermid = f"mid:{this['usermid']} "	# string usermid = 14;
-	except KeyError: usermid = ""
-
-	try: likes = f"Likes:{this['likes']} "		# string likes = 15;
-	except KeyError: likes = ""
-
-	try: animation = this["animation"]			# string animation = 22;
-	except KeyError: animation = ""
-
-	try: replyCount = f"Reply:{this['replyCount']} "											# replyCount
-	except KeyError: replyCount = ""
-	dm_reply_to = " "
-	try: dm_reply_to = f"reply_to:{this['test16']} "											# test16
-	except KeyError:
-		try: dm_reply_to = f"reply_to:{this['test17']} "										# test17
-		except KeyError:
-			try:
-				if this['test20'] != "0": dm_reply_to = f"reply_to:{this['test20']} "			# test20
-			except KeyError:
-				try:
-					if this['test21'] != "0": dm_reply_to = f"reply_to:{this['test21']} "		# test21
-				except KeyError: pass
-
-	Extended_Data = f"<!-- {attr}{usermid}{likes}{replyCount}{dm_reply_to}-->".replace("  "," ")
-	progress = format(progress/1000, ".5f")
-	content = content.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace("\x00", " ").replace("\x08", " ").replace("\x14", " ").replace("\x17", " ").replace("\n", "\\n").replace("\r", "\\r")
-
-	# XML_item = "\t<d p=\"{0},{1},{2},{3},{4},{5},{6},{7},{8}\">{9}</d>{10}\x0a".format(progress, mode, fontsize, color, sendtime, pool, midHash, id_, weight, content, spec_tag)
-	XML_Data_3rd_Cache += f"\t<d p=\"{progress},{mode},{fontsize},{color},{sendtime},{pool},{midHash},{id_},{weight}\">{content}</d>{Extended_Data}\x0a"
+	XML_Data_3rd_Cache += json2xml(this, True, False)
 	i += 1
 	if i % SPLIT_3RD_SIZE == 0:
 		XML_Data_1st_Cache += XML_Data_2nd_Cache
@@ -159,9 +69,9 @@ for this in Loaded_JSON["elems"]:
 	if i % SPLIT_2ND_SIZE == 0:
 		XML_Data_2nd_Cache += XML_Data_3rd_Cache
 		XML_Data_3rd_Cache = ""
-		print(f"\rProgress: {len(dedup_Table)}|{i}/{Danmaku_Count}, Time: {round(time.time()-Start_Time,3)}",end="")
+		print(f"\rProgress: {i}/{Danmaku_Count}, Time: {round(time.time()-Start_Time,3)}",end="")
 	this = {}
 
 open(outputFile, "w", encoding="utf-8").write(XML_Data_1st_Cache+XML_Data_2nd_Cache+XML_Data_3rd_Cache+f"</i>\x0a<!-- Create Time: {Last_Modified_Time} -->")
 End_Time = time.time()
-print(f"\r{len(dedup_Table)}|{Danmaku_Count}, 总计用时：{round(End_Time-Start_Time, 4)}                     ")
+print(f"\r{Danmaku_Count}, 总计用时：{round(End_Time-Start_Time, 4)}                     ")
