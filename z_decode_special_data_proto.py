@@ -27,8 +27,8 @@ if __name__ == '__main__':
 
 	# time4 = time.time()
 
-	open("out.json", 'w', encoding='utf-8').write(Write_Data)
-	# io.TextIOWrapper(gzip.open("out.json.gz",'wb'),encoding='utf-8').writelines(Write_Data)
+	open(f"{sys.argv[1]}.json", 'w', encoding='utf-8').write(Write_Data)
+	# io.TextIOWrapper(gzip.open(f"{sys.argv[1]}.json.gz",'wb'), encoding='utf-8').writelines(Write_Data)
 	# time5 = time.time()
 
 	# print(f"ALL:{time5-time1}, Write: {time5-time4}, Json: {time4-time3}, Proto: {time3-time2}, Read: {time2-time1}")

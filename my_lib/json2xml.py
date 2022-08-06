@@ -1,7 +1,7 @@
 from my_lib.attr import Danmaku_ATTR_TYPE
 
 
-def json2xml(this, flag_Ext_XML_Data, enable_weight: bool = False):
+def json2xml(this, exdata, enable_weight: int = 0):
 	try: id_ = this["id"]
 	except KeyError: id_ = "FAKE"
 	Extra_Data = ""
@@ -15,7 +15,7 @@ def json2xml(this, flag_Ext_XML_Data, enable_weight: bool = False):
 	except KeyError: color = 0
 	try: midHash = this["midHash"]
 	except KeyError: midHash = "ffffffff"
-	try: content = this["content"]
+	try: content = this["content"].replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace("\x00", " ").replace( "\x08", " ").replace("\x14", " ").replace("\x17", " ").replace("\n", "\\n").replace("\r", "\\r")
 	except KeyError: content = ""
 	try: sendtime = this["ctime"]
 	except KeyError: sendtime = "1262275200"
@@ -48,9 +48,7 @@ def json2xml(this, flag_Ext_XML_Data, enable_weight: bool = False):
 	try: t21 = f"reply_to:{this['test21']} "
 	except KeyError: t21 = "0"
 	dm_reply_to = proc_4(t16,t17,t20,t21)
-	if flag_Ext_XML_Data: Extra_Data = f"<!-- {attr}{usermid}{likes}{replyCount}{dm_reply_to}-->".replace("  ", " ")
-	content = content.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace("\x00", " ").replace( "\x08", " ").replace("\x14", " ").replace("\x17", " ").replace("\n", "\\n").replace("\r", "\\r")
-	# XML_item = "\t<d p=\"{0},{1},{2},{3},{4},{5},{6},{7},{8}\">{9}</d>{10}\x0a".format(progress, mode, fontsize, color, sendtime, pool, midHash, id_, weight, content, spec_tag)
+	if exdata: Extra_Data = f"<!-- {attr}{usermid}{likes}{replyCount}{dm_reply_to}-->".replace("  ", " ")
 	return f"\t<d p=\"{format(progress/1000, '.5f')},{mode},{fontsize},{color},{sendtime},{pool},{midHash},{id_},{weight}\">{content}</d>{Extra_Data}\x0a"
 
 def proc_4(a,b,c,d):
