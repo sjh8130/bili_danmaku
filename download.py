@@ -47,6 +47,7 @@ def Program_FLAG(flag: str):
 	global flag_Test_Run
 	global flag_spec_danmaku_1
 	global flag_gzip
+	global flag_spec_danmaku_2
 	if b[-1 ] == "1": flag_Timer = True
 	if b[-2 ] == "1": flag_Error_Stop = True
 	if b[-3 ] == "1": flag_Zero_Stop = True
