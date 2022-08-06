@@ -8,12 +8,12 @@ def BV_to_AV(input_BV: str):
 	result = 0
 	for i in range(6): result += BV_AV_base58_dic[input_BV[s[i]]]*58**i
 	out = (result-BV_AV_add) ^ BV_AV_xor
-	if out <= 0 or out > 2147483647: print("[BV_to_AV]: 2147483647")
+	if out <= 0 or out >= 29460791296: print("[BV_to_AV]: 29460791296")
 	return out
 
 
 def AV_to_BV(input_AV: int):
-	if input_AV > 2147483647: print("[AV_to_BV]: 2147483647")
+	if input_AV >= 29460791296: print("[AV_to_BV]: 29460791296")
 	input_AV = (input_AV ^ BV_AV_xor)+BV_AV_add
 	result = list('BV1  4 1 7  ')
 	for i in range(6): result[s[i]] = BV_AV_table[input_AV//58**i % 58]
