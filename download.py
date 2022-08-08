@@ -282,7 +282,7 @@ ____________________1___________ 2048 特殊弹幕_UP主自定义内容
 		Extra_Info_Proto = dm_pb2.DmWebViewReply()
 		Extra_Info_Proto.ParseFromString(DL_Data_Extra_Info)
 		Extra_Info_Json = json.loads(MessageToJson(Extra_Info_Proto, indent=0, ensure_ascii=False))
-		dump_Data(str0=cid, str1="BAS", str2="Info", data=DL_Data_Extra_Info)
+		if DL_Data_Extra_Info.__len__() != 306: dump_Data(str0=cid, str1="BAS", str2="Info", data=DL_Data_Extra_Info)
 		# if Extra_Info_Proto.dm_sge.page_size != 360000: print(f"[Segments_Split_Size P{i+1}]:err 360|{Extra_Info_Proto.dm_sge.page_size}")
 		# if Segment_Count != Extra_Info_Proto.dm_sge.total: print(f"[Segments_calc P{i+1}]:err {Segment_Count}|{Extra_Info_Proto.dm_sge.total}")
 		if (not flag_NO_XML): XML_Data_Empty = XML_Write_Data = f"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\x0a<i>\x0a\t<chatserver>chat.bilibili.com</chatserver>\x0a\t<chatid>{cid}</chatid>\x0a\t<mission>0</mission>\x0a\t<maxlimit>{6000*Segment_Count}</maxlimit>\x0a\t<state>0</state>\x0a\t<real_name>0</real_name>\x0a\t<source>k-v</source>\x0a"
