@@ -24,35 +24,36 @@ try: cid = Loaded_JSON["info"]["cid"]
 except KeyError: cid = 0
 try: Max_Limit = Loaded_JSON["info"]["segment_count"]*6000
 except KeyError: Max_Limit = 6000
-Danmaku_Count = len(Loaded_JSON["elems"])
 XML_Data_1st_Cache = f"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\x0a<i>\x0a\t<chatserver>chat.bilibili.com</chatserver>\x0a\t<chatid>{cid}</chatid>\x0a\t<mission>0</mission>\x0a\t<maxlimit>{Max_Limit}</maxlimit>\x0a\t<state>0</state>\x0a\t<real_name>0</real_name>\x0a\t<source>k-v</source>\x0a"
 XML_Data_2nd_Cache = XML_Data_3rd_Cache = ""
 
 try: Last_Modified_Time = int(Loaded_JSON['info']['File_Create_Time'])
 except KeyError: Last_Modified_Time = int(os.stat(input_File).st_ctime)
 
-compatible_1:bool = False
-try:
-	Loaded_JSON["commandDms"]
-	compatible_1 = True
-except KeyError: pass
-if compatible_1:
-	for Item_sp in Loaded_JSON["commandDms"]:
-		id_ = Item_sp["id"]					# int64 id = 1
-		oid = Item_sp["oid"]				# int64 oid = 2;
-		mid = Item_sp['mid']				# int64 mid = 3;
-		command = Item_sp["command"]		# string command = 4;
-		content = Item_sp["content"]		# string content = 5;
-		try: progress = Item_sp["progress"]	# int32 progress = 6;
+try: commandDms_Len = len(Loaded_JSON["commandDms"])
+except KeyError: commandDms_Len = 0
+
+try: Danmaku_Count = len(Loaded_JSON["elems"])
+except KeyError: Danmaku_Count = 0
+if Danmaku_Count == 0 and commandDms_Len ==0: print("No Data"),sys.exit()
+
+if commandDms_Len != 0:
+	for this in Loaded_JSON["commandDms"]:
+		id_ = this["id"]					# int64 id = 1
+		oid = this["oid"]				# int64 oid = 2;
+		mid = this['mid']				# int64 mid = 3;
+		command = this["command"]		# string command = 4;
+		content = this["content"]		# string content = 5;
+		try: progress = this["progress"]	# int32 progress = 6;
 		except KeyError: progress = 0
-		ctime = Item_sp["ctime"]			# string ctime = 7;
-		mtime = Item_sp["mtime"]			# string mtime = 8;
-		extra = Item_sp["extra"]			# string extra = 9;
-		idStr = Item_sp["idStr"]			# string idStr = 10
+		ctime = this["ctime"]			# string ctime = 7;
+		mtime = this["mtime"]			# string mtime = 8;
+		extra = this["extra"]			# string extra = 9;
+		idStr = this["idStr"]			# string idStr = 10
 		sendtime = int(time.mktime(time.strptime(ctime, '%Y-%m-%d %H:%M:%S')))
 		midHash = hex(binascii.crc32(mid.encode())^0xFFFFFFFF).lstrip("0x").lstrip("0")
 		XML_Data_1st_Cache += f"\t<d p=\"{format(progress/1000, '.5f')},1,25,16777215,{sendtime},999,{midHash},{id_},11\">{content}</d><!-- SPECIAL: {command}{extra} -->\x0a"
-
+del this
 for this in Loaded_JSON["elems"]:
 	XML_Data_3rd_Cache += json2xml(this, True, 0)
 	i += 1

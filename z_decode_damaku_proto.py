@@ -21,9 +21,12 @@ if __name__ == '__main__':
 	Temp_Binary = dm_pb2.DmSegMobileReply()
 	Temp_Binary.ParseFromString(Danmaku_Binary)
 
+	if len(Temp_Binary.elems) == 0:
+		print("No Data")
+		sys.exit()
 	time3 = time.time()
 	print("json")
-	Write_Data = json.dumps(json.loads(MessageToJson(Temp_Binary, indent=0, ensure_ascii=False)), ensure_ascii=False)
+	Write_Data = str(MessageToJson(Temp_Binary, indent=0, ensure_ascii=False))
 	Temp_Binary = None
 	time4 = time.time()
 	print("write")
