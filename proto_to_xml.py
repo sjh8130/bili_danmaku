@@ -21,6 +21,9 @@ itm.ParseFromString(open(sys.argv[1], "rb").read())
 
 XML_Data_2nd = ""
 Danmaku_Count = len(itm.elems)
+if Danmaku_Count == 0:
+	print("No Data")
+	sys.exit()
 for this in itm.elems:
 	XML_Data_3rd_Cache += proto2xml(this, exdata=True, enable_weight=0)
 	i += 1
