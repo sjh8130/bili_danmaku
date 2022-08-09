@@ -9,6 +9,9 @@ def fp(a: str, b: int): return f"{a}:{b} " if b else ""
 
 
 def proto2xml(this: dm_pb2.DanmakuElem, exdata: bool, enable_weight: int = 0):
+	"""
+	Text
+	"""
 	Extended_Data = ""
 	id_ = this.id
 	progress = this.progress

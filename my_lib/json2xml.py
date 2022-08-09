@@ -2,6 +2,9 @@ from my_lib.attr import Danmaku_ATTR_TYPE
 
 
 def json2xml(this, exdata, enable_weight: int = 0):
+	"""
+	Text
+	"""
 	try: id_ = this["id"]
 	except KeyError: id_ = "FAKE"
 	Extra_Data = ""

@@ -1,4 +1,7 @@
 def Danmaku_ATTR_TYPE(attr: int):
+	"""
+	Text
+	"""
 	if attr == 0: return "DM "
 	o = ""
 	b = "00000000000000000000000000000000" + bin(attr).lstrip("0b")
