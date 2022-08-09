@@ -14,11 +14,10 @@ import math
 import time
 import json
 import sys
-import io
-import gzip
 
 from my_lib.proto2xml import proto2xml
 from my_lib.bvav import BV_to_AV,AV_to_BV
+from my_lib.file_writer import writeE
 
 headers = {
 	'User-Agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.66 Safari/537.36 Edg/103.0.1264.44",
@@ -90,7 +89,7 @@ def Downloader(url_Real_DL: str):
 			global is_ERROR
 			is_ERROR = True
 	except UnicodeDecodeError: DL_Json_code = 0
-	if flag_Many_Logs or DL_Json_code != 0 or DL_Data.status_code != 200: print(f"[NET]: HTTP {DL_Data.status_code}, Json Code {DL_Json_code}|{NET_count_all}", end="\t")
+	if flag_Many_Logs or DL_Json_code != 0 or DL_Data.status_code != 200: print(f"[NET]: HTTP {DL_Data.status_code}, Json Code {DL_Json_code}", end="\t")
 	return DL_Data.content
 
 
@@ -110,7 +109,7 @@ def FAKE_Downloader(str0: str, str1: str, str2: str, url_Fake_DL: str):
 	except UnicodeDecodeError: DL_Json_code = 0
 	except json.decoder.JSONDecodeError:
 		if Fake_status_code == 404: DL_Json_code = 404
-	if flag_Many_Logs or DL_Json_code != 0 or Fake_status_code != 200: print(f"[NET]? File {Fake_status_code}, Json Code {DL_Json_code}|{NET_count_all}", end="\t")
+	if flag_Many_Logs or DL_Json_code != 0 or Fake_status_code != 200: print(f"[NET]? File {Fake_status_code}, Json Code {DL_Json_code}", end="\t")
 	return DL_Data
 
 
@@ -175,7 +174,7 @@ def dump_Data(str0: str, str1: str, str2: str, data: bin, force: bool = False):
 	if flag_Dump_Binary and ((not flag_Test_Run) or force): pass
 	else: return
 	if len(data) == 0: return
-	open(f"[{bvid}]_[{str0}]_[{str1}]_[{str2}].bin", "wb").write(data)
+	writeE(f"[{bvid}]_[{str0}]_[{str1}]_[{str2}].bin", data, False, True)
 
 
 if __name__ == '__main__':
@@ -282,7 +281,7 @@ ____________________1___________ 2048 特殊弹幕_UP主自定义内容
 		Extra_Info_Proto = dm_pb2.DmWebViewReply()
 		Extra_Info_Proto.ParseFromString(DL_Data_Extra_Info)
 		Extra_Info_Json = json.loads(MessageToJson(Extra_Info_Proto, indent=0, ensure_ascii=False))
-		if DL_Data_Extra_Info.__len__() != 306: dump_Data(str0=cid, str1="BAS", str2="Info", data=DL_Data_Extra_Info)
+		dump_Data(str0=cid, str1="BAS", str2="Info", data=DL_Data_Extra_Info)
 		# if Extra_Info_Proto.dm_sge.page_size != 360000: print(f"[Segments_Split_Size P{i+1}]:err 360|{Extra_Info_Proto.dm_sge.page_size}")
 		# if Segment_Count != Extra_Info_Proto.dm_sge.total: print(f"[Segments_calc P{i+1}]:err {Segment_Count}|{Extra_Info_Proto.dm_sge.total}")
 		if (not flag_NO_XML): XML_Data_Empty = XML_Write_Data = f"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\x0a<i>\x0a\t<chatserver>chat.bilibili.com</chatserver>\x0a\t<chatid>{cid}</chatid>\x0a\t<mission>0</mission>\x0a\t<maxlimit>{6000*Segment_Count}</maxlimit>\x0a\t<state>0</state>\x0a\t<real_name>0</real_name>\x0a\t<source>k-v</source>\x0a"
@@ -318,11 +317,12 @@ ____________________1___________ 2048 特殊弹幕_UP主自定义内容
 				XML_Tim = time.time()
 				XML_Time += XML_Tim - XML_Ti
 			if (not flag_Many_Logs): Progress_Bar.update(1)
-			if flag_Many_Logs: print(f"[danmaku]: P{i+1}/{Num_of_Videos}::{segments+1}/{Segment_Count}|{NET_count_all}", end="\r")
+			if flag_Many_Logs: print(f"[danmaku]: P{i+1}/{Num_of_Videos}::{segments+1}/{Segment_Count}")
 		if flag_Many_Logs: print()
 		if (not flag_Many_Logs): Progress_Bar.close()
 		dump_Data(str0=cid, str1="Danmaku", str2="ALL", data=Danmaku_Final_Binary, force=True)
 		JSON_Time = time.time()
+		print(JSON_Time)
 		if (not flag_NO_Json):
 			if flag_Many_Logs: print(f"[File_JSON P{i+1}]: PROC start")
 			Temp_Binary = dm_pb2.DmSegMobileReply()
@@ -355,15 +355,14 @@ ____________________1___________ 2048 特殊弹幕_UP主自定义内容
 			Json_Write_Data = json.dumps(j1, ensure_ascii=False).replace("}, {\"id\"", "},\x0a{\"id\"").replace(", \"test20\": \"0\", \"test21\": \"0\"", "")
 			del j1
 			if flag_Many_Logs: print(f"[File_JSON P{i+1}]: PROC end--")
-		if is_ERROR: err_sign = "ERR"
+		if is_ERROR: err_sign = "ERR_"
 		写入开始时间 = time.time()
 		if (not flag_NO_Json):
 			if Danmaku_Count == 0 and len(Extra_Info_Proto.commandDms) == 0:
 				if is_ERROR or flag_Many_Logs: print(f"[File_JSON P{i+1}]: No Data")
 			else:
 				if is_ERROR or flag_Many_Logs: print(f"[File_JSON P{i+1}]: 开始写入")
-				if flag_gzip: io.TextIOWrapper(gzip.open(f"{err_sign}{File_Name}.json.gz", 'wb', compresslevel=9), encoding='utf-8').writelines(Json_Write_Data)
-				else: open(f"{err_sign}{File_Name}.json", "w", encoding="utf-8").write(Json_Write_Data)
+				writeE(f"{err_sign}{File_Name}.json", Json_Write_Data, gz=flag_gzip)
 				del Json_Write_Data
 		Time_Point_ = time.time()
 		if (not flag_NO_XML):
@@ -371,7 +370,7 @@ ____________________1___________ 2048 特殊弹幕_UP主自定义内容
 				if is_ERROR or flag_Many_Logs: print(f"[File_XML  P{i+1}]: No Data")
 			else:
 				if is_ERROR or flag_Many_Logs: print(f"[File_XML  P{i+1}]: 开始写入")
-				open(f"{err_sign}{File_Name}.xml", "w", encoding="utf-8").write(XML_Write_Data + f"</i>\x0a<!-- Create Time: {str(int(JSON_Time))} -->")
+				writeE(f"{err_sign}{File_Name}.xml", XML_Write_Data + f"</i>\x0a<!-- Create Time: {str(int(JSON_Time))} -->")
 				del XML_Write_Data
 		else: print()
 		del Danmaku_Final_Binary

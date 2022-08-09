@@ -7,6 +7,7 @@ except ModuleNotFoundError:
 	import dm_pb2
 	
 from my_lib.proto2xml import proto2xml
+from my_lib.file_writer import writeE
 
 Start_Time = time.time()
 
@@ -34,8 +35,8 @@ for this in itm.elems:
 		XML_Data_2nd_Cache += XML_Data_3rd_Cache
 		XML_Data_3rd_Cache = ""
 		print(f"\rProgress: {i}/{Danmaku_Count}, Time: {round(time.time()-Start_Time,3)}", end="")
-print(f"\rProgress: {i}/{Danmaku_Count}, Time: {round(time.time()-Start_Time,3)}", end="")
+print(f"\rProgress: {i}/{Danmaku_Count}, Time: {round(time.time()-Start_Time,3)}")
 
-open(f"{sys.argv[1]}.XML", "w", encoding="utf-8").write(XML_Data_1st_Cache+XML_Data_2nd_Cache+XML_Data_3rd_Cache+f"</i>\x0a<!-- Create Time: {int(Start_Time)} -->")
+writeE(f"{sys.argv[1]}.XML", XML_Data_1st_Cache+XML_Data_2nd_Cache+XML_Data_3rd_Cache+f"</i>\x0a<!-- Create Time: {int(Start_Time)} -->")
 End_Time = time.time()
 print(f"\r{Danmaku_Count}, 总计用时：{round(End_Time-Start_Time, 4)}                     ")
