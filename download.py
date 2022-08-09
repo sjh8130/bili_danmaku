@@ -30,7 +30,10 @@ NET_count_all = 0
 err_sign = ""
 
 
-def Program_FLAG(flag: str):
+def Program_FLAG(flag: str) -> None:
+	"""
+	Text
+	"""
 	if flag == "-1": return
 	if flag.find("0b") == 0: b = flag
 	else: b = bin(int(flag))
@@ -75,7 +78,10 @@ def Program_FLAG(flag: str):
 	if flag_Many_Logs: print(f"[FLAG]: {b}")
 
 
-def Downloader(url_Real_DL: str):
+def Downloader(url_Real_DL: str) -> bytes:
+	"""
+	Text
+	"""
 	global NET_count_all
 	global NET_count
 	NET_count_all += 1
@@ -93,7 +99,10 @@ def Downloader(url_Real_DL: str):
 	return DL_Data.content
 
 
-def FAKE_Downloader(str0: str, str1: str, str2: str, url_Fake_DL: str):
+def FAKE_Downloader(str0: str, str1: str, str2: str, url_Fake_DL: str) -> bytes:
+	"""
+	Text
+	"""
 	global NET_count_all
 	global NET_count
 	NET_count_all += 1
@@ -114,6 +123,9 @@ def FAKE_Downloader(str0: str, str1: str, str2: str, url_Fake_DL: str):
 
 
 def get_Danmaku(cid: str, Segment_Index: str):
+	"""
+	Text
+	"""
 	URL_Danmaku = f'https://api.bilibili.com/x/v2/dm/web/seg.so?type=1&oid={cid}&segment_index={Segment_Index}'
 	if flag_Test_Run: Content = FAKE_Downloader(str0=cid, str1="Danmaku", str2=Segment_Index, url_Fake_DL=URL_Danmaku)
 	else: Content = Downloader(URL_Danmaku)
@@ -122,7 +134,10 @@ def get_Danmaku(cid: str, Segment_Index: str):
 	return Content
 
 
-def get_Special_Danmaku():
+def get_Special_Danmaku() -> str:
+	"""
+	Text
+	"""
 	BAS_Binary = b""
 	k = 1
 	for URL_special_dms in Extra_Info_Proto.special_dms:
@@ -137,17 +152,27 @@ def get_Special_Danmaku():
 	return BAS_Binary
 
 
-def fp(a: str, b: int): return f"{a}:{b} " if b else ""
+def fp(a: str, b: int) -> str:
+	"""
+	Text
+	"""
+	return f"{a}:{b} " if b else ""
 
 
-def XML_Process(data):
+def XML_Process(data) -> str:
+	"""
+	Text
+	"""
 	this: dm_pb2.DanmakuElem
 	out0 = ""
 	for this in data: out0 += proto2xml(this, exdata=flag_Ext_XML_Data, enable_weight=0)
 	return out0
 
 
-def XML_Special_Process(data, cid):
+def XML_Special_Process(data, cid) -> str:
+	"""
+	Text
+	"""
 	this: dm_pb2.CommandDm
 	out1 = ""
 	for this in data:
@@ -170,7 +195,10 @@ def XML_Special_Process(data, cid):
 	return out1
 
 
-def dump_Data(str0: str, str1: str, str2: str, data: bin, force: bool = False):
+def dump_Data(str0: str, str1: str, str2: str, data: bin, force: bool = False) -> None:
+	"""
+	Text
+	"""
 	if flag_Dump_Binary and ((not flag_Test_Run) or force): pass
 	else: return
 	if len(data) == 0: return

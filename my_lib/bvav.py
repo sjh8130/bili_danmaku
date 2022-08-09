@@ -5,6 +5,9 @@ s = [11, 10, 3, 8, 4, 6]
 BV_AV_xor = 177451812
 BV_AV_add = 8728348608
 def BV_to_AV(input_BV: str):
+	"""
+	Text
+	"""
 	result = 0
 	for i in range(6): result += BV_AV_base58_dic[input_BV[s[i]]]*58**i
 	out = (result-BV_AV_add) ^ BV_AV_xor
@@ -13,6 +16,9 @@ def BV_to_AV(input_BV: str):
 
 
 def AV_to_BV(input_AV: int):
+	"""
+	Text
+	"""
 	if input_AV >= 29460791296: print("[AV_to_BV]: 29460791296")
 	input_AV = (input_AV ^ BV_AV_xor)+BV_AV_add
 	result = list('BV1  4 1 7  ')

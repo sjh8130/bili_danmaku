@@ -6,6 +6,9 @@ import io
 
 
 def writeE(filename: str, data, gz: bool = False, binary_: bool = False):
+	"""
+	Text
+	"""
 	if gz:
 		io.TextIOWrapper(gzip.open(filename + ".gz", 'wb', compresslevel=9), encoding='utf-8').writelines(data)
 	elif binary_:
