@@ -5,11 +5,11 @@ try:
 except ModuleNotFoundError:
 	import dm_pb2
 
+import os
 import json
 import sys
 import time
-import gzip
-import io
+from my_lib.file_writer import writeE
 
 if __name__ == '__main__':
 	time1 = time.time()
@@ -26,12 +26,32 @@ if __name__ == '__main__':
 		sys.exit()
 	time3 = time.time()
 	print("json")
-	Write_Data = str(MessageToJson(Temp_Binary, indent=0, ensure_ascii=False))
+	j1 = json.loads(MessageToJson(Temp_Binary, indent=0))
+	j1["info"] = {}
+	j1["info"]["owner_name"] = "Fake_Username"
+	j1["info"]["owner_mid"] = 0
+	j1["info"]["bvid"] = "Fake_BVID"
+	j1["info"]["avid"] = 0
+	j1["info"]["V_Name"] = "Fake_MainTitle"
+	j1["info"]["pubdate"] = 0
+	j1["info"]["ctime"] = 0
+	j1["info"]["P_Name"] = "Fake_P_Title"
+	j1["info"]["duration"] = 0
+	j1["info"]["cid"] = 0
+	j1["info"]["segment_count"] = 0
+	j1["info"]["segment_count_proto_reported"] = 0
+	j1["info"]["danmaku_count"] = len(j1["elems"])
+	j1["info"]["danmaku_web_reported"] = 0
+	j1["info"]["danmaku_proto_reported"] = 0
+	j1["info"]["File_Create_Time"] = int(os.stat(sys.argv[1]).st_ctime)
+	j1["commandDms"] = []
+	Write_Data = json.dumps(j1, ensure_ascii=False)
+
 	Temp_Binary = None
 	time4 = time.time()
 	print("write")
-	open(f"{sys.argv[1]}.json", 'w', encoding='utf-8').write(Write_Data.replace("}, {\"id\"", "},\x0a{\"id\"").replace(", \"test20\": \"0\", \"test21\": \"0\"", ""))
-	# io.TextIOWrapper(gzip.open(f"{sys.argv[1]}.json.gz",'wb'), encoding='utf-8').writelines(Write_Data)
+	writeE(f"{sys.argv[1]}.json", Write_Data.replace("}, {\"id\"", "},\x0a{\"id\"").replace(", \"test20\": \"0\", \"test21\": \"0\"", ""))
+	# writeE(f"{sys.argv[1]}.json", Write_Data.replace("}, {\"id\"", "},\x0a{\"id\"").replace(", \"test20\": \"0\", \"test21\": \"0\"", ""), True)
 	time5 = time.time()
 
 	print(f"ALL:{time5-time1}, Write: {time5-time4}, Json: {time4-time3}, Proto: {time3-time2}, Read: {time2-time1}")
