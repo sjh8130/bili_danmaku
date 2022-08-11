@@ -8,7 +8,7 @@ except ModuleNotFoundError:
 def fp(a: str, b: int): return f"{a}:{b} " if b else ""
 
 
-def proto2xml(this: dm_pb2.DanmakuElem, exdata: bool, enable_weight: int = 0):
+def proto2xml(this: dm_pb2.DanmakuElem, exdata: bool, enable_weight: bool = False, All_Default: bool = False):
 	"""
 	Text
 	"""
@@ -34,4 +34,10 @@ def proto2xml(this: dm_pb2.DanmakuElem, exdata: bool, enable_weight: int = 0):
 	this = None
 	if str(id_) != idStr: print("[XML]: id&idStr mismatch:", id_, idStr)
 	if exdata: Extended_Data = f"<!-- {attr}{usermid}{likes}{reply_count} -->".replace("  ", " ")
+	if All_Default:
+		mode = "1"
+		fontsize = "25"
+		color = "16777215"
+		pool = "0"
+		weight = "9"
 	return f"\t<d p=\"{format(progress/1000, '.5f')},{mode},{fontsize},{color},{sendtime},{pool},{midHash},{id_},{weight}\">{content}</d>{Extended_Data}\x0a"
