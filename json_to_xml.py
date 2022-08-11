@@ -6,7 +6,7 @@ import gzip
 import os
 import binascii
 
-from my_lib.json2xml import json2xml
+from my_lib.json2xml_Lib import json2xml
 from my_lib.file_writer import writeE
 
 Start_Time = time.time()
@@ -41,6 +41,9 @@ try: Danmaku_Count = len(Loaded_JSON["elems"])
 except KeyError: Danmaku_Count = 0
 if Danmaku_Count == 0 and commandDms_Len ==0: print("No Data"),sys.exit()
 
+try: All_Default = Loaded_JSON["info"]["All_Default"]
+except KeyError: All_Default = False
+
 if commandDms_Len != 0:
 	for this in Loaded_JSON["commandDms"]:
 		id_ = this["id"]					# int64 id = 1
@@ -59,7 +62,7 @@ if commandDms_Len != 0:
 		XML_Data_1st_Cache += f"\t<d p=\"{format(progress/1000, '.5f')},1,25,16777215,{sendtime},999,{midHash},{id_},11\">{content}</d><!-- SPECIAL: {command}{extra} -->\x0a"
 	del this
 for this in Loaded_JSON["elems"]:
-	XML_Data_3rd_Cache += json2xml(this, True, 0)
+	XML_Data_3rd_Cache += json2xml(this=this, exdata=True, enable_weight=False, All_Default=All_Default)
 	i += 1
 	if i % SPLIT_3RD_SIZE == 0:
 		XML_Data_1st_Cache += XML_Data_2nd_Cache

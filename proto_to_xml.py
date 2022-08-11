@@ -1,12 +1,11 @@
 #!/usr/bin/python3
 import sys
 import time
-try:
-	import zzzz as dm_pb2
-except ModuleNotFoundError:
-	import dm_pb2
-	
-from my_lib.proto2xml import proto2xml
+
+try: import zzzz as dm_pb2
+except ModuleNotFoundError: import dm_pb2
+
+from my_lib.proto2xml_Lib import proto2xml
 from my_lib.file_writer import writeE
 
 Start_Time = time.time()
@@ -26,7 +25,7 @@ if Danmaku_Count == 0:
 	print("No Data")
 	sys.exit()
 for this in itm.elems:
-	XML_Data_3rd_Cache += proto2xml(this, exdata=True, enable_weight=0)
+	XML_Data_3rd_Cache += proto2xml(this, exdata=True, enable_weight=False)
 	i += 1
 	if i % SPLIT_3RD_SIZE == 0:
 		XML_Data_1st_Cache += XML_Data_2nd_Cache

@@ -1,12 +1,12 @@
 #!/usr/bin/python3
 from google.protobuf.json_format import MessageToJson
-try:
-	import zzzz as dm_pb2
-except ModuleNotFoundError:
-	import dm_pb2
 
 import json
 import sys
+
+try: import zzzz as dm_pb2
+except ModuleNotFoundError: import dm_pb2
+
 from my_lib.file_writer import writeE
 
 if __name__ == '__main__':

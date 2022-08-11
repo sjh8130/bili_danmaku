@@ -1,7 +1,7 @@
 from my_lib.attr import Danmaku_ATTR_TYPE
 
 
-def json2xml(this, exdata, enable_weight: int = 0):
+def json2xml(this, exdata, enable_weight = False, All_Default = False):
 	"""
 	Text
 	"""
@@ -11,14 +11,14 @@ def json2xml(this, exdata, enable_weight: int = 0):
 	try: progress: int = this["progress"]
 	except KeyError: progress = 0
 	try: mode: int = this["mode"]
-	except KeyError: mode = 1
+	except KeyError: mode = "1"
 	try: fontsize = this["fontsize"]
-	except KeyError: fontsize = 25
+	except KeyError: fontsize = "25"
 	try: color = this["color"]
-	except KeyError: color = 0
+	except KeyError: color = "0"
 	try: midHash = this["midHash"]
 	except KeyError: midHash = "ffffffff"
-	try: content = this["content"].replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace("\x00", " ").replace( "\x08", " ").replace("\x14", " ").replace("\x17", " ").replace("\n", "\\n").replace("\r", "\\r")
+	try: content = this["content"].replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace("\x00", " ").replace( "\x08", " ").replace("\x14", " ").replace("\x17", " ").replace("\x0a", "\\n").replace("\x0d", "\\r")
 	except KeyError: content = ""
 	try: sendtime = this["ctime"]
 	except KeyError: sendtime = "1262275200"
@@ -28,7 +28,7 @@ def json2xml(this, exdata, enable_weight: int = 0):
 	try: action = this["action"]
 	except KeyError: action = ""
 	try: pool = this["pool"]
-	except KeyError: pool = 0
+	except KeyError: pool = "0"
 	try: idStr = this["idStr"]
 	except KeyError: idStr = "0"
 	try: attr = Danmaku_ATTR_TYPE(this["attr"])
@@ -52,6 +52,12 @@ def json2xml(this, exdata, enable_weight: int = 0):
 	except KeyError: t21 = "0"
 	dm_reply_to = proc_4(t16,t17,t20,t21)
 	if exdata: Extra_Data = f"<!-- {attr}{usermid}{likes}{replyCount}{dm_reply_to}-->".replace("  ", " ")
+	if All_Default:
+		mode = "1"
+		fontsize = "25"
+		color = "16777215"
+		pool = "0"
+		weight = "9"
 	return f"\t<d p=\"{format(progress/1000, '.5f')},{mode},{fontsize},{color},{sendtime},{pool},{midHash},{id_},{weight}\">{content}</d>{Extra_Data}\x0a"
 
 def proc_4(a,b,c,d):

@@ -1,21 +1,19 @@
 #!/usr/bin/python3
 # 系统十分稳定，所有代码不要随便动.JPG
-import binascii
 from google.protobuf.json_format import MessageToJson
 from tqdm import tqdm
 import requests
 
-try:
-	import zzzz as dm_pb2
-except ModuleNotFoundError:
-	import dm_pb2
-
+import binascii
 import math
 import time
 import json
 import sys
 
-from my_lib.proto2xml import proto2xml
+try: import zzzz as dm_pb2
+except ModuleNotFoundError: import dm_pb2
+
+from my_lib.proto2xml_Lib import proto2xml
 from my_lib.bvav import BV_to_AV,AV_to_BV
 from my_lib.file_writer import writeE
 
@@ -72,9 +70,11 @@ def Program_FLAG(flag: str) -> None:
 	if b[-10] == "1": flag_spec_danmaku_1 = True
 	if b[-11] == "1": flag_gzip = True
 	if b[-12] == "1": flag_spec_danmaku_2 = True
+	if b[-13] == "1": flag_13 = True
 	if b[-10] == "0": flag_spec_danmaku_1 = False
 	if b[-11] == "0": flag_gzip = False
 	if b[-12] == "0": flag_spec_danmaku_2 = False
+	if b[-13] == "0": flag_13 = False
 	if flag_Many_Logs: print(f"[FLAG]: {b}")
 
 
@@ -122,7 +122,7 @@ def FAKE_Downloader(str0: str, str1: str, str2: str, url_Fake_DL: str) -> bytes:
 	return DL_Data
 
 
-def get_Danmaku(cid: str, Segment_Index: str):
+def get_Danmaku(cid: str, Segment_Index: str) -> bytes:
 	"""
 	Text
 	"""
@@ -152,20 +152,13 @@ def get_Special_Danmaku() -> str:
 	return BAS_Binary
 
 
-def fp(a: str, b: int) -> str:
-	"""
-	Text
-	"""
-	return f"{a}:{b} " if b else ""
-
-
 def XML_Process(data) -> str:
 	"""
 	Text
 	"""
 	this: dm_pb2.DanmakuElem
 	out0 = ""
-	for this in data: out0 += proto2xml(this, exdata=flag_Ext_XML_Data, enable_weight=0)
+	for this in data: out0 += proto2xml(this, exdata=flag_Ext_XML_Data, enable_weight=False, All_Default=flag_13)
 	return out0
 
 
@@ -222,6 +215,7 @@ if __name__ == '__main__':
 	flag_spec_danmaku_1 = True	# 特殊弹幕:BAS
 	flag_gzip = False			# 压缩为gzip
 	flag_spec_danmaku_2 = True	# 特殊弹幕:UP主自定义内容
+	flag_13 = False				# flag_13
 	try: Program_FLAG(sys.argv[2])
 	except IndexError: pass
 	if flag_Test_Run: print("[Test Run]: ================================ ")
@@ -377,6 +371,7 @@ ____________________1___________ 2048 特殊弹幕_UP主自定义内容
 				j1["info"]["danmaku_web_reported"] = Json_Info['stat']['danmaku']
 				j1["info"]["danmaku_proto_reported"] = Extra_Info_Proto.count
 				j1["info"]["File_Create_Time"] = int(JSON_Time)
+				j1["info"]["All_Default"] = flag_13
 				try: j1["commandDms"] = Extra_Info_Json["commandDms"]
 				except KeyError: j1["commandDms"] = []
 
@@ -410,3 +405,7 @@ ____________________1___________ 2048 特殊弹幕_UP主自定义内容
 		结束时间 = time.time()
 		print(f"{bvid}|{avid} Time: {round(结束时间-开始时间, 3)} Net: {NET_count_all} Wait: {round(NET_count_all*SLEEP_TIME, 2)} SLEEP: {SLEEP_TIME}")
 	sys.exit(0)
+
+# 1745 dump,noxml,timer,bas
+# , "likes": \d{1,}\},
+# "weight": \d{1,2}, 
