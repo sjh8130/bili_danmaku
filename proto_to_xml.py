@@ -25,7 +25,7 @@ if Danmaku_Count == 0:
 	print("No Data")
 	sys.exit()
 for this in itm.elems:
-	XML_Data_3rd_Cache += proto2xml(this, exdata=True, enable_weight=False)
+	XML_Data_3rd_Cache += proto2xml(this, exdata=True, enable_weight=True)
 	i += 1
 	if i % SPLIT_3RD_SIZE == 0:
 		XML_Data_1st_Cache += XML_Data_2nd_Cache

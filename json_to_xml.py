@@ -62,7 +62,7 @@ if commandDms_Len != 0:
 		XML_Data_1st_Cache += f"\t<d p=\"{format(progress/1000, '.5f')},1,25,16777215,{sendtime},999,{midHash},{id_},11\">{content}</d><!-- SPECIAL: {command}{extra} -->\x0a"
 	del this
 for this in Loaded_JSON["elems"]:
-	XML_Data_3rd_Cache += json2xml(this=this, exdata=True, enable_weight=False, All_Default=All_Default)
+	XML_Data_3rd_Cache += json2xml(this=this, exdata=True, enable_weight=True, All_Default=All_Default)
 	i += 1
 	if i % SPLIT_3RD_SIZE == 0:
 		XML_Data_1st_Cache += XML_Data_2nd_Cache
