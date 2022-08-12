@@ -158,7 +158,7 @@ def XML_Process(data) -> str:
 	"""
 	this: dm_pb2.DanmakuElem
 	out0 = ""
-	for this in data: out0 += proto2xml(this, exdata=flag_Ext_XML_Data, enable_weight=False, All_Default=flag_13)
+	for this in data: out0 += proto2xml(this, exdata=flag_Ext_XML_Data, enable_weight=True, All_Default=flag_13)
 	return out0
 
 
@@ -352,6 +352,8 @@ ____________________1___________ 2048 特殊弹幕_UP主自定义内容
 			j1 = json.loads(MessageToJson(Temp_Binary, indent=0, ensure_ascii=False))
 			del Temp_Binary
 			if 1:
+				try: j1["commandDms"] = Extra_Info_Json["commandDms"]
+				except KeyError: j1["commandDms"] = []
 				try: Danmaku_Count = len(j1["elems"])
 				except KeyError: Danmaku_Count = 0
 				j1["info"] = {}
@@ -361,10 +363,10 @@ ____________________1___________ 2048 特殊弹幕_UP主自定义内容
 				j1["info"]["avid"] = Json_Info['aid']
 				j1["info"]["V_Name"] = Main_Title
 				j1["info"]["pubdate"] = Json_Info['pubdate']
-				j1["info"]["ctime"] = Json_Info['ctime']
+				j1["info"]["i_ctime"] = Json_Info['ctime']
 				j1["info"]["P_Name"] = P_Title
 				j1["info"]["duration"] = duration
-				j1["info"]["cid"] = cid
+				j1["info"]["cid"] = int(cid)
 				j1["info"]["segment_count"] = Segment_Count
 				j1["info"]["segment_count_proto_reported"] = Extra_Info_Proto.dm_sge.total
 				j1["info"]["danmaku_count"] = Danmaku_Count + len(Extra_Info_Proto.commandDms)
@@ -372,8 +374,6 @@ ____________________1___________ 2048 特殊弹幕_UP主自定义内容
 				j1["info"]["danmaku_proto_reported"] = Extra_Info_Proto.count
 				j1["info"]["File_Create_Time"] = int(JSON_Time)
 				j1["info"]["All_Default"] = flag_13
-				try: j1["commandDms"] = Extra_Info_Json["commandDms"]
-				except KeyError: j1["commandDms"] = []
 
 			Json_Write_Data = json.dumps(j1, ensure_ascii=False).replace("}, {\"id\"", "},\x0a{\"id\"").replace(", \"test20\": \"0\", \"test21\": \"0\"", "")
 			del j1
