@@ -26,8 +26,10 @@ del infile
 i = 1
 try: cid = Loaded_JSON["info"]["cid"]
 except KeyError: cid = 0
+
 try: Max_Limit = Loaded_JSON["info"]["segment_count"]*6000
 except KeyError: Max_Limit = 6000
+
 XML_Data_1st_Cache = f"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\x0a<i>\x0a\t<chatserver>chat.bilibili.com</chatserver>\x0a\t<chatid>{cid}</chatid>\x0a\t<mission>0</mission>\x0a\t<maxlimit>{Max_Limit}</maxlimit>\x0a\t<state>0</state>\x0a\t<real_name>0</real_name>\x0a\t<source>k-v</source>\x0a"
 XML_Data_2nd_Cache = XML_Data_3rd_Cache = ""
 
@@ -39,30 +41,30 @@ except KeyError: commandDms_Len = 0
 
 try: Danmaku_Count = len(Loaded_JSON["elems"])
 except KeyError: Danmaku_Count = 0
+
 if Danmaku_Count == 0 and commandDms_Len ==0: print("No Data"),sys.exit()
 
-try: All_Default = Loaded_JSON["info"]["All_Default"]
-except KeyError: All_Default = False
+try: All_Default: bool = Loaded_JSON["info"]["All_Default"]
+except KeyError: All_Default: bool = False
 
 if commandDms_Len != 0:
 	for this in Loaded_JSON["commandDms"]:
-		id_ = this["id"]					# int64 id = 1
-		oid = this["oid"]				# int64 oid = 2;
-		mid = this['mid']				# int64 mid = 3;
-		command = this["command"]		# string command = 4;
-		content = this["content"]		# string content = 5;
-		try: progress = this["progress"]	# int32 progress = 6;
+		id_ = this["id"]
+		oid = this["oid"]
+		mid = str(this['mid'])
+		command = this["command"]
+		content = this["content"]
+		try: progress = this["progress"]
 		except KeyError: progress = 0
-		ctime = this["ctime"]			# string ctime = 7;
-		mtime = this["mtime"]			# string mtime = 8;
-		extra = this["extra"]			# string extra = 9;
-		idStr = this["idStr"]			# string idStr = 10
-		sendtime = int(time.mktime(time.strptime(ctime, '%Y-%m-%d %H:%M:%S')))
+		ctime = this["ctime"]
+		mtime = this["mtime"]
+		extra = this["extra"]
+		idStr = this["idStr"]
 		midHash = hex(binascii.crc32(mid.encode())^0xFFFFFFFF).lstrip("0x").lstrip("0")
-		XML_Data_1st_Cache += f"\t<d p=\"{format(progress/1000, '.5f')},1,25,16777215,{sendtime},999,{midHash},{id_},11\">{content}</d><!-- SPECIAL: {command}{extra} -->\x0a"
+		XML_Data_1st_Cache += f"\t<d p=\"{format(progress/1000, '.5f')},1,25,16777215,{int(time.mktime(time.strptime(ctime, '%Y-%m-%d %H:%M:%S')))},999,{midHash},{id_},11\">{content}</d><!-- SPECIAL: {command}{extra} -->\x0a"
 	del this
 for this in Loaded_JSON["elems"]:
-	XML_Data_3rd_Cache += json2xml(this=this, exdata=True, enable_weight=True, All_Default=All_Default)
+	XML_Data_3rd_Cache += json2xml(this=this, exdata=False, enable_weight=True, All_Default=All_Default)
 	i += 1
 	if i % SPLIT_3RD_SIZE == 0:
 		XML_Data_1st_Cache += XML_Data_2nd_Cache

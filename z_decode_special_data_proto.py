@@ -13,5 +13,5 @@ if __name__ == '__main__':
 	Danmaku_Binary = open(sys.argv[1], "rb").read()
 	Temp_Binary = dm_pb2.DmWebViewReply()
 	Temp_Binary.ParseFromString(Danmaku_Binary)
-	Write_Data = json.dumps(json.loads(MessageToJson(Temp_Binary, indent=0)), ensure_ascii=False)
-	writeE(f"{sys.argv[1]}.json", Write_Data)
+	data_ = json.dumps(json.loads(MessageToJson(Temp_Binary, indent=0)), ensure_ascii=False)
+	writeE(f"{sys.argv[1]}.json", data_)
