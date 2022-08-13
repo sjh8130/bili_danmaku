@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 # 系统十分稳定，所有代码不要随便动.JPG
 from google.protobuf.json_format import MessageToJson
-from tqdm import tqdm
 import requests
 
 import binascii
@@ -310,7 +309,7 @@ ___________________1____________ 4096 Text1234567890
 			Danmaku_Final_Binary += BAS_danmaku
 		XML_Tim = BAS结束时间 = time.time()
 		XML_Time += XML_Tim - XML_Ti
-		if not flag_Many_Logs: Progress_Bar = tqdm(total=Segment_Count, leave=False, unit='chunks', ascii=True, ncols=100)
+		if not flag_Many_Logs: d_1: int = 1
 		for segments in range(Segment_Count):
 			if is_ERROR and flag_Error_Stop: break
 			try: Danmaku_Binarys = get_Danmaku(cid, str(segments+1))
@@ -323,9 +322,10 @@ ___________________1____________ 4096 Text1234567890
 				XML_Write_Data += XML_Process(xml_t1.elems)
 				XML_Tim = time.time()
 				XML_Time += XML_Tim - XML_Ti
-			if (not flag_Many_Logs): Progress_Bar.update(1)
+			if (not flag_Many_Logs):
+				print(f"[{cid}]: {d_1}/{Segment_Count}\r",end="")
+				d_1+=1
 			if flag_Many_Logs: print(f"[danmaku]: P{i+1}/{Num_of_Videos}::{segments+1}/{Segment_Count}")
-		if (not flag_Many_Logs): Progress_Bar.close()
 		dump_Data(str0=cid, str1="Danmaku", str2="ALL", data=Danmaku_Final_Binary, force=True)
 		JSON_Time = time.time()
 		# print(JSON_Time)
