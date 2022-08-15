@@ -97,7 +97,7 @@ def Downloader(url_Real_DL: str) -> bytes:
 	return DL_Data.content
 
 
-def FAKE_Downloader(str0: str, str1: str, str2: str, url_Fake_DL: str) -> bytes:
+def FAKE_Downloader(str_s:dict, url_Fake_DL: str) -> bytes:
 	"""
 	Text
 	"""
@@ -107,7 +107,7 @@ def FAKE_Downloader(str0: str, str1: str, str2: str, url_Fake_DL: str) -> bytes:
 	NET_count += 1
 	if flag_Many_Logs: print(f"[NET]? {url_Fake_DL}|{NET_count_all}   ", end="\t")
 	try:
-		DL_Data = open(f"[{bvid}]_[{str0}]_[{str1}]_[{str2}].bin", "rb").read()
+		DL_Data = open(f"[{bvid}]_[{str_s[0]}]_[{str_s[1]}]_[{str_s[2]}].bin", "rb").read()
 		Fake_status_code = 200
 	except FileNotFoundError:
 		DL_Data = b""
@@ -125,7 +125,7 @@ def get_Danmaku(cid: str, Segment_Index: str) -> bytes:
 	Text
 	"""
 	URL_Danmaku = f'https://api.bilibili.com/x/v2/dm/web/seg.so?type=1&oid={cid}&segment_index={Segment_Index}'
-	if flag_Test_Run: Content = FAKE_Downloader(str0=cid, str1="Danmaku", str2=Segment_Index, url_Fake_DL=URL_Danmaku)
+	if flag_Test_Run: Content = FAKE_Downloader([cid,"Danmaku",Segment_Index], url_Fake_DL=URL_Danmaku)
 	else: Content = Downloader(URL_Danmaku)
 	if is_ERROR and flag_Error_Stop or len(Content) <= 10: return b""
 	dump_Data(str0=cid, str1="Danmaku", str2=Segment_Index, data=Content)
@@ -138,8 +138,8 @@ def get_Special_Danmaku() -> bytes:
 	"""
 	BAS_Binary = b""
 	k = 1
-	for URL_special_dms in Extra_Info_Proto.special_dms:
-		if flag_Test_Run: BAS_Data = FAKE_Downloader(str0=cid, str1="BAS", str2=f"{k}", url_Fake_DL=URL_special_dms)
+	for URL_special_dms in ExInfo_Proto.special_dms:
+		if flag_Test_Run: BAS_Data = FAKE_Downloader([cid, "BAS", f"{k}"], url_Fake_DL=URL_special_dms)
 		else: BAS_Data = Downloader(URL_special_dms)
 		if flag_Many_Logs: print(f"[BAS_DL]: DL {k}")
 		if is_ERROR and flag_Error_Stop: break
@@ -179,7 +179,7 @@ def XML_Special_Process(data, cid) -> str:
 		idStr = this.idStr			# string idStr = 10
 		if str(id_) != idStr: print("[XML_SP]: id&idStr mismatch:", id_, idStr)
 		if flag_Ext_XML_Data: Ex_Extra_Data = f"<!-- SPECIAL: {command}{extra} -->"
-		out1 += f"\t<d p=\"{format(progress/1000, '.5f')},1,25,16777215,{int(time.mktime(time.strptime(ctime, '%Y-%m-%d %H:%M:%S')))},999,{hex(binascii.crc32(str(mid).encode()) ^ 0xFFFFFFFF).lstrip('0x').lstrip('0')},{id_},11\">{content}</d>{Ex_Extra_Data}\x0a"
+		out1 += f"\t<d p=\"{format(progress/1000, '.5f')},1,25,16777215,{int(time.mktime(time.strptime(ctime, '%Y-%m-%d %H:%M:%S')))},999,{hex(binascii.crc32(str(mid).encode()) ^ 0xFFFFFFFF).lstrip('0x').lstrip('0')},{id_},11\">{content}</d>{Ex_Extra_Data}\n"
 	return out1
 
 
@@ -254,7 +254,7 @@ ___________________1____________ 4096 Text1234567890
 		url_Main = f"https://api.bilibili.com/x/web-interface/view?bvid={bvid}"
 	if flag_Many_Logs: print(f"[Info]: {bvid}|{avid}")
 	# ================================ 视频信息（全部）
-	if flag_Test_Run: json_Resp = FAKE_Downloader(str0="0", str1="Video", str2="INFO", url_Fake_DL=url_Main)
+	if flag_Test_Run: json_Resp = FAKE_Downloader(["0", "Video", "INFO"], url_Fake_DL=url_Main)
 	else: json_Resp = Downloader(url_Main)
 	dump_Data(str0="0", str1="Video", str2="INFO", data=json_Resp)
 	if is_ERROR and flag_Error_Stop:
@@ -283,16 +283,16 @@ ___________________1____________ 4096 Text1234567890
 		duration = int(This["duration"])
 		Segment_Count = math.ceil(duration/360)
 		URL_Ext = f'https://api.bilibili.com/x/v2/dm/web/view?type=1&oid={cid}'
-		if flag_Test_Run: DL_Data_Extra_Info = FAKE_Downloader(str0=cid, str1="BAS", str2="INFO", url_Fake_DL=URL_Ext)
+		if flag_Test_Run: DL_Data_Extra_Info = FAKE_Downloader([cid, "BAS", "INFO"], url_Fake_DL=URL_Ext)
 		else: DL_Data_Extra_Info = Downloader(URL_Ext)
 		if flag_Many_Logs: print(f"[Special_Danmaku]: P{i+1}")
-		Extra_Info_Proto = dm_pb2.DmWebViewReply()
-		Extra_Info_Proto.ParseFromString(DL_Data_Extra_Info)
-		Extra_Info_Json = json.loads(MessageToJson(Extra_Info_Proto, indent=0, ensure_ascii=False))
+		ExInfo_Proto = dm_pb2.DmWebViewReply()
+		ExInfo_Proto.ParseFromString(DL_Data_Extra_Info)
+		ExInfo_Json = json.loads(MessageToJson(ExInfo_Proto, indent=0, ensure_ascii=False))
 		dump_Data(str0=cid, str1="BAS", str2="Info", data=DL_Data_Extra_Info)
 		# if Extra_Info_Proto.dm_sge.page_size != 360000: print(f"[Segments_Split_Size P{i+1}]:err 360|{Extra_Info_Proto.dm_sge.page_size}")
 		# if Segment_Count != Extra_Info_Proto.dm_sge.total: print(f"[Segments_calc P{i+1}]:err {Segment_Count}|{Extra_Info_Proto.dm_sge.total}")
-		if (not flag_NO_XML): XML_Data_Empty = XML_Write_Data = f"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\x0a<i>\x0a\t<chatserver>chat.bilibili.com</chatserver>\x0a\t<chatid>{cid}</chatid>\x0a\t<mission>0</mission>\x0a\t<maxlimit>{6000*Segment_Count}</maxlimit>\x0a\t<state>0</state>\x0a\t<real_name>0</real_name>\x0a\t<source>k-v</source>\x0a"
+		if (not flag_NO_XML): XML_Write_Data = f"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<i>\n\t<chatserver>chat.bilibili.com</chatserver>\n\t<chatid>{cid}</chatid>\n\t<mission>0</mission>\n\t<maxlimit>{6000*Segment_Count}</maxlimit>\n\t<state>0</state>\n\t<real_name>0</real_name>\n\t<source>k-v</source>\n"
 		P_Title = str(This["part"])
 		if P_Title == "": P_Title = f"P{i+1}"
 		print(f"{P_Date}|{bvid}|{avid}|P{i+1}/{Num_of_Videos}|{cid}|{duration}|{math.ceil(duration/360)}|{Main_Title}|{P_Title}")
@@ -300,7 +300,7 @@ ___________________1____________ 4096 Text1234567890
 		# [1656432000][BV1**4*1*7*][av*********][P*][cid]MainTitle_P-Title
 		XML_Time = 0
 		BAS开始时间 = XML_Ti = time.time()
-		if (not flag_NO_XML) and flag_spec_danmaku_2: XML_Write_Data += XML_Special_Process(Extra_Info_Proto.commandDms, cid=cid)
+		if (not flag_NO_XML) and flag_spec_danmaku_2: XML_Write_Data += XML_Special_Process(ExInfo_Proto.commandDms, cid=cid)
 		if flag_spec_danmaku_1:
 			BAS_danmaku = get_Special_Danmaku()
 			xml_t1 = dm_pb2.DmSegMobileReply()
@@ -328,7 +328,6 @@ ___________________1____________ 4096 Text1234567890
 			if flag_Many_Logs: print(f"[danmaku]: P{i+1}/{Num_of_Videos}::{segments+1}/{Segment_Count}")
 		dump_Data(str0=cid, str1="Danmaku", str2="ALL", data=Danmaku_Final_Binary, force=True)
 		JSON_Time = time.time()
-		# print(JSON_Time)
 		if (not flag_NO_Json):
 			if flag_Many_Logs: print(f"[File_JSON P{i+1}]: PROC start")
 			Temp_Binary = dm_pb2.DmSegMobileReply()
@@ -336,48 +335,45 @@ ___________________1____________ 4096 Text1234567890
 			j1 = json.loads(MessageToJson(Temp_Binary, indent=0, ensure_ascii=False))
 			del Temp_Binary
 			if 1:
-				try: j1["commandDms"] = Extra_Info_Json["commandDms"]
+				try: j1["commandDms"] = ExInfo_Json["commandDms"]
 				except KeyError: j1["commandDms"] = []
 				try: Danmaku_Count = len(j1["elems"])
 				except KeyError: Danmaku_Count = 0
 				j1["info"] = {}
-				j1["info"]["owner_name"] = Json_Info['owner']['name']
-				j1["info"]["owner_mid"] = Json_Info['owner']['mid']
-				j1["info"]["bvid"] = Json_Info['bvid']
-				j1["info"]["avid"] = Json_Info['aid']
-				j1["info"]["V_Name"] = Main_Title
-				j1["info"]["pubdate"] = Json_Info['pubdate']
-				j1["info"]["i_ctime"] = Json_Info['ctime']
-				j1["info"]["P_Name"] = P_Title
-				j1["info"]["duration"] = duration
-				j1["info"]["cid"] = int(cid)
-				j1["info"]["segment_count"] = Segment_Count
-				j1["info"]["segment_count_proto_reported"] = Extra_Info_Proto.dm_sge.total
-				j1["info"]["danmaku_count"] = Danmaku_Count + len(Extra_Info_Proto.commandDms)
-				j1["info"]["danmaku_web_reported"] = Json_Info['stat']['danmaku']
-				j1["info"]["danmaku_proto_reported"] = Extra_Info_Proto.count
-				j1["info"]["File_Create_Time"] = int(JSON_Time)
+				j1["info"]["owner"] = Json_Info['owner']				# dict get all
+				j1["info"]["bvid"] = Json_Info['bvid']					# str  get all
+				j1["info"]["avid"] = Json_Info['aid']					# num  get all
+				j1["info"]["V_Name"] = Json_Info["title"]				# str  get all
+				j1["info"]["pubdate"] = Json_Info['pubdate']			# num  get all unix_timestamp
+				j1["info"]["i_ctime"] = Json_Info['ctime']				# num  get all unix_timestamp
+				j1["info"]["P_Name"] = This["part"]						# str  get part
+				j1["info"]["duration"] = This["duration"]				# num  get part
+				j1["info"]["cid"] = This["cid"]							# num  get part
+				j1["info"]["segment_count"] = Segment_Count				# num  set
+				j1["info"]["segment_count_proto_reported"] = ExInfo_Proto.dm_sge.total	# num  get
+				j1["info"]["danmaku_count"] = Danmaku_Count + len(ExInfo_Proto.commandDms)	# num  set
+				j1["info"]["danmaku_web_reported"] = Json_Info['stat']['danmaku']	#num get
+				j1["info"]["danmaku_proto_reported"] = ExInfo_Proto.count	# num get 100?
+				j1["info"]["File_Create_Time"] = int(JSON_Time)			# num  set unix_timestamp
 				j1["info"]["All_Default"] = flag_13
-			Json_Write_Data = json.dumps(j1, ensure_ascii=False).replace("}, {\"id\"", "},\x0a{\"id\"").replace(", \"test20\": \"0\", \"test21\": \"0\"", "")
+				j1["File_Ver"] = "V1_20220816"
+			Json_Write_Data = json.dumps(j1, ensure_ascii=False).replace("}, {\"id\"", "},\n{\"id\"").replace(", \"test20\": \"0\", \"test21\": \"0\"", "")
 			del j1
 			if flag_Many_Logs: print(f"[File_JSON P{i+1}]: PROC end--")
 		if is_ERROR: err_sign = "ERR_"
 		写入开始时间 = time.time()
 		if (not flag_NO_Json):
-			if Danmaku_Count == 0 and len(Extra_Info_Proto.commandDms) == 0:
-				if is_ERROR or flag_Many_Logs: print(f"[File_JSON P{i+1}]: No Data")
-			else:
-				if is_ERROR or flag_Many_Logs: print(f"[File_JSON P{i+1}]: 开始写入")
-				writeE(f"{err_sign}{File_Name}.json", Json_Write_Data, gz=flag_gzip)
-				del Json_Write_Data
+			if is_ERROR or flag_Many_Logs: print(f"[File_JSON P{i+1}]: 开始写入")
+			writeE(f"{err_sign}{File_Name}.json", Json_Write_Data, gz=flag_gzip)
+			del Json_Write_Data
 		Time_Point_ = time.time()
 		if (not flag_NO_XML):
-			if XML_Write_Data == XML_Data_Empty:
-				if is_ERROR or flag_Many_Logs: print(f"[File_XML  P{i+1}]: No Data")
-			else:
-				if is_ERROR or flag_Many_Logs: print(f"[File_XML  P{i+1}]: 开始写入")
-				writeE(f"{err_sign}{File_Name}.xml", XML_Write_Data + f"</i>\x0a<!-- Create Time: {str(int(JSON_Time))} -->")
-				del XML_Write_Data
+			if is_ERROR or flag_Many_Logs: print(f"[File_XML  P{i+1}]: 开始写入")
+			writeE(f"{err_sign}{File_Name}.xml", XML_Write_Data + f"</i>\n<!-- Create Time: {str(int(JSON_Time))} -->")
+			del XML_Write_Data
+		del ExInfo_Proto
+		del ExInfo_Json
+		del DL_Data_Extra_Info
 		del Danmaku_Final_Binary
 		分P结束时间 = time.time()
 		if flag_Timer or flag_Many_Logs: print(f"P{i+1}: {round(分P结束时间-分P开始时间, 3)}，BAS: {round(BAS结束时间-BAS开始时间, 3)}，Write: {round(分P结束时间-写入开始时间, 3)}，JSON: {round(写入开始时间-JSON_Time, 3)}，XML: {round(分P结束时间-Time_Point_, 3)}，XML_P: {round(XML_Time, 3)}，Wait: {round(NET_count*SLEEP_TIME, 2)}，Net: {NET_count}")
