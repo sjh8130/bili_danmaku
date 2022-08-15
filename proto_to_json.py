@@ -29,8 +29,7 @@ if __name__ == '__main__':
 	j1 = json.loads(MessageToJson(Temp_Binary, indent=0))
 	j1["commandDms"] = []
 	j1["info"] = {}
-	j1["info"]["owner_name"] = "Fake_Username"
-	j1["info"]["owner_mid"] = 0
+	j1["info"]["owner"] = {"mid":0,"name":"Fake_Username","face":"http://[::]/a.jpg"}
 	j1["info"]["bvid"] = "Fake_BVID"
 	j1["info"]["avid"] = 0
 	j1["info"]["V_Name"] = "Fake_MainTitle"
@@ -43,9 +42,10 @@ if __name__ == '__main__':
 	j1["info"]["segment_count_proto_reported"] = 0
 	j1["info"]["danmaku_count"] = len(j1["elems"])
 	j1["info"]["danmaku_web_reported"] = 0
-	j1["info"]["danmaku_proto_reported"] = len(Temp_Binary.elems)
+	j1["info"]["danmaku_proto_reported"] = 0
 	j1["info"]["File_Create_Time"] = int(os.stat(sys.argv[1]).st_ctime)
 	j1["info"]["All_Default"] = False
+	j1["File_Ver"] = "V1_20220816_Proto2Json"
 	Write_Data = json.dumps(j1, ensure_ascii=False)
 
 	Temp_Binary = None

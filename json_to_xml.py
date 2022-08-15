@@ -30,7 +30,7 @@ except KeyError: cid = 0
 try: Max_Limit = Loaded_JSON["info"]["segment_count"]*6000
 except KeyError: Max_Limit = 6000
 
-XML_Data_1st_Cache = f"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\x0a<i>\x0a\t<chatserver>chat.bilibili.com</chatserver>\x0a\t<chatid>{cid}</chatid>\x0a\t<mission>0</mission>\x0a\t<maxlimit>{Max_Limit}</maxlimit>\x0a\t<state>0</state>\x0a\t<real_name>0</real_name>\x0a\t<source>k-v</source>\x0a"
+XML_Data_1st_Cache = f"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<i>\n\t<chatserver>chat.bilibili.com</chatserver>\n\t<chatid>{cid}</chatid>\n\t<mission>0</mission>\n\t<maxlimit>{Max_Limit}</maxlimit>\n\t<state>0</state>\n\t<real_name>0</real_name>\n\t<source>k-v</source>\n"
 XML_Data_2nd_Cache = XML_Data_3rd_Cache = ""
 
 try: Last_Modified_Time = int(Loaded_JSON['info']['File_Create_Time'])
@@ -61,7 +61,7 @@ if commandDms_Len != 0:
 		extra = this["extra"]
 		idStr = this["idStr"]
 		midHash = hex(binascii.crc32(mid.encode())^0xFFFFFFFF).lstrip("0x").lstrip("0")
-		XML_Data_1st_Cache += f"\t<d p=\"{format(progress/1000, '.5f')},1,25,16777215,{int(time.mktime(time.strptime(ctime, '%Y-%m-%d %H:%M:%S')))},999,{midHash},{id_},11\">{content}</d><!-- SPECIAL: {command}{extra} -->\x0a"
+		XML_Data_1st_Cache += f"\t<d p=\"{format(progress/1000, '.5f')},1,25,16777215,{int(time.mktime(time.strptime(ctime, '%Y-%m-%d %H:%M:%S')))},999,{midHash},{id_},11\">{content}</d><!-- SPECIAL: {command}{extra} -->\n"
 	del this
 for this in Loaded_JSON["elems"]:
 	XML_Data_3rd_Cache += json2xml(this=this, exdata=False, enable_weight=True, All_Default=All_Default)
@@ -75,6 +75,6 @@ for this in Loaded_JSON["elems"]:
 		print(f"\rProgress: {i}/{Danmaku_Count}, Time: {round(time.time()-Start_Time,3)}",end="")
 	del this
 
-writeE(outputFile, XML_Data_1st_Cache+XML_Data_2nd_Cache+XML_Data_3rd_Cache+f"</i>\x0a<!-- Create Time: {Last_Modified_Time} -->")
+writeE(outputFile, XML_Data_1st_Cache+XML_Data_2nd_Cache+XML_Data_3rd_Cache+f"</i>\n<!-- Create Time: {Last_Modified_Time} -->")
 End_Time = time.time()
 print(f"\r{Danmaku_Count}, 总计用时：{round(End_Time-Start_Time, 4)}                     ")
