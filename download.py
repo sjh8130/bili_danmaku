@@ -13,7 +13,7 @@ try: import zzzz as dm_pb2
 except ModuleNotFoundError: import dm_pb2
 
 from my_lib.proto2xml_Lib import proto2xml
-from my_lib.bvav import BV_to_AV,AV_to_BV
+from my_lib.bvav import BV_to_AV, AV_to_BV
 from my_lib.file_writer import writeE
 
 headers = {
@@ -97,7 +97,7 @@ def Downloader(url_Real_DL: str) -> bytes:
 	return DL_Data.content
 
 
-def FAKE_Downloader(str_s:dict, url_Fake_DL: str) -> bytes:
+def FAKE_Downloader(str_s: dict, url_Fake_DL: str) -> bytes:
 	"""
 	Text
 	"""
@@ -125,7 +125,7 @@ def get_Danmaku(cid: str, Segment_Index: str) -> bytes:
 	Text
 	"""
 	URL_Danmaku = f'https://api.bilibili.com/x/v2/dm/web/seg.so?type=1&oid={cid}&segment_index={Segment_Index}'
-	if flag_Test_Run: Content = FAKE_Downloader([cid,"Danmaku",Segment_Index], url_Fake_DL=URL_Danmaku)
+	if flag_Test_Run: Content = FAKE_Downloader([cid, "Danmaku", Segment_Index], url_Fake_DL=URL_Danmaku)
 	else: Content = Downloader(URL_Danmaku)
 	if is_ERROR and flag_Error_Stop or len(Content) <= 10: return b""
 	dump_Data(str0=cid, str1="Danmaku", str2=Segment_Index, data=Content)
@@ -137,15 +137,15 @@ def get_Special_Danmaku() -> bytes:
 	Text
 	"""
 	BAS_Binary = b""
-	k = 1
+	i_for_BAS = 1
 	for URL_special_dms in ExInfo_Proto.special_dms:
-		if flag_Test_Run: BAS_Data = FAKE_Downloader([cid, "BAS", f"{k}"], url_Fake_DL=URL_special_dms)
+		if flag_Test_Run: BAS_Data = FAKE_Downloader([cid, "BAS", f"{i_for_BAS}"], url_Fake_DL=URL_special_dms)
 		else: BAS_Data = Downloader(URL_special_dms)
-		if flag_Many_Logs: print(f"[BAS_DL]: DL {k}")
+		if flag_Many_Logs: print(f"[BAS_DL]: DL {i_for_BAS}")
 		if is_ERROR and flag_Error_Stop: break
 		BAS_Binary += BAS_Data
-		dump_Data(str0=cid, str1="BAS", str2=f"{k}", data=BAS_Data)
-		k += 1
+		dump_Data(str0=cid, str1="BAS", str2=f"{i_for_BAS}", data=BAS_Data)
+		i_for_BAS += 1
 	return BAS_Binary
 
 
@@ -183,7 +183,7 @@ def XML_Special_Process(data, cid) -> str:
 	return out1
 
 
-def dump_Data(str0: str, str1: str, str2: str, data: bin, force: bool = False) -> None:
+def dump_Data(str0: str, str1: str, str2: str, data: bytes, force: bool = False) -> None:
 	"""
 	Text
 	"""
@@ -247,20 +247,36 @@ ___________________1____________ 4096 Text1234567890
 		avid_in = int(avid.lstrip("av"))
 		bvid = AV_to_BV(avid_in)
 		url_Main = f"https://api.bilibili.com/x/web-interface/view?aid={avid_in}"
+		url_xx1 = f"https://api.bilibili.com/x/web-interface/view/detail?aid={avid_in}"
 	else:
-		bvid = vid[0:12]
+		bvid = vid[vid.find("BV"):vid.find("BV")+12]
 		avid_in = BV_to_AV(bvid)
 		avid = f"av{avid_in}"
 		url_Main = f"https://api.bilibili.com/x/web-interface/view?bvid={bvid}"
+		url_xx1 = f"https://api.bilibili.com/x/web-interface/view/detail?bvid={bvid}"
 	if flag_Many_Logs: print(f"[Info]: {bvid}|{avid}")
 	# ================================ 视频信息（全部）
 	if flag_Test_Run: json_Resp = FAKE_Downloader(["0", "Video", "INFO"], url_Fake_DL=url_Main)
 	else: json_Resp = Downloader(url_Main)
-	dump_Data(str0="0", str1="Video", str2="INFO", data=json_Resp)
+	if flag_Many_Logs: print(f"[Info]: 1")
+	writeE(filename = f"[{bvid}]_[0]_[Video]_[INFO].bin", data=json_Resp, binary_=True)
 	if is_ERROR and flag_Error_Stop:
 		print(f"\n[{bvid}|{avid}]Error: {json.loads(json_Resp)['message']}")
 		print("总计用时:", round(time.time()-开始时间, 3))
 		sys.exit(1)
+	# ================================ 视频信息?
+	if 1:
+		if flag_Test_Run: video_info_detail = FAKE_Downloader(["0", "Video", "INFO_Detail"], url_Fake_DL=url_xx1)
+		else: video_info_detail = Downloader(url_xx1)
+		if flag_Many_Logs: print(f"[Info]: 2")
+		Vid_detail_json = json.loads(video_info_detail)
+		Vid_detail_json["data"]["Related"]=[]
+		Vid_detail_json["data"]["Reply"]["replies"]=[]
+		# Vid_detail_json["data"]["View"]["ugc_season"]["sections"]=[]
+		writeE(filename = f"[{bvid}]_[0]_[Video]_[INFO_Detail].bin", data=json.dumps(Vid_detail_json, ensure_ascii=False))
+		del video_info_detail
+		del Vid_detail_json
+	del url_xx1
 	# ================================ 加载
 	Json_Info = json.loads(json_Resp)["data"]
 	Item = Json_Info["pages"]
@@ -273,7 +289,6 @@ ___________________1____________ 4096 Text1234567890
 	if Json_Info["aid"] != avid_in: print(f"[avid]: avid mismatch av{Json_Info['aid']}|{avid}")
 	# ================================ 分集处理
 	for i in range(Num_of_Videos):
-		if flag_Many_Logs: print()
 		NET_count = 0
 		This = Item[i]
 		cid = str(This["cid"])
@@ -309,7 +324,7 @@ ___________________1____________ 4096 Text1234567890
 			Danmaku_Final_Binary += BAS_danmaku
 		XML_Tim = BAS结束时间 = time.time()
 		XML_Time += XML_Tim - XML_Ti
-		if not flag_Many_Logs: d_1: int = 1
+		sec_c: int = 1
 		for segments in range(Segment_Count):
 			if is_ERROR and flag_Error_Stop: break
 			try: Danmaku_Binarys = get_Danmaku(cid, str(segments+1))
@@ -322,10 +337,10 @@ ___________________1____________ 4096 Text1234567890
 				XML_Write_Data += XML_Process(xml_t1.elems)
 				XML_Tim = time.time()
 				XML_Time += XML_Tim - XML_Ti
-			if (not flag_Many_Logs):
-				print(f"[{cid}]: {d_1}/{Segment_Count}\r",end="")
-				d_1+=1
+			if (not flag_Many_Logs): print(f"[{cid}]: {sec_c}/{Segment_Count}\r", end="")
+			sec_c += 1
 			if flag_Many_Logs: print(f"[danmaku]: P{i+1}/{Num_of_Videos}::{segments+1}/{Segment_Count}")
+			else: print("                      \r", end="")
 		dump_Data(str0=cid, str1="Danmaku", str2="ALL", data=Danmaku_Final_Binary, force=True)
 		JSON_Time = time.time()
 		if (not flag_NO_Json):
@@ -352,7 +367,7 @@ ___________________1____________ 4096 Text1234567890
 				j1["info"]["segment_count"] = Segment_Count				# num  set
 				j1["info"]["segment_count_proto_reported"] = ExInfo_Proto.dm_sge.total	# num  get
 				j1["info"]["danmaku_count"] = Danmaku_Count + len(ExInfo_Proto.commandDms)	# num  set
-				j1["info"]["danmaku_web_reported"] = Json_Info['stat']['danmaku']	#num get
+				j1["info"]["danmaku_web_reported"] = Json_Info['stat']['danmaku']	# num get
 				j1["info"]["danmaku_proto_reported"] = ExInfo_Proto.count	# num get 100?
 				j1["info"]["File_Create_Time"] = int(JSON_Time)			# num  set unix_timestamp
 				j1["info"]["All_Default"] = flag_13
