@@ -44,8 +44,8 @@ except KeyError: Danmaku_Count = 0
 
 if Danmaku_Count == 0 and commandDms_Len ==0: print("No Data"),sys.exit()
 
-try: All_Default: bool = Loaded_JSON["info"]["All_Default"]
-except KeyError: All_Default: bool = False
+# try: is_live_record: bool = Loaded_JSON["info"]["is_live_record"]
+# except KeyError: is_live_record: bool = False
 
 if commandDms_Len != 0:
 	for this in Loaded_JSON["commandDms"]:
@@ -64,7 +64,7 @@ if commandDms_Len != 0:
 		XML_Data_1st_Cache += f"\t<d p=\"{format(progress/1000, '.5f')},1,25,16777215,{int(time.mktime(time.strptime(ctime, '%Y-%m-%d %H:%M:%S')))},999,{midHash},{id_},11\">{content}</d><!-- SPECIAL: {command}{extra} -->\n"
 	del this
 for this in Loaded_JSON["elems"]:
-	XML_Data_3rd_Cache += json2xml(this=this, exdata=False, enable_weight=True, All_Default=All_Default)
+	XML_Data_3rd_Cache += json2xml(this=this, exdata=False, enable_weight=True)
 	i += 1
 	if i % SPLIT_3RD_SIZE == 0:
 		XML_Data_1st_Cache += XML_Data_2nd_Cache
