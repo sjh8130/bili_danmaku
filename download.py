@@ -46,7 +46,7 @@ def Program_FLAG(flag: str) -> None:
 	global flag_spec_danmaku_1
 	global flag_gzip
 	global flag_spec_danmaku_2
-	global flag_13
+	# global flag_13
 	if b[-1 ] == "1": flag_Timer = True
 	if b[-2 ] == "1": flag_Error_Stop = True
 	if b[-4 ] == "1": flag_Many_Logs = True
@@ -67,12 +67,12 @@ def Program_FLAG(flag: str) -> None:
 	if b[-10] == "1": flag_spec_danmaku_1 = True
 	if b[-11] == "1": flag_gzip = True
 	if b[-12] == "1": flag_spec_danmaku_2 = True
-	if b[-13] == "1": flag_13 = True
+	# if b[-13] == "1": flag_13 = True
 
 	if b[-10] == "0": flag_spec_danmaku_1 = False
 	if b[-11] == "0": flag_gzip = False
 	if b[-12] == "0": flag_spec_danmaku_2 = False
-	if b[-13] == "0": flag_13 = False
+	# if b[-13] == "0": flag_13 = False
 	if flag_Many_Logs: print(f"[FLAG]: {b}")
 
 
@@ -94,6 +94,7 @@ def Downloader(url_Real_DL: str) -> bytes:
 			is_ERROR = True
 	except UnicodeDecodeError: DL_Json_code = 0
 	if flag_Many_Logs or DL_Json_code != 0 or DL_Data.status_code != 200: print(f"[NET]: HTTP {DL_Data.status_code}, Json Code {DL_Json_code}", end="\t")
+	if (not flag_Many_Logs) and (DL_Json_code != 0 or DL_Data.status_code != 200): print(url_Real_DL)
 	return DL_Data.content
 
 
@@ -105,7 +106,7 @@ def FAKE_Downloader(str_s: dict, url_Fake_DL: str) -> bytes:
 	global NET_count
 	NET_count_all += 1
 	NET_count += 1
-	if flag_Many_Logs: print(f"[NET]? {url_Fake_DL}|{NET_count_all}   ", end="\t")
+	if flag_Many_Logs: print(f"[NET]? {url_Fake_DL}\t{NET_count_all}   ", end="\t")
 	try:
 		DL_Data = open(f"[{bvid}]_[{str_s[0]}]_[{str_s[1]}]_[{str_s[2]}].bin", "rb").read()
 		Fake_status_code = 200
@@ -117,6 +118,7 @@ def FAKE_Downloader(str_s: dict, url_Fake_DL: str) -> bytes:
 	except json.decoder.JSONDecodeError:
 		if Fake_status_code == 404: DL_Json_code = 404
 	if flag_Many_Logs or DL_Json_code != 0 or Fake_status_code != 200: print(f"[NET]? File {Fake_status_code}, Json Code {DL_Json_code}", end="\t")
+	if (not flag_Many_Logs) and (DL_Json_code != 0 or Fake_status_code != 200): print(f"[{bvid}]_[{str_s[0]}]_[{str_s[1]}]_[{str_s[2]}].bin")
 	return DL_Data
 
 
@@ -155,7 +157,7 @@ def XML_Process(data) -> str:
 	"""
 	this: dm_pb2.DanmakuElem
 	out0 = ""
-	for this in data: out0 += proto2xml(this, exdata=flag_Ext_XML_Data, enable_weight=True, All_Default=flag_13)
+	for this in data: out0 += proto2xml(this, exdata=flag_Ext_XML_Data, enable_weight=True)
 	return out0
 
 
@@ -198,6 +200,7 @@ if __name__ == '__main__':
 	# print(sys.argv)
 	# ================================ 程序设置
 	is_ERROR = False
+	tag_LiveRecording = False
 	flag_Timer = True			# 计时器
 	flag_Error_Stop = True		# 错误停机
 	flag_Many_Logs = False		# 日志
@@ -209,10 +212,10 @@ if __name__ == '__main__':
 	flag_spec_danmaku_1 = True	# 特殊弹幕:BAS
 	flag_gzip = False			# 压缩为gzip
 	flag_spec_danmaku_2 = True	# 特殊弹幕:UP主自定义内容
-	flag_13 = False				# flag_13
+	# flag_13 = False				# flag_13
 	try: Program_FLAG(sys.argv[2])
 	except IndexError: pass
-	if flag_Test_Run: print("[Test Run]: ================================ ")
+	# if flag_Test_Run: print("[Test Run]: ================================ ")
 	# ================================ 终端输入
 	try: vid = sys.argv[1]
 	except IndexError:
@@ -232,7 +235,7 @@ _______________________1________  256 模拟运行
 ______________________1_________  512 特殊弹幕_BAS
 _____________________1__________ 1024 压缩json到gzip
 ____________________1___________ 2048 特殊弹幕_UP主自定义内容
-___________________1____________ 4096 Text1234567890
+___________________1____________ 4096 X
 """)
 		sys.exit()
 	if flag_NO_Json and flag_NO_XML and (not flag_Dump_Binary):
@@ -259,21 +262,21 @@ ___________________1____________ 4096 Text1234567890
 	if flag_Test_Run: json_Resp = FAKE_Downloader(["0", "Video", "INFO"], url_Fake_DL=url_Main)
 	else: json_Resp = Downloader(url_Main)
 	if flag_Many_Logs: print(f"[Info]: 1")
-	writeE(filename = f"[{bvid}]_[0]_[Video]_[INFO].bin", data=json_Resp, binary_=True)
+	if not flag_Test_Run: writeE(filename = f"[{bvid}]_[0]_[Video]_[INFO].bin", data=json_Resp, binary_=True)
 	if is_ERROR and flag_Error_Stop:
 		print(f"\n[{bvid}|{avid}]Error: {json.loads(json_Resp)['message']}")
 		print("总计用时:", round(time.time()-开始时间, 3))
 		sys.exit(1)
 	# ================================ 视频信息?
 	if 1:
-		if flag_Test_Run: video_info_detail = FAKE_Downloader(["0", "Video", "INFO_Detail"], url_Fake_DL=url_xx1)
+		if flag_Test_Run: video_info_detail = '{"data":{"Related":[],"Reply":{"replies":[]}}}'
 		else: video_info_detail = Downloader(url_xx1)
 		if flag_Many_Logs: print(f"[Info]: 2")
 		Vid_detail_json = json.loads(video_info_detail)
 		Vid_detail_json["data"]["Related"]=[]
 		Vid_detail_json["data"]["Reply"]["replies"]=[]
 		# Vid_detail_json["data"]["View"]["ugc_season"]["sections"]=[]
-		writeE(filename = f"[{bvid}]_[0]_[Video]_[INFO_Detail].bin", data=json.dumps(Vid_detail_json, ensure_ascii=False))
+		if not flag_Test_Run: writeE(filename = f"[{bvid}]_[0]_[Video]_[INFO_Detail].bin", data=json.dumps(Vid_detail_json, ensure_ascii=False))
 		del video_info_detail
 		del Vid_detail_json
 	del url_xx1
@@ -340,7 +343,7 @@ ___________________1____________ 4096 Text1234567890
 			if (not flag_Many_Logs): print(f"[{cid}]: {sec_c}/{Segment_Count}\r", end="")
 			sec_c += 1
 			if flag_Many_Logs: print(f"[danmaku]: P{i+1}/{Num_of_Videos}::{segments+1}/{Segment_Count}")
-			else: print("                      \r", end="")
+		if (not flag_Many_Logs): print("                      \r", end="")
 		dump_Data(str0=cid, str1="Danmaku", str2="ALL", data=Danmaku_Final_Binary, force=True)
 		JSON_Time = time.time()
 		if (not flag_NO_Json):
@@ -348,8 +351,38 @@ ___________________1____________ 4096 Text1234567890
 			Temp_Binary = dm_pb2.DmSegMobileReply()
 			Temp_Binary.ParseFromString(Danmaku_Final_Binary)
 			j1 = json.loads(MessageToJson(Temp_Binary, indent=0, ensure_ascii=False))
+			# ==================
+			for del_live_1 in j1["elems"]:
+				try:
+					try: del del_live_1["idStr"]
+					except KeyError: pass
+					try:
+						if del_live_1["test20"] == "0": del del_live_1["test20"]
+					except KeyError: pass
+					try:
+						if del_live_1["test21"] == "0": del del_live_1["test21"]
+					except KeyError: pass
+					if del_live_1["attr"] == 2:
+						tag_LiveRecording = True
+						try:
+							if del_live_1["mode"] == 1: del del_live_1["mode"]
+						except KeyError: pass
+						try:
+							if del_live_1["fontsize"] == 25: del del_live_1["fontsize"]
+						except KeyError: pass
+						try:
+							if del_live_1["color"] == 16777215: del del_live_1["color"]
+						except KeyError: pass
+						del del_live_1["weight"]
+				except KeyError: pass
+			# ==================
 			del Temp_Binary
 			if 1:
+				if flag_Test_Run:
+					try:
+						xx = json.loads(open(f"{err_sign}{File_Name}.json","r",encoding="utf-8"))["info"]["File_Create_Time"]
+					except:
+						xx = JSON_Time
 				try: j1["commandDms"] = ExInfo_Json["commandDms"]
 				except KeyError: j1["commandDms"] = []
 				try: Danmaku_Count = len(j1["elems"])
@@ -370,9 +403,9 @@ ___________________1____________ 4096 Text1234567890
 				j1["info"]["danmaku_web_reported"] = Json_Info['stat']['danmaku']	# num get
 				j1["info"]["danmaku_proto_reported"] = ExInfo_Proto.count	# num get 100?
 				j1["info"]["File_Create_Time"] = int(JSON_Time)			# num  set unix_timestamp
-				j1["info"]["All_Default"] = flag_13
-				j1["File_Ver"] = "V1_20220816"
-			Json_Write_Data = json.dumps(j1, ensure_ascii=False).replace("}, {\"id\"", "},\n{\"id\"").replace(", \"test20\": \"0\", \"test21\": \"0\"", "")
+				j1["info"]["is_live_record"] = tag_LiveRecording		# bool GET
+				j1["File_Ver"] = "V1_20220817"
+			Json_Write_Data = json.dumps(j1, ensure_ascii=False).replace("}, {\"id\"", "},\n{\"id\"")
 			del j1
 			if flag_Many_Logs: print(f"[File_JSON P{i+1}]: PROC end--")
 		if is_ERROR: err_sign = "ERR_"
@@ -383,7 +416,7 @@ ___________________1____________ 4096 Text1234567890
 			del Json_Write_Data
 		Time_Point_ = time.time()
 		if (not flag_NO_XML):
-			if is_ERROR or flag_Many_Logs: print(f"[File_XML  P{i+1}]: 开始写入")
+			if is_ERROR or flag_Many_Logs: print(f"[File_XML_ P{i+1}]: 开始写入")
 			writeE(f"{err_sign}{File_Name}.xml", XML_Write_Data + f"</i>\n<!-- Create Time: {str(int(JSON_Time))} -->")
 			del XML_Write_Data
 		del ExInfo_Proto
@@ -399,4 +432,4 @@ ___________________1____________ 4096 Text1234567890
 
 # 1745 dump,noxml,timer,bas
 # , "likes": \d{1,}\},
-# "weight": \d{1,2}, 
+# ("weight": \d{1,2}, |"mode": 1, "fontsize": 25, "color": 16777215, )

@@ -12,6 +12,7 @@ except ModuleNotFoundError: import dm_pb2
 from my_lib.file_writer import writeE
 
 if __name__ == '__main__':
+	tag_LiveRecording = False
 	time1 = time.time()
 	print("read")
 	Danmaku_Binary = open(sys.argv[1], "rb").read()
@@ -27,6 +28,10 @@ if __name__ == '__main__':
 	time3 = time.time()
 	print("json")
 	j1 = json.loads(MessageToJson(Temp_Binary, indent=0))
+	for this in Temp_Binary.elems:
+		if this.attr == 2:
+			tag_LiveRecording = True
+			break
 	j1["commandDms"] = []
 	j1["info"] = {}
 	j1["info"]["owner"] = {"mid":0,"name":"Fake_Username","face":"http://[::]/a.jpg"}
@@ -44,8 +49,8 @@ if __name__ == '__main__':
 	j1["info"]["danmaku_web_reported"] = 0
 	j1["info"]["danmaku_proto_reported"] = 0
 	j1["info"]["File_Create_Time"] = int(os.stat(sys.argv[1]).st_ctime)
-	j1["info"]["All_Default"] = False
-	j1["File_Ver"] = "V1_20220816_Proto2Json"
+	j1["info"]["is_live_record"] = tag_LiveRecording
+	j1["File_Ver"] = "V1_20220818_Proto2Json"
 	Write_Data = json.dumps(j1, ensure_ascii=False)
 
 	Temp_Binary = None
