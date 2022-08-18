@@ -19,6 +19,8 @@ def json2xml(this, exdata, enable_weight = True):
 	# try: idStr = this["idStr"]
 	# except KeyError: idStr = "0"
 	# if id_ != idStr: print("id idStr mismatch:", id_, idStr)
+	try: attr = this["attr"]
+	except KeyError: attr = 0
 	try: mode: int = this["mode"]
 	except KeyError:
 		if attr == 2: mode = "1"
@@ -37,8 +39,6 @@ def json2xml(this, exdata, enable_weight = True):
 		try: weight = this["weight"]
 		except KeyError: weight = "0"
 	else: weight = "9"
-	try: attr = this["attr"]
-	except KeyError: attr = 0
 	try: usermid = f"mid:{this['usermid']} "
 	except KeyError: usermid = ""
 	try: likes = f"Likes:{this['likes']} "
