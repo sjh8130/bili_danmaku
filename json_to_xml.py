@@ -50,16 +50,16 @@ if Danmaku_Count == 0 and commandDms_Len ==0: print("No Data"),sys.exit()
 if commandDms_Len != 0:
 	for this in Loaded_JSON["commandDms"]:
 		id_ = this["id"]
-		oid = this["oid"]
+		# oid = this["oid"]
 		mid = str(this['mid'])
 		command = this["command"]
 		content = this["content"]
 		try: progress = this["progress"]
 		except KeyError: progress = 0
 		ctime = this["ctime"]
-		mtime = this["mtime"]
+		# mtime = this["mtime"]
 		extra = this["extra"]
-		idStr = this["idStr"]
+		# idStr = this["idStr"]
 		midHash = hex(binascii.crc32(mid.encode())^0xFFFFFFFF).lstrip("0x").lstrip("0")
 		XML_Data_1st_Cache += f"\t<d p=\"{format(progress/1000, '.5f')},1,25,16777215,{int(time.mktime(time.strptime(ctime, '%Y-%m-%d %H:%M:%S')))},999,{midHash},{id_},11\">{content}</d><!-- SPECIAL: {command}{extra} -->\n"
 	del this
