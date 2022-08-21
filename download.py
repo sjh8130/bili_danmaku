@@ -13,7 +13,7 @@ except ModuleNotFoundError: import dm_pb2
 
 from my_lib.proto2xml_Lib import proto2xml
 from my_lib.bvav import BV_to_AV, AV_to_BV
-from my_lib.file_writer import writeE
+from my_lib.file_writer import writeER
 
 headers = {
 	'User-Agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.66 Safari/537.36 Edg/103.0.1264.44",
@@ -131,14 +131,14 @@ def get_Danmaku(cid: str, Segment_Index: str, retry: str = "") -> bytes:
 	return Content
 
 
-def get_Special_Danmaku() -> bytes:
+def get_Special_Danmaku(input: dm_pb2.DmWebViewReply) -> bytes:
 	"""
 	Text
 	"""
 	BAS_Binary = b""
 	i_for_BAS = 1
-	for URL_special_dms in ExInfo_Proto.special_dms:
-		ARR_BAS_name = [cid, "BAS", f"{i_for_BAS}", "bin"]
+	for URL_special_dms in input.special_dms:
+		ARR_BAS_name = [cid, "BAS", URL_special_dms[27:67], "bin"]
 		BAS_Data = Downloader(url_DL=URL_special_dms, str_s=ARR_BAS_name)
 		if flag_Many_Logs: print(f"[BAS_DL]: DL {i_for_BAS}")
 		if is_ERROR and flag_Error_Stop: break
@@ -154,7 +154,7 @@ def XML_Process(data) -> str:
 	"""
 	this: dm_pb2.DanmakuElem
 	out0 = ""
-	for this in data: out0 += proto2xml(this, exdata=flag_Ext_XML_Data, enable_weight=True)
+	for this in data: out0 += proto2xml(this=this, exdata=flag_Ext_XML_Data, enable_weight=True)
 	return out0
 
 
@@ -166,19 +166,8 @@ def XML_Special_Process(data, cid) -> str:
 	out1 = ""
 	for this in data:
 		Ex_Extra_Data = ""
-		id_ = this.id				# int64 id = 1
-		# oid = this.oid				# int64 oid = 2;
-		mid = this.mid				# int64 mid = 3;
-		command = this.command		# string command = 4;
-		content = this.content		# string content = 5;
-		progress = this.progress	# int32 progress = 6;
-		ctime = this.ctime			# string ctime = 7;
-		# mtime = this.mtime			# string mtime = 8;
-		extra = this.extra			# string extra = 9;
-		# idStr = this.idStr			# string idStr = 10
-		# if str(id_) != idStr: print("[XML_SP]: id&idStr mismatch:", id_, idStr)
-		if flag_Ext_XML_Data: Ex_Extra_Data = f"<!-- SPECIAL: {command}{extra} -->"
-		out1 += f"\t<d p=\"{format(progress/1000, '.5f')},1,25,16777215,{int(time.mktime(time.strptime(ctime, '%Y-%m-%d %H:%M:%S')))},999,{hex(binascii.crc32(str(mid).encode()) ^ 0xFFFFFFFF).lstrip('0x').lstrip('0')},{id_},11\">{content}</d>{Ex_Extra_Data}\n"
+		if flag_Ext_XML_Data: Ex_Extra_Data = f"<!-- SPECIAL: {this.command}{this.extra} -->"
+		out1 += f"\t<d p=\"{format(this.progress/1000, '.5f')},1,25,16777215,{int(time.mktime(time.strptime(this.ctime, '%Y-%m-%d %H:%M:%S')))},999,{hex(binascii.crc32(str(this.mid).encode()) ^ 0xFFFFFFFF).lstrip('0x').lstrip('0')},{this.id},11\">{this.content}</d>{Ex_Extra_Data}\n"
 	return out1
 
 
@@ -189,11 +178,11 @@ def dump_Data(str_s: dict, data: bytes, force: bool = False) -> None:
 	if flag_Dump_Binary and ((not flag_Test_Run) or force): pass
 	else: return
 	if len(data) == 0: return
-	writeE(filename=f"[{bvid}]_[{str_s[0]}]_[{str_s[1]}]_[{str_s[2]}].{str_s[3]}", data=data, gz=False, binary_=True)
+	writeER(filename=f"[{bvid}]_[{str_s[0]}]_[{str_s[1]}]_[{str_s[2]}].{str_s[3]}", data=data, gz=False, binary_=True)
 
 
 if __name__ == '__main__':
-	开始时间 = time.time()
+	time1 = time.time()
 	# print(sys.argv)
 	# ================================ 程序设置
 	is_ERROR = False
@@ -247,7 +236,7 @@ if __name__ == '__main__':
 	if (not flag_Test_Run): dump_Data(str_s=ARR_json_Resp_name, data=json_Resp)
 	if is_ERROR and flag_Error_Stop:
 		print(f"\n[{bvid}|{avid}]Error: {json.loads(json_Resp)['message']}")
-		print("总计用时:", round(time.time()-开始时间, 3))
+		print("总计用时:", round(time.time()-time1, 3))
 		sys.exit(1)
 	# ================================ 视频信息?
 	if 1:
@@ -260,17 +249,14 @@ if __name__ == '__main__':
 		Vid_detail_json["data"]["Reply"]["replies"] = []
 		# Vid_detail_json["data"]["View"]["ugc_season"]["sections"]=[]
 		dump_Data(str_s=ARR_Info_Detail_name, data=bytes(json.dumps(Vid_detail_json, ensure_ascii=False), encoding="utf-8"))
-		del ARR_Info_Detail_name
-		del video_info_detail
-		del Vid_detail_json
+		del ARR_Info_Detail_name, video_info_detail, Vid_detail_json
 	del url_xx1
 	# ================================ 加载
 	Json_Info = json.loads(json_Resp)["data"]
-	Item = Json_Info["pages"]
 	Main_Title = Json_Info["title"]
 	P_Date = str(Json_Info["pubdate"])
 	if Main_Title == "": Main_Title = "Fake_MainTitle"
-	Num_of_Videos = int(len(Item))
+	Num_of_Videos = int(len(Json_Info["pages"]))
 	# ================================ bvid aid 检查
 	if Json_Info["bvid"] != bvid: print(f"[bvid]: bvid mismatch {Json_Info['bvid']}|{bvid}")
 	if Json_Info["aid"] != avid_in: print(f"[avid]: avid mismatch av{Json_Info['aid']}|{avid}")
@@ -280,41 +266,42 @@ if __name__ == '__main__':
 		dump_Data(str_s=subs_name, data=Downloader(url_DL=subs["subtitle_url"], str_s=subs_name))
 		if flag_Many_Logs: print(f"[Subtitle]: {bvid}")
 	# ================================ 分集处理
-	for i in range(Num_of_Videos):
+	i_for_videos = 0
+	for This in Json_Info["pages"]:
+		i_for_videos += 1
 		NET_count = 0
-		This = Item[i]
 		cid = str(This["cid"])
 		if is_ERROR and flag_Error_Stop: break
-		分P开始时间 = time.time()
+		time2 = time.time()
 		Danmaku_Final_Binary = b""
 		duration = int(This["duration"])
 		Segment_Count = math.ceil(duration/360)
 		URL_Ext = f'https://api.bilibili.com/x/v2/dm/web/view?type=1&oid={cid}'
 		ARR_Ext_Info = [cid, "BAS", "INFO", "bin"]
 		DL_Data_Extra_Info = Downloader(url_DL=URL_Ext, str_s=ARR_Ext_Info)
-		if flag_Many_Logs: print(f"[Special_Danmaku]: P{i+1}")
+		if flag_Many_Logs: print(f"[Special_Danmaku]: P{i_for_videos}")
 		ExInfo_Proto = dm_pb2.DmWebViewReply()
 		ExInfo_Proto.ParseFromString(DL_Data_Extra_Info)
 		ExInfo_Json = json.loads(MessageToJson(ExInfo_Proto, indent=0, ensure_ascii=False))
 		dump_Data(str_s=ARR_Ext_Info, data=DL_Data_Extra_Info)
 		if (not flag_NO_XML): XML_Write_Data = f"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<i>\n\t<chatserver>chat.bilibili.com</chatserver>\n\t<chatid>{cid}</chatid>\n\t<mission>0</mission>\n\t<maxlimit>{6000*Segment_Count}</maxlimit>\n\t<state>0</state>\n\t<real_name>0</real_name>\n\t<source>k-v</source>\n"
 		P_Title = str(This["part"])
-		if P_Title == "": P_Title = f"P{i+1}"
-		print(f"{P_Date}|{bvid}|{avid}|P{i+1}/{Num_of_Videos}|{cid}|{duration}|{math.ceil(duration/360)}|{Main_Title}|{P_Title}")
+		if P_Title == "": P_Title = f"P{i_for_videos}"
+		print(f"{P_Date}|{bvid}|{avid}|P{i_for_videos}/{Num_of_Videos}|{cid}|{duration}|{math.ceil(duration/360)}|{Main_Title}|{P_Title}")
 		if P_Title == Main_Title: P_Title = ""
-		File_Name = f"[{P_Date}][{bvid}][{avid}][P{i+1}][{cid}]{Main_Title.replace('_', '＿')}_{P_Title.replace('_', '＿')}".replace("\\", "＼").replace("/", "／").replace(":", "：").replace("*", "＊").replace("?", "？").replace("<", "＜").replace(">", "＞").replace("|", "｜").replace("\"", "＂").rstrip("_")	# \/:*?"<>|
+		File_Name = f"[{P_Date}][{bvid}][{avid}][P{i_for_videos}][{cid}]{Main_Title.replace('_', '＿')}_{P_Title.replace('_', '＿')}".replace("\\", "＼").replace("/", "／").replace(":", "：").replace("*", "＊").replace("?", "？").replace("<", "＜").replace(">", "＞").replace("|", "｜").replace("\"", "＂").rstrip("_")	# \/:*?"<>|
 		# [1656432000][BV1**4*1*7*][av*********][P*][cid]MainTitle_P-Title
-		XML_Time = 0
-		XML_Ti = BAS_st = time.time()
+		time7 = 0
+		time3 = time4 = time.time()
 		if (not flag_NO_XML) and flag_spec_danmaku_2: XML_Write_Data += XML_Special_Process(ExInfo_Proto.commandDms, cid=cid)
 		if flag_spec_danmaku_1:
-			BAS_danmaku = get_Special_Danmaku()
+			BAS_danmaku = get_Special_Danmaku(ExInfo_Proto)
 			xml_t1 = dm_pb2.DmSegMobileReply()
 			xml_t1.ParseFromString(BAS_danmaku)
 			if (not flag_NO_XML): XML_Write_Data += XML_Process(xml_t1.elems)
 			Danmaku_Final_Binary += BAS_danmaku
-		XML_Tim = BAS_et = time.time()
-		XML_Time += XML_Tim - XML_Ti
+		time5 = time6 = time.time()
+		time7 += time5 - time3
 		# 弹幕分段下载
 		sec_c: int = 1
 		for segments in range(Segment_Count):
@@ -336,20 +323,20 @@ if __name__ == '__main__':
 						break
 			Danmaku_Final_Binary += Danmaku_Binarys
 			if (not flag_NO_XML):
-				XML_Ti = time.time()
+				time3 = time.time()
 				xml_t1 = dm_pb2.DmSegMobileReply()
 				xml_t1.ParseFromString(Danmaku_Binarys)
 				XML_Write_Data += XML_Process(xml_t1.elems)
-				XML_Tim = time.time()
-				XML_Time += XML_Tim - XML_Ti
+				time5 = time.time()
+				time7 += time5 - time3
 			if (not flag_Many_Logs): print(f"[{cid}]: {sec_c}/{Segment_Count}\r", end="")
 			sec_c += 1
-			if flag_Many_Logs: print(f"[danmaku]: P{i+1}/{Num_of_Videos}::{segments+1}/{Segment_Count}")
+			if flag_Many_Logs: print(f"[danmaku]: P{i_for_videos}/{Num_of_Videos}::{segments+1}/{Segment_Count}")
 		if (not flag_Many_Logs): print("                      \r", end="")
 		if Segment_Count != 1: dump_Data(str_s=[cid, "Danmaku", "ALL", "bin"], data=Danmaku_Final_Binary, force=True)
-		JSON_Time = time.time()
+		time8 = time.time()
 		if (not flag_NO_Json):
-			if flag_Many_Logs: print(f"[File_JSON P{i+1}]: PROC start")
+			if flag_Many_Logs: print(f"[File_JSON P{i_for_videos}]: PROC start")
 			Temp_Binary = dm_pb2.DmSegMobileReply()
 			Temp_Binary.ParseFromString(Danmaku_Final_Binary)
 			j1 = json.loads(MessageToJson(Temp_Binary, indent=0, ensure_ascii=False))
@@ -360,30 +347,31 @@ if __name__ == '__main__':
 				temp_tag = True
 			except KeyError: pass
 			if temp_tag:
-				for del_live_1 in j1["elems"]:
+				for tmpe_Del in j1["elems"]:
 					try:
-						try: del del_live_1["idStr"]
+						try: del tmpe_Del["idStr"]
 						except KeyError: pass
 						try:
-							if del_live_1["test20"] == "0": del del_live_1["test20"]
+							if tmpe_Del["test20"] == "0": del tmpe_Del["test20"]
 						except KeyError: pass
 						try:
-							if del_live_1["test21"] == "0": del del_live_1["test21"]
+							if tmpe_Del["test21"] == "0": del tmpe_Del["test21"]
 						except KeyError: pass
-						if del_live_1["attr"] == 2:
+						if tmpe_Del["attr"] == 2:
 							tag_LiveRecording = True
-							try: del del_live_1["likes"]
+							try: del tmpe_Del["likes"]
 							except KeyError: pass
 							try:
-								if del_live_1["mode"] == 1: del del_live_1["mode"]
+								if tmpe_Del["mode"] == 1: del tmpe_Del["mode"]
 							except KeyError: pass
 							try:
-								if del_live_1["fontsize"] == 25: del del_live_1["fontsize"]
+								if tmpe_Del["fontsize"] == 25: del tmpe_Del["fontsize"]
 							except KeyError: pass
 							try:
-								if del_live_1["color"] == 16777215: del del_live_1["color"]
+								if tmpe_Del["color"] == 16777215: del tmpe_Del["color"]
 							except KeyError: pass
-							del del_live_1["weight"]
+							try: del tmpe_Del["weight"]
+							except KeyError: pass
 					except KeyError: pass
 			del temp_tag
 			# ==================
@@ -391,7 +379,7 @@ if __name__ == '__main__':
 			if 1:
 				if flag_Test_Run:
 					try: xx = json.loads(open(f"{File_Name}.json", "r", encoding="utf-8"))["info"]["File_Create_Time"]
-					except: xx = JSON_Time
+					except: xx = time8
 				try: j1["commandDms"] = ExInfo_Json["commandDms"]
 				except KeyError: j1["commandDms"] = []
 				try: Danmaku_Count = len(j1["elems"])
@@ -410,30 +398,27 @@ if __name__ == '__main__':
 				j1["info"]["danmaku_count"] = Danmaku_Count + len(ExInfo_Proto.commandDms)	# num  set
 				j1["info"]["danmaku_web_reported"] = Json_Info['stat']['danmaku']	# num get
 				j1["info"]["danmaku_proto_reported"] = ExInfo_Proto.count	# num get
-				j1["info"]["File_Create_Time"] = int(JSON_Time)			# num  set unix_timestamp
+				j1["info"]["File_Create_Time"] = int(time8)			# num  set unix_timestamp
 				j1["info"]["is_live_record"] = tag_LiveRecording		# bool GET
 				j1["File_Ver"] = "V3_20220819"
 			Json_Write_Data = json.dumps(j1, ensure_ascii=False).replace("}, {\"id\"", "},\n{\"id\"")
 			del j1
-			if flag_Many_Logs: print(f"[File_JSON P{i+1}]: PROC end--")
+			if flag_Many_Logs: print(f"[File_JSON P{i_for_videos}]: PROC end--")
 		if is_ERROR: err_sign = "ERR_"
-		写入开始时间 = time.time()
+		time9 = time.time()
 		if (not flag_NO_Json):
-			if is_ERROR or flag_Many_Logs: print(f"[File_JSON P{i+1}]: 开始写入")
-			writeE(f"{err_sign}{File_Name}.json", Json_Write_Data, gz=flag_gzip)
+			if is_ERROR or flag_Many_Logs: print(f"[File_JSON P{i_for_videos}]: 开始写入")
+			writeER(f"{err_sign}{File_Name}.json", Json_Write_Data, gz=flag_gzip)
 			del Json_Write_Data
-		Time_Point_ = time.time()
+		timea = time.time()
 		if (not flag_NO_XML):
-			if is_ERROR or flag_Many_Logs: print(f"[File_XML_ P{i+1}]: 开始写入")
-			writeE(f"{err_sign}{File_Name}.xml", XML_Write_Data + f"</i>\n<!-- Create Time: {str(int(JSON_Time))} -->")
+			if is_ERROR or flag_Many_Logs: print(f"[File_XML_ P{i_for_videos}]: 开始写入")
+			writeER(f"{err_sign}{File_Name}.xml", XML_Write_Data + f"</i>\n<!-- Create Time: {str(int(time8))} -->")
 			del XML_Write_Data
-		del ExInfo_Proto
-		del ExInfo_Json
-		del DL_Data_Extra_Info
-		del Danmaku_Final_Binary
-		分P结束时间 = time.time()
-		if flag_Timer or flag_Many_Logs: print(f"P{i+1}: {round(分P结束时间-分P开始时间, 3)}，BAS: {round(BAS_et-BAS_st, 3)}，Write: {round(分P结束时间-写入开始时间, 3)}，JSON: {round(写入开始时间-JSON_Time, 3)}，XML: {round(分P结束时间-Time_Point_, 3)}，XML_P: {round(XML_Time, 3)}，Wait: {round(NET_count*SLEEP_TIME, 2)}，Net: {NET_count}")
+		del ExInfo_Proto, ExInfo_Json, DL_Data_Extra_Info, Danmaku_Final_Binary
+		timeb = time.time()
+		if flag_Timer or flag_Many_Logs: print(f"P{i_for_videos}: {round(timeb-time2, 3)}，BAS: {round(time6-time4, 3)}，Write: {round(timeb-time9, 3)}，JSON: {round(time9-time8, 3)}，XML: {round(timeb-timea, 3)}，XML_P: {round(time7, 3)}，Wait: {round(NET_count*SLEEP_TIME, 2)}，Net: {NET_count}")
 	if is_ERROR or flag_Timer or flag_Many_Logs:
-		结束时间 = time.time()
-		print(f"{bvid}|{avid} Time: {round(结束时间-开始时间, 3)} Net: {NET_count_all} Wait: {round(NET_count_all*SLEEP_TIME, 2)} SLEEP: {SLEEP_TIME}")
+		timec = time.time()
+		print(f"{bvid}|{avid} Time: {round(timec-time1, 3)} Net: {NET_count_all} Wait: {round(NET_count_all*SLEEP_TIME, 2)} SLEEP: {SLEEP_TIME}")
 	sys.exit(0)
