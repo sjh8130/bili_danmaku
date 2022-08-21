@@ -93,6 +93,149 @@ Field #13: 68 Varint Value = 256, Hex = 80-02
 Field #14: 70 Varint Value = ****, Hex = xx-xx-xx-xx-xx
 Field #22: B2-01 String Length = 150, Hex = 96-01, UTF8 = "{"id":20004,"cid":0,"advanced_block":0,"mime":"image","resource":"i0.hdslb.com/bfs/feed-admin/d831cbae67aee1a8fe1cc463fb23c9110ee46807.png","scale":1}"
 ```
+## commandDms
+| name      | id   | type   | desc  |
+| :-------- | ---: | -----: | :---- |
+| id        |  1   | int64  | 弹幕id |
+| oid       |  2   | int64  | 对象视频cid |
+| mid       |  3   | int64  | 发送者mid |
+| command   |  4   | string | 互动弹幕指令 |
+| content   |  5   | string | 互动弹幕正文 |
+| progress  |  6   | int32  | 出现时间 |
+| ctime     |  7   | string | 创建时间 yyyy-MM-dd HH:mm:ss |
+| mtime     |  8   | string | 发布时间 yyyy-MM-dd HH:mm:ss |
+| extra     |  9   | string | 扩展json数据 |
+| idStr     | 10   | string | 弹幕id str类型 |
+### command:类型
+| command       | content   |
+| :------------ | --------- |
+| #ACTORFOLLOW# | "合作up主" |
+| #ATTENTION#   | "关注弹幕" |
+| #GRADE#       | "哔瓣评分" |
+| #LINK#        | *自定义内容* |
+| #RESERVE#     | "直播预约：*自定义内容*" |
+| #UP#          | *自定义内容* |
+| #VOTE#        | "投票弹幕" |
+### ACTORFOLLOW:合作up主
+| key      | type  | value |
+| :------- | ----- | ----- |
+| duration | num   | |
+| posX     | float | |
+| posY     | float | |
+| icon     | str   | [url](http://i0.hdslb.com/bfs/album/19cc369845a2709464f3df9c38bbdea019619acd.png ) |
+| mid      | num   | *合作up主 mid* |
+| midstr   | str   | *合作up主 mid string* |
+| face     | str   | *合作up主 头像 URL* |
+### ATTENTION:关注弹幕
+| key      | type  | value |
+| :------- | ----- | ----- |
+| duration | num   | |
+| posX     | float | |
+| posY     | float | |
+| icon     | str   | [url](http://i0.hdslb.com/bfs/album/ea58d134636f05ddc208a13889dd054ae45eb6ef.png ) |
+| type     | num   | 2 |
+| arc_type | num   | 0 |
+### GRADE:哔*评分
+| key              | type  | value |
+| :--------------- | ----- | ----- |
+| msg              | str   | "哔瓣评分" |
+| skin             | num   | **1,2** |
+| posX             | float | |
+| posY             | float | |
+| grade_id         | num   | id |
+| duration         | num   | 5000? |
+| icon             | str   | [url](http://i0.hdslb.com/bfs/b/d1f96d0ad5341b214663b62e0de32dcbf776f894.png ) |
+| mid_score        | num   | |
+| count            | num   | |
+| avg_score        | float | |
+| skin_unselected  | str   | [1:url](http://i0.hdslb.com/bfs/b/1d8fc3daf9201d70189a3778e605d2acf9cae7e9.png ) [2:url](http://i0.hdslb.com/bfs/b/a00a37f4a1f419a42f04f535147d21ac96f27a79.png ) |
+| skin_selected    | str   | [1:url](http://i0.hdslb.com/bfs/b/ee3aca3dbc22087341cf312d71a1354af527e444.png ) [2:url](http://i0.hdslb.com/bfs/b/c7d3e7d452e4ff5caf719a8e422eca10e5caad1f.png ) |
+| skin_font_color  | str   | color(HTML) 1:"#FFB112" 2:"#FA5555" |
+| summary_duration | num   | 6000 |
+| shrink_icon      | str   | [url](http://i0.hdslb.com/bfs/b/7e947f8e64c7802a16de7ebec8a8e290160ec668.png ) |
+| shrink_title     | str   | "推荐" |
+| show_status      | num   | 0 |
+### LINK:链接
+| key          | type  | value |
+| :----------- | ----  | ----- |
+| aid          | num   | *目标视频avid* |
+| title        | str   | *目标视频标题* |
+| icon         | str   | [url](http://i0.hdslb.com/bfs/archive/03ef3f34944e0f78b1b4050fc3f9705d1fa905e3.png ) |
+| bvid         | str   | *目标视频bvid* |
+| posX         | float | |
+| posY         | float | |
+| arc_pic      | str   | *目标视频封面* |
+| arc_duration | num   | *目标视频时长* |
+| shrink_icon  | str   | [url](http://i0.hdslb.com/bfs/b/44338bca6bb98a34da40698beb4ee7d19aea92a6.png ) |
+| shrink_title | str   | "视频" |
+| show_status  | num   | 0 |
+| duration     | num   | |
+| arc_type     | num   | 0 |
+### RESERVE:预约
+| key                   | type  | value ||
+| :-------------------- | ----- | ----- | ---: |
+| msg                   | str   | "预告：*自定义内容*" "直播预约：*自定义内容*" |
+| reserve_type          | num   | 1:视频 2:直播 |
+| reserve_id            | num   | id |
+| live_stime            | num   | UnixTimeStamp |live-only|
+| arc_stime             | num   | UnixTimeStamp |live-only|
+| stime                 | num   | UnixTimeStamp |live-only|
+| posX                  | float | |
+| posY                  | float | |
+| duration              | num   | 5000 |
+| icon                  | str   | [url](http://i0.hdslb.com/bfs/b/4312fb7b155646fc6fd5f6f8a6a07a062d82587c.png ) |
+| reserve_count         | num   | *预约人数* |
+| reserve_state         | num   | 1 |
+| user_state            | bool  | false? |
+| live_state            | num   | video:0 live:2 |
+| premiere_state        | num   | 0 |
+| live_popularity_count | num   | 0 |
+| live_popularity_str   | str   | live:"x.y万人气"  |
+| premiere_online_count | num   | 0 |
+| premiere_view         | num   | 0 |
+| jump_url              | str   | *视频URL*,*直播回放URL* |
+| mid                   | num   | *目标视频 UP主mid* |
+| live_stime_format     | str   | video:"" Live:"?(yyyy-)MM-dd HH:mm" |
+| arc_stime_format      | str   | video:"" Live:"?(yyyy-)MM-dd HH:mm" |
+| stime_format          | str   | video:"" Live:"?(yyyy-)MM-dd HH:mm" |
+| live_lottery          | bool  | |
+| desc                  | str   | "" |
+| shrink_icon           | str   | [url](http://i0.hdslb.com/bfs/b/a4b1c7f03e687f680f7c3629c530e3fdd77d63ed.png ) |
+| shrink_title          | str   | "预约" |
+| show_status           | num   | 0 |
+### UP:带有【UP】的~~普通~~弹幕
+| key   | type | value |
+| :---- | ---- | ----- |
+| icon  | str  | *UP主头像URL* |
+### VOTE:投票弹幕
+| key          | type  | value |
+| :----------- | ----- | ----- |
+| vote_id      | num   | id |
+| question     | str   | *投票问题* |
+| cnt          | num   | *投票人数* |
+| options      | array | **选项** |
+| icon         | str   | [url](http://i0.hdslb.com/bfs/album/5ec559dbd4d54f8c1e76021d52eb9807de94bfb9.png ) |
+| my_vote      | num   | *我的选项* |
+| pub_dynamic  | bool  | |
+| posX         | float | |
+| posY         | float | |
+| duration     | num   | |
+| shrink_icon  | str   | [url](http://i0.hdslb.com/bfs/b/2eec72efb74244eed5c2f28ce5628de4e9f9c9e8.png ) |
+| shrink_title | num   | "投票" |
+| show_status  | num   | 0 |
+#### VOTE::options
+| key          | type  | value |
+| :----------- | ----- | ----- |
+| idx          | num   | start:1 |
+| desc         | str   | *选项内容* |
+| cnt          | num   | 0? |
+| has_self_def | bool  | false? |
+### posX,posY,duration
+| key      | min  | max |
+| :----    | ---- | --- |
+| posX     | 118  | 549 |
+| posY     | 80.5 | 889 |
+
 ## 16,17,18,20,21 参考样本
 ~~弹幕的弹幕~~
 ```XML
@@ -116,11 +259,11 @@ Field #22: B2-01 String Length = 150, Hex = 96-01, UTF8 = "{"id":20004,"cid":0,"
 {"id":"1XXXXXXXX7","ctime":"145XX47321","idStr":"1XXXXXXXX7","replyCount":1},
 {"id":"5XXXXXXXX91973376","ctime":"162XX37965","idStr":"5XXXXXXXX91973376","test16":"1XXXXXXXX7","test17":"1XXXXXXXX7"},
 {"id":"5XXXXXXXX91973376","ctime":"1629037965","idStr":"5XXXXXXXX91973376","test16":"1XXXXXXXX7","test17":"1XXXXXXXX7","test20":"1XXXXXXXX7","test21":"1XXXXXXXX7"},
-{},
+
 {"id":"108XXXXXXXX162500","ctime":"154XX13409","idStr":"108XXXXXXXX162500","likes":1,"replyCount":1},
 {"id":"534XXXXXXXX356160","ctime":"162XX37915","idStr":"534XXXXXXXX356160","test16":"108XXXXXXXX162500","test17":"108XXXXXXXX162500"},
 {"id":"534XXXXXXXX356160","ctime":"162XX37915","idStr":"534XXXXXXXX356160","test16":"108XXXXXXXX162500","test17":"108XXXXXXXX162500","test20":"108XXXXXXXX162500","test21":"108XXXXXXXX162500"},
-{},
+
 {"id":"3XXXXXXXX3","ctime":"14XX098318","idStr":"3XXXXXXXX3","attr":4,"likes":2359,"replyCount":7},
 {"id":"521XXXXXXXX935559","ctime":"16XX694229","idStr":"521XXXXXXXX935559","likes":2,"test16":"3XXXXXXXX3","test17":"3XXXXXXXX3"},
 {"id":"534XXXXXXXX481728","ctime":"16XX955781","idStr":"534XXXXXXXX481728","likes":2,"test16":"3XXXXXXXX3","test17":"3XXXXXXXX3"},
@@ -129,5 +272,5 @@ Field #22: B2-01 String Length = 150, Hex = 96-01, UTF8 = "{"id":20004,"cid":0,"
 {"id":"537XXXXXXXX886272","ctime":"16XX684458","idStr":"537XXXXXXXX886272","test16":"3XXXXXXXX3","test17":"3XXXXXXXX3"},
 {"id":"540XXXXXXXX711104","ctime":"16XX237458","idStr":"540XXXXXXXX711104","test16":"3XXXXXXXX3","test17":"3XXXXXXXX3"},
 {"id":"581XXXXXXXX414080","ctime":"16XX998765","idStr":"581XXXXXXXX414080","test16":"3XXXXXXXX3","test17":"3XXXXXXXX3"},
-{}]
+]
 ```
