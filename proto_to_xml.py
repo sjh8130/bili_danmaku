@@ -7,7 +7,7 @@ try: import zzzz as dm_pb2
 except ModuleNotFoundError: import dm_pb2
 
 from my_lib.proto2xml_Lib import proto2xml
-from my_lib.file_writer import writeE
+from my_lib.file_writer import writeER
 
 Start_Time = time.time()
 Last_Modified_Time = os.stat(sys.argv[1]).st_mtime
@@ -38,6 +38,6 @@ for this in itm.elems:
 		print(f"\rProgress: {i}/{Danmaku_Count}, Time: {round(time.time()-Start_Time,3)}", end="")
 print(f"\rProgress: {i}/{Danmaku_Count}, Time: {round(time.time()-Start_Time,3)}")
 
-writeE(f"{sys.argv[1]}.XML", XML_Data_1st_Cache+XML_Data_2nd_Cache+XML_Data_3rd_Cache+f"</i>\n<!-- Create Time: {int(Last_Modified_Time)} -->")
+writeER(f"{sys.argv[1]}.XML", XML_Data_1st_Cache+XML_Data_2nd_Cache+XML_Data_3rd_Cache+f"</i>\n<!-- Create Time: {int(Last_Modified_Time)} -->")
 End_Time = time.time()
 print(f"\r{Danmaku_Count}, 总计用时：{round(End_Time-Start_Time, 4)}                     ")

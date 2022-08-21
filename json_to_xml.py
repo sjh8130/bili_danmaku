@@ -7,7 +7,7 @@ import os
 import binascii
 
 from my_lib.json2xml_Lib import json2xml
-from my_lib.file_writer import writeE
+from my_lib.file_writer import writeER
 
 Start_Time = time.time()
 input_File = sys.argv[1]
@@ -75,6 +75,6 @@ for this in Loaded_JSON["elems"]:
 		print(f"\rProgress: {i}/{Danmaku_Count}, Time: {round(time.time()-Start_Time,3)}",end="")
 	del this
 
-writeE(outputFile, XML_Data_1st_Cache+XML_Data_2nd_Cache+XML_Data_3rd_Cache+f"</i>\n<!-- Create Time: {Last_Modified_Time} -->")
+writeER(outputFile, XML_Data_1st_Cache+XML_Data_2nd_Cache+XML_Data_3rd_Cache+f"</i>\n<!-- Create Time: {Last_Modified_Time} -->")
 End_Time = time.time()
 print(f"\r{Danmaku_Count}, 总计用时：{round(End_Time-Start_Time, 4)}                     ")

@@ -9,7 +9,7 @@ import time
 try: import zzzz as dm_pb2
 except ModuleNotFoundError: import dm_pb2
 
-from my_lib.file_writer import writeE
+from my_lib.file_writer import writeER
 
 if __name__ == '__main__':
 	tag_LiveRecording = False
@@ -56,8 +56,8 @@ if __name__ == '__main__':
 	Temp_Binary = None
 	time4 = time.time()
 	print("write")
-	writeE(f"{sys.argv[1]}.json", Write_Data.replace("}, {\"id\"", "},\x0a{\"id\"").replace(", \"test20\": \"0\", \"test21\": \"0\"", ""))
-	# writeE(f"{sys.argv[1]}.json", Write_Data.replace("}, {\"id\"", "},\x0a{\"id\"").replace(", \"test20\": \"0\", \"test21\": \"0\"", ""), True)
+	writeER(f"{sys.argv[1]}.json", Write_Data.replace("}, {\"id\"", "},\x0a{\"id\"").replace(", \"test20\": \"0\", \"test21\": \"0\"", ""))
+	# writeER(f"{sys.argv[1]}.json", Write_Data.replace("}, {\"id\"", "},\x0a{\"id\"").replace(", \"test20\": \"0\", \"test21\": \"0\"", ""), True)
 	time5 = time.time()
 
 	print(f"ALL:{time5-time1}, Write: {time5-time4}, Json: {time4-time3}, Proto: {time3-time2}, Read: {time2-time1}")
