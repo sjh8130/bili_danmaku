@@ -198,17 +198,17 @@ if __name__ == '__main__':
 	# ================================ 程序设置
 	is_ERROR = False
 	tag_LiveRecording = False
-	flag_Timer = True			# 计时器
-	flag_Error_Stop = True		# 错误停机
-	flag_Many_Logs = False		# 日志
-	flag_Ext_XML_Data = False	# 输出 其他信息到 XML 文件
-	flag_NO_Json = False		# 不输出 Json
-	flag_NO_XML = False			# 不输出 XML
-	flag_Dump_Binary = False	# 输出 Protobuf 二进制文件
-	flag_Test_Run = False		# 模拟运行
-	flag_spec_danmaku_1 = True	# 特殊弹幕:BAS
-	flag_gzip = False			# 压缩为gzip
-	flag_spec_danmaku_2 = True	# 特殊弹幕:UP主自定义内容
+	flag_Timer = True			#    1 计时器
+	flag_Error_Stop = True		#    2 错误停机
+	flag_Many_Logs = False		#    8 日志
+	flag_Ext_XML_Data = False	#   16 输出 其他信息到 XML 文件
+	flag_NO_Json = False		#   32 不输出 Json
+	flag_NO_XML = False			#   64 不输出 XML
+	flag_Dump_Binary = False	#  128 输出 Protobuf 二进制文件
+	flag_Test_Run = False		#  256 模拟运行
+	flag_spec_danmaku_1 = True	#  512 特殊弹幕:BAS
+	flag_gzip = False			# 1024 压缩为gzip
+	flag_spec_danmaku_2 = True	# 2048 特殊弹幕:UP主自定义内容
 	# flag_13 = False				# flag_13
 	try: Program_FLAG(sys.argv[2])
 	except IndexError: pass
@@ -216,22 +216,9 @@ if __name__ == '__main__':
 	# ================================ 终端输入
 	try: vid = sys.argv[1]
 	except IndexError:
-		print("""download.py av|bv [flag]\n\n.3.........2.........1..........
-10987654321098765432109876543210
-_______________________________1    1 计时器
-______________________________1_    2 错误停机
-_____________________________1__    4 X
-____________________________1___    8 日志
-___________________________1____   16 输出其他信息到XML文件
-__________________________1_____   32 不输出Json
-_________________________1______   64 不输出XML
-________________________1_______  128 输出Protobuf二进制文件
-_______________________1________  256 模拟运行
-______________________1_________  512 特殊弹幕_BAS
-_____________________1__________ 1024 压缩json到gzip
-____________________1___________ 2048 特殊弹幕_UP主自定义内容
-___________________1____________ 4096 X
-""")
+		print("download.py av|bv [flag]")
+		# vid = "av0"
+		# Program_FLAG("2712")
 		sys.exit()
 	if flag_NO_Json and flag_NO_XML and (not flag_Dump_Binary):
 		print("?????????")
@@ -272,7 +259,8 @@ ___________________1____________ 4096 X
 		Vid_detail_json["data"]["Related"] = []
 		Vid_detail_json["data"]["Reply"]["replies"] = []
 		# Vid_detail_json["data"]["View"]["ugc_season"]["sections"]=[]
-		if (not flag_Test_Run): dump_Data(str_s=ARR_Info_Detail_name, data=bytes(json.dumps(Vid_detail_json, ensure_ascii=False), encoding="utf-8"))
+		dump_Data(str_s=ARR_Info_Detail_name, data=bytes(json.dumps(Vid_detail_json, ensure_ascii=False), encoding="utf-8"))
+		del ARR_Info_Detail_name
 		del video_info_detail
 		del Vid_detail_json
 	del url_xx1
@@ -287,9 +275,10 @@ ___________________1____________ 4096 X
 	if Json_Info["bvid"] != bvid: print(f"[bvid]: bvid mismatch {Json_Info['bvid']}|{bvid}")
 	if Json_Info["aid"] != avid_in: print(f"[avid]: avid mismatch av{Json_Info['aid']}|{avid}")
 	for subs in Json_Info["subtitle"]["list"]:
+		if flag_Test_Run: break
 		subs_name = ["0", "Subs", f"{subs['id']}_{subs['lan']}", "bcc"]
 		dump_Data(str_s=subs_name, data=Downloader(url_DL=subs["subtitle_url"], str_s=subs_name))
-		if flag_Many_Logs: print(f"[{bvid}]: Sub")
+		if flag_Many_Logs: print(f"[Subtitle]: {bvid}")
 	# ================================ 分集处理
 	for i in range(Num_of_Videos):
 		NET_count = 0
