@@ -51,12 +51,12 @@ if __name__ == '__main__':
 	j1["info"]["File_Create_Time"] = int(os.stat(sys.argv[1]).st_ctime)
 	j1["info"]["is_live_record"] = tag_LiveRecording
 	j1["File_Ver"] = "V3_20220819_Proto2Json"
-	Write_Data = json.dumps(j1, ensure_ascii=False)
+	Write_Data = json.dumps(j1, ensure_ascii=False, separators=(',', ':'))
 
 	Temp_Binary = None
 	time4 = time.time()
 	print("write")
-	writeER(f"{sys.argv[1]}.json", Write_Data.replace("}, {\"id\"", "},\x0a{\"id\"").replace(", \"test20\": \"0\", \"test21\": \"0\"", ""))
+	writeER(f"{sys.argv[1]}.json", Write_Data.replace("},{\"id\"", "},\x0a{\"id\"").replace(", \"test20\": \"0\", \"test21\": \"0\"", ""))
 	# writeER(f"{sys.argv[1]}.json", Write_Data.replace("}, {\"id\"", "},\x0a{\"id\"").replace(", \"test20\": \"0\", \"test21\": \"0\"", ""), True)
 	time5 = time.time()
 

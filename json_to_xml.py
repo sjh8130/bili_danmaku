@@ -42,26 +42,19 @@ except KeyError: commandDms_Len = 0
 try: Danmaku_Count = len(Loaded_JSON["elems"])
 except KeyError: Danmaku_Count = 0
 
-if Danmaku_Count == 0 and commandDms_Len ==0: print("No Data"),sys.exit()
+if Danmaku_Count == 0 and commandDms_Len ==0:
+	# XML_Data_2nd_Cache = '<d p="0.00000,1,25,16776960,1660114514,9,ffffffff,99999999,9">_MARK_FOR_SEARCH_</d>\n'
+	print("No Data")
+	sys.exit()
 
 # try: is_live_record: bool = Loaded_JSON["info"]["is_live_record"]
 # except KeyError: is_live_record: bool = False
 
 if commandDms_Len != 0:
 	for this in Loaded_JSON["commandDms"]:
-		id_ = this["id"]
-		# oid = this["oid"]
-		mid = str(this['mid'])
-		command = this["command"]
-		content = this["content"]
 		try: progress = this["progress"]
 		except KeyError: progress = 0
-		ctime = this["ctime"]
-		# mtime = this["mtime"]
-		extra = this["extra"]
-		# idStr = this["idStr"]
-		midHash = hex(binascii.crc32(mid.encode())^0xFFFFFFFF).lstrip("0x").lstrip("0")
-		XML_Data_1st_Cache += f"\t<d p=\"{format(progress/1000, '.5f')},1,25,16777215,{int(time.mktime(time.strptime(ctime, '%Y-%m-%d %H:%M:%S')))},999,{midHash},{id_},11\">{content}</d><!-- SPECIAL: {command}{extra} -->\n"
+		XML_Data_1st_Cache += f"\t<d p=\"{format(progress/1000, '.5f')},1,25,16777215,{int(time.mktime(time.strptime(this['ctime'], '%Y-%m-%d %H:%M:%S')))},999,{hex(binascii.crc32(str(this['mid']).encode())^0xFFFFFFFF).lstrip('0x').lstrip('0')},{this['id']},11\">{this['content']}</d><!-- SPECIAL: {this['command']}{this['extra']} -->\n"
 	del this
 for this in Loaded_JSON["elems"]:
 	XML_Data_3rd_Cache += json2xml(this=this, exdata=False, enable_weight=True)

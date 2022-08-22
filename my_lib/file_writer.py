@@ -1,3 +1,4 @@
+#!/dev/null
 import gzip
 import tarfile
 import os

@@ -1,3 +1,4 @@
+#!/dev/null
 def Danmaku_ATTR_TYPE(attr: int):
 	"""
 	Text
@@ -13,7 +14,7 @@ def Danmaku_ATTR_TYPE(attr: int):
 	if b[-6 ] == "1": o += "05 "
 	if b[-7 ] == "1": o += "06 "
 	if b[-8 ] == "1": o += "07 "
-	if b[-9 ] == "1": o += "08 "	# 图片弹幕?
+	if b[-9 ] == "1": o += "08 "	# 图片弹幕?(ohh,前方高能)
 	if b[-10] == "1": o += "09 "
 	if b[-11] == "1": o += "10 "
 	if b[-12] == "1": o += "11 "

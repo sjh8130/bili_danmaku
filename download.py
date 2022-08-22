@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 from google.protobuf.json_format import MessageToJson
-import requests
 
+import requests
 import binascii
 import math
 import time
@@ -248,7 +248,7 @@ if __name__ == '__main__':
 		Vid_detail_json["data"]["Related"] = []
 		Vid_detail_json["data"]["Reply"]["replies"] = []
 		# Vid_detail_json["data"]["View"]["ugc_season"]["sections"]=[]
-		dump_Data(str_s=ARR_Info_Detail_name, data=bytes(json.dumps(Vid_detail_json, ensure_ascii=False), encoding="utf-8"))
+		dump_Data(str_s=ARR_Info_Detail_name, data=bytes(json.dumps(Vid_detail_json, ensure_ascii=False, separators=(',', ':')), encoding="utf-8"))
 		del ARR_Info_Detail_name, video_info_detail, Vid_detail_json
 	del url_xx1
 	# ================================ 加载
@@ -347,30 +347,30 @@ if __name__ == '__main__':
 				temp_tag = True
 			except KeyError: pass
 			if temp_tag:
-				for tmpe_Del in j1["elems"]:
+				for temp_Del in j1["elems"]:
+					try: del temp_Del["idStr"]
+					except KeyError: pass
 					try:
-						try: del tmpe_Del["idStr"]
-						except KeyError: pass
-						try:
-							if tmpe_Del["test20"] == "0": del tmpe_Del["test20"]
-						except KeyError: pass
-						try:
-							if tmpe_Del["test21"] == "0": del tmpe_Del["test21"]
-						except KeyError: pass
-						if tmpe_Del["attr"] == 2:
+						if temp_Del["test20"] == "0": del temp_Del["test20"]
+					except KeyError: pass
+					try:
+						if temp_Del["test21"] == "0": del temp_Del["test21"]
+					except KeyError: pass
+					try:
+						if temp_Del["attr"] == 2:
 							tag_LiveRecording = True
-							try: del tmpe_Del["likes"]
+							try: del temp_Del["likes"]
 							except KeyError: pass
 							try:
-								if tmpe_Del["mode"] == 1: del tmpe_Del["mode"]
+								if temp_Del["mode"] == 1: del temp_Del["mode"]
 							except KeyError: pass
 							try:
-								if tmpe_Del["fontsize"] == 25: del tmpe_Del["fontsize"]
+								if temp_Del["fontsize"] == 25: del temp_Del["fontsize"]
 							except KeyError: pass
 							try:
-								if tmpe_Del["color"] == 16777215: del tmpe_Del["color"]
+								if temp_Del["color"] == 16777215: del temp_Del["color"]
 							except KeyError: pass
-							try: del tmpe_Del["weight"]
+							try: del temp_Del["weight"]
 							except KeyError: pass
 					except KeyError: pass
 			del temp_tag
@@ -395,13 +395,13 @@ if __name__ == '__main__':
 				j1["info"]["duration"] = This["duration"]				# num  get part
 				j1["info"]["cid"] = This["cid"]							# num  get part
 				j1["info"]["segment_count"] = Segment_Count				# num  set
-				j1["info"]["danmaku_count"] = Danmaku_Count + len(ExInfo_Proto.commandDms)	# num  set
+				j1["info"]["danmaku_count"] = Danmaku_Count				# num  set
 				j1["info"]["danmaku_web_reported"] = Json_Info['stat']['danmaku']	# num get
 				j1["info"]["danmaku_proto_reported"] = ExInfo_Proto.count	# num get
-				j1["info"]["File_Create_Time"] = int(time8)			# num  set unix_timestamp
+				j1["info"]["File_Create_Time"] = int(time8)				# num  set unix_timestamp
 				j1["info"]["is_live_record"] = tag_LiveRecording		# bool GET
 				j1["File_Ver"] = "V3_20220819"
-			Json_Write_Data = json.dumps(j1, ensure_ascii=False).replace("}, {\"id\"", "},\n{\"id\"")
+			Json_Write_Data = json.dumps(j1, ensure_ascii=False, separators=(',', ':')).replace("},{\"id\"", "},\n{\"id\"")
 			del j1
 			if flag_Many_Logs: print(f"[File_JSON P{i_for_videos}]: PROC end--")
 		if is_ERROR: err_sign = "ERR_"

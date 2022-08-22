@@ -1,8 +1,7 @@
+#!/dev/null
 from my_lib.attr import Danmaku_ATTR_TYPE
-try:
-	import zzzz as dm_pb2
-except ModuleNotFoundError:
-	import dm_pb2
+try: import zzzz as dm_pb2
+except ModuleNotFoundError: import dm_pb2
 
 
 def fp(a: str, b: int): return f"{a}:{b} " if b else ""

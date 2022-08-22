@@ -14,9 +14,10 @@ Last_Modified_Time = os.stat(sys.argv[1]).st_mtime
 
 SPLIT_2ND_SIZE = 4000
 SPLIT_3RD_SIZE = 40000
-XML_Data_1st_Cache = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<i>\n\t<chatserver>chat.bilibili.com</chatserver>\n\t<chatid>0</chatid>\n\t<mission>0</mission>\n\t<maxlimit>6000</maxlimit>\n\t<state>0</state>\n\t<real_name>0</real_name>\n\t<source>k-v</source>\n"
+XML_Data_1st_Cache = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<i>\n\t<chatserver>chat.bilibili.com</chatserver>\n\t<chatid>_MARK_FOR_SEARCH_</chatid>\n\t<mission>0</mission>\n\t<maxlimit>6000</maxlimit>\n\t<state>0</state>\n\t<real_name>0</real_name>\n\t<source>k-v</source>\n"
 XML_Data_2nd_Cache = XML_Data_3rd_Cache = ""
-i = 1
+
+i = 0
 
 itm = dm_pb2.DmSegMobileReply()
 itm.ParseFromString(open(sys.argv[1], "rb").read())
@@ -24,6 +25,7 @@ itm.ParseFromString(open(sys.argv[1], "rb").read())
 XML_Data_2nd = ""
 Danmaku_Count = len(itm.elems)
 if Danmaku_Count == 0:
+	# XML_Data_2nd_Cache = '<d p="0.00000,1,25,16776960,1660114514,9,ffffffff,99999999,9">_MARK_FOR_SEARCH_</d>\n'
 	print("No Data")
 	sys.exit()
 for this in itm.elems:
