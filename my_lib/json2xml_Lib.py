@@ -1,3 +1,4 @@
+#!/dev/null
 from my_lib.attr import Danmaku_ATTR_TYPE
 
 
@@ -37,7 +38,9 @@ def json2xml(this, exdata, enable_weight = True):
 	except KeyError: pool = "0"
 	if enable_weight:
 		try: weight = this["weight"]
-		except KeyError: weight = "0"
+		except KeyError:
+			if attr == 2: weight = "9"
+			else: weight = "0"
 	else: weight = "9"
 	try: usermid = f"mid:{this['usermid']} "
 	except KeyError: usermid = ""
