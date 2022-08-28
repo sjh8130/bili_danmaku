@@ -1,6 +1,6 @@
 # 测试数据
 ## Proto:DanmakuElem
-| json-name  | id   | 数据类型 | protobuf-name | -    |
+| json-name  | id   | 数据类型 | protobuf-name | - |
 | ---------- | ---: | ------: | :------------ | ------: |
 | id         |  1   | int64   | id            |  |
 | progress   |  2   | int32   | progress      |  |
@@ -26,36 +26,36 @@
 | animation  | 22   | string  | animation     |  |
 | test23     | 23   | ?       | test23        | ? |
 
-### json:
-```JS
+### protobuf:
+```JSON
 {"elems": [
-    {
-        "id": "1234567890123456789",        // 01:  int64 弹幕ID
-        "progress": 1,                      // 02:  int32 弹幕出现时间 空:0
-        "mode": 1,                          // 03:  int32 弹幕类型
-        "fontsize": 25,                     // 04:  int32 弹幕字号
-        "color": 16777215,                  // 05: uint32 弹幕颜色 RGB24 空:0 [1,16777215]
-        "midHash": "XXXXXXXX",              // 06: string 发送者mid hash (CRC32 mid)
-        "content": "*****",                 // 07: string 弹幕内容
-        "ctime": "123456789",               // 08:  int64 发送时间
-        "weight": 11,                       // 09:  int32 屏蔽等级 [1,11]
-        "action": ""                        // 10: string 已知:["airborne:时间(毫秒)","picture:图像url"]
-        "pool": 1                           // 11:  int32 弹幕池
-        "idStr": "1234567890123456789",     // 12: string 弹幕ID
-        "attr": 1,                          // 13:  int32 弹幕属性位
-        "usermid": "1234567890",            // 14: ?int64 发送者mid
-        "likes": 0,                         // 15: ?int?? 点赞数量
-        "test16": "",                       // 16:  int64 test16 === test17  !! 指向另一个弹幕 id
-        "test17": "",                       // 17:  int64 test16 === test17  !! 指向另一个弹幕 id
-        "replyCount": "",                   // 18: ?int??                    !! 被指向次数
-        "test19": "",                       // 19: ?????? -
-        "test20": "",                       // 20: string test20 === test21  !! 指向另一个弹幕 idStr
-        "test21": "",                       // 21: string test20 === test21  !! 指向另一个弹幕 idStr
-        "animation": "",                    // 22: string [json] id:[20004,20016]
-        "test23": ""                        // 23: ?????? -
-    }
-    // ......
-    ]
+	{
+		"id": "1234567890123456789",    // 01:  int64 弹幕ID
+		"progress": 1,                  // 02:  int32 弹幕出现时间 空:0
+		"mode": 1,                      // 03:  int32 弹幕类型
+		"fontsize": 25,                 // 04:  int32 弹幕字号
+		"color": 16777215,              // 05: uint32 弹幕颜色 RGB24 空:0 [1,16777215]
+		"midHash": "XXXXXXXX",          // 06: string 发送者mid hash (CRC32 mid)
+		"content": "*****",             // 07: string 弹幕内容
+		"ctime": "123456789",           // 08:  int64 发送时间
+		"weight": 11,                   // 09:  int32 屏蔽等级 [1,11]
+		"action": "",                   // 10: string 已知:["airborne:时间(毫秒)","picture:图像url"]
+		"pool": 1,                      // 11:  int32 弹幕池
+		"idStr": "1234567890123456789", // 12: string 弹幕ID
+		"attr": 1,                      // 13:  int32 弹幕属性位
+		"usermid": "1234567890",        // 14: ?int64 发送者mid
+		"likes": 0,                     // 15: ?int?? 点赞数量
+		"test16": "",                   // 16:  int64 test16 === test17  !! 指向另一个弹幕 id
+		"test17": "",                   // 17:  int64 test16 === test17  !! 指向另一个弹幕 id
+		"replyCount": "",               // 18: ?int??                    !! 被指向次数
+		"test19": "",                   // 19: ?????? -
+		"test20": "",                   // 20: string test20 === test21  !! 指向另一个弹幕 idStr
+		"test21": "",                   // 21: string test20 === test21  !! 指向另一个弹幕 idStr
+		"animation": "",                // 22: string[json] id:[20004(ohh),20016]
+		"test23": ""                    // 23: ?????? -
+	}
+	// ......
+	]
 }
 ```
 ### 图片弹幕
@@ -77,22 +77,7 @@
 	"animation": "{\"id\":20004,\"cid\":0,\"advanced_block\":0,\"mime\":\"image\",\"resource\":\"i0.hdslb.com/bfs/feed-admin/d831cbae67aee1a8fe1cc463fb23c9110ee46807.png\",\"scale\":1}"
 },
 ```
-```
-Field #1: 08 Varint Value = 110xxxxxxxxxxxxx632 Hex = xx-xx-xx-xx-xx-xx-xx-xx-xx
-Field #2: 10 Varint Value = 361534, Hex = BE-88-16
-Field #3: 18 Varint Value = 1, Hex = 01
-Field #4: 20 Varint Value = 25, Hex = 19
-Field #5: 28 Varint Value = 16777215, Hex = FF-FF-FF-07
-Field #6: 32 String Length = 8, Hex = 08, UTF8 = "********"
-Field #7: 3A String Length = 5, Hex = 05, UTF8 = "[ohh]"
-Field #8: 40 Varint Value = 16593xxxxx, Hex = xx-xx-xx-xx-xx
-Field #9: 48 Varint Value = 10, Hex = 0A
-Field #10: 52 String Length = 91, Hex = 5B, UTF8 = "picture:i0.hdslb.com/bfs/feed-admin/d831cbae67aee1a8fe1cc463fb23c9110ee46807.png?scale=1.00"
-Field #12: 62 String Length = 19, Hex = 13, UTF8 = "110xxxxxxxxxxxxx632"
-Field #13: 68 Varint Value = 256, Hex = 80-02
-Field #14: 70 Varint Value = ****, Hex = xx-xx-xx-xx-xx
-Field #22: B2-01 String Length = 150, Hex = 96-01, UTF8 = "{"id":20004,"cid":0,"advanced_block":0,"mime":"image","resource":"i0.hdslb.com/bfs/feed-admin/d831cbae67aee1a8fe1cc463fb23c9110ee46807.png","scale":1}"
-```
+
 ## commandDms
 | name      | id   | type   | desc  |
 | :-------- | ---: | -----: | :---- |
@@ -112,9 +97,9 @@ Field #22: B2-01 String Length = 150, Hex = 96-01, UTF8 = "{"id":20004,"cid":0,"
 | #ACTORFOLLOW# | "合作up主" |
 | #ATTENTION#   | "关注弹幕" |
 | #GRADE#       | "哔瓣评分" |
-| #LINK#        | *自定义内容* |
-| #RESERVE#     | "预告：*自定义内容*"<br>"直播预约：*自定义内容*" |
-| #UP#          | *自定义内容* |
+| #LINK#        | **自定义内容** |
+| #RESERVE#     | "预告：**自定义内容**"<br>"直播预约：**自定义内容**" |
+| #UP#          | **自定义内容** |
 | #VOTE#        | "投票弹幕" |
 ### ACTORFOLLOW:合作up主
 | key      | type  | value |
@@ -122,17 +107,17 @@ Field #22: B2-01 String Length = 150, Hex = 96-01, UTF8 = "{"id":20004,"cid":0,"
 | duration | num   | |
 | posX     | float | |
 | posY     | float | |
-| icon     | str   | [url](http://i0.hdslb.com/bfs/album/19cc369845a2709464f3df9c38bbdea019619acd.png ) |
-| mid      | num   | *合作up主 mid* |
-| midstr   | str   | *合作up主 mid string* |
-| face     | str   | *合作up主 头像 URL* |
+| icon     | str   | http://i0.hdslb.com/bfs/album/19cc369845a2709464f3df9c38bbdea019619acd.png |
+| mid      | num   | **合作up主 mid** |
+| midstr   | str   | **合作up主 mid string** |
+| face     | str   | **合作up主 头像 URL** |
 ### ATTENTION:关注弹幕
 | key      | type  | value |
 | :------- | ----- | ----- |
 | duration | num   | |
 | posX     | float | |
 | posY     | float | |
-| icon     | str   | [url](http://i0.hdslb.com/bfs/album/ea58d134636f05ddc208a13889dd054ae45eb6ef.png ) |
+| icon     | str   | http://i0.hdslb.com/bfs/album/ea58d134636f05ddc208a13889dd054ae45eb6ef.png |
 | type     | num   | 2 |
 | arc_type | num   | 0 |
 ### GRADE:哔*评分
@@ -144,63 +129,63 @@ Field #22: B2-01 String Length = 150, Hex = 96-01, UTF8 = "{"id":20004,"cid":0,"
 | posY             | float | |
 | grade_id         | num   | id |
 | duration         | num   | 5000? |
-| icon             | str   | [url](http://i0.hdslb.com/bfs/b/d1f96d0ad5341b214663b62e0de32dcbf776f894.png ) |
+| icon             | str   | http://i0.hdslb.com/bfs/b/d1f96d0ad5341b214663b62e0de32dcbf776f894.png |
 | mid_score        | num   | |
 | count            | num   | |
 | avg_score        | float | |
-| skin_unselected  | str   | [skin1:url](http://i0.hdslb.com/bfs/b/1d8fc3daf9201d70189a3778e605d2acf9cae7e9.png ),[skin2:url](http://i0.hdslb.com/bfs/b/a00a37f4a1f419a42f04f535147d21ac96f27a79.png ) |
-| skin_selected    | str   | [skin1:url](http://i0.hdslb.com/bfs/b/ee3aca3dbc22087341cf312d71a1354af527e444.png ),[skin2:url](http://i0.hdslb.com/bfs/b/c7d3e7d452e4ff5caf719a8e422eca10e5caad1f.png ) |
-| skin_font_color  | str   | color(HTML)<br>skin1:"#FFB112"<br>skin2:"#FA5555" |
+| skin_unselected  | str   | skin1: http://i0.hdslb.com/bfs/b/1d8fc3daf9201d70189a3778e605d2acf9cae7e9.png<br>skin2: http://i0.hdslb.com/bfs/b/a00a37f4a1f419a42f04f535147d21ac96f27a79.png |
+| skin_selected    | str   | skin1: http://i0.hdslb.com/bfs/b/ee3aca3dbc22087341cf312d71a1354af527e444.png<br>skin2: http://i0.hdslb.com/bfs/b/c7d3e7d452e4ff5caf719a8e422eca10e5caad1f.png |
+| skin_font_color  | str   | color(HTML)<br>skin1: "`#FFB112`"<br>skin2: "`#FA5555`" |
 | summary_duration | num   | 6000 |
-| shrink_icon      | str   | [url](http://i0.hdslb.com/bfs/b/7e947f8e64c7802a16de7ebec8a8e290160ec668.png ) |
+| shrink_icon      | str   | http://i0.hdslb.com/bfs/b/7e947f8e64c7802a16de7ebec8a8e290160ec668.png |
 | shrink_title     | str   | "推荐" |
 | show_status      | num   | 0 |
 ### LINK:链接
 | key          | type  | value |
 | :----------- | ----  | ----- |
-| aid          | num   | *目标视频avid* |
-| title        | str   | *目标视频标题* |
-| icon         | str   | [url](http://i0.hdslb.com/bfs/archive/03ef3f34944e0f78b1b4050fc3f9705d1fa905e3.png ) |
-| bvid         | str   | *目标视频bvid* |
+| aid          | num   | **目标视频avid** |
+| title        | str   | **目标视频标题** |
+| icon         | str   | http://i0.hdslb.com/bfs/archive/03ef3f34944e0f78b1b4050fc3f9705d1fa905e3.png |
+| bvid         | str   | **目标视频bvid** |
 | posX         | float | |
 | posY         | float | |
-| arc_pic      | str   | *目标视频封面* |
-| arc_duration | num   | *目标视频时长* |
-| shrink_icon  | str   | [url](http://i0.hdslb.com/bfs/b/44338bca6bb98a34da40698beb4ee7d19aea92a6.png ) |
+| arc_pic      | str   | **目标视频封面** |
+| arc_duration | num   | **目标视频时长** |
+| shrink_icon  | str   | http://i0.hdslb.com/bfs/b/44338bca6bb98a34da40698beb4ee7d19aea92a6.png |
 | shrink_title | str   | "视频" |
 | show_status  | num   | 0 |
 | duration     | num   | |
 | arc_type     | num   | 0 |
 ### RESERVE:预约
-| key                   | type  | value |?|
+| key                   | type  | value | 备注 |
 | :-------------------- | ----- | ----- | ---: |
-| msg                   | str   | "预告：*自定义内容*"<br>"直播预约：*自定义内容*" |
-| reserve_type          | num   | 1:视频<br>2:直播 |
+| msg                   | str   | "预告：**自定义内容**"<br>"直播预约：**自定义内容**" |
+| reserve_type          | num   | 1: 视频<br>2: 直播 |
 | reserve_id            | num   | id |
-| live_stime            | num   | UnixTimeStamp |live-only|
-| arc_stime             | num   | UnixTimeStamp |live-only|
-| stime                 | num   | UnixTimeStamp |live-only|
+| live_stime            | num   | UnixTimeStamp | 仅存在于`reserve_type=2` |
+| arc_stime             | num   | UnixTimeStamp | 仅存在于`reserve_type=2` |
+| stime                 | num   | UnixTimeStamp | 仅存在于`reserve_type=2` |
 | posX                  | float | |
 | posY                  | float | |
 | duration              | num   | 5000 |
-| icon                  | str   | [url](http://i0.hdslb.com/bfs/b/4312fb7b155646fc6fd5f6f8a6a07a062d82587c.png ) |
-| reserve_count         | num   | *预约人数* |
+| icon                  | str   | http://i0.hdslb.com/bfs/b/4312fb7b155646fc6fd5f6f8a6a07a062d82587c.png |
+| reserve_count         | num   | **预约人数** |
 | reserve_state         | num   | 1 |
 | user_state            | bool  | false? |
-| live_state            | num   | video:0<br>live:2 |
+| live_state            | num   | video: 0<br>live: 2 ? |
 | premiere_state        | num   | 0 |
 | live_popularity_count | num   | 0 |
-| live_popularity_str   | str   | live:"x.y万人气"  |
+| live_popularity_str   | str   | live :"`x.y万人气`"  |
 | premiere_online_count | num   | 0 |
 | premiere_view         | num   | 0 |
-| jump_url              | str   | *视频URL*<br>*直播回放URL* |
-| mid                   | num   | *目标视频 UP主mid* |
-| live_stime_format     | str   | video:""<br>Live:"?(yyyy-)MM-dd HH:mm" |
-| arc_stime_format      | str   | video:""<br>Live:"?(yyyy-)MM-dd HH:mm" |
-| stime_format          | str   | video:""<br>Live:"?(yyyy-)MM-dd HH:mm" |
+| jump_url              | str   | **视频URL(直播回放URL)** |
+| mid                   | num   | **目标视频 UP主mid** |
+| live_stime_format     | str   | video:""<br>live: "`?(yyyy-)MM-dd HH:mm`" |
+| arc_stime_format      | str   | video:""<br>live: "`?(yyyy-)MM-dd HH:mm`" |
+| stime_format          | str   | video:""<br>live: "`?(yyyy-)MM-dd HH:mm`" |
 | live_lottery          | bool  | |
 | desc                  | str   | "" |
-| shrink_icon           | str   | [url](http://i0.hdslb.com/bfs/b/a4b1c7f03e687f680f7c3629c530e3fdd77d63ed.png ) |
+| shrink_icon           | str   | http://i0.hdslb.com/bfs/b/a4b1c7f03e687f680f7c3629c530e3fdd77d63ed.png |
 | shrink_title          | str   | "预约" |
 | show_status           | num   | 0 |
 ### UP:带有【UP】的~~普通~~弹幕
@@ -211,23 +196,23 @@ Field #22: B2-01 String Length = 150, Hex = 96-01, UTF8 = "{"id":20004,"cid":0,"
 | key          | type  | value |
 | :----------- | ----- | ----- |
 | vote_id      | num   | id |
-| question     | str   | *投票问题* |
-| cnt          | num   | *投票人数* |
+| question     | str   | **投票问题** |
+| cnt          | num   | **投票人数** |
 | options      | array | **选项** |
-| icon         | str   | [url](http://i0.hdslb.com/bfs/album/5ec559dbd4d54f8c1e76021d52eb9807de94bfb9.png ) |
-| my_vote      | num   | *我的选项* |
+| icon         | str   | http://i0.hdslb.com/bfs/album/5ec559dbd4d54f8c1e76021d52eb9807de94bfb9.png |
+| my_vote      | num   | **我的选项** |
 | pub_dynamic  | bool  | |
 | posX         | float | |
 | posY         | float | |
 | duration     | num   | |
-| shrink_icon  | str   | [url](http://i0.hdslb.com/bfs/b/2eec72efb74244eed5c2f28ce5628de4e9f9c9e8.png ) |
-| shrink_title | num   | "投票" |
+| shrink_icon  | str   | http://i0.hdslb.com/bfs/b/2eec72efb74244eed5c2f28ce5628de4e9f9c9e8.png |
+| shrink_title | str   | "投票" |
 | show_status  | num   | 0 |
 #### VOTE::options
 | key          | type  | value |
 | :----------- | ----- | ----- |
 | idx          | num   | start:1 |
-| desc         | str   | *选项内容* |
+| desc         | str   | **选项内容** |
 | cnt          | num   | 0? |
 | has_self_def | bool  | false? |
 ### posX,posY
