@@ -7,6 +7,7 @@ import math
 import time
 import json
 import sys
+import threading
 
 try: import zzzz as dm_pb2
 except ModuleNotFoundError: import dm_pb2
@@ -19,7 +20,7 @@ headers = {
 	'User-Agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.66 Safari/537.36 Edg/103.0.1264.44",
 	'origin': "https://www.bilibili.com",
 	'referer': "https://www.bilibili.com"
-}
+	}
 SLEEP_TIME = 0.03
 NET_count = 0
 NET_count_all = 0
@@ -233,7 +234,7 @@ if __name__ == '__main__':
 	ARR_json_Resp_name = ["0", "Video", "INFO", "json"]
 	json_Resp = Downloader(url_DL=url_Main, str_s=ARR_json_Resp_name)
 	if flag_Many_Logs: print(f"[Info]: 1")
-	if (not flag_Test_Run): dump_Data(str_s=ARR_json_Resp_name, data=json_Resp)
+	threading.Thread(dump_Data(str_s=ARR_json_Resp_name, data=bytes(json.dumps(json.loads(json_Resp), ensure_ascii=False, separators=(",", ":"), indent="\t"), encoding="utf-8"))).start()
 	if is_ERROR and flag_Error_Stop:
 		print(f"\n[{bvid}|{avid}]Error: {json.loads(json_Resp)['message']}")
 		print("总计用时:", round(time.time()-time1, 3))
@@ -248,7 +249,7 @@ if __name__ == '__main__':
 		Vid_detail_json["data"]["Related"] = []
 		Vid_detail_json["data"]["Reply"]["replies"] = []
 		# Vid_detail_json["data"]["View"]["ugc_season"]["sections"]=[]
-		dump_Data(str_s=ARR_Info_Detail_name, data=bytes(json.dumps(Vid_detail_json, ensure_ascii=False, separators=(',', ':')), encoding="utf-8"))
+		threading.Thread(dump_Data(str_s=ARR_Info_Detail_name, data=bytes(json.dumps(Vid_detail_json, ensure_ascii=False, separators=(',', ':'), indent="\t"), encoding="utf-8"))).start()
 		del ARR_Info_Detail_name, video_info_detail, Vid_detail_json
 	del url_xx1
 	# ================================ 加载
@@ -263,7 +264,7 @@ if __name__ == '__main__':
 	for subs in Json_Info["subtitle"]["list"]:
 		if flag_Test_Run: break
 		subs_name = ["0", "Subs", f"{subs['id']}_{subs['lan']}", "bcc"]
-		dump_Data(str_s=subs_name, data=Downloader(url_DL=subs["subtitle_url"], str_s=subs_name))
+		threading.Thread(dump_Data(str_s=subs_name, data=Downloader(url_DL=subs["subtitle_url"], str_s=subs_name))).start()
 		if flag_Many_Logs: print(f"[Subtitle]: {bvid}")
 	# ================================ 分集处理
 	i_for_videos = 0
@@ -283,7 +284,7 @@ if __name__ == '__main__':
 		ExInfo_Proto = dm_pb2.DmWebViewReply()
 		ExInfo_Proto.ParseFromString(DL_Data_Extra_Info)
 		ExInfo_Json = json.loads(MessageToJson(ExInfo_Proto, indent=0, ensure_ascii=False))
-		dump_Data(str_s=ARR_Ext_Info, data=DL_Data_Extra_Info)
+		threading.Thread(dump_Data(str_s=ARR_Ext_Info, data=DL_Data_Extra_Info)).start()
 		if (not flag_NO_XML): XML_Write_Data = f"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<i>\n\t<chatserver>chat.bilibili.com</chatserver>\n\t<chatid>{cid}</chatid>\n\t<mission>0</mission>\n\t<maxlimit>{6000*Segment_Count}</maxlimit>\n\t<state>0</state>\n\t<real_name>0</real_name>\n\t<source>k-v</source>\n"
 		P_Title = str(This["part"])
 		if P_Title == "": P_Title = f"P{i_for_videos}"
