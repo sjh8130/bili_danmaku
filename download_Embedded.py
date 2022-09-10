@@ -42,6 +42,7 @@ def q():
 			m["elems"]=["Embedded"]
 			m["commandDms"]=[]
 			m["info"]={}
+			m["info"]["Ver"]="V4_20220911_Embedded"
 			m["info"]["owner"]=b['owner']
 			m["info"]["bvid"]=b['bvid']
 			m["info"]["avid"]=b['aid']
@@ -56,8 +57,8 @@ def q():
 			m["info"]["danmaku_web_reported"]=b['stat']['danmaku']
 			m["info"]["danmaku_proto_reported"]=0
 			m["info"]["File_Create_Time"]=time.time().__trunc__()
+			m["info"]["File_Create_Time_Start"]=0
 			m["info"]["is_live_record"]=False
-			m["File_Ver"]="V3_20220819_Embedded"
 			n=json.dumps(m,ensure_ascii=False,separators=(',',':'))
 			o=tarfile.TarInfo(f"{s}_{g}.json")
 			o.size=len(n)

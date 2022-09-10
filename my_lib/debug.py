@@ -13,8 +13,8 @@ a = [
 "UP主自定义   2048",
 "is_ERROR     4096",
 "Flag13有弹幕 8192",
-"Undefined",
-"Undefined",
+"exit pos 1  16384",
+"exit pos 2  32768",
 "Undefined",
 "Undefined",
 "Undefined",
@@ -33,6 +33,6 @@ a = [
 "Undefined"
 ]
 def flag_debug(pflag):
-	return
 	for i in range(len(pflag)):
 		print(f"[Debug_Flag] {a[i]}\t{pflag[i]}")
+	return
