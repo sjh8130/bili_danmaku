@@ -34,6 +34,7 @@ if __name__ == '__main__':
 			break
 	j1["commandDms"] = []
 	j1["info"] = {}
+	j1["info"]["Ver"] = "V4_20220911_Proto2Json"
 	j1["info"]["owner"] = {"mid":0, "name":"Fake_Username", "face":"http://[::]/a.jpg"}
 	j1["info"]["bvid"] = "Fake_BVID"
 	j1["info"]["avid"] = 0
@@ -44,13 +45,13 @@ if __name__ == '__main__':
 	j1["info"]["duration"] = 0
 	j1["info"]["cid"] = 0
 	j1["info"]["segment_count"] = 0
-	# j1["info"]["segment_count_proto_reported"] = 0
+	j1["info"]["segment_count_proto_reported"] = 0
 	j1["info"]["danmaku_count"] = len(j1["elems"])
 	j1["info"]["danmaku_web_reported"] = 0
 	j1["info"]["danmaku_proto_reported"] = 0
 	j1["info"]["File_Create_Time"] = int(os.stat(sys.argv[1]).st_ctime)
+	j1["info"]["File_Create_Time_Start"] = 0
 	j1["info"]["is_live_record"] = tag_LiveRecording
-	j1["File_Ver"] = "V3_20220819_Proto2Json"
 	Write_Data = json.dumps(j1, ensure_ascii=False, separators=(',', ':'))
 
 	Temp_Binary = None

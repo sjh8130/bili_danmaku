@@ -147,20 +147,22 @@ if __name__ == '__main__':
 	timeA = time.time()
 	# print(sys.argv)
 	# ================================ 程序设置
-	P_flag[0]  = True	#    1 计时器
-	P_flag[1]  = True	#    2 错误停机
-	P_flag[2]  = False	#    X 直播回放:set
-	P_flag[3]  = False	#    8 日志
-	P_flag[4]  = False	#   16 输出 其他信息到 XML 文件
-	P_flag[5]  = False	#   32 不输出 Json
-	P_flag[6]  = False	#   64 不输出 XML
-	P_flag[7]  = False	#  128 输出 Protobuf 二进制文件
-	P_flag[8]  = False	#  256 模拟运行
-	P_flag[9]  = True	#  512 特殊弹幕:BAS
-	P_flag[10] = False	# 1024 压缩为gzip
-	P_flag[11] = True	# 2048 特殊弹幕:UP主自定义内容
-	P_flag[12] = False	# 4096 is_ERROR:set
-	P_flag[13] = False	# 8192 in use
+	P_flag[0]  = True
+	P_flag[1]  = True
+	P_flag[2]  = False
+	P_flag[3]  = False
+	P_flag[4]  = False
+	P_flag[5]  = False
+	P_flag[6]  = False
+	P_flag[7]  = False
+	P_flag[8]  = False
+	P_flag[9]  = True
+	P_flag[10] = False
+	P_flag[11] = True
+	P_flag[12] = False
+	P_flag[13] = False
+	P_flag[14] = False
+	P_flag[15] = False
 	try: Program_FLAG(sys.argv[2])
 	except IndexError: pass
 	# if flag_Test_Run: print("[Test Run]: ================================ ")
@@ -213,12 +215,14 @@ if __name__ == '__main__':
 	# ================================ bvid aid 检查
 	if Json_Info["bvid"] != bvid: print(f"[bvid]: bvid mismatch {Json_Info['bvid']}|{bvid}")
 	if Json_Info["aid"] != avid_in: print(f"[avid]: avid mismatch av{Json_Info['aid']}|{avid}")
+	if P_flag[14]:sys.exit()
 	# ================================ 字幕
 	for subs in Json_Info["subtitle"]["list"]:
 		if P_flag[8]: break
 		subs_name = ["0", "Subs", f"{subs['id']}_{subs['lan']}", "bcc", bvid]
 		threading.Thread(dump_Data(str_s=subs_name, data=Downloader(url_DL=subs["subtitle_url"], str_s=subs_name))).start()
 		if P_flag[3]: print(f"[Subtitle]: {bvid}")
+	if P_flag[15]:sys.exit()
 	# ================================ 分集处理
 	i_for_videos = 0
 	for This in Json_Info["pages"]:
@@ -332,6 +336,7 @@ if __name__ == '__main__':
 				try: Danmaku_Count = len(j1["elems"])
 				except KeyError: Danmaku_Count = 0
 				j1["info"] = {}
+				j1["info"]["Ver"] = "V4_20220911"
 				j1["info"]["owner"] = Json_Info['owner']				# dict get all
 				j1["info"]["bvid"] = Json_Info['bvid']					# str  get all
 				j1["info"]["avid"] = Json_Info['aid']					# num  get all
@@ -346,8 +351,8 @@ if __name__ == '__main__':
 				j1["info"]["danmaku_web_reported"] = Json_Info['stat']['danmaku']	# num get
 				j1["info"]["danmaku_proto_reported"] = ExInfo_Proto.count	# num get
 				j1["info"]["File_Create_Time"] = int(timeC)				# num  set unix_timestamp
+				j1["info"]["File_Create_Time_Start"] = int(timeA)		# num  set unix_timestamp
 				j1["info"]["is_live_record"] = P_flag[2]		# bool GET
-				j1["File_Ver"] = "V3_20220819"
 			Json_Write_Data = json.dumps(j1, ensure_ascii=False, separators=(',', ':')).replace("},{\"id\"", "},\n{\"id\"")
 			del j1
 			if P_flag[3]: print(f"[File_JSON P{i_for_videos}]: PROC end--")
