@@ -1,5 +1,4 @@
 #!/usr/bin/python3
-import socket
 import requests
 import json
 import math
@@ -7,99 +6,94 @@ import time
 import sys
 import tarfile
 import io
-import urllib3
-headers={'User-Agent':"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.66 Safari/537.36 Edg/103.0.1264.44",'origin':"https://www.bilibili.com",'referer':"https://www.bilibili.com"}
-def s(b,c):
-	time.sleep(0.03)
-	d=requests.get(b,headers=headers)
+
+x={'User-Agent':"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.66 Safari/537.36 Edg/103.0.1264.44",'origin':"https://www.bilibili.com",'referer':"https://www.bilibili.com"}
+def p(b,c):
+	d=requests.get(b,headers=x)
 	print(f"[NET]:HTTP {d.status_code}\t{b}")
-	e=tarfile.TarInfo(f"[{w}]_[{c[0]}]_[{c[1]}]_[{c[2]}].{c[3]}")
+	e=tarfile.TarInfo(f"[{t}]_[{c[0]}]_[{c[1]}]_[{c[2]}].{c[3]}")
 	e.size=len(d.content)
 	e.mtime=time.time().__trunc__()
 	a.addfile(tarinfo=e,fileobj=io.BytesIO(d.content))
 	return d.content
 
-def t(a,b,c=""):
-	return s(f'https://api.bilibili.com/x/v2/dm/web/seg.so?type=1&oid={a}&segment_index={b}',c=[a,"Danmaku",b+c,"bin"])
+def q(a,b,c=""): return p(f'https://api.bilibili.com/x/v2/dm/web/seg.so?type=1&oid={a}&segment_index={b}',c=[a,"Danmaku",b+c,"bin"])
 
-def u():
+def r():
 	global a
-	with tarfile.open(name=f"{w}.tar.xz",mode="w:xz",bufsize=4194304)as a:
-		b=f"https://api.bilibili.com/x/web-interface/view?bvid={w}"
-		c=f"https://api.bilibili.com/x/web-interface/view/detail?bvid={w}"
-		d=s(b=b,c=["0","Video","INFO","json"])
-		s(b=c,c=["0","Video","INFO_Detail","json"])
-		e=json.loads(d)["data"]
-		f=e["title"]
-		g=e["pubdate"]
-		for h in e["subtitle"]["list"]:s(b=h["subtitle_url"],c=["0","Subs",f"{h['id']}_{h['lan']}","bcc"])
-		for i in e["pages"]:
-			j=str(i["cid"])
-			k=int(i["duration"])
-			l=math.ceil(k/360)
-			m=f'https://api.bilibili.com/x/v2/dm/web/view?type=1&oid={j}'
-			s(b=m,c=[j,"BAS","INFO","bin"])
-			n=str(i["part"])
-			print(f"{g}|{w}|av00000000|PXX/{len(e['pages'])}|{j}|{k}|{l}|{f}|{n}")
-			for o in range(l):
-				try:t(j,str(o+1))
+	with tarfile.open(name=t+".tar.gz",mode="w:gz",bufsize=4194304)as a:
+		b=json.loads(p(b=f"https://api.bilibili.com/x/web-interface/view?bvid={t}",c=["0","Video","INFO","json"]))["data"]
+		p(b=f"https://api.bilibili.com/x/web-interface/view/detail?bvid={t}",c=["0","Video","INFO_Detail","json"])
+		c=b["title"]
+		d=b["pubdate"]
+		for e in b["subtitle"]["list"]:p(b=e["subtitle_url"],c=["0","Subs",f"{e['id']}_{e['lan']}","bcc"])
+		for f in b["pages"]:
+			g=str(f["cid"])
+			h=int(f["duration"])
+			i=math.ceil(h/360)
+			j=f'https://api.bilibili.com/x/v2/dm/web/view?type=1&oid={g}'
+			p(b=j,c=[g,"BAS","INFO","bin"])
+			k=str(f["part"])
+			print(f"{d}|{t}|av00000000|PXX/{len(b['pages'])}|{g}|{h}|{i}|{c}|{k}")
+			for l in range(i):
+				try:q(g,str(l+1))
 				except json.decoder.JSONDecodeError:pass
-				try:t(j,str(o+1),"_B1")
+				try:q(g,str(l+1),"_B1")
 				except json.decoder.JSONDecodeError:pass
-			p={}
-			p["elems"]=["Embedded"]
-			p["commandDms"]=[]
-			p["info"]={}
-			p["info"]["owner"]=e['owner']
-			p["info"]["bvid"]=e['bvid']
-			p["info"]["avid"]=e['aid']
-			p["info"]["V_Name"]=f
-			p["info"]["pubdate"]=int(g)
-			p["info"]["i_ctime"]=e['ctime']
-			p["info"]["P_Name"]=n
-			p["info"]["duration"]=k
-			p["info"]["cid"]=j
-			p["info"]["segment_count"]=l
-			p["info"]["danmaku_count"]=0
-			p["info"]["danmaku_web_reported"]=e['stat']['danmaku']
-			p["info"]["danmaku_proto_reported"]=0
-			p["info"]["File_Create_Time"]=time.time().__trunc__()
-			p["info"]["is_live_record"]=False
-			p["File_Ver"]="V3_20220819_Embedded"
-			q=json.dumps(p,ensure_ascii=False,separators=(',',':'))
-			r=tarfile.TarInfo(f"{w}_{j}.json")
-			r.size=len(q)
-			r.mtime=time.time().__trunc__()
-			a.addfile(tarinfo=r,fileobj=io.BytesIO(bytes(q,encoding="utf-8")))
+			m={}
+			m["elems"]=["Embedded"]
+			m["commandDms"]=[]
+			m["info"]={}
+			m["info"]["owner"]=b['owner']
+			m["info"]["bvid"]=b['bvid']
+			m["info"]["avid"]=b['aid']
+			m["info"]["V_Name"]=c
+			m["info"]["pubdate"]=int(d)
+			m["info"]["i_ctime"]=b['ctime']
+			m["info"]["P_Name"]=k
+			m["info"]["duration"]=h
+			m["info"]["cid"]=g
+			m["info"]["segment_count"]=i
+			m["info"]["danmaku_count"]=0
+			m["info"]["danmaku_web_reported"]=b['stat']['danmaku']
+			m["info"]["danmaku_proto_reported"]=0
+			m["info"]["File_Create_Time"]=time.time().__trunc__()
+			m["info"]["is_live_record"]=False
+			m["File_Ver"]="V3_20220819_Embedded"
+			n=json.dumps(m,ensure_ascii=False,separators=(',',':'))
+			o=tarfile.TarInfo(f"{t}_{g}.json")
+			o.size=len(n)
+			o.mtime=time.time().__trunc__()
+			a.addfile(tarinfo=o,fileobj=io.BytesIO(bytes(n,encoding="utf-8")))
 		a.close()
-		
-def v():
+
+def s():
 	try:
 		a="{\"code\":0,\"data\":{\"archives\":[{\"aid\":0,\"pubdate\":1,\"bvid\":\"BV0000000000\"}]}}"
 		# a=requests.get("https://api.bilibili.com/x/series/archives?mid=xxxx&series_id=yyyy&only_normal=true&sort=desc&pn=1&ps=10",headers).content
 	except:
-		a="{\"code\":0,\"data\":{\"archives\":[{\"aid\":"+str(y)+",\"pubdate\":1,\"bvid\":\"BV0000000000\"}]}}"
+		a="{\"code\":0,\"data\":{\"archives\":[{\"aid\":"+str(u)+",\"pubdate\":1,\"bvid\":\"BV0000000000\"}]}}"
 		print("ERR",time.time().__trunc__())
-	if json.loads(a)["code"]!=0: print(f"[NET]:Error {int(time.time())}")
+	if json.loads(a)["code"]!=0: print(f"[NET]:Error {time.time().__trunc__}")
 	return a
 
 if __name__=='__main__':
 	try:
-		w=sys.argv[1]
-		u()
+		t=sys.argv[1]
+		r()
 		print("With args")
 		sys.exit()
 	except IndexError:pass
-	y=z=a1=0
+	u=v=w=0
 	while True:
-		z=json.loads(v())["data"]["archives"][0]
-		if y!=z["aid"]:
-			print(f"{z['pubdate']}|{z['bvid']}")
-			y=z["aid"]
-			if a1==0:a1=1
-			elif z==0:a1=0
+		v=json.loads(s())["data"]["archives"][0]
+		if u!=v["aid"]:
+			print(f"{v['pubdate']}|{v['bvid']}")
+			u=v["aid"]
+			if w==0:w=1
+			elif v==0:w=0
 			else:
-				print(f"{int(time.time().__trunc__())}:{z['bvid']}")
-				w=z['bvid']
-				u()
-		time.sleep(10)
+				print(f"{int(time.time().__trunc__())}:{v['bvid']}")
+				t=v['bvid']
+				r()
+		time.sleep(15)

@@ -13,6 +13,8 @@ Start_Time = time.time()
 input_File = sys.argv[1]
 if open(input_File, "rb").read(1) == b"\x7b":
 	infile = open(input_File, "r", encoding="utf-8").read()
+if open(input_File, "rb").read(3) == b"\xeb\xbb\xbf":
+	infile = open(input_File, "r", encoding="utf-8").read()
 if open(input_File, "rb").read(2) == b"\x1f\x8b":
 	infile = gzip.open(input_File, "rb").read()
 
