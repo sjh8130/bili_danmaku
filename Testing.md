@@ -39,27 +39,37 @@
 		"content": "*****",             // 07: string 弹幕内容
 		"ctime": "123456789",           // 08:  int64 发送时间
 		"weight": 11,                   // 09:  int32 屏蔽等级 [1,11]
-		"action": "",                   // 10: string 已知:["airborne:时间(毫秒)","picture:图像url"]
+		"action": "",                   // 10: string "airborne:时间(毫秒)" "picture:图像url(图片弹幕)"
 		"pool": 1,                      // 11:  int32 弹幕池
 		"idStr": "1234567890123456789", // 12: string 弹幕ID
 		"attr": 1,                      // 13:  int32 弹幕属性位
 		"usermid": "1234567890",        // 14: ?int64 发送者mid
 		"likes": 0,                     // 15: ?int?? 点赞数量
-		"test16": "",                   // 16:  int64 test16 === test17  !! 指向另一个弹幕 id
+		"test16": "",                   // 16:  int64 test16 === test17  !! 指向另一个弹幕 id [first:2021-08-15][last: 2021-11-30]
 		"test17": "",                   // 17:  int64 test16 === test17  !! 指向另一个弹幕 id
 		"replyCount": "",               // 18: ?int??                    !! 被指向次数
 		"test19": "",                   // 19: ?????? -
 		"test20": "",                   // 20: string test20 === test21  !! 指向另一个弹幕 idStr
 		"test21": "",                   // 21: string test20 === test21  !! 指向另一个弹幕 idStr
-		"animation": "",                // 22: string[json] id:[20004(ohh),20016]
+		"animation": "",                // 22: string[json] id:[20004(ohh)(图片弹幕),20016,20018(NFT)]
 		"test23": ""                    // 23: ?????? -
 	}
 	// ......
 	]
 }
 ```
-### 图片弹幕
+## animation
+| key            | type   | value     | xxxxxxxxx |
+| :------------- | -----: | --------: | :-------- |
+| id             | num    |           | 20004:图片弹幕<br>20016:?<br>20018:NFT弹幕 |
+| cid            | num    | 0         |           |
+| advanced_block | num    | 0         |           |
+| mime           | str    | ("image") |           |
+| resource       | str    | `url`     |           |
+| scale          | num    | 1         | id==20004 |
+
 ```json
+图片弹幕
 {
 	"id": "110xxxxxxxxxxxxx632",
 	"progress": 361534,
@@ -76,6 +86,18 @@
 	"usermid": "****",
 	"animation": "{\"id\":20004,\"cid\":0,\"advanced_block\":0,\"mime\":\"image\",\"resource\":\"i0.hdslb.com/bfs/feed-admin/d831cbae67aee1a8fe1cc463fb23c9110ee46807.png\",\"scale\":1}"
 },
+NFT弹幕？
+{
+	"id":"113xxxxxxxxxxxxx240",
+	"progress":28007,
+	"midHash":"68xxxx8b",
+	"content":"好耶！",
+	"ctime":"1661861515",
+	"attr":2048,
+	"usermid":"19xxx77",
+	"animation":"{\"id\":20018,\"cid\":0,\"advanced_block\":0,\"mime\":\"image\",\"resource\":\"i0.hdslb.com/bfs/baselabs/xxxxxxxx.png\"}"
+},
+
 ```
 
 ## commandDms
@@ -175,7 +197,7 @@
 | live_state            | num   | video: 0<br>live: 2 ? |
 | premiere_state        | num   | 0 |
 | live_popularity_count | num   | 0 |
-| live_popularity_str   | str   | live :"`x.y万人气`"  |
+| live_popularity_str   | str   | live :"`x.y万人气`" "`xxx人看过`"  |
 | premiere_online_count | num   | 0 |
 | premiere_view         | num   | 0 |
 | jump_url              | str   | **视频URL(直播回放URL)** |

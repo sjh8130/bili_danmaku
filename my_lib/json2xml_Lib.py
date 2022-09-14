@@ -56,11 +56,11 @@ def json2xml(this, exdata, enable_weight = True):
 	except KeyError: t20 = "0"
 	try: t21 = f"reply_to:{this['test21']} "
 	except KeyError: t21 = "0"
-	# try: action = this["action"]
-	# except KeyError: action = ""
-	# try: animation = this["animation"]
-	# except KeyError: animation = ""
-	if exdata: Extra_Data = f"<!-- {Danmaku_ATTR_TYPE(attr)}{usermid}{likes}{replyCount}{proc_4(t16,t17,t20,t21)}-->".replace("  ", " ")
+	try: action = f"ACTION:{this['action']} "
+	except KeyError: action = ""
+	try: animation = f"ANIMATION:{this['animation']} "
+	except KeyError: animation = ""
+	if exdata: Extra_Data = f"<!-- {Danmaku_ATTR_TYPE(attr)}{usermid}{likes}{replyCount}{proc_4(t16,t17,t20,t21)}{action}{animation}-->".replace("  ", " ")
 	return f"\t<d p=\"{format(progress/1000, '.5f')},{mode},{fontsize},{color},{sendtime},{pool},{midHash},{id_},{weight}\">{content}</d>{Extra_Data}\n"
 
 def proc_4(a,b,c,d):
