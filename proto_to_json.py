@@ -32,6 +32,32 @@ if __name__ == '__main__':
 		if this.attr == 2:
 			tag_LiveRecording = True
 			break
+	for that in j1["elems"]:
+		try: del that["idStr"]
+		except KeyError: pass
+		try:
+			if that["test20"] == "0": del that["test20"]
+		except KeyError: pass
+		try:
+			if that["test21"] == "0": del that["test21"]
+		except KeyError: pass
+		try:
+			if that["attr"] == 2:
+				try: del that["likes"]
+				except KeyError: pass
+				try:
+					if that["mode"] == 1: del that["mode"]
+				except KeyError: pass
+				try:
+					if that["fontsize"] == 25: del that["fontsize"]
+				except KeyError: pass
+				try:
+					if that["color"] == 16777215: del that["color"]
+				except KeyError: pass
+				try: del that["weight"]
+				except KeyError: pass
+		except KeyError: pass
+
 	j1["commandDms"] = []
 	j1["info"] = {}
 	j1["info"]["Ver"] = "V4_20220911_Proto2Json"
@@ -40,17 +66,16 @@ if __name__ == '__main__':
 	j1["info"]["avid"] = 0
 	j1["info"]["V_Name"] = "Fake_MainTitle"
 	j1["info"]["pubdate"] = 0
-	j1["info"]["ctime"] = 0
+	j1["info"]["i_ctime"] = 0
 	j1["info"]["P_Name"] = "Fake_P_Title"
 	j1["info"]["duration"] = 0
 	j1["info"]["cid"] = 0
 	j1["info"]["segment_count"] = 0
-	j1["info"]["segment_count_proto_reported"] = 0
 	j1["info"]["danmaku_count"] = len(j1["elems"])
 	j1["info"]["danmaku_web_reported"] = 0
 	j1["info"]["danmaku_proto_reported"] = 0
 	j1["info"]["File_Create_Time"] = int(os.stat(sys.argv[1]).st_ctime)
-	j1["info"]["File_Create_Time_Start"] = 0
+	j1["info"]["File_Create_Time_Start"] = int(os.stat(sys.argv[1]).st_ctime)
 	j1["info"]["is_live_record"] = tag_LiveRecording
 	Write_Data = json.dumps(j1, ensure_ascii=False, separators=(',', ':'))
 

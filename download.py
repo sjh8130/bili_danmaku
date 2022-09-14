@@ -149,7 +149,7 @@ if __name__ == '__main__':
 	# ================================ 程序设置
 	P_flag[0]  = True
 	P_flag[1]  = True
-	P_flag[2]  = False
+	P_flag[2]  = False#X
 	P_flag[3]  = False
 	P_flag[4]  = False
 	P_flag[5]  = False
@@ -159,10 +159,11 @@ if __name__ == '__main__':
 	P_flag[9]  = True
 	P_flag[10] = False
 	P_flag[11] = True
-	P_flag[12] = False
-	P_flag[13] = False
-	P_flag[14] = False
-	P_flag[15] = False
+	P_flag[12] = False#X
+	P_flag[13] = False#X
+	P_flag[14] = False#X
+	P_flag[15] = False#X
+	P_flag[16] = False#X
 	try: Program_FLAG(sys.argv[2])
 	except IndexError: pass
 	# if flag_Test_Run: print("[Test Run]: ================================ ")
@@ -218,9 +219,8 @@ if __name__ == '__main__':
 	if P_flag[14]:sys.exit()
 	# ================================ 字幕
 	for subs in Json_Info["subtitle"]["list"]:
-		if P_flag[8]: break
 		subs_name = ["0", "Subs", f"{subs['id']}_{subs['lan']}", "bcc", bvid]
-		threading.Thread(dump_Data(str_s=subs_name, data=Downloader(url_DL=subs["subtitle_url"], str_s=subs_name))).start()
+		threading.Thread(dump_Data(str_s=subs_name, data=Downloader(url_DL=subs["subtitle_url"], str_s=subs_name), force=True)).start()
 		if P_flag[3]: print(f"[Subtitle]: {bvid}")
 	if P_flag[15]:sys.exit()
 	# ================================ 分集处理
@@ -237,6 +237,7 @@ if __name__ == '__main__':
 		Segment_Count = math.ceil(duration/360)
 		ARR_Ext_Info = [cid, "BAS", "INFO", "bin", bvid]
 		DL_Data_Extra_Info = Downloader(url_DL=f'https://api.bilibili.com/x/v2/dm/web/view?type=1&oid={cid}', str_s=ARR_Ext_Info)
+		if P_flag[16]:continue
 		if P_flag[3]: print(f"[Special_Danmaku]: P{i_for_videos}")
 		ExInfo_Proto = dm_pb2.DmWebViewReply()
 		ExInfo_Proto.ParseFromString(DL_Data_Extra_Info)
@@ -247,7 +248,7 @@ if __name__ == '__main__':
 		if P_Title == "": P_Title = f"P{i_for_videos}"
 		print(f"{P_Date}|{bvid}|{avid}|P{i_for_videos}/{Num_of_Videos}|{cid}|{duration}|{math.ceil(duration/360)}|{Main_Title}|{P_Title}")
 		if P_Title == Main_Title: P_Title = ""
-		File_Name = f"[{P_Date}][{bvid}][{avid}][P{i_for_videos}][{cid}]{Main_Title.replace('_', '＿')}_{P_Title.replace('_', '＿')}".replace("\\", "＼").replace("/", "／").replace(":", "：").replace("*", "＊").replace("?", "？").replace("<", "＜").replace(">", "＞").replace("|", "｜").replace("\"", "＂").rstrip("_")	# \/:*?"<>|
+		File_Name = f"[{P_Date}][{bvid}][{avid}][P{i_for_videos}][{cid}]{Main_Title.replace('_', '＿')}_{P_Title.replace('_', '＿')}".replace("\\", "＼").replace("/", "／").replace(":", "：").replace("*", "＊").replace("?", "？").replace("<", "＜").replace(">", "＞").replace("|", "｜").replace("\"", "＂").replace("\r","").replace("\n","").rstrip("_")	# \/:*?"<>|
 		# [1656432000][BV1**4*1*7*][av*********][P*][cid]MainTitle_P-Title
 		if (not P_flag[6]) and P_flag[11]: XML_Write_Data += XML_Special_Process(ExInfo_Proto.commandDms, cid=cid)
 		if P_flag[9]:
@@ -268,7 +269,7 @@ if __name__ == '__main__':
 				retry_file = []
 				for retry_i in range(3):
 					if len(Danmaku_Binarys) == 0: break
-					if P_flag[3]: print(f"[retry]: {segments+1} [{retry_i+1}]")
+					if P_flag[3]: print(f"[danmaku]: P{i_for_videos}/{Num_of_Videos}::{segments+1}/{Segment_Count} [R{retry_i+1}]")
 					try: retry_file.append(get_Danmaku(cid, str(segments+1), retry=f"_R{retry_i+1}"))
 					except json.decoder.JSONDecodeError: retry_file.append(b"")
 					if len(retry_file[retry_i]) > temp_filelen:
@@ -296,7 +297,8 @@ if __name__ == '__main__':
 			try:
 				j1["elems"]
 				P_flag[13] = True
-			except KeyError: pass
+			except KeyError:
+				j1["elems"] = []
 			if P_flag[13]:
 				for temp_Del in j1["elems"]:
 					try: del temp_Del["idStr"]
@@ -324,7 +326,7 @@ if __name__ == '__main__':
 							try: del temp_Del["weight"]
 							except KeyError: pass
 					except KeyError: pass
-			del P_flag[13]
+			P_flag[13] = False
 			# ==================
 			del Temp_Binary
 			if 1:
