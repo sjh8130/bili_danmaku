@@ -8,91 +8,86 @@ import tarfile
 import io
 
 x={'User-Agent':"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.66 Safari/537.36 Edg/103.0.1264.44",'origin':"https://www.bilibili.com",'referer':"https://www.bilibili.com"}
-def p(b,c):
+def o(b,c):
 	d=requests.get(b,headers=x)
 	print(f"[NET]:HTTP {d.status_code}\t{b}")
-	e=tarfile.TarInfo(f"[{s}]_[{c[0]}]_[{c[1]}]_[{c[2]}].{c[3]}")
+	e=tarfile.TarInfo(f"[{r}]_[{c[0]}]_[{c[1]}]_[{c[2]}].{c[3]}")
 	e.size=len(d.content)
 	e.mtime=time.time().__trunc__()
 	a.addfile(tarinfo=e,fileobj=io.BytesIO(d.content))
 	return d.content
 
-def q():
+def p():
 	global a
-	with tarfile.open(name=s+".tar.gz",mode="w:gz",bufsize=4194304)as a:
-		b=json.loads(p(b=f"https://api.bilibili.com/x/web-interface/view?bvid={s}",c=["0","Video","INFO","json"]))["data"]
-		p(b=f"https://api.bilibili.com/x/web-interface/view/detail?bvid={s}",c=["0","Video","INFO_Detail","json"])
-		c=b["title"]
-		d=b["pubdate"]
-		for e in b["subtitle"]["list"]:p(b=e["subtitle_url"],c=["0","Subs",f"{e['id']}_{e['lan']}","bcc"])
-		for f in b["pages"]:
-			g=str(f["cid"])
-			h=int(f["duration"])
-			i=math.ceil(h/360)
-			j=f'https://api.bilibili.com/x/v2/dm/web/view?type=1&oid={g}'
-			p(b=j,c=[g,"BAS","INFO","bin"])
-			k=str(f["part"])
-			print(f"{d}|{s}|av00000000|PXX/{len(b['pages'])}|{g}|{h}|{i}|{c}|{k}")
-			for l in range(i):
-				try:p(f'https://api.bilibili.com/x/v2/dm/web/seg.so?type=1&oid={g}&segment_index={str(l+1)}',c=[g,"Danmaku",str(l+1),"bin"])
-				except json.decoder.JSONDecodeError:pass
-				try:p(f'https://api.bilibili.com/x/v2/dm/web/seg.so?type=1&oid={g}&segment_index={str(l+1)}',c=[g,"Danmaku",str(l+1)+"_B1","bin"])
-				except json.decoder.JSONDecodeError:pass
-			m={}
-			m["elems"]=["Embedded"]
-			m["commandDms"]=[]
-			m["info"]={}
-			m["info"]["Ver"]="V4_20220911_Embedded"
-			m["info"]["owner"]=b['owner']
-			m["info"]["bvid"]=b['bvid']
-			m["info"]["avid"]=b['aid']
-			m["info"]["V_Name"]=c
-			m["info"]["pubdate"]=int(d)
-			m["info"]["i_ctime"]=b['ctime']
-			m["info"]["P_Name"]=k
-			m["info"]["duration"]=h
-			m["info"]["cid"]=g
-			m["info"]["segment_count"]=i
-			m["info"]["danmaku_count"]=0
-			m["info"]["danmaku_web_reported"]=b['stat']['danmaku']
-			m["info"]["danmaku_proto_reported"]=0
-			m["info"]["File_Create_Time"]=time.time().__trunc__()
-			m["info"]["File_Create_Time_Start"]=0
-			m["info"]["is_live_record"]=False
-			n=json.dumps(m,ensure_ascii=False,separators=(',',':'))
-			o=tarfile.TarInfo(f"{s}_{g}.json")
-			o.size=len(n)
-			o.mtime=time.time().__trunc__()
-			a.addfile(tarinfo=o,fileobj=io.BytesIO(bytes(n,encoding="utf-8")))
+	with tarfile.open(name=r+".tar",mode="w",bufsize=4194304)as a:
+		b=json.loads(o(b=f"https://api.bilibili.com/x/web-interface/view?bvid={r}",c=["0","Video","INFO","json"]))["data"]
+		o(b=f"https://api.bilibili.com/x/web-interface/view/detail?bvid={r}",c=["0","Video","INFO_Detail","json"])
+		for c in b["subtitle"]["list"]:o(b=c["subtitle_url"],c=["0","Subs",f"{c['id']}_{c['lan']}","bcc"])
+		for d in b["pages"]:
+			e=str(d["cid"])
+			f=int(d["duration"])
+			g=math.ceil(f/360)
+			o(b=f'https://api.bilibili.com/x/v2/dm/web/view?type=1&oid={e}',c=[e,"BAS","INFO","bin"])
+			print(f"1000000000|{r}|av00000000|PX/{len(b['pages'])}|{e}|{f}|{g}|title|ptitle")
+			for h in range(g):
+				o(f'https://api.bilibili.com/x/v2/dm/web/seg.so?type=1&oid={e}&segment_index={str(h+1)}',c=[e,"Danmaku",str(h+1),"bin"])
+				o(f'https://api.bilibili.com/x/v2/dm/web/seg.so?type=1&oid={e}&segment_index={str(h+1)}',c=[e,"Danmaku",str(h+1)+"_B1","bin"])
+			i={}
+			i["elems"]=["Embedded"]
+			i["commandDms"]=[]
+			i["info"]={}
+			i["info"]["Ver"]="V5_20220916"
+			i["info"]["owner"]=b['owner']
+			i["info"]["bvid"]=b['bvid']
+			i["info"]["avid"]=b['aid']
+			i["info"]["V_Name"]=b["title"]
+			i["info"]["pubdate"]=int(b["pubdate"])
+			i["info"]["i_ctime"]=b['ctime']
+			i["info"]["P_Name"]=d["part"]
+			i["info"]["cid"]=e
+			i["info"]["duration"]=f
+			i["info"]["segment_count"]=g
+			i["info"]["danmaku_count"]=0
+			i["info"]["danmaku_web_reported"]=b['stat']['danmaku']
+			i["info"]["danmaku_proto_reported"]=0
+			i["info"]["File_Create_Time"]=time.time().__trunc__()
+			i["info"]["File_Create_Time_Start"]=0
+			i["info"]["is_live_record"]=False
+			i["Ver_Var"]="Embedded"
+			j=bytes(json.dumps(i,ensure_ascii=False,separators=(',',':')),encoding="utf-8")
+			k=tarfile.TarInfo(f"{r}_{e}.json")
+			k.size=len(j)
+			k.mtime=time.time().__trunc__()
+			a.addfile(tarinfo=k,fileobj=io.BytesIO(j))
 		a.close()
 
-def r():
+def q():
 	try:
 		a="{\"code\":0,\"data\":{\"archives\":[{\"aid\":0,\"pubdate\":1,\"bvid\":\"BV0000000000\"}]}}"
 		# a=requests.get("https://api.bilibili.com/x/series/archives?mid=xxxx&series_id=yyyy&only_normal=true&sort=desc&pn=1&ps=10",headers).content
 	except:
-		a="{\"code\":0,\"data\":{\"archives\":[{\"aid\":"+str(t)+",\"pubdate\":1,\"bvid\":\"BV0000000000\"}]}}"
+		a="{\"code\":0,\"data\":{\"archives\":[{\"aid\":"+str(s)+",\"pubdate\":1,\"bvid\":\"BV0000000000\"}]}}"
 		print("ERR",time.time().__trunc__())
-	if json.loads(a)["code"]!=0: print(f"[NET]:Error {time.time().__trunc__}")
+	if json.loads(a)["code"]!=0:print(f"[NET]:Error {time.time().__trunc__}")
 	return a
 
 if __name__=='__main__':
 	try:
-		s=sys.argv[1]
-		q()
+		r=sys.argv[1]
+		p()
 		print("With args")
 		sys.exit()
 	except IndexError:pass
-	t=u=v=0
+	s=t=u=0
 	while True:
-		u=json.loads(r())["data"]["archives"][0]
-		if t!=u["aid"]:
-			print(f"{u['pubdate']}|{u['bvid']}")
-			t=u["aid"]
-			if v==0:v=1
-			elif u==0:v=0
+		t=json.loads(q())["data"]["archives"][0]
+		if s!=t["aid"]:
+			print(f"{t['pubdate']}|{t['bvid']}")
+			s=t["aid"]
+			if u==0:u=1
+			elif t==0:u=0
 			else:
-				print(f"{int(time.time().__trunc__())}:{u['bvid']}")
-				s=u['bvid']
-				q()
+				print(f"{int(time.time().__trunc__())}:{t['bvid']}")
+				r=t['bvid']
+				p()
 		time.sleep(15)

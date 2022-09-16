@@ -22,14 +22,11 @@ def json2xml(this, exdata, enable_weight = True):
 	# if id_ != idStr: print("id idStr mismatch:", id_, idStr)
 	try: attr = this["attr"]
 	except KeyError: attr = 0
-	try: mode: int = this["mode"]
-	except KeyError:
-		if attr == 2: mode = "1"
-		else: mode = "0"
+	try: mode = this["mode"]
+	except KeyError: mode = "1"
 	try: fontsize = this["fontsize"]
 	except KeyError:
-		if attr == 2: fontsize = "25"
-		else: fontsize = "0"
+		fontsize = "25"
 	try: color = this["color"]
 	except KeyError:
 		if attr == 2: color = "16777215"
@@ -39,8 +36,7 @@ def json2xml(this, exdata, enable_weight = True):
 	if enable_weight:
 		try: weight = this["weight"]
 		except KeyError:
-			if attr == 2: weight = "9"
-			else: weight = "0"
+			weight = "9"
 	else: weight = "9"
 	try: usermid = f"mid:{this['usermid']} "
 	except KeyError: usermid = ""
@@ -73,7 +69,5 @@ def proc_4(a,b,c,d):
 	if a!=c and c!="0":
 		print(f"[XML_reply2]:mismatch_int-str{a}|{c}")
 		return f"{a}|{b}|{c}|{d} "
-	if a!="0":
-		return f"{a} "
-	else:
-		return " "
+	if a!="0": return f"{a} "
+	else: return " "
