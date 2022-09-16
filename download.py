@@ -300,30 +300,30 @@ if __name__ == '__main__':
 			except KeyError:
 				j1["elems"] = []
 			if P_flag[13]:
-				for temp_Del in j1["elems"]:
-					try: del temp_Del["idStr"]
+				for that in j1["elems"]:
+					try: del that["idStr"]
 					except KeyError: pass
 					try:
-						if temp_Del["test20"] == "0": del temp_Del["test20"]
+						if that["test20"] == "0": del that["test20"]
 					except KeyError: pass
 					try:
-						if temp_Del["test21"] == "0": del temp_Del["test21"]
+						if that["test21"] == "0": del that["test21"]
 					except KeyError: pass
 					try:
-						if temp_Del["attr"] == 2:
+						if that["mode"] == 1: del that["mode"]
+					except KeyError: pass
+					try:
+						if that["fontsize"] == 25: del that["fontsize"]
+					except KeyError: pass
+					try:
+						if that["attr"] == 2:
 							P_flag[2] = True
-							try: del temp_Del["likes"]
+							try: del that["likes"]
 							except KeyError: pass
 							try:
-								if temp_Del["mode"] == 1: del temp_Del["mode"]
+								if that["color"] == 16777215: del that["color"]
 							except KeyError: pass
-							try:
-								if temp_Del["fontsize"] == 25: del temp_Del["fontsize"]
-							except KeyError: pass
-							try:
-								if temp_Del["color"] == 16777215: del temp_Del["color"]
-							except KeyError: pass
-							try: del temp_Del["weight"]
+							try: del that["weight"]
 							except KeyError: pass
 					except KeyError: pass
 			P_flag[13] = False
@@ -338,7 +338,7 @@ if __name__ == '__main__':
 				try: Danmaku_Count = len(j1["elems"])
 				except KeyError: Danmaku_Count = 0
 				j1["info"] = {}
-				j1["info"]["Ver"] = "V4_20220911"
+				j1["info"]["Ver"] = "V5_20220916"
 				j1["info"]["owner"] = Json_Info['owner']				# dict get all
 				j1["info"]["bvid"] = Json_Info['bvid']					# str  get all
 				j1["info"]["avid"] = Json_Info['aid']					# num  get all
@@ -346,8 +346,8 @@ if __name__ == '__main__':
 				j1["info"]["pubdate"] = Json_Info['pubdate']			# num  get all unix_timestamp
 				j1["info"]["i_ctime"] = Json_Info['ctime']				# num  get all unix_timestamp
 				j1["info"]["P_Name"] = This["part"]						# str  get part
-				j1["info"]["duration"] = This["duration"]				# num  get part
 				j1["info"]["cid"] = This["cid"]							# num  get part
+				j1["info"]["duration"] = This["duration"]				# num  get part
 				j1["info"]["segment_count"] = Segment_Count				# num  set
 				j1["info"]["danmaku_count"] = Danmaku_Count				# num  set
 				j1["info"]["danmaku_web_reported"] = Json_Info['stat']['danmaku']	# num get
