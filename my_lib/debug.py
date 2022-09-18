@@ -16,6 +16,7 @@ a = [
 "exit pos 1  16384",
 "exit pos 2  32768",
 "jump pos 1  65536",
+"xml-weight 131072",
 "Undefined",
 "Undefined",
 "Undefined",
