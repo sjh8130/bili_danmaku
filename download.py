@@ -116,7 +116,7 @@ def XML_Process(data) -> str:
 	"""
 	this: dm_pb2.DanmakuElem
 	out0 = ""
-	for this in data: out0 += proto2xml(this=this, exdata=P_flag[4], enable_weight=True)
+	for this in data: out0 += proto2xml(this=this, exdata=P_flag[4], enable_weight=P_flag[17])
 	return out0
 
 
@@ -164,6 +164,7 @@ if __name__ == '__main__':
 	P_flag[14] = False#X
 	P_flag[15] = False#X
 	P_flag[16] = False#X
+	P_flag[17] = True
 	try: Program_FLAG(sys.argv[2])
 	except IndexError: pass
 	# if flag_Test_Run: print("[Test Run]: ================================ ")
