@@ -8,6 +8,9 @@ AI: SubtitleType
 Assist: SubtitleAiStatus
 AvatarTypeNFT: AvatarType
 AvatarTypeNone: AvatarType
+BubbleTypeClickButton: BubbleType
+BubbleTypeDmSettingPanel: BubbleType
+BubbleTypeNone: BubbleType
 CC: SubtitleType
 CheckboxTypeColorDM: CheckboxType
 CheckboxTypeEncourage: CheckboxType
@@ -17,6 +20,8 @@ DMAttrBitFromLive: DMAttrBit
 DMAttrBitProtect: DMAttrBit
 DMAttrHighLike: DMAttrBit
 Exposure: SubtitleAiStatus
+ExposureTypeDMSend: ExposureType
+ExposureTypeNone: ExposureType
 None: SubtitleAiStatus
 Normal: SubtitleAiType
 PostPanelBizTypeColorDM: PostPanelBizType
@@ -51,6 +56,20 @@ class Bubble(_message.Message):
     text: str
     url: str
     def __init__(self, text: _Optional[str] = ..., url: _Optional[str] = ...) -> None: ...
+
+class BubbleV2(_message.Message):
+    __slots__ = ["bubble_type", "exposure_once", "exposure_type", "text", "url"]
+    BUBBLE_TYPE_FIELD_NUMBER: _ClassVar[int]
+    EXPOSURE_ONCE_FIELD_NUMBER: _ClassVar[int]
+    EXPOSURE_TYPE_FIELD_NUMBER: _ClassVar[int]
+    TEXT_FIELD_NUMBER: _ClassVar[int]
+    URL_FIELD_NUMBER: _ClassVar[int]
+    bubble_type: BubbleType
+    exposure_once: bool
+    exposure_type: ExposureType
+    text: str
+    url: str
+    def __init__(self, text: _Optional[str] = ..., url: _Optional[str] = ..., bubble_type: _Optional[_Union[BubbleType, str]] = ..., exposure_once: bool = ..., exposure_type: _Optional[_Union[ExposureType, str]] = ...) -> None: ...
 
 class Button(_message.Message):
     __slots__ = ["action", "text"]
@@ -94,6 +113,16 @@ class CheckBox(_message.Message):
     type: CheckboxType
     def __init__(self, text: _Optional[str] = ..., type: _Optional[_Union[CheckboxType, str]] = ..., default_value: bool = ..., show: bool = ...) -> None: ...
 
+class CheckBoxV2(_message.Message):
+    __slots__ = ["default_value", "text", "type"]
+    DEFAULT_VALUE_FIELD_NUMBER: _ClassVar[int]
+    TEXT_FIELD_NUMBER: _ClassVar[int]
+    TYPE_FIELD_NUMBER: _ClassVar[int]
+    default_value: bool
+    text: str
+    type: int
+    def __init__(self, text: _Optional[str] = ..., type: _Optional[int] = ..., default_value: bool = ...) -> None: ...
+
 class ClickButton(_message.Message):
     __slots__ = ["bubble", "landscape_text", "landscape_text_focus", "portrait_text", "portrait_text_focus", "render_type", "show"]
     BUBBLE_FIELD_NUMBER: _ClassVar[int]
@@ -111,6 +140,26 @@ class ClickButton(_message.Message):
     render_type: RenderType
     show: bool
     def __init__(self, portrait_text: _Optional[_Iterable[str]] = ..., landscape_text: _Optional[_Iterable[str]] = ..., portrait_text_focus: _Optional[_Iterable[str]] = ..., landscape_text_focus: _Optional[_Iterable[str]] = ..., render_type: _Optional[_Union[RenderType, str]] = ..., show: bool = ..., bubble: _Optional[_Union[Bubble, _Mapping]] = ...) -> None: ...
+
+class ClickButtonV2(_message.Message):
+    __slots__ = ["exposure_once", "exposure_type", "landscape_text", "landscape_text_focus", "portrait_text", "portrait_text_focus", "render_type", "text_input_post"]
+    EXPOSURE_ONCE_FIELD_NUMBER: _ClassVar[int]
+    EXPOSURE_TYPE_FIELD_NUMBER: _ClassVar[int]
+    LANDSCAPE_TEXT_FIELD_NUMBER: _ClassVar[int]
+    LANDSCAPE_TEXT_FOCUS_FIELD_NUMBER: _ClassVar[int]
+    PORTRAIT_TEXT_FIELD_NUMBER: _ClassVar[int]
+    PORTRAIT_TEXT_FOCUS_FIELD_NUMBER: _ClassVar[int]
+    RENDER_TYPE_FIELD_NUMBER: _ClassVar[int]
+    TEXT_INPUT_POST_FIELD_NUMBER: _ClassVar[int]
+    exposure_once: bool
+    exposure_type: int
+    landscape_text: _containers.RepeatedScalarFieldContainer[str]
+    landscape_text_focus: _containers.RepeatedScalarFieldContainer[str]
+    portrait_text: _containers.RepeatedScalarFieldContainer[str]
+    portrait_text_focus: _containers.RepeatedScalarFieldContainer[str]
+    render_type: int
+    text_input_post: bool
+    def __init__(self, portrait_text: _Optional[_Iterable[str]] = ..., landscape_text: _Optional[_Iterable[str]] = ..., portrait_text_focus: _Optional[_Iterable[str]] = ..., landscape_text_focus: _Optional[_Iterable[str]] = ..., render_type: _Optional[int] = ..., text_input_post: bool = ..., exposure_once: bool = ..., exposure_type: _Optional[int] = ...) -> None: ...
 
 class CommandDm(_message.Message):
     __slots__ = ["command", "content", "ctime", "extra", "id", "idStr", "mid", "mtime", "oid", "progress"]
@@ -310,6 +359,12 @@ class DanmuPlayerConfig(_message.Message):
     player_danmaku_use_default_config: bool
     def __init__(self, player_danmaku_switch: bool = ..., player_danmaku_switch_save: bool = ..., player_danmaku_use_default_config: bool = ..., player_danmaku_ai_recommended_switch: bool = ..., player_danmaku_ai_recommended_level: _Optional[int] = ..., player_danmaku_blocktop: bool = ..., player_danmaku_blockscroll: bool = ..., player_danmaku_blockbottom: bool = ..., player_danmaku_blockcolorful: bool = ..., player_danmaku_blockrepeat: bool = ..., player_danmaku_blockspecial: bool = ..., player_danmaku_opacity: _Optional[float] = ..., player_danmaku_scalingfactor: _Optional[float] = ..., player_danmaku_domain: _Optional[float] = ..., player_danmaku_speed: _Optional[int] = ..., player_danmaku_enableblocklist: bool = ..., inline_player_danmaku_switch: bool = ..., inline_player_danmaku_config: _Optional[int] = ..., player_danmaku_ios_switch_save: _Optional[int] = ..., player_danmaku_senior_mode_switch: _Optional[int] = ..., player_danmaku_ai_recommended_level_v2: _Optional[int] = ..., player_danmaku_ai_recommended_level_v2_map: _Optional[_Mapping[int, int]] = ...) -> None: ...
 
+class DanmuPlayerConfigPanel(_message.Message):
+    __slots__ = ["selection_text"]
+    SELECTION_TEXT_FIELD_NUMBER: _ClassVar[int]
+    selection_text: str
+    def __init__(self, selection_text: _Optional[str] = ...) -> None: ...
+
 class DanmuPlayerDynamicConfig(_message.Message):
     __slots__ = ["player_danmaku_domain", "progress"]
     PLAYER_DANMAKU_DOMAIN_FIELD_NUMBER: _ClassVar[int]
@@ -319,14 +374,16 @@ class DanmuPlayerDynamicConfig(_message.Message):
     def __init__(self, progress: _Optional[int] = ..., player_danmaku_domain: _Optional[float] = ...) -> None: ...
 
 class DanmuPlayerViewConfig(_message.Message):
-    __slots__ = ["danmuku_default_player_config", "danmuku_player_config", "danmuku_player_dynamic_config"]
+    __slots__ = ["danmuku_default_player_config", "danmuku_player_config", "danmuku_player_config_panel", "danmuku_player_dynamic_config"]
     DANMUKU_DEFAULT_PLAYER_CONFIG_FIELD_NUMBER: _ClassVar[int]
     DANMUKU_PLAYER_CONFIG_FIELD_NUMBER: _ClassVar[int]
+    DANMUKU_PLAYER_CONFIG_PANEL_FIELD_NUMBER: _ClassVar[int]
     DANMUKU_PLAYER_DYNAMIC_CONFIG_FIELD_NUMBER: _ClassVar[int]
     danmuku_default_player_config: DanmuDefaultPlayerConfig
     danmuku_player_config: DanmuPlayerConfig
+    danmuku_player_config_panel: DanmuPlayerConfigPanel
     danmuku_player_dynamic_config: _containers.RepeatedCompositeFieldContainer[DanmuPlayerDynamicConfig]
-    def __init__(self, danmuku_default_player_config: _Optional[_Union[DanmuDefaultPlayerConfig, _Mapping]] = ..., danmuku_player_config: _Optional[_Union[DanmuPlayerConfig, _Mapping]] = ..., danmuku_player_dynamic_config: _Optional[_Iterable[_Union[DanmuPlayerDynamicConfig, _Mapping]]] = ...) -> None: ...
+    def __init__(self, danmuku_default_player_config: _Optional[_Union[DanmuDefaultPlayerConfig, _Mapping]] = ..., danmuku_player_config: _Optional[_Union[DanmuPlayerConfig, _Mapping]] = ..., danmuku_player_dynamic_config: _Optional[_Iterable[_Union[DanmuPlayerDynamicConfig, _Mapping]]] = ..., danmuku_player_config_panel: _Optional[_Union[DanmuPlayerConfigPanel, _Mapping]] = ...) -> None: ...
 
 class DanmuWebPlayerConfig(_message.Message):
     __slots__ = ["ai_level", "ai_level_v2", "ai_level_v2_map", "ai_switch", "blockbottom", "blockcolor", "blockscroll", "blockspecial", "blocktop", "bold", "dm_switch", "dmarea", "dmask", "draw_type", "fontborder", "fontfamily", "fontsize", "opacity", "preventshade", "screensync", "senior_mode_switch", "speedplus", "speedsync"]
@@ -524,7 +581,7 @@ class DmSegSDKReq(_message.Message):
     def __init__(self, pid: _Optional[int] = ..., oid: _Optional[int] = ..., type: _Optional[int] = ..., segment_index: _Optional[int] = ...) -> None: ...
 
 class DmViewReply(_message.Message):
-    __slots__ = ["activity_meta", "ai_flag", "allow", "buzzword_config", "check_box", "check_box_show_msg", "closed", "expo_report", "expressions", "input_placeholder", "mask", "player_config", "post_panel", "report_filter_content", "send_box_style", "special_dms", "subtitle", "text_placeholder"]
+    __slots__ = ["activity_meta", "ai_flag", "allow", "buzzword_config", "check_box", "check_box_show_msg", "closed", "expo_report", "expressions", "input_placeholder", "mask", "player_config", "post_panel", "post_panel2", "report_filter_content", "send_box_style", "special_dms", "subtitle", "text_placeholder"]
     ACTIVITY_META_FIELD_NUMBER: _ClassVar[int]
     AI_FLAG_FIELD_NUMBER: _ClassVar[int]
     ALLOW_FIELD_NUMBER: _ClassVar[int]
@@ -537,6 +594,7 @@ class DmViewReply(_message.Message):
     INPUT_PLACEHOLDER_FIELD_NUMBER: _ClassVar[int]
     MASK_FIELD_NUMBER: _ClassVar[int]
     PLAYER_CONFIG_FIELD_NUMBER: _ClassVar[int]
+    POST_PANEL2_FIELD_NUMBER: _ClassVar[int]
     POST_PANEL_FIELD_NUMBER: _ClassVar[int]
     REPORT_FILTER_CONTENT_FIELD_NUMBER: _ClassVar[int]
     SEND_BOX_STYLE_FIELD_NUMBER: _ClassVar[int]
@@ -556,12 +614,13 @@ class DmViewReply(_message.Message):
     mask: VideoMask
     player_config: DanmuPlayerViewConfig
     post_panel: _containers.RepeatedCompositeFieldContainer[PostPanel]
+    post_panel2: _containers.RepeatedCompositeFieldContainer[PostPanelV2]
     report_filter_content: _containers.RepeatedScalarFieldContainer[str]
     send_box_style: int
     special_dms: _containers.RepeatedScalarFieldContainer[str]
     subtitle: VideoSubtitle
     text_placeholder: str
-    def __init__(self, closed: bool = ..., mask: _Optional[_Union[VideoMask, _Mapping]] = ..., subtitle: _Optional[_Union[VideoSubtitle, _Mapping]] = ..., special_dms: _Optional[_Iterable[str]] = ..., ai_flag: _Optional[_Union[DanmakuFlagConfig, _Mapping]] = ..., player_config: _Optional[_Union[DanmuPlayerViewConfig, _Mapping]] = ..., send_box_style: _Optional[int] = ..., allow: bool = ..., check_box: _Optional[str] = ..., check_box_show_msg: _Optional[str] = ..., text_placeholder: _Optional[str] = ..., input_placeholder: _Optional[str] = ..., report_filter_content: _Optional[_Iterable[str]] = ..., expo_report: _Optional[_Union[ExpoReport, _Mapping]] = ..., buzzword_config: _Optional[_Union[BuzzwordConfig, _Mapping]] = ..., expressions: _Optional[_Iterable[_Union[Expressions, _Mapping]]] = ..., post_panel: _Optional[_Iterable[_Union[PostPanel, _Mapping]]] = ..., activity_meta: _Optional[_Iterable[str]] = ...) -> None: ...
+    def __init__(self, closed: bool = ..., mask: _Optional[_Union[VideoMask, _Mapping]] = ..., subtitle: _Optional[_Union[VideoSubtitle, _Mapping]] = ..., special_dms: _Optional[_Iterable[str]] = ..., ai_flag: _Optional[_Union[DanmakuFlagConfig, _Mapping]] = ..., player_config: _Optional[_Union[DanmuPlayerViewConfig, _Mapping]] = ..., send_box_style: _Optional[int] = ..., allow: bool = ..., check_box: _Optional[str] = ..., check_box_show_msg: _Optional[str] = ..., text_placeholder: _Optional[str] = ..., input_placeholder: _Optional[str] = ..., report_filter_content: _Optional[_Iterable[str]] = ..., expo_report: _Optional[_Union[ExpoReport, _Mapping]] = ..., buzzword_config: _Optional[_Union[BuzzwordConfig, _Mapping]] = ..., expressions: _Optional[_Iterable[_Union[Expressions, _Mapping]]] = ..., post_panel: _Optional[_Iterable[_Union[PostPanel, _Mapping]]] = ..., activity_meta: _Optional[_Iterable[str]] = ..., post_panel2: _Optional[_Iterable[_Union[PostPanelV2, _Mapping]]] = ...) -> None: ...
 
 class DmViewReq(_message.Message):
     __slots__ = ["is_hard_boot", "oid", "pid", "spmid", "type"]
@@ -644,6 +703,18 @@ class Label(_message.Message):
     content: _containers.RepeatedScalarFieldContainer[str]
     title: str
     def __init__(self, title: _Optional[str] = ..., content: _Optional[_Iterable[str]] = ...) -> None: ...
+
+class LabelV2(_message.Message):
+    __slots__ = ["content", "exposure_once", "exposure_type", "title"]
+    CONTENT_FIELD_NUMBER: _ClassVar[int]
+    EXPOSURE_ONCE_FIELD_NUMBER: _ClassVar[int]
+    EXPOSURE_TYPE_FIELD_NUMBER: _ClassVar[int]
+    TITLE_FIELD_NUMBER: _ClassVar[int]
+    content: _containers.RepeatedScalarFieldContainer[str]
+    exposure_once: bool
+    exposure_type: int
+    title: str
+    def __init__(self, title: _Optional[str] = ..., content: _Optional[_Iterable[str]] = ..., exposure_once: bool = ..., exposure_type: _Optional[int] = ...) -> None: ...
 
 class Period(_message.Message):
     __slots__ = ["end", "start"]
@@ -744,12 +815,12 @@ class PlayerDanmakuSpeed(_message.Message):
     def __init__(self, value: _Optional[int] = ...) -> None: ...
 
 class PlayerDanmakuSwitch(_message.Message):
-    __slots__ = ["canIgnore", "value"]
-    CANIGNORE_FIELD_NUMBER: _ClassVar[int]
+    __slots__ = ["can_ignore", "value"]
+    CAN_IGNORE_FIELD_NUMBER: _ClassVar[int]
     VALUE_FIELD_NUMBER: _ClassVar[int]
-    canIgnore: bool
+    can_ignore: bool
     value: bool
-    def __init__(self, value: bool = ..., canIgnore: bool = ...) -> None: ...
+    def __init__(self, value: bool = ..., can_ignore: bool = ...) -> None: ...
 
 class PlayerDanmakuSwitchSave(_message.Message):
     __slots__ = ["value"]
@@ -784,6 +855,30 @@ class PostPanel(_message.Message):
     text_input: TextInput
     toast: Toast
     def __init__(self, start: _Optional[int] = ..., end: _Optional[int] = ..., priority: _Optional[int] = ..., biz_id: _Optional[int] = ..., biz_type: _Optional[_Union[PostPanelBizType, str]] = ..., click_button: _Optional[_Union[ClickButton, _Mapping]] = ..., text_input: _Optional[_Union[TextInput, _Mapping]] = ..., check_box: _Optional[_Union[CheckBox, _Mapping]] = ..., toast: _Optional[_Union[Toast, _Mapping]] = ...) -> None: ...
+
+class PostPanelV2(_message.Message):
+    __slots__ = ["biz_type", "bubble", "check_box", "click_button", "end", "label", "post_status", "start", "text_input", "toast"]
+    BIZ_TYPE_FIELD_NUMBER: _ClassVar[int]
+    BUBBLE_FIELD_NUMBER: _ClassVar[int]
+    CHECK_BOX_FIELD_NUMBER: _ClassVar[int]
+    CLICK_BUTTON_FIELD_NUMBER: _ClassVar[int]
+    END_FIELD_NUMBER: _ClassVar[int]
+    LABEL_FIELD_NUMBER: _ClassVar[int]
+    POST_STATUS_FIELD_NUMBER: _ClassVar[int]
+    START_FIELD_NUMBER: _ClassVar[int]
+    TEXT_INPUT_FIELD_NUMBER: _ClassVar[int]
+    TOAST_FIELD_NUMBER: _ClassVar[int]
+    biz_type: int
+    bubble: BubbleV2
+    check_box: CheckBoxV2
+    click_button: ClickButtonV2
+    end: int
+    label: LabelV2
+    post_status: int
+    start: int
+    text_input: TextInputV2
+    toast: ToastV2
+    def __init__(self, start: _Optional[int] = ..., end: _Optional[int] = ..., biz_type: _Optional[int] = ..., click_button: _Optional[_Union[ClickButtonV2, _Mapping]] = ..., text_input: _Optional[_Union[TextInputV2, _Mapping]] = ..., check_box: _Optional[_Union[CheckBoxV2, _Mapping]] = ..., toast: _Optional[_Union[ToastV2, _Mapping]] = ..., bubble: _Optional[_Union[BubbleV2, _Mapping]] = ..., label: _Optional[_Union[LabelV2, _Mapping]] = ..., post_status: _Optional[int] = ...) -> None: ...
 
 class Response(_message.Message):
     __slots__ = ["code", "message"]
@@ -837,6 +932,22 @@ class TextInput(_message.Message):
     show: bool
     def __init__(self, portrait_placeholder: _Optional[_Iterable[str]] = ..., landscape_placeholder: _Optional[_Iterable[str]] = ..., render_type: _Optional[_Union[RenderType, str]] = ..., placeholder_post: bool = ..., show: bool = ..., avatar: _Optional[_Iterable[_Union[Avatar, _Mapping]]] = ..., post_status: _Optional[_Union[PostStatus, str]] = ..., label: _Optional[_Union[Label, _Mapping]] = ...) -> None: ...
 
+class TextInputV2(_message.Message):
+    __slots__ = ["avatar", "landscape_placeholder", "placeholder_post", "portrait_placeholder", "render_type", "text_input_limit"]
+    AVATAR_FIELD_NUMBER: _ClassVar[int]
+    LANDSCAPE_PLACEHOLDER_FIELD_NUMBER: _ClassVar[int]
+    PLACEHOLDER_POST_FIELD_NUMBER: _ClassVar[int]
+    PORTRAIT_PLACEHOLDER_FIELD_NUMBER: _ClassVar[int]
+    RENDER_TYPE_FIELD_NUMBER: _ClassVar[int]
+    TEXT_INPUT_LIMIT_FIELD_NUMBER: _ClassVar[int]
+    avatar: _containers.RepeatedCompositeFieldContainer[Avatar]
+    landscape_placeholder: _containers.RepeatedScalarFieldContainer[str]
+    placeholder_post: bool
+    portrait_placeholder: _containers.RepeatedScalarFieldContainer[str]
+    render_type: RenderType
+    text_input_limit: int
+    def __init__(self, portrait_placeholder: _Optional[_Iterable[str]] = ..., landscape_placeholder: _Optional[_Iterable[str]] = ..., render_type: _Optional[_Union[RenderType, str]] = ..., placeholder_post: bool = ..., avatar: _Optional[_Iterable[_Union[Avatar, _Mapping]]] = ..., text_input_limit: _Optional[int] = ...) -> None: ...
+
 class Toast(_message.Message):
     __slots__ = ["button", "duration", "show", "text"]
     BUTTON_FIELD_NUMBER: _ClassVar[int]
@@ -848,6 +959,24 @@ class Toast(_message.Message):
     show: bool
     text: str
     def __init__(self, text: _Optional[str] = ..., duration: _Optional[int] = ..., show: bool = ..., button: _Optional[_Union[Button, _Mapping]] = ...) -> None: ...
+
+class ToastButtonV2(_message.Message):
+    __slots__ = ["action", "text"]
+    ACTION_FIELD_NUMBER: _ClassVar[int]
+    TEXT_FIELD_NUMBER: _ClassVar[int]
+    action: int
+    text: str
+    def __init__(self, text: _Optional[str] = ..., action: _Optional[int] = ...) -> None: ...
+
+class ToastV2(_message.Message):
+    __slots__ = ["duration", "text", "toast_button_v2"]
+    DURATION_FIELD_NUMBER: _ClassVar[int]
+    TEXT_FIELD_NUMBER: _ClassVar[int]
+    TOAST_BUTTON_V2_FIELD_NUMBER: _ClassVar[int]
+    duration: int
+    text: str
+    toast_button_v2: ToastButtonV2
+    def __init__(self, text: _Optional[str] = ..., duration: _Optional[int] = ..., toast_button_v2: _Optional[_Union[ToastButtonV2, _Mapping]] = ...) -> None: ...
 
 class UserInfo(_message.Message):
     __slots__ = ["face", "mid", "name", "rank", "sex", "sign"]
@@ -892,10 +1021,16 @@ class VideoSubtitle(_message.Message):
 class AvatarType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     __slots__ = []
 
+class BubbleType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
+    __slots__ = []
+
 class CheckboxType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     __slots__ = []
 
 class DMAttrBit(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
+    __slots__ = []
+
+class ExposureType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     __slots__ = []
 
 class PostPanelBizType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
