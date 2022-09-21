@@ -22,12 +22,14 @@ headers = {
 	'User-Agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36 Edg/105.0.1343.27",
 	'origin': "https://www.bilibili.com",
 	'referer': "https://www.bilibili.com"
-	}
+}
 SLEEP_TIME = 0.03
 NET_count = [0, 0]
 err_sign = ""
 P_flag = []
-for i in range(32):P_flag.append(False)
+for i in range(32): P_flag.append(False)
+
+
 def Program_FLAG(flag: str) -> None:
 	"""
 	Text
@@ -37,7 +39,7 @@ def Program_FLAG(flag: str) -> None:
 	else: b = bin(int(flag))
 	b = "00000000000000000000000000000000" + b.lstrip("0b")
 	global P_flag
-	for xx in range(-1,-len(b),-1):
+	for xx in range(-1, -len(b), -1):
 		if b[xx] == "1": P_flag[-xx - 1] = True
 		else: P_flag[-xx - 1] = False
 	if P_flag[3]: print(f"[FLAG]: {b}")
@@ -50,7 +52,7 @@ def Downloader(url_DL: str, str_s: dict) -> bytes:
 	global NET_count
 	NET_count[0] += 1
 	NET_count[1] += 1
-	status_code = [0,0]
+	status_code = [0, 0]
 	if P_flag[3]: print(f"[NET]: {url_DL}\t{NET_count[1]}   ", end="\t")
 	if P_flag[8]:
 		try:
@@ -217,13 +219,13 @@ if __name__ == '__main__':
 	# ================================ bvid aid 检查
 	if Json_Info["bvid"] != bvid: print(f"[bvid]: bvid mismatch {Json_Info['bvid']}|{bvid}")
 	if Json_Info["aid"] != avid_in: print(f"[avid]: avid mismatch av{Json_Info['aid']}|{avid}")
-	if P_flag[14]:sys.exit()
+	if P_flag[14]: sys.exit()
 	# ================================ 字幕
 	for subs in Json_Info["subtitle"]["list"]:
 		subs_name = ["0", "Subs", f"{subs['id']}_{subs['lan']}", "bcc", bvid]
 		threading.Thread(dump_Data(str_s=subs_name, data=Downloader(url_DL=subs["subtitle_url"], str_s=subs_name), force=True)).start()
 		if P_flag[3]: print(f"[Subtitle]: {bvid}")
-	if P_flag[15]:sys.exit()
+	if P_flag[15]: sys.exit()
 	# ================================ 分集处理
 	i_for_videos = 0
 	for This in Json_Info["pages"]:
@@ -238,7 +240,7 @@ if __name__ == '__main__':
 		Segment_Count = math.ceil(duration/360)
 		ARR_Ext_Info = [cid, "BAS", "INFO", "bin", bvid]
 		DL_Data_Extra_Info = Downloader(url_DL=f'https://api.bilibili.com/x/v2/dm/web/view?type=1&oid={cid}', str_s=ARR_Ext_Info)
-		if P_flag[16]:continue
+		if P_flag[16]: continue
 		if P_flag[3]: print(f"[Special_Danmaku]: P{i_for_videos}")
 		ExInfo_Proto = dm_pb2.DmWebViewReply()
 		ExInfo_Proto.ParseFromString(DL_Data_Extra_Info)
@@ -249,7 +251,7 @@ if __name__ == '__main__':
 		if P_Title == "": P_Title = f"P{i_for_videos}"
 		print(f"{P_Date}|{bvid}|{avid}|P{i_for_videos}/{Num_of_Videos}|{cid}|{duration}|{math.ceil(duration/360)}|{Main_Title}|{P_Title}")
 		if P_Title == Main_Title: P_Title = ""
-		File_Name = f"[{P_Date}][{bvid}][{avid}][P{i_for_videos}][{cid}]{Main_Title.replace('_', '＿')}_{P_Title.replace('_', '＿')}".replace("\\", "＼").replace("/", "／").replace(":", "：").replace("*", "＊").replace("?", "？").replace("<", "＜").replace(">", "＞").replace("|", "｜").replace("\"", "＂").replace("\r","").replace("\n","").rstrip("_")	# \/:*?"<>|
+		File_Name = f"[{P_Date}][{bvid}][{avid}][P{i_for_videos}][{cid}]{Main_Title.replace('_', '＿')}_{P_Title.replace('_', '＿')}".replace("\\", "＼").replace("/", "／").replace(":", "：").replace("*", "＊").replace("?", "？").replace("<", "＜").replace(">", "＞").replace("|", "｜").replace("\"", "＂").replace("\r", "").replace("\n", "").rstrip("_")	# \/:*?"<>|
 		# [1656432000][BV1**4*1*7*][av*********][P*][cid]MainTitle_P-Title
 		if (not P_flag[6]) and P_flag[11]: XML_Write_Data += XML_Special_Process(ExInfo_Proto.commandDms, cid=cid)
 		if P_flag[9]:
@@ -292,16 +294,17 @@ if __name__ == '__main__':
 			if P_flag[3]: print(f"[File_JSON P{i_for_videos}]: PROC start")
 			Temp_Binary = dm_pb2.DmSegMobileReply()
 			Temp_Binary.ParseFromString(Danmaku_Final_Binary)
-			j1 = json.loads(MessageToJson(Temp_Binary, indent=0, ensure_ascii=False))
+			json_proccess = json.loads(MessageToJson(Temp_Binary, indent=0, ensure_ascii=False))
+			del Temp_Binary
 			# ==================
 			P_flag[13] = False
 			try:
-				j1["elems"]
+				json_proccess["elems"]
 				P_flag[13] = True
 			except KeyError:
-				j1["elems"] = []
+				json_proccess["elems"] = []
 			if P_flag[13]:
-				for that in j1["elems"]:
+				for that in json_proccess["elems"]:
 					try: del that["idStr"]
 					except KeyError: pass
 					try:
@@ -329,35 +332,34 @@ if __name__ == '__main__':
 					except KeyError: pass
 			P_flag[13] = False
 			# ==================
-			del Temp_Binary
 			if 1:
 				if P_flag[8]:
-					try: xx = json.loads(open(f"{File_Name}.json", "r", encoding="utf-8"))["info"]["File_Create_Time"]
-					except: xx = timeC
-				try: j1["commandDms"] = ExInfo_Json["commandDms"]
-				except KeyError: j1["commandDms"] = []
-				try: Danmaku_Count = len(j1["elems"])
+					try: time_FC = json.loads(open(f"{File_Name}.json", "r", encoding="utf-8"))["info"]["File_Create_Time"]
+					except: time_FC = timeC
+				try: json_proccess["commandDms"] = ExInfo_Json["commandDms"]
+				except KeyError: json_proccess["commandDms"] = []
+				try: Danmaku_Count = len(json_proccess["elems"])
 				except KeyError: Danmaku_Count = 0
-				j1["info"] = {}
-				j1["info"]["Ver"] = "V5_20220916"
-				j1["info"]["owner"] = Json_Info['owner']				# dict get all
-				j1["info"]["bvid"] = Json_Info['bvid']					# str  get all
-				j1["info"]["avid"] = Json_Info['aid']					# num  get all
-				j1["info"]["V_Name"] = Json_Info["title"]				# str  get all
-				j1["info"]["pubdate"] = Json_Info['pubdate']			# num  get all unix_timestamp
-				j1["info"]["i_ctime"] = Json_Info['ctime']				# num  get all unix_timestamp
-				j1["info"]["P_Name"] = This["part"]						# str  get part
-				j1["info"]["cid"] = This["cid"]							# num  get part
-				j1["info"]["duration"] = This["duration"]				# num  get part
-				j1["info"]["segment_count"] = Segment_Count				# num  set
-				j1["info"]["danmaku_count"] = Danmaku_Count				# num  set
-				j1["info"]["danmaku_web_reported"] = Json_Info['stat']['danmaku']	# num get
-				j1["info"]["danmaku_proto_reported"] = ExInfo_Proto.count	# num get
-				j1["info"]["File_Create_Time"] = int(timeC)				# num  set unix_timestamp
-				j1["info"]["File_Create_Time_Start"] = int(timeA)		# num  set unix_timestamp
-				j1["info"]["is_live_record"] = P_flag[2]		# bool GET
-			Json_Write_Data = json.dumps(j1, ensure_ascii=False, separators=(',', ':')).replace("},{\"id\"", "},\n{\"id\"")
-			del j1
+				json_proccess["info"] = {}
+				json_proccess["info"]["Ver"] = "V5_20220916"
+				json_proccess["info"]["owner"] = Json_Info['owner']				# dict get all
+				json_proccess["info"]["bvid"] = Json_Info['bvid']				# str  get all
+				json_proccess["info"]["avid"] = Json_Info['aid']				# num  get all
+				json_proccess["info"]["V_Name"] = Json_Info["title"]			# str  get all
+				json_proccess["info"]["pubdate"] = Json_Info['pubdate']			# num  get all unix_timestamp
+				json_proccess["info"]["i_ctime"] = Json_Info['ctime']			# num  get all unix_timestamp
+				json_proccess["info"]["P_Name"] = This["part"]					# str  get part
+				json_proccess["info"]["cid"] = This["cid"]						# num  get part
+				json_proccess["info"]["duration"] = This["duration"]			# num  get part
+				json_proccess["info"]["segment_count"] = Segment_Count			# num  set
+				json_proccess["info"]["danmaku_count"] = Danmaku_Count			# num  set
+				json_proccess["info"]["danmaku_web_reported"] = Json_Info['stat']['danmaku']	# num get
+				json_proccess["info"]["danmaku_proto_reported"] = ExInfo_Proto.count	# num get
+				json_proccess["info"]["File_Create_Time"] = int(time_FC)		# num  set unix_timestamp
+				json_proccess["info"]["File_Create_Time_Start"] = int(timeA)	# num  set unix_timestamp
+				json_proccess["info"]["is_live_record"] = P_flag[2]				# bool GET
+			Json_Write_Data = json.dumps(json_proccess, ensure_ascii=False, separators=(',', ':')).replace("},{\"id\"", "},\n{\"id\"")
+			del json_proccess
 			if P_flag[3]: print(f"[File_JSON P{i_for_videos}]: PROC end--")
 		if P_flag[12]: err_sign = "ERR_"
 		if (not P_flag[5]):

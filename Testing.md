@@ -32,7 +32,7 @@
 | id             | num    |           | 20004: 图片弹幕<br>20016: ?<br>20018: NFT弹幕 |
 | cid            | num    | 0         |           |
 | advanced_block | num    | 0         |           |
-| mime           | str    | "image" |           |
+| mime           | str    | "image"   |           |
 | resource       | str    | `url`     |           |
 | scale          | num    | 1         | id==20004 |
 
