@@ -335,34 +335,33 @@ if __name__ == '__main__':
 					except KeyError: pass
 			P_flag[13] = False
 			# ==================
-			if 1:
-				if P_flag[8]:
-					try: time_FC = json.loads(open(f"{File_Name}.json", "r", encoding="utf-8"))["info"]["File_Create_Time"]
-					except: time_FC = timeC
-				else: time_FC = timeC
-				try: json_proccess["commandDms"] = ExInfo_Json["commandDms"]
-				except KeyError: json_proccess["commandDms"] = []
-				try: Danmaku_Count = len(json_proccess["elems"])
-				except KeyError: Danmaku_Count = 0
-				json_proccess["info"] = {}
-				json_proccess["info"]["Ver"] = "V5_20220916"
-				json_proccess["info"]["dmk_Ver"] = 2
-				json_proccess["info"]["owner"] = Json_Info['owner']								# dict get all
-				json_proccess["info"]["bvid"] = Json_Info['bvid']								# str  get all
-				json_proccess["info"]["avid"] = Json_Info['aid']								# num  get all
-				json_proccess["info"]["V_Name"] = Json_Info["title"]							# str  get all
-				json_proccess["info"]["pubdate"] = Json_Info['pubdate']							# num  get all unix_timestamp
-				json_proccess["info"]["i_ctime"] = Json_Info['ctime']							# num  get all unix_timestamp
-				json_proccess["info"]["P_Name"] = This["part"]									# str  get part
-				json_proccess["info"]["cid"] = This["cid"]										# num  get part
-				json_proccess["info"]["duration"] = This["duration"]							# num  get part
-				json_proccess["info"]["segment_count"] = Segment_Count							# num  set
-				json_proccess["info"]["danmaku_count"] = Danmaku_Count							# num  set
-				json_proccess["info"]["danmaku_web_reported"] = Json_Info['stat']['danmaku']	# num get
-				json_proccess["info"]["danmaku_proto_reported"] = ExInfo_Proto.count			# num get
-				json_proccess["info"]["File_Create_Time"] = int(time_FC)						# num  set unix_timestamp
-				json_proccess["info"]["File_Create_Time_Start"] = int(timeA)					# num  set unix_timestamp
-				json_proccess["info"]["is_live_record"] = P_flag[2]								# bool GET
+			if P_flag[8]:
+				try: time_FC = json.loads(open(f"{File_Name}.json", "r", encoding="utf-8"))["info"]["File_Create_Time"]
+				except: time_FC = timeC
+			else: time_FC = timeC
+			try: json_proccess["commandDms"] = ExInfo_Json["commandDms"]
+			except KeyError: json_proccess["commandDms"] = []
+			try: Danmaku_Count = len(json_proccess["elems"])
+			except KeyError: Danmaku_Count = 0
+			json_proccess["info"] = {}
+			json_proccess["info"]["Ver"] = "V5_20220916"
+			json_proccess["info"]["dmk_Ver"] = 2
+			json_proccess["info"]["owner"] = Json_Info['owner']								# dict get all
+			json_proccess["info"]["bvid"] = Json_Info['bvid']								# str  get all
+			json_proccess["info"]["avid"] = Json_Info['aid']								# num  get all
+			json_proccess["info"]["V_Name"] = Json_Info["title"]							# str  get all
+			json_proccess["info"]["pubdate"] = Json_Info['pubdate']							# num  get all unix_timestamp
+			json_proccess["info"]["i_ctime"] = Json_Info['ctime']							# num  get all unix_timestamp
+			json_proccess["info"]["P_Name"] = This["part"]									# str  get part
+			json_proccess["info"]["cid"] = This["cid"]										# num  get part
+			json_proccess["info"]["duration"] = This["duration"]							# num  get part
+			json_proccess["info"]["segment_count"] = Segment_Count							# num  set
+			json_proccess["info"]["danmaku_count"] = Danmaku_Count							# num  set
+			json_proccess["info"]["danmaku_web_reported"] = Json_Info['stat']['danmaku']	# num get
+			json_proccess["info"]["danmaku_proto_reported"] = ExInfo_Proto.count			# num get
+			json_proccess["info"]["File_Create_Time"] = int(time_FC)						# num  set unix_timestamp
+			json_proccess["info"]["File_Create_Time_Start"] = int(timeA)					# num  set unix_timestamp
+			json_proccess["info"]["is_live_record"] = P_flag[2]								# bool GET
 			Json_Write_Data = json.dumps(json_proccess, ensure_ascii=False, separators=(',', ':')).replace("},{\"id\"", "},\n{\"id\"")
 			del json_proccess
 			if P_flag[3]: print(f"[File_JSON P{i_for_videos}]: PROC end--")
