@@ -27,7 +27,8 @@ SLEEP_TIME = 0.03
 NET_count = [0, 0]
 err_sign = ""
 P_flag = []
-for i in range(32): P_flag.append(False)
+retry_times = 1
+for i in range(64): P_flag.append(False)
 
 
 def Program_FLAG(flag: str) -> None:
@@ -52,6 +53,7 @@ def Downloader(url_DL: str, str_s: dict) -> bytes:
 	global NET_count
 	NET_count[0] += 1
 	NET_count[1] += 1
+	url_DL = url_DL.replace("http://","https://")
 	status_code = [0, 0]
 	if P_flag[3]: print(f"[NET]: {url_DL}\t{NET_count[1]}   ", end="\t")
 	if P_flag[8]:
@@ -225,6 +227,7 @@ if __name__ == '__main__':
 		subs_name = ["0", "Subs", f"{subs['id']}_{subs['lan']}", "bcc", bvid]
 		threading.Thread(dump_Data(str_s=subs_name, data=Downloader(url_DL=subs["subtitle_url"], str_s=subs_name), force=True)).start()
 		if P_flag[3]: print(f"[Subtitle]: {bvid}")
+		else: print(f"[{bvid}]: subtitle\r", end="")
 	if P_flag[15]: sys.exit()
 	# ================================ 分集处理
 	i_for_videos = 0
@@ -266,28 +269,29 @@ if __name__ == '__main__':
 			if P_flag[12] and P_flag[1]: break
 			try: Danmaku_Binarys = get_Danmaku(cid, str(segments+1))
 			except json.decoder.JSONDecodeError: Danmaku_Binarys = b""
+			if P_flag[3]: print(f"[danmaku]: P{i_for_videos}/{Num_of_Videos}::{segments+1}/{Segment_Count}")
+			else: print(f"[{cid}]: {sec_c}/{Segment_Count}         \r", end="")
 			# 重试
 			if len(Danmaku_Binarys) < 4096 and (not P_flag[8]):
 				temp_filelen = len(Danmaku_Binarys)
 				retry_file = []
-				for retry_i in range(3):
+				for retry_i in range(retry_times):
 					if len(Danmaku_Binarys) == 0: break
-					if P_flag[3]: print(f"[danmaku]: P{i_for_videos}/{Num_of_Videos}::{segments+1}/{Segment_Count} [R{retry_i+1}]")
 					try: retry_file.append(get_Danmaku(cid, str(segments+1), retry=f"_R{retry_i+1}"))
 					except json.decoder.JSONDecodeError: retry_file.append(b"")
 					if len(retry_file[retry_i]) > temp_filelen:
 						Danmaku_Binarys = retry_file[retry_i]
 						del retry_file, temp_filelen
 						break
+					if P_flag[3]: print(f"[danmaku]: P{i_for_videos}/{Num_of_Videos}::{segments+1}/{Segment_Count} [R{retry_i+1}]")
+					else: print(f"[{cid}]: {sec_c}/{Segment_Count} [R{retry_i+1}]      \r", end="")
 			Danmaku_Final_Binary += Danmaku_Binarys
 			if (not P_flag[6]):
 				xml_t1 = dm_pb2.DmSegMobileReply()
 				xml_t1.ParseFromString(Danmaku_Binarys)
 				XML_Write_Data += XML_Process(xml_t1.elems)
-			if (not P_flag[3]): print(f"[{cid}]: {sec_c}/{Segment_Count}\r", end="")
 			sec_c += 1
-			if P_flag[3]: print(f"[danmaku]: P{i_for_videos}/{Num_of_Videos}::{segments+1}/{Segment_Count}")
-		if (not P_flag[3]): print("                      \r", end="")
+		if (not P_flag[3]): print("                        \r", end="")
 		if Segment_Count != 1: dump_Data(str_s=[cid, "Danmaku", "ALL", "bin", bvid], data=Danmaku_Final_Binary, force=True)
 		timeC = time.time()
 		if (not P_flag[5]):
@@ -315,20 +319,19 @@ if __name__ == '__main__':
 					except KeyError: pass
 					try:
 						if that["mode"] == 1: del that["mode"]
-					except KeyError: pass
+					except KeyError: that["mode"] = 0
 					try:
 						if that["fontsize"] == 25: del that["fontsize"]
+					except KeyError: that["fontsize"] = 0
+					try:
+						if that["color"] == 16777215: del that["color"]
+					except KeyError: that["color"] = 0
+					try: del that["likes"]
+					except KeyError: pass
+					try: del that["weight"]
 					except KeyError: pass
 					try:
-						if that["attr"] == 2:
-							P_flag[2] = True
-							try: del that["likes"]
-							except KeyError: pass
-							try:
-								if that["color"] == 16777215: del that["color"]
-							except KeyError: pass
-							try: del that["weight"]
-							except KeyError: pass
+						if that["attr"] == 2: P_flag[2] = True
 					except KeyError: pass
 			P_flag[13] = False
 			# ==================
@@ -336,28 +339,30 @@ if __name__ == '__main__':
 				if P_flag[8]:
 					try: time_FC = json.loads(open(f"{File_Name}.json", "r", encoding="utf-8"))["info"]["File_Create_Time"]
 					except: time_FC = timeC
+				else: time_FC = timeC
 				try: json_proccess["commandDms"] = ExInfo_Json["commandDms"]
 				except KeyError: json_proccess["commandDms"] = []
 				try: Danmaku_Count = len(json_proccess["elems"])
 				except KeyError: Danmaku_Count = 0
 				json_proccess["info"] = {}
 				json_proccess["info"]["Ver"] = "V5_20220916"
-				json_proccess["info"]["owner"] = Json_Info['owner']				# dict get all
-				json_proccess["info"]["bvid"] = Json_Info['bvid']				# str  get all
-				json_proccess["info"]["avid"] = Json_Info['aid']				# num  get all
-				json_proccess["info"]["V_Name"] = Json_Info["title"]			# str  get all
-				json_proccess["info"]["pubdate"] = Json_Info['pubdate']			# num  get all unix_timestamp
-				json_proccess["info"]["i_ctime"] = Json_Info['ctime']			# num  get all unix_timestamp
-				json_proccess["info"]["P_Name"] = This["part"]					# str  get part
-				json_proccess["info"]["cid"] = This["cid"]						# num  get part
-				json_proccess["info"]["duration"] = This["duration"]			# num  get part
-				json_proccess["info"]["segment_count"] = Segment_Count			# num  set
-				json_proccess["info"]["danmaku_count"] = Danmaku_Count			# num  set
+				json_proccess["info"]["dmk_Ver"] = 2
+				json_proccess["info"]["owner"] = Json_Info['owner']								# dict get all
+				json_proccess["info"]["bvid"] = Json_Info['bvid']								# str  get all
+				json_proccess["info"]["avid"] = Json_Info['aid']								# num  get all
+				json_proccess["info"]["V_Name"] = Json_Info["title"]							# str  get all
+				json_proccess["info"]["pubdate"] = Json_Info['pubdate']							# num  get all unix_timestamp
+				json_proccess["info"]["i_ctime"] = Json_Info['ctime']							# num  get all unix_timestamp
+				json_proccess["info"]["P_Name"] = This["part"]									# str  get part
+				json_proccess["info"]["cid"] = This["cid"]										# num  get part
+				json_proccess["info"]["duration"] = This["duration"]							# num  get part
+				json_proccess["info"]["segment_count"] = Segment_Count							# num  set
+				json_proccess["info"]["danmaku_count"] = Danmaku_Count							# num  set
 				json_proccess["info"]["danmaku_web_reported"] = Json_Info['stat']['danmaku']	# num get
-				json_proccess["info"]["danmaku_proto_reported"] = ExInfo_Proto.count	# num get
-				json_proccess["info"]["File_Create_Time"] = int(time_FC)		# num  set unix_timestamp
-				json_proccess["info"]["File_Create_Time_Start"] = int(timeA)	# num  set unix_timestamp
-				json_proccess["info"]["is_live_record"] = P_flag[2]				# bool GET
+				json_proccess["info"]["danmaku_proto_reported"] = ExInfo_Proto.count			# num get
+				json_proccess["info"]["File_Create_Time"] = int(time_FC)						# num  set unix_timestamp
+				json_proccess["info"]["File_Create_Time_Start"] = int(timeA)					# num  set unix_timestamp
+				json_proccess["info"]["is_live_record"] = P_flag[2]								# bool GET
 			Json_Write_Data = json.dumps(json_proccess, ensure_ascii=False, separators=(',', ':')).replace("},{\"id\"", "},\n{\"id\"")
 			del json_proccess
 			if P_flag[3]: print(f"[File_JSON P{i_for_videos}]: PROC end--")
