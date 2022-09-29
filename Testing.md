@@ -1,4 +1,4 @@
-# 测试数据
+# 
 ## DanmakuElem
 | json-name  | id   | type    | protobuf-name | -- |
 | ---------- | ---: | ------: | :------------ | :--- |
@@ -12,21 +12,21 @@
 | ctime      |  8   | int64   | ctime         | 发送时间 |
 | weight     |  9   | int32   | weight        | 屏蔽等级 |
 | action     | 10   | string  | action        | `airborne:[time]`<br>`picture:图像url`(图片弹幕) |
-| pool       | 11   | int32   | pool          |  |
+| pool       | 11   | int32   | pool          | |
 | idStr      | 12   | string  | idStr         | 弹幕ID(string) |
 | attr       | 13   | int32   | attr          | 弹幕属性位 |
 | usermid    | 14   | ?int64  | usermid       | 发送者mid |
 | likes      | 15   | ?int??  | likes         | 点赞数量 |
 | test16     | 16   | ?int??  | test16        | reply-to-dmid-1 `first:2021-08-07` |
 | test17     | 17   | ?int??  | test17        | reply-to-dmid-2 `last: 2022-09-05` |
-| replyCount | 18   | ?int??  | reply_count   |  |
+| replyCount | 18   | ?int??  | reply_count   | |
 | test19     | 19   | ?       | test19        | ? |
 | test20     | 20   | string  | test20        | reply-to-dmid-str-1 |
 | test21     | 21   | string  | test21        | reply-to-dmid-str-2 |
-| animation  | 22   | string  | animation     | json, |
+| animation  | 22   | string  | animation     | json |
 | test23     | 23   | ?       | test23        | ? |
 
-### DanmakuElem:animation
+### Danmaku:animation
 | key            | type   | value     | xxxxxxxxx |
 | :------------- | -----: | --------: | :-------- |
 | id             | num    |           | 20004: 图片弹幕<br>20016: ?<br>20018: NFT弹幕 |
@@ -158,9 +158,9 @@
 | msg                   | str   | "预告：**自定义内容**"<br>"直播预约：**自定义内容**" |
 | reserve_type          | num   | 1: 视频<br>2: 直播 |
 | reserve_id            | num   | id |
-| live_stime            | num   | UnixTimeStamp | 仅存在于`reserve_type=2` |
-| arc_stime             | num   | UnixTimeStamp | 仅存在于`reserve_type=2` |
-| stime                 | num   | UnixTimeStamp | 仅存在于`reserve_type=2` |
+| live_stime            | num   | UnixTimeStamp | `reserve_type=2` |
+| arc_stime             | num   | UnixTimeStamp | `reserve_type=2` |
+| stime                 | num   | UnixTimeStamp | `reserve_type=2` |
 | posX                  | float | |
 | posY                  | float | |
 | duration              | num   | 5000 |
