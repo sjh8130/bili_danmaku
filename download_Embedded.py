@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+import os
 import requests
 import json
 import math
@@ -8,8 +9,12 @@ import tarfile
 import io
 
 x={'User-Agent':"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.66 Safari/537.36 Edg/103.0.1264.44",'origin':"https://www.bilibili.com",'referer':"https://www.bilibili.com"}
+def u(b):
+	try:c=requests.get(b,headers=x)
+	except:u(b)
+	return c
 def o(b,c):
-	d=requests.get(b,headers=x)
+	d=u(b)
 	print(f"[NET]:HTTP {d.status_code}\t{b}")
 	e=tarfile.TarInfo(f"[{r}]_[{c[0]}]_[{c[1]}]_[{c[2]}].{c[3]}")
 	e.size=len(d.content)
@@ -22,43 +27,43 @@ def p():
 	with tarfile.open(name=r+".tar",mode="w",bufsize=4194304)as a:
 		b=json.loads(o(b=f"https://api.bilibili.com/x/web-interface/view?bvid={r}",c=["0","Video","INFO","json"]))["data"]
 		o(b=f"https://api.bilibili.com/x/web-interface/view/detail?bvid={r}",c=["0","Video","INFO_Detail","json"])
-		for c in b["subtitle"]["list"]:o(b=c["subtitle_url"],c=["0","Subs",f"{c['id']}_{c['lan']}","bcc"])
-		for d in b["pages"]:
-			e=str(d["cid"])
-			f=int(d["duration"])
-			g=math.ceil(f/360)
-			o(b=f'https://api.bilibili.com/x/v2/dm/web/view?type=1&oid={e}',c=[e,"BAS","INFO","bin"])
-			print(f"1000000000|{r}|av00000000|PX/{len(b['pages'])}|{e}|{f}|{g}|title|ptitle")
-			for h in range(g):
-				o(f'https://api.bilibili.com/x/v2/dm/web/seg.so?type=1&oid={e}&segment_index={str(h+1)}',c=[e,"Danmaku",str(h+1),"bin"])
-				o(f'https://api.bilibili.com/x/v2/dm/web/seg.so?type=1&oid={e}&segment_index={str(h+1)}',c=[e,"Danmaku",str(h+1)+"_B1","bin"])
-			i={}
-			i["elems"]=["Embedded"]
-			i["commandDms"]=[]
-			i["info"]={}
-			i["info"]["Ver"]="V5_20220916"
-			i["info"]["owner"]=b['owner']
-			i["info"]["bvid"]=b['bvid']
-			i["info"]["avid"]=b['aid']
-			i["info"]["V_Name"]=b["title"]
-			i["info"]["pubdate"]=int(b["pubdate"])
-			i["info"]["i_ctime"]=b['ctime']
-			i["info"]["P_Name"]=d["part"]
-			i["info"]["cid"]=e
-			i["info"]["duration"]=f
-			i["info"]["segment_count"]=g
-			i["info"]["danmaku_count"]=0
-			i["info"]["danmaku_web_reported"]=b['stat']['danmaku']
-			i["info"]["danmaku_proto_reported"]=0
-			i["info"]["File_Create_Time"]=time.time().__trunc__()
-			i["info"]["File_Create_Time_Start"]=0
-			i["info"]["is_live_record"]=False
-			i["Ver_Var"]="Embedded"
-			j=bytes(json.dumps(i,ensure_ascii=False,separators=(',',':')),encoding="utf-8")
-			k=tarfile.TarInfo(f"{r}_{e}.json")
-			k.size=len(j)
-			k.mtime=time.time().__trunc__()
-			a.addfile(tarinfo=k,fileobj=io.BytesIO(j))
+		c=b["pubdate"]
+		for d in b["subtitle"]["list"]:o(b=d["subtitle_url"].replace("http://", "https://"),c=["0","Subs",f"{d['id']}_{d['lan']}","bcc"])
+		for e in b["pages"]:
+			f=str(e["cid"])
+			g=int(e["duration"])
+			h=math.ceil(g/360)
+			o(b=f'https://api.bilibili.com/x/v2/dm/web/view?type=1&oid={f}',c=[f,"BAS","INFO","bin"])
+			print(f"{c}|{r}|av00000000|PXX/{len(b['pages'])}|{f}|{g}|{h}|title|ptitle")
+			for i in range(h):
+				o(f'https://api.bilibili.com/x/v2/dm/web/seg.so?type=1&oid={f}&segment_index={str(i+1)}',c=[f,"Danmaku",str(i+1),"bin"])
+				o(f'https://api.bilibili.com/x/v2/dm/web/seg.so?type=1&oid={f}&segment_index={str(i+1)}',c=[f,"Danmaku",str(i+1)+"_B1","bin"])
+			j={}
+			j["elems"]=["Embedded"]
+			j["commandDms"]=[]
+			j["info"]={}
+			j["info"]["Ver"]="V4_20220911_Embedded"
+			j["info"]["owner"]=b['owner']
+			j["info"]["bvid"]=b['bvid']
+			j["info"]["avid"]=b['aid']
+			j["info"]["V_Name"]=b["title"]
+			j["info"]["pubdate"]=int(c)
+			j["info"]["i_ctime"]=b['ctime']
+			j["info"]["P_Name"]=e["part"]
+			j["info"]["duration"]=g
+			j["info"]["cid"]=f
+			j["info"]["segment_count"]=h
+			j["info"]["danmaku_count"]=0
+			j["info"]["danmaku_web_reported"]=b['stat']['danmaku']
+			j["info"]["danmaku_proto_reported"]=0
+			j["info"]["File_Create_Time"]=time.time().__trunc__()
+			j["info"]["File_Create_Time_Start"]=0
+			j["info"]["is_live_record"]=False
+			k=bytes(json.dumps(j,ensure_ascii=False,separators=(',',':')),encoding="utf-8")
+			l=tarfile.TarInfo(f"{r}_{f}.json")
+			l.size=len(k)
+			l.mtime=time.time().__trunc__()
+			a.addfile(tarinfo=l,fileobj=io.BytesIO(k))
 		a.close()
 
 def q():

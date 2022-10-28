@@ -25,6 +25,8 @@ del infile
 i = 1
 try: cid = Loaded_JSON["info"]["cid"]
 except KeyError: cid = 0
+try: dmk_Ver = Loaded_JSON["info"]["dmk_Ver"]
+except KeyError: dmk_Ver = 0
 
 try: Max_Limit = Loaded_JSON["info"]["segment_count"]*6000
 except KeyError: Max_Limit = 6000
