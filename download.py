@@ -19,16 +19,16 @@ from my_lib.file_writer import writeER
 from my_lib.debug import flag_debug
 
 headers = {
-	'User-Agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36 Edg/105.0.1343.27",
+	'User-Agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36 Edg/105.0.1343.53",
 	'origin': "https://www.bilibili.com",
 	'referer': "https://www.bilibili.com"
 }
-SLEEP_TIME = 0.03
+SLEEP_TIME = 0.05
 NET_count = [0, 0]
 err_sign = ""
 P_flag = []
-retry_times = 1
 for i in range(64): P_flag.append(False)
+retry_times = 2
 
 
 def Program_FLAG(flag: str) -> None:
@@ -53,7 +53,7 @@ def Downloader(url_DL: str, str_s: dict) -> bytes:
 	global NET_count
 	NET_count[0] += 1
 	NET_count[1] += 1
-	url_DL = url_DL.replace("http://","https://")
+	url_DL = url_DL.replace("http://", "https://")
 	status_code = [0, 0]
 	if P_flag[3]: print(f"[NET]: {url_DL}\t{NET_count[1]}   ", end="\t")
 	if P_flag[8]:
@@ -183,18 +183,18 @@ if __name__ == '__main__':
 	if vid.find("http://www.bilibili.com/video/") == 0: vid = vid.lstrip("http://www.bilibili.com/video/")
 	if vid.find("https://b23.tv/BV1") == 0 or vid.find("https://b23.tv/av") == 0: vid = vid.lstrip("https://b23.tv/")
 	vid = vid.split("?")[0].split("/")[0]
-	if vid.find("av") == 0:
+	if vid.find("BV") == 0:
+		bvid = vid[vid.find("BV"):vid.find("BV")+12]
+		avid_in = BV_to_AV(bvid)
+		url_Main = f"https://api.bilibili.com/x/web-interface/view?bvid={bvid}"
+		url_xx1 = f"https://api.bilibili.com/x/web-interface/view/detail?bvid={bvid}"
+	else:
 		avid = vid
 		avid_in = int(avid.lstrip("av"))
 		bvid = AV_to_BV(avid_in)
 		url_Main = f"https://api.bilibili.com/x/web-interface/view?aid={avid_in}"
 		url_xx1 = f"https://api.bilibili.com/x/web-interface/view/detail?aid={avid_in}"
-	else:
-		bvid = vid[vid.find("BV"):vid.find("BV")+12]
-		avid_in = BV_to_AV(bvid)
-		avid = f"av{avid_in}"
-		url_Main = f"https://api.bilibili.com/x/web-interface/view?bvid={bvid}"
-		url_xx1 = f"https://api.bilibili.com/x/web-interface/view/detail?bvid={bvid}"
+	avid = f"av{avid_in}"
 	if P_flag[3]: print(f"[Info]: {bvid}|{avid}")
 	flag_debug(pflag=P_flag)
 	# ================================ 视频信息（全部）
@@ -292,7 +292,7 @@ if __name__ == '__main__':
 				XML_Write_Data += XML_Process(xml_t1.elems)
 			sec_c += 1
 		if (not P_flag[3]): print("                        \r", end="")
-		if Segment_Count != 1: dump_Data(str_s=[cid, "Danmaku", "ALL", "bin", bvid], data=Danmaku_Final_Binary, force=True)
+		# if Segment_Count != 1: dump_Data(str_s=[cid, "Danmaku", "ALL", "bin", bvid], data=Danmaku_Final_Binary, force=True)
 		timeC = time.time()
 		if (not P_flag[5]):
 			if P_flag[3]: print(f"[File_JSON P{i_for_videos}]: PROC start")
