@@ -23,7 +23,7 @@ headers = {
 	'origin': "https://www.bilibili.com",
 	'referer': "https://www.bilibili.com"
 }
-SLEEP_TIME = 0.05
+SLEEP_TIME = 0.03
 NET_count = [0, 0]
 err_sign = ""
 P_flag = []
@@ -199,9 +199,12 @@ if __name__ == '__main__':
 	flag_debug(pflag=P_flag)
 	# ================================ 视频信息（全部）
 	ARR_json_Resp_name = ["0", "Video", "INFO", "json", bvid]
-	json_Resp = Downloader(url_DL=url_Main, str_s=ARR_json_Resp_name)
+	video_info = json.loads(Downloader(url_DL=url_Main, str_s=ARR_json_Resp_name))
 	if P_flag[3]: print(f"[Info]: 1")
-	threading.Thread(dump_Data(str_s=ARR_json_Resp_name, data=bytes(json.dumps(json.loads(json_Resp), ensure_ascii=False, separators=(",", ":"), indent="\t"), encoding="utf-8"))).start()
+	try:
+		video_info["data"]["ugc_season"]["sections"]=[]
+	except: pass
+	threading.Thread(dump_Data(str_s=ARR_json_Resp_name, data=bytes(json.dumps(video_info, ensure_ascii=False, separators=(",", ":"), indent="\t"), encoding="utf-8"))).start()
 	# ================================ 视频信息?
 	ARR_Info_Detail_name = ["0", "Video", "INFO_Detail", "json", bvid]
 	if P_flag[8]: video_info_detail = '{"data":{"Related":[],"Reply":{"replies":[]}}}'
@@ -210,10 +213,12 @@ if __name__ == '__main__':
 	Vid_detail_json = json.loads(video_info_detail)
 	Vid_detail_json["data"]["Related"] = []
 	Vid_detail_json["data"]["Reply"]["replies"] = []
-	# Vid_detail_json["data"]["View"]["ugc_season"]["sections"]=[]
+	try:
+		Vid_detail_json["data"]["View"]["ugc_season"]["sections"]=[]
+	except: pass
 	threading.Thread(dump_Data(str_s=ARR_Info_Detail_name, data=bytes(json.dumps(Vid_detail_json, ensure_ascii=False, separators=(',', ':'), indent="\t"), encoding="utf-8"))).start()
 	# ================================ 加载
-	Json_Info = json.loads(json_Resp)["data"]
+	Json_Info = video_info["data"]
 	Main_Title = Json_Info["title"]
 	P_Date = str(Json_Info["pubdate"])
 	if Main_Title == "": Main_Title = "Fake_MainTitle"
