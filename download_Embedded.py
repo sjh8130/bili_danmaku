@@ -9,12 +9,12 @@ import tarfile
 import io
 
 x={'User-Agent':"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.66 Safari/537.36 Edg/103.0.1264.44",'origin':"https://www.bilibili.com",'referer':"https://www.bilibili.com"}
-def u(b):
+def v(b):
 	try:c=requests.get(b,headers=x)
-	except:u(b)
+	except:v(b)
 	return c
 def o(b,c):
-	d=u(b)
+	d=v(b)
 	print(f"[NET]:HTTP {d.status_code}\t{b}")
 	e=tarfile.TarInfo(f"[{r}]_[{c[0]}]_[{c[1]}]_[{c[2]}].{c[3]}")
 	e.size=len(d.content)
@@ -79,8 +79,8 @@ def q():
 if __name__=='__main__':
 	try:
 		r=sys.argv[1]
-		p()
 		print("With args")
+		p()
 		sys.exit()
 	except IndexError:pass
 	s=t=u=0
