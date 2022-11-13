@@ -1,7 +1,7 @@
 # 
 ## DanmakuElem
 | json-name  | id   | type    | protobuf-name | -- |
-| ---------- | ---: | ------: | :------------ | :--- |
+| -          |   -: |      -: | :-            | :- |
 | id         |  1   | int64   | id            | 弹幕ID |
 | progress   |  2   | int32   | progress      | 弹幕出现时间 |
 | mode       |  3   | int32   | mode          | 弹幕类型 |
@@ -28,7 +28,7 @@
 
 ### Danmaku:animation
 | key            | type   | value     | xxxxxxxxx |
-| :------------- | -----: | --------: | :-------- |
+| :-             |     -: |        -: | :-        |
 | id             | num    |           | 20004: 图片弹幕<br>20016: ?<br>20018: NFT弹幕 |
 | cid            | num    | 0         |           |
 | advanced_block | num    | 0         |           |
@@ -75,7 +75,7 @@
 
 ## commandDms
 | name      | id   | type   | desc  |
-| :-------- | ---: | -----: | :---- |
+| :-        |   -: |     -: | :-    |
 | id        |  1   | int64  | 弹幕id |
 | oid       |  2   | int64  | 视频cid |
 | mid       |  3   | int64  | 发送者mid |
@@ -89,7 +89,7 @@
 
 ### command:类型
 | command (7)   | content   |
-| :------------ | --------- |
+| :-            | -         |
 | #ACTORFOLLOW# | "合作up主" |
 | #ATTENTION#   | "关注弹幕" |
 | #GRADE#       | "哔瓣评分" |
@@ -99,68 +99,68 @@
 | #VOTE#        | "投票弹幕" |
 
 ### ACTORFOLLOW:合作up主
-| key      | type  | value | 备注 |
-| :------- | ----- | ----- | :--- |
-| duration | num   | |
-| posX     | float | |
-| posY     | float | |
-| icon     | str   | [url](http://i0.hdslb.com/bfs/album/19cc369845a2709464f3df9c38bbdea019619acd.png) |
-| mid      | num   | **合作up主 mid** |
-| midstr   | str   | **合作up主 mid string** |
-| face     | str   | **合作up主 头像 URL** |
+| key                   | type  | value | 备注 |
+| :-                    | -     | -     | :-   |
+| duration              | num   | |
+| posX                  | float | |
+| posY                  | float | |
+| icon                  | str   | [url][url_01] |
+| mid                   | num   | **合作up主 mid** |
+| midstr                | str   | **合作up主 mid string** |
+| face                  | str   | **合作up主 头像 URL** |
 
 ### ATTENTION:关注
-| key      | type  | value | 备注 |
-| :------- | ----- | ----- | :--- |
-| duration | num   | |
-| posX     | float | |
-| posY     | float | |
-| icon     | str   | [url](http://i0.hdslb.com/bfs/album/ea58d134636f05ddc208a13889dd054ae45eb6ef.png) |
-| type     | num   | 2 |
-| arc_type | num   | 0 |
+| key                   | type  | value | 备注 |
+| :-                    | -     | -     | :-  |
+| duration              | num   | |
+| posX                  | float | |
+| posY                  | float | |
+| icon                  | str   | [url][url_02] |
+| type                  | num   | 2 |
+| arc_type              | num   | 0 |
 
 ### GRADE:评分
-| key              | type  | value | 备注 |
-| :--------------- | ----- | ----- | :--- |
-| msg              | str   | "哔瓣评分" |
-| skin             | num   | 1<br>2 |
-| posX             | float | |
-| posY             | float | |
-| grade_id         | num   | id |
-| duration         | num   | 5000? |
-| icon             | str   | [url](http://i0.hdslb.com/bfs/b/d1f96d0ad5341b214663b62e0de32dcbf776f894.png) |
-| mid_score        | num   | |
-| count            | num   | |
-| avg_score        | float | |
-| skin_unselected  | str   | skin1: [url](http://i0.hdslb.com/bfs/b/1d8fc3daf9201d70189a3778e605d2acf9cae7e9.png)<br>skin2: [url](http://i0.hdslb.com/bfs/b/a00a37f4a1f419a42f04f535147d21ac96f27a79.png) |
-| skin_selected    | str   | skin1: [url](http://i0.hdslb.com/bfs/b/ee3aca3dbc22087341cf312d71a1354af527e444.png)<br>skin2: [url](http://i0.hdslb.com/bfs/b/c7d3e7d452e4ff5caf719a8e422eca10e5caad1f.png) |
-| skin_font_color  | str   | color<br>skin1: "`#FFB112`"<br>skin2: "`#FA5555`" |
-| summary_duration | num   | 6000 |
-| shrink_icon      | str   | [url](http://i0.hdslb.com/bfs/b/7e947f8e64c7802a16de7ebec8a8e290160ec668.png) |
-| shrink_title     | str   | "推荐" |
-| show_status      | num   | 0 |
+| key                   | type  | value | 备注 |
+| :-                    | -     | -     | :-  |
+| msg                   | str   | "哔瓣评分" |
+| skin                  | num   | 1<br>2 |
+| posX                  | float | |
+| posY                  | float | |
+| grade_id              | num   | id |
+| duration              | num   | 5000? |
+| icon                  | str   | [url][url_03] |
+| mid_score             | num   | |
+| count                 | num   | |
+| avg_score             | float | |
+| skin_unselected       | str   | skin1: [url][url_04]<br>skin2: [url][url_05] |
+| skin_selected         | str   | skin1: [url][url_06]<br>skin2: [url][url_07] |
+| skin_font_color       | str   | color<br>skin1: "`#FFB112`"<br>skin2: "`#FA5555`" |
+| summary_duration      | num   | 6000 |
+| shrink_icon           | str   | [url][url_08] |
+| shrink_title          | str   | "推荐" |
+| show_status           | num   | 0 |
 
 ### LINK:链接
-| key          | type  | value | 备注 |
-| :----------- | ----  | ----- | :--- |
-| aid          | num   | **目标视频avid** |
-| title        | str   | **目标视频标题** |
-| icon         | str   | [url](http://i0.hdslb.com/bfs/archive/03ef3f34944e0f78b1b4050fc3f9705d1fa905e3.png) |
-| bvid         | str   | **目标视频bvid** |
-| posX         | float | |
-| posY         | float | |
-| arc_pic      | str   | **目标视频封面** |
-| arc_duration | num   | **目标视频时长** |
-| shrink_icon  | str   | [url](http://i0.hdslb.com/bfs/b/44338bca6bb98a34da40698beb4ee7d19aea92a6.png) |
-| shrink_title | str   | "视频" |
-| show_status  | num   | 0 |
-| duration     | num   | |
-| arc_type     | num   | 0 |
-| jump_url     | str   | "" |
+| key                   | type  | value | 备注 |
+| :-                    | -     | -     | :-   |
+| aid                   | num   | **目标视频avid** |
+| title                 | str   | **目标视频标题** |
+| icon                  | str   | [url][url_09] |
+| bvid                  | str   | **目标视频bvid** |
+| posX                  | float | |
+| posY                  | float | |
+| arc_pic               | str   | **目标视频封面** |
+| arc_duration          | num   | **目标视频时长** |
+| shrink_icon           | str   | [url][url_10] |
+| shrink_title          | str   | "视频" |
+| show_status           | num   | 0 |
+| duration              | num   | |
+| arc_type              | num   | 0 |
+| jump_url              | str   | "" |
 
 ### RESERVE:预约
 | key                   | type  | value | 备注 |
-| :-------------------- | ----- | ----- | :--- |
+| :-                    | -     | -     | :-   |
 | msg                   | str   | "预告：**自定义内容**"<br>"直播预约：**自定义内容**" |
 | reserve_type          | num   | 1: 视频<br>2: 直播 |
 | reserve_id            | num   | id |
@@ -170,7 +170,7 @@
 | posX                  | float | |
 | posY                  | float | |
 | duration              | num   | 5000 |
-| icon                  | str   | [url](http://i0.hdslb.com/bfs/b/4312fb7b155646fc6fd5f6f8a6a07a062d82587c.png) |
+| icon                  | str   | [url][url_11] |
 | reserve_count         | num   | **预约人数** |
 | reserve_state         | num   | 1 |
 | user_state            | bool  | **预约状态** | 需要登录 |
@@ -187,42 +187,58 @@
 | stime_format          | str   | video: ""<br>live: "`?(yyyy-)MM-dd HH:mm`" / "`今天HH:mm`" |
 | live_lottery          | bool  | `true` |
 | desc                  | str   | "" |
-| shrink_icon           | str   | [url](http://i0.hdslb.com/bfs/b/a4b1c7f03e687f680f7c3629c530e3fdd77d63ed.png) |
+| shrink_icon           | str   | [url][url_12] |
 | shrink_title          | str   | "预约" |
 | show_status           | num   | 0 |
 
 ### UP:带有【UP】的~~普通~~弹幕
-| key   | type | value |
-| :---- | ---- | ----- |
-| icon  | str  | **UP主头像URL** |
+| key                   | type  | value |
+| :-                    | -     | -   - |
+| icon                  | str   | **UP主头像URL** |
 
 ### VOTE:投票
-| key          | type  | value | 备注 |
-| :----------- | ----- | ----- | :--- |
-| vote_id      | num   | id |
-| question     | str   | **投票问题** |
-| cnt          | num   | **投票人数** |
-| options      | array | **选项** |
-| icon         | str   | [url](http://i0.hdslb.com/bfs/album/5ec559dbd4d54f8c1e76021d52eb9807de94bfb9.png) |
-| my_vote      | num   | **我的选项** |
-| pub_dynamic  | bool  | |
-| posX         | float | |
-| posY         | float | |
-| duration     | num   | |
-| shrink_icon  | str   | [url](http://i0.hdslb.com/bfs/b/2eec72efb74244eed5c2f28ce5628de4e9f9c9e8.png) |
-| shrink_title | str   | "投票" |
-| show_status  | num   | 0 |
+| key                   | type  | value | 备注 |
+| :-                    | -     | -     | :-   |
+| vote_id               | num   | id |
+| question              | str   | **投票问题** |
+| cnt                   | num   | **投票人数** |
+| options               | array | **选项** |
+| icon                  | str   | [url][url_13] |
+| my_vote               | num   | **我的选项** |
+| pub_dynamic           | bool  | |
+| posX                  | float | |
+| posY                  | float | |
+| duration              | num   | |
+| shrink_icon           | str   | [url][url_14] |
+| shrink_title          | str   | "投票" |
+| show_status           | num   | 0 |
 
 #### VOTE::options
-| key          | type | value |
-| :----------- | ---- | ----- |
-| idx          | num  | start:1 |
-| desc         | str  | **选项内容** |
-| cnt          | num  | 0? |
-| has_self_def | bool | false? |
+| key                   | type  | value |
+| :-                    | -     | -     |
+| idx                   | num   | start:1 |
+| desc                  | str   | **选项内容** |
+| cnt                   | num   | 0? |
+| has_self_def          | bool  | false? |
 
 ### posX,posY
 | key      | min  | max |
-| :----    | ---- | --- |
+| :-       | -    | -   |
 | posX     | 118  | 549 |
 | posY     | 80.5 | 889 |
+
+# url
+[url_01]:http://i0.hdslb.com/bfs/album/19cc369845a2709464f3df9c38bbdea019619acd.png
+[url_02]:http://i0.hdslb.com/bfs/album/ea58d134636f05ddc208a13889dd054ae45eb6ef.png
+[url_03]:http://i0.hdslb.com/bfs/b/d1f96d0ad5341b214663b62e0de32dcbf776f894.png
+[url_04]:http://i0.hdslb.com/bfs/b/1d8fc3daf9201d70189a3778e605d2acf9cae7e9.png
+[url_05]:http://i0.hdslb.com/bfs/b/a00a37f4a1f419a42f04f535147d21ac96f27a79.png
+[url_06]:http://i0.hdslb.com/bfs/b/ee3aca3dbc22087341cf312d71a1354af527e444.png
+[url_07]:http://i0.hdslb.com/bfs/b/c7d3e7d452e4ff5caf719a8e422eca10e5caad1f.png
+[url_08]:http://i0.hdslb.com/bfs/b/7e947f8e64c7802a16de7ebec8a8e290160ec668.png
+[url_09]:http://i0.hdslb.com/bfs/archive/03ef3f34944e0f78b1b4050fc3f9705d1fa905e3.png
+[url_10]:http://i0.hdslb.com/bfs/b/44338bca6bb98a34da40698beb4ee7d19aea92a6.png
+[url_11]:http://i0.hdslb.com/bfs/b/4312fb7b155646fc6fd5f6f8a6a07a062d82587c.png
+[url_12]:http://i0.hdslb.com/bfs/b/a4b1c7f03e687f680f7c3629c530e3fdd77d63ed.png
+[url_13]:http://i0.hdslb.com/bfs/album/5ec559dbd4d54f8c1e76021d52eb9807de94bfb9.png
+[url_14]:http://i0.hdslb.com/bfs/b/2eec72efb74244eed5c2f28ce5628de4e9f9c9e8.png
