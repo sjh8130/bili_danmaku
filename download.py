@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 from google.protobuf.json_format import MessageToJson
-
+import ssl
 import requests
 import binascii
 import math
@@ -17,38 +17,42 @@ from my_lib.proto2xml_Lib import proto2xml
 from my_lib.bvav import BV_to_AV, AV_to_BV
 from my_lib.file_writer import writeER
 from my_lib.debug import flag_debug
+ssl._create_default_https_context = ssl._create_unverified_context
+requests.packages.urllib3.disable_warnings()
 
 headers = {
 	'User-Agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36 Edg/105.0.1343.53",
 	'origin': "https://www.bilibili.com",
-	'referer': "https://www.bilibili.com"
+	'referer': "https://www.bilibili.com",
+	"Connection": "keep-alive"
 }
-SLEEP_TIME = 0.03
+SLEEP_TIME = 0.05
 NET_count = [0, 0]
 err_sign = ""
 P_flag = []
-for i in range(64): P_flag.append(False)
-retry_times = 2
+for _ in range(64): P_flag.append(False)
+RETRY_TIMES = 2
+RETRY_SIZE = 2048
 
 
 def Program_FLAG(flag: str) -> None:
 	"""
-	Text
+	控制运行参数
 	"""
 	if flag == "-1": return
-	if flag.find("0b") == 0: b = "0"+flag
-	else: b = bin(int(flag))
-	b = "00000000000000000000000000000000" + b.lstrip("0b")
+	if flag.find("0b") == 0: flag = "0"+flag
+	else: flag = bin(int(flag))
+	flag = "00000000000000000000000000000000" + flag.lstrip("0b")
 	global P_flag
-	for xx in range(-1, -len(b), -1):
-		if b[xx] == "1": P_flag[-xx - 1] = True
+	for xx in range(-1, -len(flag), -1):
+		if flag[xx] == "1": P_flag[-xx - 1] = True
 		else: P_flag[-xx - 1] = False
-	if P_flag[3]: print(f"[FLAG]: {b}")
+	if P_flag[3]: print(f"[FLAG]: {flag}")
 
 
 def Downloader(url_DL: str, str_s: dict) -> bytes:
 	"""
-	Text
+	下载
 	"""
 	global NET_count
 	NET_count[0] += 1
@@ -73,7 +77,7 @@ def Downloader(url_DL: str, str_s: dict) -> bytes:
 		return DL_Data
 	else:
 		time.sleep(SLEEP_TIME)
-		DL_Data = requests.get(url_DL, headers=headers)
+		DL_Data = requests.get(url_DL, headers=headers, verify=False)
 		status_code[0] = DL_Data.status_code
 		try:
 			status_code[1] = json.loads(DL_Data.content)["code"]
@@ -88,7 +92,7 @@ def Downloader(url_DL: str, str_s: dict) -> bytes:
 
 def get_Danmaku(cid: str, Segment_Index: str, retry: str = "") -> bytes:
 	"""
-	Text
+	获取弹幕
 	"""
 	ARR_Danmaku_name = [cid, "Danmaku", Segment_Index+retry, "bin", bvid]
 	Content = Downloader(f'https://api.bilibili.com/x/v2/dm/web/seg.so?type=1&oid={cid}&segment_index={Segment_Index}', ARR_Danmaku_name)
@@ -99,7 +103,7 @@ def get_Danmaku(cid: str, Segment_Index: str, retry: str = "") -> bytes:
 
 def get_Special_Danmaku(input: dm_pb2.DmWebViewReply) -> bytes:
 	"""
-	Text
+	获取特殊弹幕
 	"""
 	BAS_Binary = b""
 	i_for_BAS = 1
@@ -114,23 +118,23 @@ def get_Special_Danmaku(input: dm_pb2.DmWebViewReply) -> bytes:
 	return BAS_Binary
 
 
-def XML_Process(data) -> str:
+def XML_Process(Proto_data) -> str:
 	"""
-	Text
+	弹幕 --> XML
 	"""
 	this: dm_pb2.DanmakuElem
 	out0 = ""
-	for this in data: out0 += proto2xml(this=this, exdata=P_flag[4], enable_weight=P_flag[17])
+	for this in Proto_data: out0 += proto2xml(this=this, exdata=P_flag[4], enable_weight=P_flag[17])
 	return out0
 
 
-def XML_Special_Process(data, cid) -> str:
+def XML_Special_Process(Proto_data, cid) -> str:
 	"""
-	Text
+	特殊弹幕 --> XML
 	"""
 	this: dm_pb2.CommandDm
 	out1 = ""
-	for this in data:
+	for this in Proto_data:
 		Ex_Extra_Data = ""
 		if P_flag[4]: Ex_Extra_Data = f"<!-- SPECIAL: {this.command}{this.extra} -->"
 		out1 += f"\t<d p=\"{format(this.progress/1000, '.5f')},1,25,16777215,{int(time.mktime(time.strptime(this.ctime, '%Y-%m-%d %H:%M:%S')))},999,{hex(binascii.crc32(str(this.mid).encode()) ^ 0xFFFFFFFF).lstrip('0x').lstrip('0')},{this.id},11\">{this.content}</d>{Ex_Extra_Data}\n"
@@ -139,7 +143,7 @@ def XML_Special_Process(data, cid) -> str:
 
 def dump_Data(str_s: dict, data: bytes, force: bool = False) -> None:
 	"""
-	Text
+	输出文件
 	"""
 	if P_flag[7] and ((not P_flag[8]) or force): pass
 	else: return
@@ -147,74 +151,26 @@ def dump_Data(str_s: dict, data: bytes, force: bool = False) -> None:
 	writeER(filename=f"[{str_s[4]}]_[{str_s[0]}]_[{str_s[1]}]_[{str_s[2]}].{str_s[3]}", data=data, gz=False, binary_=True)
 
 
-if __name__ == '__main__':
-	timeA = time.time()
-	# print(sys.argv)
-	# ================================ 程序设置
-	P_flag[0]  = True
-	P_flag[1]  = True
-	P_flag[2]  = False#X
-	P_flag[3]  = False
-	P_flag[4]  = False
-	P_flag[5]  = False
-	P_flag[6]  = False
-	P_flag[7]  = False
-	P_flag[8]  = False
-	P_flag[9]  = True
-	P_flag[10] = False
-	P_flag[11] = True
-	P_flag[12] = False#X
-	P_flag[13] = False#X
-	P_flag[14] = False#X
-	P_flag[15] = False#X
-	P_flag[16] = False#X
-	P_flag[17] = True
-	try: Program_FLAG(sys.argv[2])
-	except IndexError: pass
-	# if flag_Test_Run: print("[Test Run]: ================================ ")
-	# ================================ 终端输入
-	try: vid = sys.argv[1]
-	except IndexError:
-		print("download.py av|bv [flag]")
-		# vid = "av2"
-		# Program_FLAG("2688")
-		sys.exit()
-	if vid.find("https://www.bilibili.com/video/") == 0: vid = vid.lstrip("https://www.bilibili.com/video/")
-	if vid.find("http://www.bilibili.com/video/") == 0: vid = vid.lstrip("http://www.bilibili.com/video/")
-	if vid.find("https://b23.tv/BV1") == 0 or vid.find("https://b23.tv/av") == 0: vid = vid.lstrip("https://b23.tv/")
-	vid = vid.split("?")[0].split("/")[0]
-	if vid.find("BV") == 0:
-		bvid = vid[vid.find("BV"):vid.find("BV")+12]
-		avid_in = BV_to_AV(bvid)
-		url_Main = f"https://api.bilibili.com/x/web-interface/view?bvid={bvid}"
-		url_xx1 = f"https://api.bilibili.com/x/web-interface/view/detail?bvid={bvid}"
-	else:
-		avid = vid
-		avid_in = int(avid.lstrip("av"))
-		bvid = AV_to_BV(avid_in)
-		url_Main = f"https://api.bilibili.com/x/web-interface/view?aid={avid_in}"
-		url_xx1 = f"https://api.bilibili.com/x/web-interface/view/detail?aid={avid_in}"
-	avid = f"av{avid_in}"
-	if P_flag[3]: print(f"[Info]: {bvid}|{avid}")
-	flag_debug(pflag=P_flag)
+def main_Func(vid):
+	"""
+	视频处理
+	"""
 	# ================================ 视频信息（全部）
 	ARR_json_Resp_name = ["0", "Video", "INFO", "json", bvid]
-	video_info = json.loads(Downloader(url_DL=url_Main, str_s=ARR_json_Resp_name))
+	video_info = json.loads(Downloader(url_DL=url_info_1, str_s=ARR_json_Resp_name))
 	if P_flag[3]: print(f"[Info]: 1")
-	try:
-		video_info["data"]["ugc_season"]["sections"]=[]
+	try: video_info["data"]["ugc_season"]["sections"] = []
 	except: pass
 	threading.Thread(dump_Data(str_s=ARR_json_Resp_name, data=bytes(json.dumps(video_info, ensure_ascii=False, separators=(",", ":"), indent="\t"), encoding="utf-8"))).start()
 	# ================================ 视频信息?
 	ARR_Info_Detail_name = ["0", "Video", "INFO_Detail", "json", bvid]
 	if P_flag[8]: video_info_detail = '{"data":{"Related":[],"Reply":{"replies":[]}}}'
-	else: video_info_detail = Downloader(url_DL=url_xx1, str_s=ARR_Info_Detail_name)
+	else: video_info_detail = Downloader(url_DL=url_info_2, str_s=ARR_Info_Detail_name)
 	if P_flag[3]: print(f"[Info]: 2")
 	Vid_detail_json = json.loads(video_info_detail)
 	Vid_detail_json["data"]["Related"] = []
 	Vid_detail_json["data"]["Reply"]["replies"] = []
-	try:
-		Vid_detail_json["data"]["View"]["ugc_season"]["sections"]=[]
+	try: Vid_detail_json["data"]["View"]["ugc_season"]["sections"] = []
 	except: pass
 	threading.Thread(dump_Data(str_s=ARR_Info_Detail_name, data=bytes(json.dumps(Vid_detail_json, ensure_ascii=False, separators=(',', ':'), indent="\t"), encoding="utf-8"))).start()
 	# ================================ 加载
@@ -226,18 +182,20 @@ if __name__ == '__main__':
 	# ================================ bvid aid 检查
 	if Json_Info["bvid"] != bvid: print(f"[bvid]: bvid mismatch {Json_Info['bvid']}|{bvid}")
 	if Json_Info["aid"] != avid_in: print(f"[avid]: avid mismatch av{Json_Info['aid']}|{avid}")
-	if P_flag[14]: sys.exit()
+	if P_flag[14]: return
 	# ================================ 字幕
 	for subs in Json_Info["subtitle"]["list"]:
 		subs_name = ["0", "Subs", f"{subs['id']}_{subs['lan']}", "bcc", bvid]
 		threading.Thread(dump_Data(str_s=subs_name, data=Downloader(url_DL=subs["subtitle_url"], str_s=subs_name), force=True)).start()
 		if P_flag[3]: print(f"[Subtitle]: {bvid}")
 		else: print(f"[{bvid}]: subtitle\r", end="")
-	if P_flag[15]: sys.exit()
+	if P_flag[15]: return
 	# ================================ 分集处理
 	i_for_videos = 0
 	for This in Json_Info["pages"]:
 		timeB = time.time()
+		global err_sign
+		global cid
 		P_flag[2] = False
 		i_for_videos += 1
 		NET_count[0] = 0
@@ -260,7 +218,7 @@ if __name__ == '__main__':
 		print(f"{P_Date}|{bvid}|{avid}|P{i_for_videos}/{Num_of_Videos}|{cid}|{duration}|{math.ceil(duration/360)}|{Main_Title}|{P_Title}")
 		if P_Title == Main_Title: P_Title = ""
 		File_Name = f"[{P_Date}][{bvid}][{avid}][P{i_for_videos}][{cid}]{Main_Title.replace('_', '＿')}_{P_Title.replace('_', '＿')}".replace("\\", "＼").replace("/", "／").replace(":", "：").replace("*", "＊").replace("?", "？").replace("<", "＜").replace(">", "＞").replace("|", "｜").replace("\"", "＂").replace("\r", "").replace("\n", "").rstrip("_")	# \/:*?"<>|
-		# [1656432000][BV1**4*1*7*][av*********][P*][cid]MainTitle_P-Title
+		# [1656432000][BV*********][av*********][P**][cid]MainTitle_P-Title
 		if (not P_flag[6]) and P_flag[11]: XML_Write_Data += XML_Special_Process(ExInfo_Proto.commandDms, cid=cid)
 		if P_flag[9]:
 			BAS_danmaku = get_Special_Danmaku(ExInfo_Proto)
@@ -277,10 +235,10 @@ if __name__ == '__main__':
 			if P_flag[3]: print(f"[danmaku]: P{i_for_videos}/{Num_of_Videos}::{segments+1}/{Segment_Count}")
 			else: print(f"[{cid}]: {sec_c}/{Segment_Count}         \r", end="")
 			# 重试
-			if len(Danmaku_Binarys) < 4096 and (not P_flag[8]):
+			if len(Danmaku_Binarys) < RETRY_SIZE and (not P_flag[8]):
 				temp_filelen = len(Danmaku_Binarys)
 				retry_file = []
-				for retry_i in range(retry_times):
+				for retry_i in range(RETRY_TIMES):
 					if len(Danmaku_Binarys) == 0: break
 					try: retry_file.append(get_Danmaku(cid, str(segments+1), retry=f"_R{retry_i+1}"))
 					except json.decoder.JSONDecodeError: retry_file.append(b"")
@@ -386,3 +344,57 @@ if __name__ == '__main__':
 	if P_flag[12] or P_flag[0] or P_flag[3]:
 		timeE = time.time()
 		print(f"{bvid}|{avid} Time: {round(timeE-timeA, 3)} Net: {NET_count[1]} Wait: {round(NET_count[1]*SLEEP_TIME, 2)} SLEEP: {SLEEP_TIME}")
+
+
+if __name__ == '__main__':
+	timeA = time.time()
+	# print(sys.argv)
+	# ================================ 程序设置
+	P_flag[0] = True
+	P_flag[1] = True
+	P_flag[3] = False
+	P_flag[4] = False
+	P_flag[5] = False
+	P_flag[6] = False
+	P_flag[7] = False
+	P_flag[8] = False
+	P_flag[9] = True
+	P_flag[10] = False
+	P_flag[11] = True
+	P_flag[17] = True
+	try: Program_FLAG(sys.argv[2])
+	except IndexError: pass
+	# ================================ 终端输入
+	try: vid = sys.argv[1]
+	except IndexError:
+		print("download.py av|bv [flag]")
+		# vid = "av2"
+		# Program_FLAG("2688")
+		sys.exit()
+	P_flag[2] = False  # X
+	P_flag[12] = False  # X
+	P_flag[13] = False  # X
+	P_flag[14] = False  # X
+	P_flag[15] = False  # X
+	P_flag[16] = False  # X
+	if vid.find("https://www.bilibili.com/video/") == 0: vid = vid.lstrip("https://www.bilibili.com/video/")
+	if vid.find("http://www.bilibili.com/video/") == 0: vid = vid.lstrip("http://www.bilibili.com/video/")
+	if vid.find("https://b23.tv/BV1") == 0 or vid.find("https://b23.tv/av") == 0: vid = vid.lstrip("https://b23.tv/")
+	vid = vid.split("?")[0].split("/")[0]
+	if vid.find("BV") == 0:
+		bvid = vid[vid.find("BV"):vid.find("BV")+12]
+		avid_in = BV_to_AV(bvid)
+		avid = f"av{avid_in}"
+		url_info_1 = f"https://api.bilibili.com/x/web-interface/view?bvid={bvid}"
+		url_info_2 = f"https://api.bilibili.com/x/web-interface/view/detail?bvid={bvid}"
+	else:
+		avid = vid
+		avid_in = int(avid.lstrip("av"))
+		avid = f"av{avid_in}"
+		bvid = AV_to_BV(avid_in)
+		url_info_1 = f"https://api.bilibili.com/x/web-interface/view?aid={avid_in}"
+		url_info_2 = f"https://api.bilibili.com/x/web-interface/view/detail?aid={avid_in}"
+	if P_flag[3]: print(f"[Info]: {bvid}|{avid}")
+	flag_debug(pflag=P_flag)
+
+	main_Func(vid)
