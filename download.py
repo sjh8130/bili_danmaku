@@ -9,6 +9,7 @@ import json
 import sys
 import tarfile
 import threading
+import logging
 
 try: import zzzz as dm_pb2
 except ModuleNotFoundError: import dm_pb2
@@ -17,8 +18,10 @@ from my_lib.proto2xml_Lib import proto2xml
 from my_lib.bvav import BV_to_AV, AV_to_BV
 from my_lib.file_writer import writeER
 from my_lib.debug import flag_debug
+
 ssl._create_default_https_context = ssl._create_unverified_context
 requests.packages.urllib3.disable_warnings()
+logging.basicConfig(format='%(asctime)s [%(levelname)s] %(message)s', level=logging.INFO)
 
 headers = {
 	'User-Agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36 Edg/105.0.1343.53",
@@ -47,7 +50,9 @@ def Program_FLAG(flag: str) -> None:
 	for xx in range(-1, -len(flag), -1):
 		if flag[xx] == "1": P_flag[-xx - 1] = True
 		else: P_flag[-xx - 1] = False
-	if P_flag[3]: print(f"[FLAG]: {flag}")
+	if P_flag[3]:
+		# logging.Logger.setLevel(level=logging.DEBUG)
+		logging.debug(f"Program_FLAG {flag}")
 
 
 def Downloader(url_DL: str, str_s: dict) -> bytes:
@@ -59,7 +64,6 @@ def Downloader(url_DL: str, str_s: dict) -> bytes:
 	NET_count[1] += 1
 	url_DL = url_DL.replace("http://", "https://")
 	status_code = [0, 0]
-	if P_flag[3]: print(f"[NET]: {url_DL}\t{NET_count[1]}   ", end="\t")
 	if P_flag[8]:
 		try:
 			DL_Data = open(f"[{str_s[4]}]_[{str_s[0]}]_[{str_s[1]}]_[{str_s[2]}].{str_s[3]}", "rb").read()
@@ -72,8 +76,11 @@ def Downloader(url_DL: str, str_s: dict) -> bytes:
 		except KeyError: status_code[1] = 0
 		except json.decoder.JSONDecodeError:
 			if status_code[0] == 404: status_code[1] = 404
-		if P_flag[3] or status_code[1] != 0 or status_code[0] != 200: print(f"[NET]? File {status_code[0]}, Json Code {status_code[1]}", end="\t")
-		if (not P_flag[3]) and (status_code[1] != 0 or status_code[0] != 200): print(f"[{str_s[4]}]_[{str_s[0]}]_[{str_s[1]}]_[{str_s[2]}].{str_s[3]}")
+		if P_flag[3]:
+			logging.debug(f"[NET]? File{status_code[0]}, Json{status_code[1]}")
+		if status_code[1] != 0 or status_code[0] != 200:
+			logging.error(f"[NET]? File{status_code[0]}, Json{status_code[1]}")
+		logging.debug(f"[{str_s[4]}]_[{str_s[0]}]_[{str_s[1]}]_[{str_s[2]}].{str_s[3]}")
 		return DL_Data
 	else:
 		time.sleep(SLEEP_TIME)
@@ -85,8 +92,6 @@ def Downloader(url_DL: str, str_s: dict) -> bytes:
 				P_flag[12] = True
 		except UnicodeDecodeError: status_code[1] = 0
 		except KeyError: status_code[1] = 0
-		if P_flag[3] or status_code[1] != 0 or status_code[0] != 200: print(f"[NET]: HTTP {status_code[0]}, Json Code {status_code[1]}", end="\t")
-		if (not P_flag[3]) and (status_code[1] != 0 or status_code[0] != 200): print(url_DL)
 		return DL_Data.content
 
 
@@ -110,7 +115,7 @@ def get_Special_Danmaku(input: dm_pb2.DmWebViewReply) -> bytes:
 	for URL_special_dms in input.special_dms:
 		ARR_BAS_name = [cid, "BAS", URL_special_dms[27:67], "bin", bvid]
 		BAS_Data = Downloader(url_DL=URL_special_dms, str_s=ARR_BAS_name)
-		if P_flag[3]: print(f"[BAS_DL]: Download {i_for_BAS}")
+		logging.debug(f"[BAS_DL]: Download {i_for_BAS}")
 		if P_flag[12] and P_flag[1]: break
 		BAS_Binary += BAS_Data
 		dump_Data(str_s=ARR_BAS_name, data=BAS_Data)
@@ -151,22 +156,22 @@ def dump_Data(str_s: dict, data: bytes, force: bool = False) -> None:
 	writeER(filename=f"[{str_s[4]}]_[{str_s[0]}]_[{str_s[1]}]_[{str_s[2]}].{str_s[3]}", data=data, gz=False, binary_=True)
 
 
-def main_Func(vid):
+def main_Func():
 	"""
 	视频处理
 	"""
 	# ================================ 视频信息（全部）
 	ARR_json_Resp_name = ["0", "Video", "INFO", "json", bvid]
+	logging.debug(f"{bvid} Video info 1")
 	video_info = json.loads(Downloader(url_DL=url_info_1, str_s=ARR_json_Resp_name))
-	if P_flag[3]: print(f"[Info]: 1")
 	try: video_info["data"]["ugc_season"]["sections"] = []
 	except: pass
 	threading.Thread(dump_Data(str_s=ARR_json_Resp_name, data=bytes(json.dumps(video_info, ensure_ascii=False, separators=(",", ":"), indent="\t"), encoding="utf-8"))).start()
 	# ================================ 视频信息?
 	ARR_Info_Detail_name = ["0", "Video", "INFO_Detail", "json", bvid]
+	logging.debug(f"{bvid} Video info 2")
 	if P_flag[8]: video_info_detail = '{"data":{"Related":[],"Reply":{"replies":[]}}}'
 	else: video_info_detail = Downloader(url_DL=url_info_2, str_s=ARR_Info_Detail_name)
-	if P_flag[3]: print(f"[Info]: 2")
 	Vid_detail_json = json.loads(video_info_detail)
 	Vid_detail_json["data"]["Related"] = []
 	Vid_detail_json["data"]["Reply"]["replies"] = []
@@ -180,18 +185,22 @@ def main_Func(vid):
 	if Main_Title == "": Main_Title = "Fake_MainTitle"
 	Num_of_Videos = int(len(Json_Info["pages"]))
 	# ================================ bvid aid 检查
-	if Json_Info["bvid"] != bvid: print(f"[bvid]: bvid mismatch {Json_Info['bvid']}|{bvid}")
-	if Json_Info["aid"] != avid_in: print(f"[avid]: avid mismatch av{Json_Info['aid']}|{avid}")
+	if Json_Info["bvid"] != bvid: logging.error(f"[bvid]: bvid mismatch {Json_Info['bvid']}|{bvid}")
+	if Json_Info["aid"] != avid_in: logging.error(f"[avid]: avid mismatch av{Json_Info['aid']}|{avid}")
 	if P_flag[14]: return
 	# ================================ 字幕
 	for subs in Json_Info["subtitle"]["list"]:
 		subs_name = ["0", "Subs", f"{subs['id']}_{subs['lan']}", "bcc", bvid]
 		threading.Thread(dump_Data(str_s=subs_name, data=Downloader(url_DL=subs["subtitle_url"], str_s=subs_name), force=True)).start()
-		if P_flag[3]: print(f"[Subtitle]: {bvid}")
-		else: print(f"[{bvid}]: subtitle\r", end="")
+		logging.debug(f"[{bvid}]: 字幕")
 	if P_flag[15]: return
 	# ================================ 分集处理
 	i_for_videos = 0
+	try:
+		if Json_Info["premiere"] is not None:
+			logging.warning(f"[{bvid}]: 首映 premiere")
+	except:
+		pass
 	for This in Json_Info["pages"]:
 		timeB = time.time()
 		global err_sign
@@ -204,10 +213,10 @@ def main_Func(vid):
 		Danmaku_Final_Binary = b""
 		duration = int(This["duration"])
 		Segment_Count = math.ceil(duration/360)
+		logging.info(f"[{bvid}][Special_Danmaku]: P{i_for_videos}")
 		ARR_Ext_Info = [cid, "BAS", "INFO", "bin", bvid]
 		DL_Data_Extra_Info = Downloader(url_DL=f'https://api.bilibili.com/x/v2/dm/web/view?type=1&oid={cid}', str_s=ARR_Ext_Info)
 		if P_flag[16]: continue
-		if P_flag[3]: print(f"[Special_Danmaku]: P{i_for_videos}")
 		ExInfo_Proto = dm_pb2.DmWebViewReply()
 		ExInfo_Proto.ParseFromString(DL_Data_Extra_Info)
 		ExInfo_Json = json.loads(MessageToJson(ExInfo_Proto, indent=0, ensure_ascii=False))
@@ -215,7 +224,7 @@ def main_Func(vid):
 		if (not P_flag[6]): XML_Write_Data = f"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<i>\n\t<chatserver>chat.bilibili.com</chatserver>\n\t<chatid>{cid}</chatid>\n\t<mission>0</mission>\n\t<maxlimit>{6000*Segment_Count}</maxlimit>\n\t<state>0</state>\n\t<real_name>0</real_name>\n\t<source>k-v</source>\n"
 		P_Title = str(This["part"])
 		if P_Title == "": P_Title = f"P{i_for_videos}"
-		print(f"{P_Date}|{bvid}|{avid}|P{i_for_videos}/{Num_of_Videos}|{cid}|{duration}|{math.ceil(duration/360)}|{Main_Title}|{P_Title}")
+		logging.info(f"{P_Date}|{bvid}|{avid}|P{i_for_videos}/{Num_of_Videos}|{cid}|{duration}|{math.ceil(duration/360)}|{Main_Title}|{P_Title}")
 		if P_Title == Main_Title: P_Title = ""
 		File_Name = f"[{P_Date}][{bvid}][{avid}][P{i_for_videos}][{cid}]{Main_Title.replace('_', '＿')}_{P_Title.replace('_', '＿')}".replace("\\", "＼").replace("/", "／").replace(":", "：").replace("*", "＊").replace("?", "？").replace("<", "＜").replace(">", "＞").replace("|", "｜").replace("\"", "＂").replace("\r", "").replace("\n", "").rstrip("_")	# \/:*?"<>|
 		# [1656432000][BV*********][av*********][P**][cid]MainTitle_P-Title
@@ -227,13 +236,11 @@ def main_Func(vid):
 			if (not P_flag[6]): XML_Write_Data += XML_Process(xml_t1.elems)
 			Danmaku_Final_Binary += BAS_danmaku
 		# 弹幕分段下载
-		sec_c: int = 1
 		for segments in range(Segment_Count):
 			if P_flag[12] and P_flag[1]: break
 			try: Danmaku_Binarys = get_Danmaku(cid, str(segments+1))
 			except json.decoder.JSONDecodeError: Danmaku_Binarys = b""
-			if P_flag[3]: print(f"[danmaku]: P{i_for_videos}/{Num_of_Videos}::{segments+1}/{Segment_Count}")
-			else: print(f"[{cid}]: {sec_c}/{Segment_Count}         \r", end="")
+			logging.info(f"[{bvid}][danmaku]: P{i_for_videos}/{Num_of_Videos}\t{segments+1}/{Segment_Count}")
 			# 重试
 			if len(Danmaku_Binarys) < RETRY_SIZE and (not P_flag[8]):
 				temp_filelen = len(Danmaku_Binarys)
@@ -246,19 +253,16 @@ def main_Func(vid):
 						Danmaku_Binarys = retry_file[retry_i]
 						del retry_file, temp_filelen
 						break
-					if P_flag[3]: print(f"[danmaku]: P{i_for_videos}/{Num_of_Videos}::{segments+1}/{Segment_Count} [R{retry_i+1}]")
-					else: print(f"[{cid}]: {sec_c}/{Segment_Count} [R{retry_i+1}]      \r", end="")
+					logging.info(f"[{bvid}][danmaku]: P{i_for_videos}/{Num_of_Videos}\t{segments+1}/{Segment_Count} [R{retry_i+1}]")
 			Danmaku_Final_Binary += Danmaku_Binarys
 			if (not P_flag[6]):
 				xml_t1 = dm_pb2.DmSegMobileReply()
 				xml_t1.ParseFromString(Danmaku_Binarys)
 				XML_Write_Data += XML_Process(xml_t1.elems)
-			sec_c += 1
-		if (not P_flag[3]): print("                        \r", end="")
 		# if Segment_Count != 1: dump_Data(str_s=[cid, "Danmaku", "ALL", "bin", bvid], data=Danmaku_Final_Binary, force=True)
 		timeC = time.time()
 		if (not P_flag[5]):
-			if P_flag[3]: print(f"[File_JSON P{i_for_videos}]: PROC start")
+			logging.debug(f"[{bvid}][File_JSON P{i_for_videos}]: 开始处理")
 			Temp_Binary = dm_pb2.DmSegMobileReply()
 			Temp_Binary.ParseFromString(Danmaku_Final_Binary)
 			json_proccess = json.loads(MessageToJson(Temp_Binary, indent=0, ensure_ascii=False))
@@ -327,28 +331,27 @@ def main_Func(vid):
 			json_proccess["info"]["is_live_record"] = P_flag[2]								# bool GET
 			Json_Write_Data = json.dumps(json_proccess, ensure_ascii=False, separators=(',', ':')).replace("},{\"id\"", "},\n{\"id\"")
 			del json_proccess
-			if P_flag[3]: print(f"[File_JSON P{i_for_videos}]: PROC end--")
+			logging.debug(f"[{bvid}][File_JSON P{i_for_videos}]: 结束处理")
 		if P_flag[12]: err_sign = "ERR_"
 		if (not P_flag[5]):
-			if P_flag[12] or P_flag[3]: print(f"[File_JSON P{i_for_videos}]: 开始写入")
+			logging.debug(f"[{bvid}][File_JSON P{i_for_videos}]: 开始写入")
 			writeER(f"{err_sign}{File_Name}.json", Json_Write_Data, gz=P_flag[10])
 			del Json_Write_Data
 		if (not P_flag[6]):
-			if P_flag[12] or P_flag[3]: print(f"[File_XML_ P{i_for_videos}]: 开始写入")
+			logging.debug(f"[{bvid}][File_XML  P{i_for_videos}]: 开始写入")
 			writeER(f"{err_sign}{File_Name}.xml", XML_Write_Data + f"</i>\n<!-- Create Time: {str(int(timeC))} -->")
 			del XML_Write_Data
 		del ExInfo_Proto, ExInfo_Json, DL_Data_Extra_Info, Danmaku_Final_Binary
 		timeD = time.time()
-		if P_flag[0] or P_flag[3]: print(f"P{i_for_videos}: {round(timeD-timeB, 3)}，Wait: {round(NET_count[0]*SLEEP_TIME, 2)}，Net: {NET_count[0]}")
+		logging.debug(f"P{i_for_videos}: {round(timeD-timeB, 3)}，Wait: {round(NET_count[0]*SLEEP_TIME, 2)}，Net: {NET_count[0]}")
 	# ================================ 结束
-	if P_flag[12] or P_flag[0] or P_flag[3]:
-		timeE = time.time()
-		print(f"{bvid}|{avid} Time: {round(timeE-timeA, 3)} Net: {NET_count[1]} Wait: {round(NET_count[1]*SLEEP_TIME, 2)} SLEEP: {SLEEP_TIME}")
+	timeE = time.time()
+	logging.debug(f"{bvid}|{avid} Time: {round(timeE-timeA, 3)} Net: {NET_count[1]} Wait: {round(NET_count[1]*SLEEP_TIME, 2)} SLEEP: {SLEEP_TIME}")
 
 
 if __name__ == '__main__':
 	timeA = time.time()
-	# print(sys.argv)
+	# logging.debug(sys.argv)
 	# ================================ 程序设置
 	P_flag[0] = True
 	P_flag[1] = True
@@ -365,36 +368,43 @@ if __name__ == '__main__':
 	try: Program_FLAG(sys.argv[2])
 	except IndexError: pass
 	# ================================ 终端输入
-	try: vid = sys.argv[1]
+	try: vids = sys.argv[1]
 	except IndexError:
-		print("download.py av|bv [flag]")
-		# vid = "av2"
+		logging.error("download.py av|bv [flag]")
+		vids = input("输入：")
+		Program_FLAG(input("FLAG: "))
+		# vids = "[2,BV1xx411c7mD,https://www.bilibili.com/video/av2,http://www.bilibili.com/video/av2,https://www.bilibili.com/video/BV1xx411c7mD,http://www.bilibili.com/video/BV1xx411c7mD,https://b23.tv/av2,https://b23.tv/BV1xx411c7mD,http://b23.tv/av2,http://b23.tv/BV1xx411c7mD]"
+		# vids = "2"
 		# Program_FLAG("2688")
-		sys.exit()
-	P_flag[2] = False  # X
-	P_flag[12] = False  # X
-	P_flag[13] = False  # X
-	P_flag[14] = False  # X
-	P_flag[15] = False  # X
-	P_flag[16] = False  # X
-	if vid.find("https://www.bilibili.com/video/") == 0: vid = vid.lstrip("https://www.bilibili.com/video/")
-	if vid.find("http://www.bilibili.com/video/") == 0: vid = vid.lstrip("http://www.bilibili.com/video/")
-	if vid.find("https://b23.tv/BV1") == 0 or vid.find("https://b23.tv/av") == 0: vid = vid.lstrip("https://b23.tv/")
-	vid = vid.split("?")[0].split("/")[0]
-	if vid.find("BV") == 0:
-		bvid = vid[vid.find("BV"):vid.find("BV")+12]
-		avid_in = BV_to_AV(bvid)
-		avid = f"av{avid_in}"
-		url_info_1 = f"https://api.bilibili.com/x/web-interface/view?bvid={bvid}"
-		url_info_2 = f"https://api.bilibili.com/x/web-interface/view/detail?bvid={bvid}"
-	else:
-		avid = vid
-		avid_in = int(avid.lstrip("av"))
-		avid = f"av{avid_in}"
-		bvid = AV_to_BV(avid_in)
-		url_info_1 = f"https://api.bilibili.com/x/web-interface/view?aid={avid_in}"
-		url_info_2 = f"https://api.bilibili.com/x/web-interface/view/detail?aid={avid_in}"
-	if P_flag[3]: print(f"[Info]: {bvid}|{avid}")
-	flag_debug(pflag=P_flag)
+		# sys.exit()
+	vids = vids.split(",")
+	
+	for vid in vids:
+		vid = str(vid)
+		P_flag[2] = False  # X
+		P_flag[12] = False  # X
+		P_flag[13] = False  # X
+		P_flag[14] = False  # X
+		P_flag[15] = False  # X
+		P_flag[16] = False  # X
+		if vid.find("https://www.bilibili.com/video/") == 0: vid = vid.lstrip("https://www.bilibili.com/video/")
+		if vid.find("http://www.bilibili.com/video/") == 0: vid = vid.lstrip("http://www.bilibili.com/video/")
+		if vid.find("https://b23.tv/BV1") == 0 or vid.find("https://b23.tv/av") == 0: vid = vid.lstrip("https://b23.tv/")
+		vid = vid.split("?")[0].split("/")[0]
+		if vid.find("BV") == 0:
+			bvid = vid[vid.find("BV"):vid.find("BV")+12]
+			avid_in = BV_to_AV(bvid)
+			avid = f"av{avid_in}"
+			url_info_1 = f"https://api.bilibili.com/x/web-interface/view?bvid={bvid}"
+			url_info_2 = f"https://api.bilibili.com/x/web-interface/view/detail?bvid={bvid}"
+		else:
+			avid = vid
+			avid_in = int(avid.lstrip("av"))
+			avid = f"av{avid_in}"
+			bvid = AV_to_BV(avid_in)
+			url_info_1 = f"https://api.bilibili.com/x/web-interface/view?aid={avid_in}"
+			url_info_2 = f"https://api.bilibili.com/x/web-interface/view/detail?aid={avid_in}"
+		flag_debug(pflag=P_flag)
+		logging.debug(f"[Info]: {bvid}|{avid}")
 
-	main_Func(vid)
+		main_Func()
