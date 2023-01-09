@@ -17,6 +17,7 @@ if Loaded_JSON["version"] != "v1.3.1":
 	time.sleep(5)
 
 for item in Loaded_JSON["utterances"]:
+	if SEEK_TIME == 0: break
 	item["start_time"]+=SEEK_TIME
 	item["end_time"]+=SEEK_TIME
 	for sub_item in item["words"]:

@@ -23,7 +23,7 @@ def proc_ASS(item):
 			if karaoke_item[timed_chars]['label'].isascii() and timed_chars != len(karaoke_item): karaoke_word += " "
 		return karaoke_word
 	fi___itm = f"Dialogue: 0,{convert_ass_time(start_time)},{convert_ass_time(end_time)},A,,0,0,0,,{item['transcript']}\n"
-	fi_k_itm = f"Dialogue: 1,{convert_ass_time(start_time)},{convert_ass_time(end_time)},B,,0,0,0,,{proc_karaoke(item['words'])}\n".replace("{\k0}","")
+	# fi_k_itm = f"Dialogue: 1,{convert_ass_time(start_time)},{convert_ass_time(end_time)},B,,0,0,0,,{proc_karaoke(item['words'])}\n".replace("{\k0}","")
 	return fi___itm+fi_k_itm.replace(" \n","\n").replace("  "," ").replace(",,0,0,0,, ",",,0,0,0,,")
 
 input_File = sys.argv[1]
@@ -59,6 +59,7 @@ Style: B,Arial,60,&H00FFFFFF,&H0000FFFF,&H00000000,&H00000000,0,0,0,0,100,100,0,
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 """
 aegisub_time_overflow = False
+lrc_time_overflow = False
 for line in Loaded_JSON["utterances"]:
 	srt_index += 1
 	Final_SRT_Content += f"{srt_index}\n{convert_srt_time(line['start_time'])} --> {convert_srt_time(line['end_time'])}\n{line['transcript']}\n\n"
@@ -66,6 +67,10 @@ for line in Loaded_JSON["utterances"]:
 	Final_TXT_Content += f"{line['transcript']}\n"
 	Final_ASS_Content += proc_ASS(line)
 	if line["start_time"]>36000000 or line["end_time"]>36000000: aegisub_time_overflow = True
+	if line["start_time"]>3600000: lrc_time_overflow = True
+if lrc_time_overflow:
+	Final_LRC_Content += "[59:59.99]LRC时间溢出\n"
+	logging.warning("ASS 时间溢出")
 if aegisub_time_overflow:
 	Final_ASS_Content += "Comment: 0,0:00:00.00,0:00:00.00,A,,0,0,0,,ASS时间溢出\n"
 	logging.warning("不支持Aegisub")
