@@ -59,6 +59,7 @@ def Downloader(url_DL: str, str_s: dict) -> bytes:
 	"""
 	下载
 	"""
+	logging.debug(f"{bvid} {cid}: Downloader")
 	global NET_count
 	NET_count[0] += 1
 	NET_count[1] += 1
@@ -99,6 +100,7 @@ def get_Danmaku(cid: str, Segment_Index: str, retry: str = "") -> bytes:
 	"""
 	获取弹幕
 	"""
+	logging.debug(f"{bvid} {cid}: get_Danmaku")
 	ARR_Danmaku_name = [cid, "Danmaku", Segment_Index+retry, "bin", bvid]
 	Content = Downloader(f'https://api.bilibili.com/x/v2/dm/web/seg.so?type=1&oid={cid}&segment_index={Segment_Index}', ARR_Danmaku_name)
 	if P_flag[12] and P_flag[1]: return b""
@@ -110,6 +112,7 @@ def get_Special_Danmaku(input: dm_pb2.DmWebViewReply) -> bytes:
 	"""
 	获取特殊弹幕
 	"""
+	logging.debug(f"{bvid} {cid}: get_Special_Danmaku")
 	BAS_Binary = b""
 	i_for_BAS = 1
 	for URL_special_dms in input.special_dms:
@@ -127,17 +130,19 @@ def XML_Process(Proto_data) -> str:
 	"""
 	弹幕 --> XML
 	"""
+	logging.debug(f"{bvid} {cid}: XML_Process")
 	this: dm_pb2.DanmakuElem
 	out0 = ""
 	for this in Proto_data: out0 += proto2xml(this=this, exdata=P_flag[4], enable_weight=P_flag[17])
 	return out0
 
 
-def XML_Special_Process(Proto_data, cid) -> str:
+def XML_Special_Process(Proto_data) -> str:
 	"""
 	特殊弹幕 --> XML
 	"""
 	this: dm_pb2.CommandDm
+	logging.debug(f"{bvid} {cid}: XML_Special_Process")
 	out1 = ""
 	for this in Proto_data:
 		Ex_Extra_Data = ""
@@ -153,6 +158,7 @@ def dump_Data(str_s: dict, data: bytes, force: bool = False) -> None:
 	if P_flag[7] and ((not P_flag[8]) or force): pass
 	else: return
 	if len(data) == 0: return
+	logging.debug(f"[file]: {str_s[4]}]_[{str_s[0]}]_[{str_s[1]}]_[{str_s[2]}].{str_s[3]}")
 	writeER(filename=f"[{str_s[4]}]_[{str_s[0]}]_[{str_s[1]}]_[{str_s[2]}].{str_s[3]}", data=data, gz=False, binary_=True)
 
 
@@ -405,6 +411,7 @@ if __name__ == '__main__':
 			url_info_1 = f"https://api.bilibili.com/x/web-interface/view?aid={avid_in}"
 			url_info_2 = f"https://api.bilibili.com/x/web-interface/view/detail?aid={avid_in}"
 		flag_debug(pflag=P_flag)
-		logging.debug(f"[Info]: {bvid}|{avid}")
+		logging.info(f"{bvid}|{avid}")
 
 		main_Func()
+	logging.info("Exit")
