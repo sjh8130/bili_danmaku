@@ -21,7 +21,7 @@ from my_lib.debug import flag_debug
 
 ssl._create_default_https_context = ssl._create_unverified_context
 requests.packages.urllib3.disable_warnings()
-logging.basicConfig(format='%(asctime)s [%(levelname)s] %(message)s', level=logging.INFO)
+logging.basicConfig(format='%(asctime)s [%(levelname)s] %(message)s', level=logging.DEBUG)
 
 headers = {
 	'User-Agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36 Edg/105.0.1343.53",
@@ -52,14 +52,14 @@ def Program_FLAG(flag: str) -> None:
 		else: P_flag[-xx - 1] = False
 	if P_flag[3]:
 		# logging.Logger.setLevel(level=logging.DEBUG)
-		logging.debug(f"Program_FLAG {flag}")
+		logging.warning(f"Program_FLAG {flag}")
 
 
-def Downloader(url_DL: str, str_s: dict) -> bytes:
+def Downloader(url_DL: str, filename: str) -> bytes:
 	"""
 	下载
 	"""
-	logging.debug(f"{bvid} {cid}: Downloader")
+	logging.debug(f"[Downloader] {bvid}")
 	global NET_count
 	NET_count[0] += 1
 	NET_count[1] += 1
@@ -67,7 +67,7 @@ def Downloader(url_DL: str, str_s: dict) -> bytes:
 	status_code = [0, 0]
 	if P_flag[8]:
 		try:
-			DL_Data = open(f"[{str_s[4]}]_[{str_s[0]}]_[{str_s[1]}]_[{str_s[2]}].{str_s[3]}", "rb").read()
+			DL_Data = open(filename, "rb").read()
 			status_code[0] = 200
 		except FileNotFoundError:
 			DL_Data = b""
@@ -81,11 +81,18 @@ def Downloader(url_DL: str, str_s: dict) -> bytes:
 			logging.debug(f"[NET]? File{status_code[0]}, Json{status_code[1]}")
 		if status_code[1] != 0 or status_code[0] != 200:
 			logging.error(f"[NET]? File{status_code[0]}, Json{status_code[1]}")
-		logging.debug(f"[{str_s[4]}]_[{str_s[0]}]_[{str_s[1]}]_[{str_s[2]}].{str_s[3]}")
+		logging.debug("[Downloader] " + filename)
 		return DL_Data
 	else:
 		time.sleep(SLEEP_TIME)
-		DL_Data = requests.get(url_DL, headers=headers, verify=False)
+		while True:
+			try:
+				DL_Data = requests.get(url_DL, headers=headers, verify=False, timeout=10)
+			except requests.exceptions.ReadTimeout:
+				logging.error("[Downloader] Timeout " + url_DL)
+				continue
+			else:
+				break
 		status_code[0] = DL_Data.status_code
 		try:
 			status_code[1] = json.loads(DL_Data.content)["code"]
@@ -100,37 +107,35 @@ def get_Danmaku(cid: str, Segment_Index: str, retry: str = "") -> bytes:
 	"""
 	获取弹幕
 	"""
-	logging.debug(f"{bvid} {cid}: get_Danmaku")
-	ARR_Danmaku_name = [cid, "Danmaku", Segment_Index+retry, "bin", bvid]
-	Content = Downloader(f'https://api.bilibili.com/x/v2/dm/web/seg.so?type=1&oid={cid}&segment_index={Segment_Index}', ARR_Danmaku_name)
+	logging.debug(f"{bvid}: get_Danmaku")
+	File_Content = Downloader(f'https://api.bilibili.com/x/v2/dm/web/seg.so?type=1&oid={cid}&segment_index={Segment_Index}', f"[{bvid}]_[{cid}]_[Danmaku]_[{Segment_Index+retry}].bin")
 	if P_flag[12] and P_flag[1]: return b""
-	dump_Data(str_s=ARR_Danmaku_name, data=Content)
-	return Content
+	dump_Data(f"[{bvid}]_[{cid}]_[Danmaku]_[{Segment_Index+retry}].bin", File_Content)
+	return File_Content
 
 
 def get_Special_Danmaku(input: dm_pb2.DmWebViewReply) -> bytes:
 	"""
 	获取特殊弹幕
 	"""
-	logging.debug(f"{bvid} {cid}: get_Special_Danmaku")
-	BAS_Binary = b""
+	logging.debug(f"{bvid}: get_Special_Danmaku")
+	BAS_danmaku = b""
 	i_for_BAS = 1
 	for URL_special_dms in input.special_dms:
-		ARR_BAS_name = [cid, "BAS", URL_special_dms[27:67], "bin", bvid]
-		BAS_Data = Downloader(url_DL=URL_special_dms, str_s=ARR_BAS_name)
+		BAS_Data = Downloader(URL_special_dms, f"[{bvid}]_[{cid}]_[BAS]_[{ URL_special_dms[27:67]}].bin")
 		logging.debug(f"[BAS_DL]: Download {i_for_BAS}")
 		if P_flag[12] and P_flag[1]: break
-		BAS_Binary += BAS_Data
-		dump_Data(str_s=ARR_BAS_name, data=BAS_Data)
+		BAS_danmaku += BAS_Data
+		dump_Data(f"[{bvid}]_[{cid}]_[BAS]_[{ URL_special_dms[27:67]}].bin", BAS_Data)
 		i_for_BAS += 1
-	return BAS_Binary
+	return BAS_danmaku
 
 
 def XML_Process(Proto_data) -> str:
 	"""
 	弹幕 --> XML
 	"""
-	logging.debug(f"{bvid} {cid}: XML_Process")
+	logging.debug(f"{bvid}: XML_Process")
 	this: dm_pb2.DanmakuElem
 	out0 = ""
 	for this in Proto_data: out0 += proto2xml(this=this, exdata=P_flag[4], enable_weight=P_flag[17])
@@ -142,7 +147,7 @@ def XML_Special_Process(Proto_data) -> str:
 	特殊弹幕 --> XML
 	"""
 	this: dm_pb2.CommandDm
-	logging.debug(f"{bvid} {cid}: XML_Special_Process")
+	logging.debug(f"{bvid}: XML_Special_Process")
 	out1 = ""
 	for this in Proto_data:
 		Ex_Extra_Data = ""
@@ -151,15 +156,15 @@ def XML_Special_Process(Proto_data) -> str:
 	return out1
 
 
-def dump_Data(str_s: dict, data: bytes, force: bool = False) -> None:
+def dump_Data(filename: str, data: bytes, Always_Write: bool = False) -> None:
 	"""
 	输出文件
 	"""
-	if P_flag[7] and ((not P_flag[8]) or force): pass
+	if P_flag[7] and ((not P_flag[8]) or Always_Write): pass
 	else: return
 	if len(data) == 0: return
-	logging.debug(f"[file]: {str_s[4]}]_[{str_s[0]}]_[{str_s[1]}]_[{str_s[2]}].{str_s[3]}")
-	writeER(filename=f"[{str_s[4]}]_[{str_s[0]}]_[{str_s[1]}]_[{str_s[2]}].{str_s[3]}", data=data, gz=False, binary_=True)
+	logging.debug("[dump_Data] " + filename)
+	writeER(filename=filename, data=data, gz=False, binary_=True)
 
 
 def main_Func():
@@ -167,23 +172,21 @@ def main_Func():
 	视频处理
 	"""
 	# ================================ 视频信息（全部）
-	ARR_json_Resp_name = ["0", "Video", "INFO", "json", bvid]
 	logging.debug(f"{bvid} Video info 1")
-	video_info = json.loads(Downloader(url_DL=url_info_1, str_s=ARR_json_Resp_name))
+	video_info = json.loads(Downloader(url_info_1, f"[{bvid}]_[0]_[Video]_[INFO].json"))
 	try: video_info["data"]["ugc_season"]["sections"] = []
 	except: pass
-	threading.Thread(dump_Data(str_s=ARR_json_Resp_name, data=bytes(json.dumps(video_info, ensure_ascii=False, separators=(",", ":"), indent="\t"), encoding="utf-8"))).start()
+	threading.Thread(dump_Data(f"[{bvid}]_[0]_[Video]_[INFO].json", bytes(json.dumps(video_info, ensure_ascii=False, separators=(",", ":"), indent="\t"), encoding="utf-8"))).start()
 	# ================================ 视频信息?
-	ARR_Info_Detail_name = ["0", "Video", "INFO_Detail", "json", bvid]
 	logging.debug(f"{bvid} Video info 2")
 	if P_flag[8]: video_info_detail = '{"data":{"Related":[],"Reply":{"replies":[]}}}'
-	else: video_info_detail = Downloader(url_DL=url_info_2, str_s=ARR_Info_Detail_name)
+	else: video_info_detail = Downloader(url_info_2, f"[{bvid}]_[0]_[Video]_[INFO_Detail].json")
 	Vid_detail_json = json.loads(video_info_detail)
 	Vid_detail_json["data"]["Related"] = []
 	Vid_detail_json["data"]["Reply"]["replies"] = []
 	try: Vid_detail_json["data"]["View"]["ugc_season"]["sections"] = []
 	except: pass
-	threading.Thread(dump_Data(str_s=ARR_Info_Detail_name, data=bytes(json.dumps(Vid_detail_json, ensure_ascii=False, separators=(',', ':'), indent="\t"), encoding="utf-8"))).start()
+	threading.Thread(dump_Data(f"[{bvid}]_[0]_[Video]_[INFO_Detail].json", bytes(json.dumps(Vid_detail_json, ensure_ascii=False, separators=(',', ':'), indent="\t"), encoding="utf-8"))).start()
 	# ================================ 加载
 	Json_Info = video_info["data"]
 	Main_Title = Json_Info["title"]
@@ -196,8 +199,7 @@ def main_Func():
 	if P_flag[14]: return
 	# ================================ 字幕
 	for subs in Json_Info["subtitle"]["list"]:
-		subs_name = ["0", "Subs", f"{subs['id']}_{subs['lan']}", "bcc", bvid]
-		threading.Thread(dump_Data(str_s=subs_name, data=Downloader(url_DL=subs["subtitle_url"], str_s=subs_name), force=True)).start()
+		threading.Thread(dump_Data(f"[{bvid}]_[Subtitle]_[{subs['id']}]_[{subs['lan']}].bcc", Downloader(subs["subtitle_url"], f"[{bvid}]_[Subtitle]_[{subs['id']}]_[{subs['lan']}].bcc"), Always_Write=True)).start()
 		logging.debug(f"[{bvid}]: 字幕")
 	if P_flag[15]: return
 	# ================================ 分集处理
@@ -208,7 +210,7 @@ def main_Func():
 	except:
 		pass
 	for This in Json_Info["pages"]:
-		timeB = time.time()
+		Time_Start_Process = time.time()
 		global err_sign
 		global cid
 		P_flag[2] = False
@@ -220,13 +222,12 @@ def main_Func():
 		duration = int(This["duration"])
 		Segment_Count = math.ceil(duration/360)
 		logging.info(f"[{bvid}][Special_Danmaku]: P{i_for_videos}")
-		ARR_Ext_Info = [cid, "BAS", "INFO", "bin", bvid]
-		DL_Data_Extra_Info = Downloader(url_DL=f'https://api.bilibili.com/x/v2/dm/web/view?type=1&oid={cid}', str_s=ARR_Ext_Info)
+		DL_Data_Extra_Info = Downloader(f'https://api.bilibili.com/x/v2/dm/web/view?type=1&oid={cid}', f"[{bvid}]_[{cid}]_[BAS]_[INFO].bin")
 		if P_flag[16]: continue
 		ExInfo_Proto = dm_pb2.DmWebViewReply()
 		ExInfo_Proto.ParseFromString(DL_Data_Extra_Info)
 		ExInfo_Json = json.loads(MessageToJson(ExInfo_Proto, indent=0, ensure_ascii=False))
-		threading.Thread(dump_Data(str_s=ARR_Ext_Info, data=DL_Data_Extra_Info)).start()
+		threading.Thread(dump_Data(f"[{bvid}]_[{cid}]_[BAS]_[INFO].bin", DL_Data_Extra_Info)).start()
 		if (not P_flag[6]): XML_Write_Data = f"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<i>\n\t<chatserver>chat.bilibili.com</chatserver>\n\t<chatid>{cid}</chatid>\n\t<mission>0</mission>\n\t<maxlimit>{6000*Segment_Count}</maxlimit>\n\t<state>0</state>\n\t<real_name>0</real_name>\n\t<source>k-v</source>\n"
 		P_Title = str(This["part"])
 		if P_Title == "": P_Title = f"P{i_for_videos}"
@@ -234,7 +235,7 @@ def main_Func():
 		if P_Title == Main_Title: P_Title = ""
 		File_Name = f"[{P_Date}][{bvid}][{avid}][P{i_for_videos}][{cid}]{Main_Title.replace('_', '＿')}_{P_Title.replace('_', '＿')}".replace("\\", "＼").replace("/", "／").replace(":", "：").replace("*", "＊").replace("?", "？").replace("<", "＜").replace(">", "＞").replace("|", "｜").replace("\"", "＂").replace("\r", "").replace("\n", "").rstrip("_")	# \/:*?"<>|
 		# [1656432000][BV*********][av*********][P**][cid]MainTitle_P-Title
-		if (not P_flag[6]) and P_flag[11]: XML_Write_Data += XML_Special_Process(ExInfo_Proto.commandDms, cid=cid)
+		if (not P_flag[6]) and P_flag[11]: XML_Write_Data += XML_Special_Process(ExInfo_Proto.commandDms)
 		if P_flag[9]:
 			BAS_danmaku = get_Special_Danmaku(ExInfo_Proto)
 			xml_t1 = dm_pb2.DmSegMobileReply()
@@ -265,13 +266,14 @@ def main_Func():
 				xml_t1 = dm_pb2.DmSegMobileReply()
 				xml_t1.ParseFromString(Danmaku_Binarys)
 				XML_Write_Data += XML_Process(xml_t1.elems)
-		# if Segment_Count != 1: dump_Data(str_s=[cid, "Danmaku", "ALL", "bin", bvid], data=Danmaku_Final_Binary, force=True)
-		timeC = time.time()
+		# if Segment_Count != 1: dump_Data(f"[{bvid}]_[{cid}]_[Danmaku]_[ALL].bin", Danmaku_Final_Binary, Always_Write=True)
+		Time_Process_Danmaku = time.time()
 		if (not P_flag[5]):
 			logging.debug(f"[{bvid}][File_JSON P{i_for_videos}]: 开始处理")
 			Temp_Binary = dm_pb2.DmSegMobileReply()
 			Temp_Binary.ParseFromString(Danmaku_Final_Binary)
-			json_proccess = json.loads(MessageToJson(Temp_Binary, indent=0, ensure_ascii=False))
+			json_proccess = json.loads(MessageToJson(Temp_Binary, indent=0, ensure_ascii=False, including_default_value_fields=True))
+			del json_proccess["state"]
 			del Temp_Binary
 			# ==================
 			P_flag[13] = False
@@ -281,37 +283,31 @@ def main_Func():
 			except KeyError:
 				json_proccess["elems"] = []
 			if P_flag[13]:
-				for that in json_proccess["elems"]:
-					try: del that["idStr"]
-					except KeyError: pass
-					try:
-						if that["test20"] == "0": del that["test20"]
-					except KeyError: pass
-					try:
-						if that["test21"] == "0": del that["test21"]
-					except KeyError: pass
-					try:
-						if that["mode"] == 1: del that["mode"]
-					except KeyError: that["mode"] = 0
-					try:
-						if that["fontsize"] == 25: del that["fontsize"]
-					except KeyError: that["fontsize"] = 0
-					try:
-						if that["color"] == 16777215: del that["color"]
-					except KeyError: that["color"] = 0
-					try: del that["likes"]
-					except KeyError: pass
-					try: del that["weight"]
-					except KeyError: pass
-					try:
-						if that["attr"] == 2: P_flag[2] = True
-					except KeyError: pass
+				for this in json_proccess["elems"]:
+					if not P_flag[2] and this["attr"] == 2: P_flag[2] = True
+					del this["idStr"]
+					del this["test19"]
+					del this["test23"]
+					if this["action"] == "": del this["action"]
+					if this["animation"] == "": del this["animation"]
+					if this["test16"] == "0": del this["test16"]
+					if this["test17"] == "0": del this["test17"]
+					if this["test20"] == "0" or this["test20"] == "": del this["test20"]
+					if this["test21"] == "0" or this["test21"] == "": del this["test21"]
+					if this["mode"] == 1: del this["mode"]
+					if this["fontsize"] == 25: del this["fontsize"]
+					if this["color"] == 16777215: del this["color"]
+					if this["pool"] == 0: del this["pool"]
+					if this["attr"] == 0: del this["attr"]
+					if this["replyCount"] == 0: del this["replyCount"]
+					del this["likes"]
+					del this["weight"]
 			P_flag[13] = False
 			# ==================
-			if P_flag[8]:
-				try: time_FC = json.loads(open(f"{File_Name}.json", "r", encoding="utf-8"))["info"]["File_Create_Time"]
-				except: time_FC = timeC
-			else: time_FC = timeC
+			try: Time_File_Create = json.loads(open(f"{File_Name}.json", "r", encoding="utf-8"))["info"]["File_Create_Time"]
+			except FileNotFoundError: pass
+			else: Time_File_Create = Time_Process_Danmaku
+
 			try: json_proccess["commandDms"] = ExInfo_Json["commandDms"]
 			except KeyError: json_proccess["commandDms"] = []
 			try: Danmaku_Count = len(json_proccess["elems"])
@@ -319,22 +315,22 @@ def main_Func():
 			json_proccess["info"] = {}
 			json_proccess["info"]["Ver"] = "V5_20220916"
 			json_proccess["info"]["dmk_Ver"] = 2
-			json_proccess["info"]["owner"] = Json_Info['owner']								# dict get all
-			json_proccess["info"]["bvid"] = Json_Info['bvid']								# str  get all
-			json_proccess["info"]["avid"] = Json_Info['aid']								# num  get all
-			json_proccess["info"]["V_Name"] = Json_Info["title"]							# str  get all
-			json_proccess["info"]["pubdate"] = Json_Info['pubdate']							# num  get all unix_timestamp
-			json_proccess["info"]["i_ctime"] = Json_Info['ctime']							# num  get all unix_timestamp
-			json_proccess["info"]["P_Name"] = This["part"]									# str  get part
-			json_proccess["info"]["cid"] = This["cid"]										# num  get part
-			json_proccess["info"]["duration"] = This["duration"]							# num  get part
-			json_proccess["info"]["segment_count"] = Segment_Count							# num  set
-			json_proccess["info"]["danmaku_count"] = Danmaku_Count							# num  set
-			json_proccess["info"]["danmaku_web_reported"] = Json_Info['stat']['danmaku']	# num get
-			json_proccess["info"]["danmaku_proto_reported"] = ExInfo_Proto.count			# num get
-			json_proccess["info"]["File_Create_Time"] = int(time_FC)						# num  set unix_timestamp
-			json_proccess["info"]["File_Create_Time_Start"] = int(timeA)					# num  set unix_timestamp
-			json_proccess["info"]["is_live_record"] = P_flag[2]								# bool GET
+			json_proccess["info"]["owner"] = Json_Info['owner']								# dict	get all
+			json_proccess["info"]["bvid"] = Json_Info['bvid']								# str	get all
+			json_proccess["info"]["avid"] = Json_Info['aid']								# num	get all
+			json_proccess["info"]["V_Name"] = Json_Info["title"]							# str	get all
+			json_proccess["info"]["pubdate"] = Json_Info['pubdate']							# num	get all unix_timestamp
+			json_proccess["info"]["i_ctime"] = Json_Info['ctime']							# num	get all unix_timestamp
+			json_proccess["info"]["P_Name"] = This["part"]									# str	get part
+			json_proccess["info"]["cid"] = This["cid"]										# num	get part
+			json_proccess["info"]["duration"] = This["duration"]							# num	get part
+			json_proccess["info"]["segment_count"] = Segment_Count							# num	set
+			json_proccess["info"]["danmaku_count"] = Danmaku_Count							# num	set
+			json_proccess["info"]["danmaku_web_reported"] = Json_Info['stat']['danmaku']	# num	get
+			json_proccess["info"]["danmaku_proto_reported"] = ExInfo_Proto.count			# num	get
+			json_proccess["info"]["File_Create_Time_Start"] = int(Time_Start_Process)		# num	set unix_timestamp
+			json_proccess["info"]["File_Create_Time"] = int(Time_File_Create)				# num	set unix_timestamp
+			json_proccess["info"]["is_live_record"] = P_flag[2]								# bool	GET
 			Json_Write_Data = json.dumps(json_proccess, ensure_ascii=False, separators=(',', ':')).replace("},{\"id\"", "},\n{\"id\"")
 			del json_proccess
 			logging.debug(f"[{bvid}][File_JSON P{i_for_videos}]: 结束处理")
@@ -345,11 +341,11 @@ def main_Func():
 			del Json_Write_Data
 		if (not P_flag[6]):
 			logging.debug(f"[{bvid}][File_XML  P{i_for_videos}]: 开始写入")
-			writeER(f"{err_sign}{File_Name}.xml", XML_Write_Data + f"</i>\n<!-- Create Time: {str(int(timeC))} -->")
+			writeER(f"{err_sign}{File_Name}.xml", XML_Write_Data + f"</i>\n<!-- Create Time: {Time_Process_Danmaku} -->")
 			del XML_Write_Data
 		del ExInfo_Proto, ExInfo_Json, DL_Data_Extra_Info, Danmaku_Final_Binary
 		timeD = time.time()
-		logging.debug(f"P{i_for_videos}: {round(timeD-timeB, 3)}，Wait: {round(NET_count[0]*SLEEP_TIME, 2)}，Net: {NET_count[0]}")
+		logging.debug(f"P{i_for_videos}: {round(timeD-Time_Start_Process, 3)}，Wait: {round(NET_count[0]*SLEEP_TIME, 2)}，Net: {NET_count[0]}")
 	# ================================ 结束
 	timeE = time.time()
 	logging.debug(f"{bvid}|{avid} Time: {round(timeE-timeA, 3)} Net: {NET_count[1]} Wait: {round(NET_count[1]*SLEEP_TIME, 2)} SLEEP: {SLEEP_TIME}")
