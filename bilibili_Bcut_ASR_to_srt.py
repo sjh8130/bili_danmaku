@@ -23,7 +23,11 @@ def proc_ASS(item):
 			if karaoke_item[timed_chars]['label'].isascii() and timed_chars != len(karaoke_item): karaoke_word += " "
 		return karaoke_word
 	fi___itm = f"Dialogue: 0,{convert_ass_time(start_time)},{convert_ass_time(end_time)},A,,0,0,0,,{item['transcript']}\n"
-	# fi_k_itm = f"Dialogue: 1,{convert_ass_time(start_time)},{convert_ass_time(end_time)},B,,0,0,0,,{proc_karaoke(item['words'])}\n".replace("{\k0}","")
+	try:
+		...
+		# fi_k_itm = f"Dialogue: 1,{convert_ass_time(start_time)},{convert_ass_time(end_time)},B,,0,0,0,,{proc_karaoke(item['words'])}\n".replace("{\k0}","")
+	except KeyError:
+		pass
 	return fi___itm+fi_k_itm.replace(" \n","\n").replace("  "," ").replace(",,0,0,0,, ",",,0,0,0,,")
 
 input_File = sys.argv[1]
