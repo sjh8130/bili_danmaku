@@ -4,6 +4,7 @@ import sys
 
 """
 修视频？
+使用ffmpeg的hash来修复视频文件
 for %a in (*.flv) do ffmpeg -v warning -hide_banner -i "%~na.flv" -c copy "%~na.aac" -c copy "%~na.264"
 
 for %a in (*.flv) do ffmpeg -v warning -hide_banner -i "%~na.flv" -vn -c copy "%~na.aac"
@@ -32,9 +33,9 @@ with open(input_info_1, "r") as hash_1, \
 	output_frames = 0
 	packets1 = json.load(hash_1)["packets"]
 	packets2 = json.load(hash_2)["packets"]
-	x = "========        "
-	y = "        ========"
-	z = "================"
+	x = "========        "	# 输出文件1
+	y = "        ========"	# 输出文件2
+	z = "================"	# 文件1和文件2的帧内容相同，输出
 	i = 0
 	j = 0
 	while True:

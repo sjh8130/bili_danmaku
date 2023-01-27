@@ -21,7 +21,7 @@ from my_lib.debug import flag_debug
 
 ssl._create_default_https_context = ssl._create_unverified_context
 requests.packages.urllib3.disable_warnings()
-logging.basicConfig(format='%(asctime)s [%(levelname)s] %(message)s', level=logging.DEBUG)
+logging.basicConfig(format='%(asctime)s [%(levelname)s] %(message)s', level=logging.INFO)
 
 headers = {
 	'User-Agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36 Edg/105.0.1343.53",
@@ -29,7 +29,7 @@ headers = {
 	'referer': "https://www.bilibili.com",
 	"Connection": "keep-alive"
 }
-SLEEP_TIME = 0.05
+SLEEP_TIME = 0.2
 NET_count = [0, 0]
 err_sign = ""
 P_flag = []
@@ -107,7 +107,7 @@ def get_Danmaku(cid: str, Segment_Index: str, retry: str = "") -> bytes:
 	"""
 	获取弹幕
 	"""
-	logging.debug(f"{bvid}: get_Danmaku")
+	logging.debug(f"{bvid}: [Danmaku] [{cid}] {Segment_Index} {retry}")
 	File_Content = Downloader(f'https://api.bilibili.com/x/v2/dm/web/seg.so?type=1&oid={cid}&segment_index={Segment_Index}', f"[{bvid}]_[{cid}]_[Danmaku]_[{Segment_Index+retry}].bin")
 	if P_flag[12] and P_flag[1]: return b""
 	dump_Data(f"[{bvid}]_[{cid}]_[Danmaku]_[{Segment_Index+retry}].bin", File_Content)
@@ -221,14 +221,22 @@ def main_Func():
 		Danmaku_Final_Binary = b""
 		duration = int(This["duration"])
 		Segment_Count = math.ceil(duration/360)
-		logging.info(f"[{bvid}][Special_Danmaku]: P{i_for_videos}")
+		logging.debug(f"[{bvid}][Special_Danmaku]: P{i_for_videos}")
 		DL_Data_Extra_Info = Downloader(f'https://api.bilibili.com/x/v2/dm/web/view?type=1&oid={cid}', f"[{bvid}]_[{cid}]_[BAS]_[INFO].bin")
 		if P_flag[16]: continue
 		ExInfo_Proto = dm_pb2.DmWebViewReply()
 		ExInfo_Proto.ParseFromString(DL_Data_Extra_Info)
 		ExInfo_Json = json.loads(MessageToJson(ExInfo_Proto, indent=0, ensure_ascii=False))
 		threading.Thread(dump_Data(f"[{bvid}]_[{cid}]_[BAS]_[INFO].bin", DL_Data_Extra_Info)).start()
-		if (not P_flag[6]): XML_Write_Data = f"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<i>\n\t<chatserver>chat.bilibili.com</chatserver>\n\t<chatid>{cid}</chatid>\n\t<mission>0</mission>\n\t<maxlimit>{6000*Segment_Count}</maxlimit>\n\t<state>0</state>\n\t<real_name>0</real_name>\n\t<source>k-v</source>\n"
+		if (not P_flag[6]): XML_Write_Data = f"""<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<i>
+\t<chatserver>chat.bilibili.com</chatserver>
+\t<chatid>{cid}</chatid>
+\t<mission>0</mission>
+\t<maxlimit>0</maxlimit>
+\t<state>0</state>
+\t<real_name>0</real_name>
+\t<source>k-v</source>
+"""
 		P_Title = str(This["part"])
 		if P_Title == "": P_Title = f"P{i_for_videos}"
 		logging.info(f"{P_Date}|{bvid}|{avid}|P{i_for_videos}/{Num_of_Videos}|{cid}|{duration}|{math.ceil(duration/360)}|{Main_Title}|{P_Title}")
@@ -247,7 +255,6 @@ def main_Func():
 			if P_flag[12] and P_flag[1]: break
 			try: Danmaku_Binarys = get_Danmaku(cid, str(segments+1))
 			except json.decoder.JSONDecodeError: Danmaku_Binarys = b""
-			logging.info(f"[{bvid}][danmaku]: P{i_for_videos}/{Num_of_Videos}\t{segments+1}/{Segment_Count}")
 			# 重试
 			if len(Danmaku_Binarys) < RETRY_SIZE and (not P_flag[8]):
 				temp_filelen = len(Danmaku_Binarys)
@@ -260,7 +267,6 @@ def main_Func():
 						Danmaku_Binarys = retry_file[retry_i]
 						del retry_file, temp_filelen
 						break
-					logging.info(f"[{bvid}][danmaku]: P{i_for_videos}/{Num_of_Videos}\t{segments+1}/{Segment_Count} [R{retry_i+1}]")
 			Danmaku_Final_Binary += Danmaku_Binarys
 			if (not P_flag[6]):
 				xml_t1 = dm_pb2.DmSegMobileReply()
@@ -269,7 +275,7 @@ def main_Func():
 		# if Segment_Count != 1: dump_Data(f"[{bvid}]_[{cid}]_[Danmaku]_[ALL].bin", Danmaku_Final_Binary, Always_Write=True)
 		Time_Process_Danmaku = time.time()
 		if (not P_flag[5]):
-			logging.debug(f"[{bvid}][File_JSON P{i_for_videos}]: 开始处理")
+			logging.debug(f"[{bvid}][File_JSON] 开始处理 P{i_for_videos}")
 			Temp_Binary = dm_pb2.DmSegMobileReply()
 			Temp_Binary.ParseFromString(Danmaku_Final_Binary)
 			json_proccess = json.loads(MessageToJson(Temp_Binary, indent=0, ensure_ascii=False, including_default_value_fields=True))
@@ -305,9 +311,8 @@ def main_Func():
 			P_flag[13] = False
 			# ==================
 			try: Time_File_Create = json.loads(open(f"{File_Name}.json", "r", encoding="utf-8"))["info"]["File_Create_Time"]
-			except FileNotFoundError: pass
+			except FileNotFoundError: Time_File_Create = Time_Process_Danmaku
 			else: Time_File_Create = Time_Process_Danmaku
-
 			try: json_proccess["commandDms"] = ExInfo_Json["commandDms"]
 			except KeyError: json_proccess["commandDms"] = []
 			try: Danmaku_Count = len(json_proccess["elems"])
@@ -379,7 +384,10 @@ if __name__ == '__main__':
 		# vids = "2"
 		# Program_FLAG("2688")
 		# sys.exit()
-	vids = vids.split(",")
+	try:
+		vids = json.loads(vids)
+	except:
+		vids = vids.split(",")
 	
 	for vid in vids:
 		vid = str(vid)
