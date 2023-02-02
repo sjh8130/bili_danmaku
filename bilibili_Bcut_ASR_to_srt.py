@@ -76,7 +76,7 @@ if lrc_time_overflow:
 	Final_LRC_Content += "[59:59.99]LRC时间溢出\n"
 	logging.warning("ASS 时间溢出")
 if aegisub_time_overflow:
-	Final_ASS_Content += "Comment: 0,0:00:00.00,0:00:00.00,A,,0,0,0,,ASS时间溢出\n"
+	Final_ASS_Content += "Dialogue: 0,0:00:00.00,9:59:59.99,A,,0,0,0,,\{\\an2\}ASS时间溢出\n"
 	logging.warning("不支持Aegisub")
 	logging.error("ASS 时间溢出")
 	time.sleep(5)
