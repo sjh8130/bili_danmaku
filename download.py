@@ -88,8 +88,14 @@ def Downloader(url_DL: str, filename: str) -> bytes:
 		while True:
 			try:
 				DL_Data = requests.get(url_DL, headers=headers, verify=False, timeout=10)
+			except TimeoutError:
+				logging.warning("[Downloader] TimeoutError " + url_DL)
+				continue
 			except requests.exceptions.ReadTimeout:
-				logging.error("[Downloader] Timeout " + url_DL)
+				logging.warning("[Downloader] requests.exceptions.ReadTimeout " + url_DL)
+				continue
+			except requests.exceptions.ConnectionError:
+				logging.warning("[Downloader] requests.exceptions.ConnectionError " + url_DL)
 				continue
 			else:
 				break
