@@ -1,0 +1,16 @@
+"avatar":"http(s)?://i\d.hdslb.com/bfs/(baselabs|face)/[0-9a-f]{40}.(jpg|png|gif|webp)",
+"avatar":"http(s)?://i\d.hdslb.com/bfs/face/member/noface.jpg",
+"username":".{1,30}",
+,"detail_jump":".{80,90}"
+"mid":\d{1,},
+,"(likes|weight)":( )?\d{1,}( )?
+,"idStr":"\d{1,}"
+
+https://api.bilibili.com/x/space/arc/search?mid=(xxx)&ps=(1-50)&tid=0&pn=(xxx)
+
+
+
+YTB:
+"clickTrackingParams":( )?"\S{20}-\S{15}",
+
+

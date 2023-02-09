@@ -219,18 +219,23 @@ message DanmakuElem {
     // 弹幕属性位(bin求AND)
     // bit0:保护 bit1:直播 bit2:高赞
     int32 attr = 13;
-    //
+    // 发送着mid
     uint64 usermid = 14;
+    // 点赞数量
     uint32 likes = 15;
+    // 弹幕回复目标 弹幕dmid
     uint64 test16 = 16;
     uint64 test17 = 17;
+    // 弹幕回复 被回复数量
     uint32 reply_count = 18;
-    // 19 : testing
+    // 19 : 未知
     bytes test19 = 19;
+    // 弹幕回复目标 弹幕dmid(string)
     string test20 = 20;
     string test21 = 21;
+    // 动画？
     string animation = 22;
-    // 23: unknown
+    // TBD
     bytes test23 = 23;
 }
 
