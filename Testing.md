@@ -164,9 +164,9 @@
 | msg					| str	| "预告：**自定义内容**"<br>"直播预约：**自定义内容**" |
 | reserve_type			| num	| 1: 视频<br>2: 直播 |
 | reserve_id			| num	| id |
-| live_stime			| num	| UnixTimeStamp | `reserve_type=2` |
-| arc_stime				| num	| UnixTimeStamp | `reserve_type=2` |
-| stime					| num	| UnixTimeStamp | `reserve_type=2` |
+| live_stime			| num	| TimeStamp(秒) | `reserve_type=2` |
+| arc_stime				| num	| TimeStamp(秒) | `reserve_type=2` |
+| stime					| num	| TimeStamp(秒) | `reserve_type=2` |
 | posX					| float	| |
 | posY					| float	| |
 | duration				| num	| 5000 |
@@ -228,7 +228,7 @@
 | posY	|	80.5	|	889	|
 
 ## 直播弹幕格式
-最低发包间隔1ms
+~~最低发包间隔1ms~~
 ```
 ＋――――――――――――――――――――――――――――――――――――――――――――――――＋＋――――――――――――＋
 ｜头像　状态　直播标题　分区　排行榜　　　👁👍⚠　分享｜｜高能用户　　 ｜
@@ -252,17 +252,17 @@
 | link | name | desc | area |
 | - | - | - | - |
 | [link](#ACTIVITY_MATCH_GIFT)	| ACTIVITY_MATCH_GIFT					| |
-| [link](#ANCHOR_LOT_AWARD)	| ANCHOR_LOT_AWARD							| |直播视频区
-| [link](#ANCHOR_LOT_CHECKSTATUS)	| ANCHOR_LOT_CHECKSTATUS			| |
-| [link](#ANCHOR_LOT_END)	| ANCHOR_LOT_END							| |抽奖
-| [link](#ANCHOR_LOT_START)	| ANCHOR_LOT_START							| 开始天选时刻抽奖 |抽奖
+| [link](#ANCHOR_LOT_CHECKSTATUS)	| ANCHOR_LOT_CHECKSTATUS			| 抽奖检查 |
+| [link](#ANCHOR_LOT_START)	| ANCHOR_LOT_START							| 抽奖开始 |抽奖
+| [link](#ANCHOR_LOT_END)	| ANCHOR_LOT_END							| 抽奖结束 |抽奖
+| [link](#ANCHOR_LOT_AWARD)	| ANCHOR_LOT_AWARD							| 抽奖结果 |直播视频区
 | [link](#AREA_RANK_CHANGED)	| AREA_RANK_CHANGED						| |
 | [link](#BOX_ACTIVITY_START)	| BOX_ACTIVITY_START					| |
 | [link](#CHANGE_ROOM_INFO)	| CHANGE_ROOM_INFO							| |
 | [link](#CHASE_FRAME_SWITCH)	| CHASE_FRAME_SWITCH					| |
 | [link](#COMBO_SEND)	| COMBO_SEND									| |
 | [link](#COMMON_NOTICE_DANMAKU)	| COMMON_NOTICE_DANMAKU				| |
-| [link](#CUT_OFF)	| CUT_OFF											| 系统通知 当前直播间被直播管理员切断直播。|
+| [link](#CUT_OFF)	| CUT_OFF											| 切断直播！|
 | [link](#DANMU_AGGREGATION)	| DANMU_AGGREGATION						| 抽奖通知 |通知栏
 | [link](#DANMU_GIFT_LOTTERY_AWARD)	| DANMU_GIFT_LOTTERY_AWARD			| |
 | [link](#DANMU_GIFT_LOTTERY_END)	| DANMU_GIFT_LOTTERY_END			| |
@@ -272,23 +272,24 @@
 | [link](#ENTRY_EFFECT)	| ENTRY_EFFECT									| 进入直播间特效 |聊天区
 | [link](#ENTRY_EFFECT_MUST_RECEIVE)	| ENTRY_EFFECT_MUST_RECEIVE		| |
 | [link](#FULL_SCREEN_SPECIAL_EFFECT)	| FULL_SCREEN_SPECIAL_EFFECT	| |
+| [link](#GOTO_BUY_FLOW)	| GOTO_BUY_FLOW								| 移动端 购买* |新-移动端
 | [link](#GIFT_PANEL_PLAN)	| GIFT_PANEL_PLAN							| |
 | [link](#GIFT_STAR_PROCESS)	| GIFT_STAR_PROCESS						| |
 | [link](#GUARD_ACHIEVEMENT_ROOM)	| GUARD_ACHIEVEMENT_ROOM			| |
 | [link](#GUARD_BENEFIT_RECEIVE)	| GUARD_BENEFIT_RECEIVE				| |
-| [link](#GUARD_BUY)	| GUARD_BUY										| 舰长购买 |高能用户
+| [link](#GUARD_BUY)			| GUARD_BUY								| 舰长购买 |
 | [link](#GUARD_HONOR_THOUSAND)	| GUARD_HONOR_THOUSAND					| |
 | [link](#GUARD_LOTTERY_START)	| GUARD_LOTTERY_START					| |
 | [link](#GUARD_WINDOWS_OPEN)	| GUARD_WINDOWS_OPEN					| |
-| [link](#HOT_RANK_CHANGED)	| HOT_RANK_CHANGED							| 人气榜排名更改 |已废弃
-| [link](#HOT_RANK_CHANGED_V2)	| HOT_RANK_CHANGED_V2					| 人气榜排名更改 |
-| [link](#HOT_RANK_SETTLEMENT)	| HOT_RANK_SETTLEMENT					| 分区榜(大) |已废弃
-| [link](#HOT_RANK_SETTLEMENT_V2)	| HOT_RANK_SETTLEMENT_V2			| 分区榜(小) |
+| [link](#HOT_RANK_CHANGED)	| ~~HOT_RANK_CHANGED~~						| ~~人气榜排名更改~~ |[已移除][热门榜功能下线公告]
+| [link](#HOT_RANK_CHANGED_V2)	| ~~HOT_RANK_CHANGED_V2~~				| ~~人气榜排名更改~~ |[已移除][热门榜功能下线公告]
+| [link](#HOT_RANK_SETTLEMENT)	| ~~HOT_RANK_SETTLEMENT~~				| ~~分区榜(大)~~ |[已移除][热门榜功能下线公告]
+| [link](#HOT_RANK_SETTLEMENT_V2)	| ~~HOT_RANK_SETTLEMENT_V2~~		| ~~分区榜(小)~~ |[已移除][热门榜功能下线公告]
 | [link](#HOT_ROOM_NOTIFY)	| HOT_ROOM_NOTIFY							| |
 | [link](#HOUR_RANK_AWARDS)	| HOUR_RANK_AWARDS 							| |
-| [link](#INTERACT_WORD)	| INTERACT_WORD								| 进入直播间|通知栏
-| [link](#LIKE_INFO_V3_CLICK)	| LIKE_INFO_V3_CLICK					| 用户点赞（移动端）点击|通知栏
-| [link](#LIKE_INFO_V3_UPDATE)	| LIKE_INFO_V3_UPDATE					| 用户点赞（移动端）更新|👍
+| [link](#INTERACT_WORD)	| INTERACT_WORD								| 进入直播间/关注主播 |通知栏
+| [link](#LIKE_INFO_V3_CLICK)	| LIKE_INFO_V3_CLICK					| （移动端）用户点赞点击|通知栏
+| [link](#LIKE_INFO_V3_UPDATE)	| LIKE_INFO_V3_UPDATE					| 用户点赞更新 |👍
 | [link](#LIKE_SO_HOT)	| LIKE_SO_HOT 									| |
 | [link](#LITTLE_MESSAGE_BOX)	| LITTLE_MESSAGE_BOX					| |
 | [link](#LITTLE_TIPS)	| LITTLE_TIPS 									| |
@@ -302,12 +303,12 @@
 | [link](#MESSAGEBOX_USER_GAIN_MEDAL)	| MESSAGEBOX_USER_GAIN_MEDAL	| |
 | [link](#MESSAGEBOX_USER_MEDAL_CHANGE)	| MESSAGEBOX_USER_MEDAL_CHANGE	| |
 | [link](#MESSAGEBOX_USER_MEDAL_COMPENSA)	| MESSAGEBOX_USER_MEDAL_COMPENSATION | |
-| [link](#MILESTONE_UPDATE_EVENT)	| MILESTONE_UPDATE_EVENT | |
-| [link](#MULTI_VOICE_STATUS_SYNC)	| MULTI_VOICE_STATUS_SYNC | |
-| [link](#NOTICE_MSG)	| NOTICE_MSG						| |直播视频区
-| [link](#ONLINE_RANK_COUNT)	| ONLINE_RANK_COUNT					| |
-| [link](#ONLINE_RANK_TOP3)	| ONLINE_RANK_TOP3					| 高能用户前三恭喜 |高能用户，聊天区
-| [link](#ONLINE_RANK_V2)	| ONLINE_RANK_V2					| 高能用户TOP7 |高能用户
+| [link](#MILESTONE_UPDATE_EVENT)	| MILESTONE_UPDATE_EVENT 			| |
+| [link](#MULTI_VOICE_STATUS_SYNC)	| MULTI_VOICE_STATUS_SYNC			| |
+| [link](#NOTICE_MSG)	| NOTICE_MSG									| 滚动横幅 |直播视频区
+| [link](#ONLINE_RANK_COUNT)	| ONLINE_RANK_COUNT						| 高能用户 |
+| [link](#ONLINE_RANK_TOP3)	| ONLINE_RANK_TOP3							| 高能用户前三恭喜 |高能用户，聊天区
+| [link](#ONLINE_RANK_V2)	| ONLINE_RANK_V2							| 高能用户TOP7 |高能用户
 | [link](#PK_AGAIN)	| PK_AGAIN | |
 | [link](#PK_BATTLE_CRIT)	| PK_BATTLE_CRIT | |
 | [link](#PK_BATTLE_END)	| PK_BATTLE_END | |
@@ -335,11 +336,9 @@
 | [link](#PK_START)	| PK_START | |
 | [link](#PLAY_TOGETHER)	| PLAY_TOGETHER | |
 | [link](#POPULAR_RANK_CHANGED)	| POPULAR_RANK_CHANGED | |
-| [link](#POPULAR_RANK_CHANGED)	| POPULAR_RANK_CHANGED | |
 | [link](#POPULARITY_RED_POCKET_NEW)	| POPULARITY_RED_POCKET_NEW | |
 | [link](#POPULARITY_RED_POCKET_START)	| POPULARITY_RED_POCKET_START | |
 | [link](#POPULARITY_RED_POCKET_WINNER_L)	| POPULARITY_RED_POCKET_WINNER_LIST | |
-| [link](#PREPARING)	| PREPARING | |
 | [link](#PREPARING)	| PREPARING | |
 | [link](#RAFFLE_END)	| RAFFLE_END | |
 | [link](#RAFFLE_START)	| RAFFLE_START | |
@@ -360,12 +359,11 @@
 | [link](#ROOM_SILENT_OFF)	| ROOM_SILENT_OFF | |
 | [link](#ROOM_SILENT_ON)	| ROOM_SILENT_ON | |
 | [link](#ROOM_SKIN_MSG)	| ROOM_SKIN_MSG | |
-| [link](#SEND_GIFT)	| SEND_GIFT							| 送礼物|高能用户，聊天区，通知栏
+| [link](#SEND_GIFT)	| SEND_GIFT							| 送礼物 |高能用户，聊天区，通知栏
 | [link](#SEND_GIFT_V2)	| SEND_GIFT_V2 | |
 | [link](#SEND_TOP)	| SEND_TOP | |
 | [link](#SHOPPING_CART_SHOW)	| SHOPPING_CART_SHOW | |
 | [link](#SPECIAL_GIFT)	| SPECIAL_GIFT						| |
-| [link](#SPECIAL_GIFT)	| SPECIAL_GIFT | |
 | [link](#STARLIVE_PK_MSG)	| STARLIVE_PK_MSG | |
 | [link](#STOP_LIVE_ROOM_LIST)	| STOP_LIVE_ROOM_LIST				| |
 | [link](#SUPER_CHAT_AUDIT)	| SUPER_CHAT_AUDIT | |
@@ -389,7 +387,7 @@
 | [link](#VTR_GIFT_LOTTERY)	| VTR_GIFT_LOTTERY | |
 | [link](#WARNING)	| WARNING | |
 | [link](#WATCH_LPL_EXPIRED)	| WATCH_LPL_EXPIRED | |
-| [link](#WATCHED_CHANGE)	| WATCHED_CHANGE					| xx人数|👁
+| [link](#WATCHED_CHANGE)	| WATCHED_CHANGE					| xx人数 |👁
 | [link](#WEB_REPORT_CONTROL)	| WEB_REPORT_CONTROL | |
 | [link](#WIDGET_BANNER)	| WIDGET_BANNER | |
 | [link](#WIN_ACTIVITY)	| WIN_ACTIVITY | |
@@ -411,7 +409,7 @@
 | sub_session_key	| str	| `f"{live_key}sub_time:{live_time}"` |
 | live_platform		| str	| ?"live_mng" |
 | live_model		| num	| ?0 |
-| live_time	*		| num	| 开播时间UnixTimeStamp(秒) |
+| live_time	*		| num	| 开播时间TimeStamp(秒) |
 | roomid			| num	| 房间号 |
 ```json
 {
@@ -436,7 +434,7 @@
 | key 54				| type	| value | 备注 |
 | - | - | - | - |
 | action				| str	| "投喂" |
-| **batch_combo_id**	| str	| `f"batch:gift:combo_id:{uid}:{主播uid}:{giftId}:{时间UnixTimeStamp%.4f}"` |
+| **batch_combo_id**	| str	| `f"batch:gift:combo_id:{uid}:{主播uid}:{giftId}:{时间TimeStamp.4f}"` |
 | **batch_combo_id**	| str	| ？UUID | |
 | **batch_combo_send**	| null	| ？第一次为 null |
 | **batch_combo_send**	| obj	| ？其余为 上一个`batch_combo_id` |
@@ -487,14 +485,14 @@
 | switch				| bool	| true |
 | tag_image				| str	| "" |
 | tid					| str	| "int64" |
-| timestamp				| int	| UnixTimeStamp(秒) |
+| timestamp				| int	| TimeStamp(秒) |
 | top_list				| null	| null |
 | total_coin			| num	| 0 |
 | uid					| num	| 发送者uid |
 | uname					| str	| 发送者 用户名 |
 
 ### ONLINE_RANK_V2
-排行榜前七(左)，实时
+高能用户前七(左)，实时
 | key	| type	| value |
 | - | - | - |
 | cmd	| str	| "ONLINE_RANK_V2" |
@@ -515,7 +513,7 @@
 | guard_level	| num | 舰长等级 |
 
 ### ONLINE_RANK_TOP3
-排行榜前三(左)，实时
+高能用户前三(左)，实时
 | key	| type	| value |
 | - | - | - |
 | cmd	| str	| "ONLINE_RANK_TOP3" |
@@ -532,7 +530,8 @@
 | rank		| num	| 排名(1-3) |
 
 ### ONLINE_RANK_COUNT
-约每N*5秒发送一次  心跳包后1秒
+高能用户
+约每N*5秒发送一次  
 | key | type | value |
 | - | - | - |
 | cmd	| str	| "ONLINE_RANK_COUNT" |
@@ -560,18 +559,18 @@
 | msg_type			| num	| |
 | privilege_type	| num	| [privilege_type](#others) |
 | roomid			| num	| |
-| score				| num	| UnixTimeStamp(毫秒)??? |
+| score				| num	| TimeStamp(毫秒)??? |
 | spread_desc		| str	| is_spread==1:"流量包推广" |
 | spread_info		| str	| is_spread==1:"#FF649E" |
 | tail_icon			| num	| [0,101] |
-| timestamp			| num	| UnixTimeStamp(秒) |
-| trigger_time		| num	| UnixTimeStamp(皮秒?) |
+| timestamp			| num	| TimeStamp(秒) |
+| trigger_time		| num	| TimeStamp(皮秒)? |
 | uid				| num	| 发送者uid |
 | uname				| str	| 发送者 用户名 |
 | uname_color		| str	| "" |
 #### INTERACT_WORD__score
-msg_type=1: UnixTimeStamp
-msg_type=2: 关注时间UnixTimeStamp
+msg_type=1: TimeStamp
+msg_type=2: 关注时间TimeStamp
 #### INTERACT_WORD__core_user_type
 |core_user_type|等级|VIP|粉丝牌&舰长|直播观众等级|直播UP|粉丝|关注|认证|
 |-|-|-|-|-|-|-|-|-|
@@ -598,6 +597,7 @@ msg_type=2: 关注时间UnixTimeStamp
 ```
 
 ### HOT_RANK_CHANGED_V2
+[已移除][热门榜功能下线公告]  
 计时器每半小时(1800秒)重置一次，计时重置后，约每15秒或(N*15)秒发送一次
 | key | type | value |
 | - | - | - |
@@ -609,7 +609,7 @@ msg_type=2: 关注时间UnixTimeStamp
 | rank			| num	| 排名[1-50] |
 | trend			| num	| 0 |
 | countdown		| num	| 倒计时[1-1786] |
-| timestamp		| num	| UnixTimeStamp(秒) |
+| timestamp		| num	| TimeStamp(秒) |
 | web_url		| str	| 排行榜URL |
 | live_url		| str	| 排行榜URL |
 | blink_url		| str	| 排行榜URL |
@@ -620,6 +620,7 @@ msg_type=2: 关注时间UnixTimeStamp
 | rank_desc		| str	| `f"{分区名称}top50"` |
 
 ### HOT_RANK_CHANGED
+[已移除][热门榜功能下线公告]  
 计时器每半小时(1800秒)重置一次，计时重置后，约每5秒或(N*5)秒发送一次
 | key | type | value |
 | - | - | - |
@@ -631,7 +632,7 @@ msg_type=2: 关注时间UnixTimeStamp
 | rank			| num	| 排名[1-50] |
 | trend			| num	| ? |
 | countdown		| num	| 倒计时[1-1795]|
-| timestamp		| num	| UnixTimeStamp(秒) |
+| timestamp		| num	| TimeStamp(秒) |
 | web_url		| str	| 排行榜URL |
 | live_url		| str	| 排行榜URL |
 | blink_url		| str	| 排行榜URL |
@@ -655,7 +656,7 @@ msg_type=2: 关注时间UnixTimeStamp
 | text_large	| str	| f"num人看过" <br> "x.y万人看过" |
 
 ### ROOM_REAL_TIME_MESSAGE_UPDATE
-每60秒发送一次，更新关注数、粉丝团人数
+(每N*60秒&数值更新)发送一次，更新关注数、粉丝团人数
 | key | type | value |
 | - | - | - |
 | cmd	| str	| "ROOM_REAL_TIME_MESSAGE_UPDATE" |
@@ -666,7 +667,7 @@ msg_type=2: 关注时间UnixTimeStamp
 | roomid		| num	| 直播间ID |
 | fans			| num	| 关注 |
 | red_notice	| num	| -1? |
-| fans_club		| num	|  |
+| fans_club		| num	| 粉丝团成员(活跃人数) |
 
 ### LIKE_INFO_V3_CLICK
 点赞(移动端 双击屏幕)，实时，和`LIKE_INFO_V3_UPDATE`同时发送，实时&每5秒最多发送一次
@@ -702,7 +703,7 @@ msg_type=2: 关注时间UnixTimeStamp
 #### LIKE_INFO_V3_UPDATE__data
 | key | type	| value |
 | - | - | - |
-| click_count	| num | |
+| click_count	| num | 点赞数量 |
 
 ### HOT_ROOM_NOTIFY
 ***description***
@@ -756,50 +757,16 @@ msg_type=2: 关注时间UnixTimeStamp
 | copy_writing_v2			| str	| `f"欢迎 <^icon^> <%{用户名}%> 进入直播间"`<br>`f"欢迎(提督\|舰长) <%{用户名}%> 进入直播间"`<br>`f"欢迎<%{用户名}%>进入直播间"`**无空格**<br>`f"欢迎 <^icon^> 舰长 <%{用户名}%> 进入直播间"`<br> |限长6字符，省略号为`…`
 | icon_list					| array	| ~~`copy_writing_v2`内有`"<^icon^>"`时，数组有值 id=136:1,2 id=137:3 identities=22,33:1~~ |
 | max_delay_time			| num	| 7 |
-| trigger_time				| num	| UnixTimeStamp(皮秒?) |
+| trigger_time				| num	| TimeStamp(皮秒?) |
 | identities				| num	| `copy_writing_v2`内有`"<^icon^>,舰长"`时为`33`<br>有`"<^icon^>"`时为`22`<br>`提督`为`7`<br>`舰长`为`6` |
 | effect_silent_time		| float	| 0 |
 | effective_time_new		| num	| Tag_1 |
 | web_dynamic_url_webp		| str	| Tag_1 |
 | web_dynamic_url_apng		| str	| Tag_1 |
 | mobile_dynamic_url_webp	| str	| Tag_1 |
-#### ENTRY_EFFECT__data__id
-前缀:`https://i0.hdslb.com/bfs/live/mlive/` 后缀:`.png`
-| id	| desc | copy_color | highlight_color | effective_time | basemap_url | privilege_type
-| -: | - |-: | -: | -: | - | - |
-| 2		| 提督 | "#ffffff" | "#FFF100" | 3 | 74a41c65e422116d230d433042881fa5556f7870 | 2
-| 4		| 舰长 | "#ffffff" | "#E6FF00" | 2 | 11a6e8eb061c3e715d0a6a2ac0ddea2faa15c15e | 3
-| 135	| 　　 | "#000000" | "#FFF100" | 1 | da6933ea70f31c4df63f4b68b735891284888357 | 0
-| 136	| 　　 | "#000000" | "#FFF100" | 2 | d4708dee21646e6ebcc58e7f6fa2a972c1d25b36 | 0
-| 137	| 　　 | "#000000" | "#FFF100" | 2 | f7017a13c62c13369b85cb7a9f89981e79a3d2f9 | 0,2
-| 253	| 　　 | "#ffffff" | "#ffea18" | 3 | 6d38ab463be28a130870c8c43d109473f215963e | 0
-| 254	| 　　 | "#ffffff" | "#ffea18" | 3 | 4a0990210623ac86c16c87532c6b2352503bbcc7 | 0
-| 254	| 　　 | "#ffffff" | "#ffea18" | 3 | adffca37e8afc1b8f745342038d4187131794968 | 3
-| 291	| 　　 | "#ffffff" | "#ffffff" | 3 | 510a123a3f247d86ad1b1f15aff506c12af73934 | 0
-| 314	| 　　 | "#ffffff" | "#92ffff" | 3 | e5f32dbdacd2d019c50ab5621f627786bd97cfe8 | 0
-| 315	| 　　 | "#ffffff" | "#98ffff" | 5 | c2feddf0fb3a5bbf6b94da7970f7766455133c55 | 0
-| 316	| 　　 | "#ffffff" | "#ffff6D" | 5 | 285faee9bbd04e2847b443df1b7f719e0768e79d | 0
-| 325	| 　　 | "#ffffff" | "#fff596" | 3 | 6d077afa6cc49daed46e8b3f1b07376424fbcf94 | 0
-| 328	| 　　 | "#ffffff" | "#92ffff" | 4 | c808776866b38239d638cf9106ff27f594249ed8 | 0
-| x		| 　　 |  |
-| 253	| 　　 | "#ffffff" | "#FFF14B" | 3 | e6b09100caef61b8518f3c0a23f04636e2a8abaa | 0 **Tag_2**
-#### ENTRY_EFFECT__data__web_dynamic_url_XXX
-前缀:`https://i0.hdslb.com/bfs/live/mlive/`
-| XXX	|web_dynamic_url_webp|web_dynamic_url_apng|mobile_dynamic_url_webp| effective_time_new |
-|-|-|-|-| -: |
-| 1	|`eac404ec584e3b672cc087d86b32700105171c4f.webp`|`0bfc494ce9c02a2ea4d982e9b346d0c7e732f3c0.vnd.mozilla.apng`|`eac404ec584e3b672cc087d86b32700105171c4f.webp`|3
-| 2	|`5007b1f4546c137dfbb72316b9744c808902aeb3.webp`|`ed4b66c18a31663b8ebadce6a968fbb4f86f6bd8.apng`|`5007b1f4546c137dfbb72316b9744c808902aeb3.webp`|3.1
-| 3	|`15bfdcf4a72f8ba1c8b45a99b6c9e9f53a25e8e1.webp`|`db7f605bc2bf8f6f98d30be134bc653e0a3f4296.vnd.mozilla.apng`|`2c952f4aeb7fef8bd753a468da9c357745fc1402.webp`|4.4
-| 4	|`9f1ae49431c526a24f9e87b1b6a898b1028ec645.webp`|`f068957a37d9bd6ec0f3e7907be6db63ae2cfe89.vnd.mozilla.apng`|`9f1ae49431c526a24f9e87b1b6a898b1028ec645.webp`|4.4
-| 5	||||
-| 6	||||
-| 7	||||
-| 8	||||
-| 9	||||
-| 10	||||
 
 ### STOP_LIVE_ROOM_LIST
-每30秒发送一次(`HH:mm:29`,`HH:mm:59`)，推送很多直播间ID?
+每30秒发送一次~~(`HH:mm:29`,`HH:mm:59`)~~，推送很多[12,223]直播间ID?
 | key | type | value |
 | - | - | - |
 | cmd	| str	| "STOP_LIVE_ROOM_LIST" |
@@ -807,10 +774,11 @@ msg_type=2: 关注时间UnixTimeStamp
 #### STOP_LIVE_ROOM_LIST__data
 | key			| type	| value |
 | - | - | - |
-| room_id_list	| array	|  |
+| room_id_list	| array	| [1,2,3,...] |
 
 ### GUARD_BUY
-舰长购买，实时
+舰长购买，实时  
+"GUARD_BUY" "USER_TOAST_MSG" "ONLINE_RANK_V2" "ONLINE_RANK_TOP3" "NOTICE_MSG"
 | key | type | value |
 | - | - | - |
 | cmd	| str	| "GUARD_BUY" |
@@ -821,12 +789,12 @@ msg_type=2: 关注时间UnixTimeStamp
 | uid			| num	| uid |
 | username		| str	|  |
 | guard_level	| num	| [guard_level](#others) |
-| num			| num	| 1 |
-| price			| num	| 价格*1000 |
+| num			| num	| 购买数量 |
+| price			| num	| 单价 RMB*1000 |
 | gift_id		| num	| 10003:"舰长" 10002:"提督" 10001:"总督" |
 | gift_name		| str	|  |
-| start_time	| num	| start_time=end_time 购买时间 UnixTimeStamp(秒) |
-| end_time		| num	| start_time=end_time 购买时间 UnixTimeStamp(秒) |
+| start_time	| num	| 购买时间 TimeStamp(秒) |
+| end_time		| num	| 购买时间 TimeStamp(秒) |
 
 ### USER_TOAST_MSG
 舰长购买通知，实时，显示在聊天区
@@ -838,21 +806,21 @@ msg_type=2: 关注时间UnixTimeStamp
 | key 23				| type	| value |
 | - | - | - |
 | anchor_show			| bool	| true |
-| color					| str	| "舰长":"#00D1F1" <br> "提督":"#E17AFF" <br> "总督": |
-| dmscore				| num	| 90 |
-| effect_id				| num	| 397 |
-| end_time				| num	| start_time=end_time UnixTimeStamp(秒) |
-| face_effect_id		| num	| "舰长":44 <br> "提督":43 <br> "总督": |
+| color					| str	| 舰长:"#00D1F1" <br> 提督:"#E17AFF" <br> 总督: |
+| dmscore				| num	| 舰长:90 提督:96 总督: |
+| effect_id				| num	| 舰长:397 提督:398 总督: |
+| end_time				| num	| TimeStamp(秒) |
+| face_effect_id		| num	| 舰长:44 <br> 提督:43 <br> 总督: |
 | gift_id				| num	| 10003:"舰长" <br> 10002:"提督" <br> 10001:"总督" |
 | guard_level			| num	| [guard_level](#others) |
 | is_show				| num	| 0 |
 | num					| num	| 1? |
 | op_type				| num	| 3:PC? 2:iOS 1:Android? |
 | payflow_id			| str	| 订单号(25) |
-| price					| num	| 价格*1000 连续订阅舰长138，iOS连续订阅舰长158，舰长198，提督1998，19998 |
+| price					| num	| RMB*1000 连续订阅舰长138，?158，舰长198，提督1998，总督19998 |
 | role_name				| str	| "舰长" "提督" "总督" |
-| room_effect_id		| num	| "舰长":590 <br> "提督":591 <br> "总督": |
-| start_time			| num	| start_time=end_time 购买时间 UnixTimeStamp(秒) |
+| room_effect_id		| num	| 舰长:590 <br> 提督:591 <br> 总督: |
+| start_time			| num	| 购买时间 TimeStamp(秒) |
 | svga_block			| num	| 0 |
 | target_guard_count	| num	| 主播总舰长数 |
 | toast_msg				| str	| `f"<%{用户名}%> 自动续费了舰长"` <br> `f"<%{用户名}%> 开通了(舰长\|提督\|总督)，今天是TA陪伴主播的第{}天"` |
@@ -941,6 +909,7 @@ msg_type=2: 关注时间UnixTimeStamp
 ```
 
 ### HOT_RANK_SETTLEMENT_V2
+[已移除][热门榜功能下线公告]  
 每30分(1800秒 `HH:25:05, HH:55:05`)广播一次，小分区排行榜topxx
 | key | type | value |
 | - | - | - |
@@ -952,17 +921,18 @@ msg_type=2: 关注时间UnixTimeStamp
 | rank		| num	| 排名 |
 | uname		| str	| 主播用户名 |
 | face		| str	| 主播头像URL |
-| timestamp	| num	| UnixTimeStamp(秒) `HH:25:05 HH:55:05` |
+| timestamp	| num	| TimeStamp(秒) `HH:25:05 HH:55:05` |
 | icon		| str	| url_15 |
 | area_name	| str	| 分区名称(小) |
 | url		| str	|  |
-| cache_key	| str	| 随机值(128bit) |
+| cache_key	| str	| hex(128bit) |
 | dm_msg	| str	| `f"恭喜主播 <% {uname} %> 荣登限时热门榜{总}榜top{rank}! 即将获得热门流量推荐哦！"` `f"恭喜主播 <% {uname} %> 荣登限时热门榜{总}榜榜首!"` `f"恭喜主播 <% {uname} %> 荣登限时热门榜{总}榜top{rank}!"` |
 ```python
 f"https://live.bilibili.com/p/html/live-app-hotrank/result.html?is_live_half_webview=1&hybrid_half_ui=1,5,250,200,f4eefa,0,30,0,0,0;2,5,250,200,f4eefa,0,30,0,0,0;3,5,250,200,f4eefa,0,30,0,0,0;4,5,250,200,f4eefa,0,30,0,0,0;5,5,250,200,f4eefa,0,30,0,0,0;6,5,250,200,f4eefa,0,30,0,0,0;7,5,250,200,f4eefa,0,30,0,0,0;8,5,250,200,f4eefa,0,30,0,0,0&areaId={xxxx}&cache_key={cache_key}"
 ```
 
 ### HOT_RANK_SETTLEMENT
+[已移除][热门榜功能下线公告]  
 每30分(1800秒 `HH:25:05, HH:55:05`)广播一次，大分区排行榜topxx
 | key | type | value |
 | - | - | - |
@@ -972,13 +942,13 @@ f"https://live.bilibili.com/p/html/live-app-hotrank/result.html?is_live_half_web
 | key		| type	| value |
 | - | - | - |
 | area_name	| str	| 分区名称(大) |
-| cache_key	| str	| 随机值(128bit) |
+| cache_key	| str	| hex(128bit) |
 | dm_msg	| str	| `f"恭喜主播 <% {uname} %> 荣登限时热门榜{总}榜{排行}!"` "榜首,top2-10" |
 | dmscore	| str	| 144 |
 | face		| str	| 主播头像URL |
 | icon		| str	| url_15 |
 | rank		| str	| 排名 |
-| timestamp	| str	| UnixTimeStamp(秒) `HH:25:05 HH:55:05` |
+| timestamp	| str	| TimeStamp(秒) `HH:25:05 HH:55:05` |
 | uname		| str	| 主播用户名 |
 | url		| str	| [HOT_RANK_SETTLEMENT_V2:data:url](#HOT_RANK_SETTLEMENT_V2__data) |
 
@@ -1001,7 +971,7 @@ SuperChat
 | background_price_color	| str	| [table](#SUPER_CHAT_MESSAGE__PriceTable) |
 | color_point				| float	| 0.7 |
 | dmscore					| num	|  |
-| end_time					| num	| UnixTimeStamp(秒) |
+| end_time					| num	| TimeStamp(秒) |
 | gift						| obj	|  |
 | id						| num	| SC id |
 | is_ranked					| num	| ? |
@@ -1012,11 +982,11 @@ SuperChat
 | message_trans				| str	| SC 日本語 翻译 |
 | price						| num	| 价格 |
 | rate						| num	| 1000 |
-| start_time				| num	| UnixTimeStamp(秒) |
+| start_time				| num	| TimeStamp(秒) |
 | time						| num	| SC 持续时长(秒) |
 | token						| str	| hex(64bit) |
 | trans_mark				| num	| 翻译 |
-| ts						| num	| UnixTimeStamp(秒) |
+| ts						| num	| TimeStamp(秒) |
 | uid						| num	| uid |
 | user_info					| obj	|  |
 #### SUPER_CHAT_MESSAGE__data__gift
@@ -1051,7 +1021,10 @@ SuperChat
 | 2000+			| #000000					| #000000			| #000000				| #000000					| #000000					| #000000				|
 
 ### SUPER_CHAT_MESSAGE_JPN
-SuperChat 日本語  某些主播的直播间会一直发送此包
+SuperChat 日本語  
+？某些主播的直播间会一直发送此包  
+！有重复发包`1100ms/1.1s`  
+在`SUPER_CHAT_MESSAGE`后约`1100ms/1.1s`内发送  
 由`百度翻译`提供翻译 Translated by `Baidu Translate`
 | key | type | value |
 | - | - | - |
@@ -1073,13 +1046,13 @@ SuperChat 日本語  某些主播的直播间会一直发送此包
 | background_icon			| str	|  |
 | background_price_color	| str	|  |
 | background_bottom_color	| str	|  |
-| ts						| num	| UnixTimeStamp(秒) |
+| ts						| num	| TimeStamp(秒) |
 | token						| str	|  |
 | medal_info				| obj	| [medal_info](#粉丝牌信息medal_info) 没有(guard_level,is_lighted,medal_color_border,medal_color_end,medal_color_start) |
 | user_info					| obj	|  |
 | time						| num	|  |
-| start_time				| num	| UnixTimeStamp(秒) |
-| end_time					| num	| UnixTimeStamp(秒) |
+| start_time				| num	| TimeStamp(秒) |
+| end_time					| num	| TimeStamp(秒) |
 | gift						| obj	|  |
 
 ### SUPER_CHAT_MESSAGE_DELETE
@@ -1094,51 +1067,8 @@ SC 删除，约每110秒更新
 | ids		| array	| SC id(num) |
 | roomid	| num	| 直播间id |
 
-### ANCHOR_LOT_START
-抽奖(天选时刻)
-| key | type | value |
-| - | - | - |
-| cmd	| str	| "ANCHOR_LOT_START" |
-| data	| obj	| |
-#### ANCHOR_LOT_START__data
-| key 33			| type	| value |
-| - | - | - |
-| asset_icon		| str	| https://i0.hdslb.com/bfs/live/627ee2d9e71c682810e7dc4400d5ae2713442c02.png |
-| asset_icon_webp	| str	| https://i0.hdslb.com/bfs/live/b47453a0d42f30673b6d030159a96d07905d677a.webp |
-| award_image		| str	|  |
-| award_name		| str	| 礼物名称 |
-| award_num			| num	| 礼物数量 |
-| award_type		| num	| 0 |
-| cur_gift_num		| num	| 0 |
-| current_time		| num	| 当前时间UnixTimeStamp(秒) |
-| danmu				| str	| 弹幕口令 |
-| danmu_new			| array	|  |
-| danmu_type		| num	| 0 |
-| gift_id			| num	| 0 |
-| gift_name			| str	|  |
-| gift_num			| num	| 1 |
-| gift_price		| num	| 0 |
-| goaway_time		| num	|  |
-| goods_id			| num	|  |
-| id				| num	| 抽奖id |
-| is_broadcast		| num	| 1 |
-| join_type			| num	| 0 |
-| lot_status		| num	| 0 |
-| max_time			| num	| 开奖时间 |
-| require_text		| str	| "抽奖条件：关注主播" |
-| require_type		| num	| 抽奖条件 |
-| require_value		| num	| 0 |
-| room_id			| num	| 直播间id |
-| send_gift_ensure	| num	|  |
-| show_panel		| num	|  |
-| start_dont_popup	| num	|  |
-| status			| num	|  |
-| time				| num	| 剩余时间(秒) |
-| url				| str	| https://live.bilibili.com/p/html/live-lottery/anchor-join.html?is_live_half_webview=1&hybrid_biz=live-lottery-anchor&hybrid_half_ui=1,5,100p,100p,000000,0,30,0,0,1;2,5,100p,100p,000000,0,30,0,0,1;3,5,100p,100p,000000,0,30,0,0,1;4,5,100p,100p,000000,0,30,0,0,1;5,5,100p,100p,000000,0,30,0,0,1;6,5,100p,100p,000000,0,30,0,0,1;7,5,100p,100p,000000,0,30,0,0,1;8,5,100p,100p,000000,0,30,0,0,1 |
-| web_url			| str	| https://live.bilibili.com/p/html/live-lottery/anchor-join.html |
-
 ### DANMU_AGGREGATION
-抽奖通知，每1秒更新一次，每个抽奖最多发送`max_time-1`个包
+抽奖通知，每秒最多更新一次，每个抽奖最多发送`max_time-1`个包 `天选时刻&红包`可以同时存在  
 | key | type | value |
 | - | - | - |
 | cmd	| str	| "DANMU_AGGREGATION" |
@@ -1147,16 +1077,16 @@ SC 删除，约每110秒更新
 | key					| type	| value |
 | :- | - | - |
 | activity_identity		| str	| 抽奖id |
-| activity_source		| num	| 1 |
+| activity_source		| num	| 1:天选时刻 2:礼物红包 |
 | aggregation_cycle		| num	| 1 |
-| aggregation_icon		| str	| "https://i0.hdslb.com/bfs/live/c8fbaa863bf9099c26b491d06f9efe0c20777721.png" |
+| aggregation_icon		| str	| 天选时刻："https://i0.hdslb.com/bfs/live/c8fbaa863bf9099c26b491d06f9efe0c20777721.png" <br> 礼物红包："https://i0.hdslb.com/bfs/live/024f7473753c7cc993413e05c69e8b960086e68f.png"|
 | aggregation_num		| num	| 抽奖人数显示，最大999 |
 | broadcast_msg_type	| num	| 0 |
 | dmscore				| num	| 144 |
-| msg					| str	| 弹幕口令 |
+| msg					| str	| 天选时刻：弹幕口令 <br><br> 礼物红包:<br>"老板大气！点点红包抽礼物"<br>"点点红包，关注主播抽礼物～"<br>"喜欢主播加关注，点点红包抽礼物"<br>"红包抽礼物，开启今日好运！"<br>"中奖喷雾！中奖喷雾！" |
 | show_rows				| num	| 1 |
 | show_time				| num	| 2 |
-| timestamp				| num	| 当前时间UnixTimeStamp(秒) |
+| timestamp				| num	| 当前时间TimeStamp(秒) |
 
 ### SPECIAL_GIFT
 开始：实时  
@@ -1195,8 +1125,72 @@ SC 删除，约每110秒更新
 | add	| array	| 用户uid |
 | del	| array	| 用户uid |
 
+### ANCHOR_LOT_CHECKSTATUS
+抽奖(天选时刻)检查？
+| key | type | value |
+| - | - | - |
+| cmd	| str	| "ANCHOR_LOT_CHECKSTATUS" |
+| data	| obj	| |
+#### ANCHOR_LOT_CHECKSTATUS__data
+| key 3,5			| type	| value |
+| - | - | - |
+| id				| num	| 抽奖id |
+| ？reject_danmu	| null	| ?null |
+| ？reject_reason	| str	| ？拒绝理由 |
+| status			| num	| ？4:通过 |
+| uid				| num	| 主播uid |
+
+### ANCHOR_LOT_START
+抽奖(天选时刻)开始
+| key | type | value |
+| - | - | - |
+| cmd	| str	| "ANCHOR_LOT_START" |
+| data	| obj	| |
+#### ANCHOR_LOT_START__data
+| key 33			| type	| value |
+| - | - | - |
+| asset_icon		| str	| https://i0.hdslb.com/bfs/live/627ee2d9e71c682810e7dc4400d5ae2713442c02.png |
+| asset_icon_webp	| str	| https://i0.hdslb.com/bfs/live/b47453a0d42f30673b6d030159a96d07905d677a.webp |
+| award_image		| str	|  |
+| award_name		| str	| 礼物名称 |
+| award_num			| num	| 礼物数量[1,100] |
+| award_type		| num	| 0 |
+| cur_gift_num		| num	| 0 |
+| current_time		| num	| 当前时间TimeStamp(秒) |
+| danmu				| str	| 弹幕口令[0,15] |
+| danmu_new			| array	| obj |
+| danmu_type		| num	| `danmu_type: 0 === this.danmuType ? "文案弹幕" : "表情弹幕"` |
+| gift_id			| num	| 0 |
+| gift_name			| str	| 礼物抽奖：抽奖条件 |
+| gift_num			| num	| 礼物抽奖：数量 |
+| gift_price		| num	| 礼物抽奖：礼物价格(RMB*1000) |
+| goaway_time		| num	| 180? |
+| goods_id			| num	|  |
+| id				| num	| 抽奖id |
+| is_broadcast		| num	| 1 |
+| join_type			| num	| ？ |
+| lot_status		| num	| 0:开始 1:正在抽奖 2:开奖 |
+| max_time			| num	| 开奖时间(300,600,900)秒 |
+| require_text		| str	| "抽奖条件: 关注主播""至少成为主播的舰长/提督/总督" |
+| require_type		| num	| 抽奖条件 1:礼物抽奖 2: 3:大航海 ~~4:UL?~~ |
+| require_value		| num	| [0,1]关注状态/[1,20]粉丝牌等级/[1,3]舰长等级 |
+| room_id			| num	| 直播间id |
+| send_gift_ensure	| num	| 0 |
+| show_panel		| num	| 1 |
+| start_dont_popup	| num	| 0 |
+| status			| num	| 1 |
+| time				| num	| 剩余时间(秒) |
+| url				| str	| https://live.bilibili.com/p/html/live-lottery/anchor-join.html?is_live_half_webview=1&hybrid_biz=live-lottery-anchor&hybrid_half_ui=1,5,100p,100p,000000,0,30,0,0,1;2,5,100p,100p,000000,0,30,0,0,1;3,5,100p,100p,000000,0,30,0,0,1;4,5,100p,100p,000000,0,30,0,0,1;5,5,100p,100p,000000,0,30,0,0,1;6,5,100p,100p,000000,0,30,0,0,1;7,5,100p,100p,000000,0,30,0,0,1;8,5,100p,100p,000000,0,30,0,0,1 |
+| web_url			| str	| https://live.bilibili.com/p/html/live-lottery/anchor-join.html |
+#### ANCHOR_LOT_START__data__danmu_new
+| key 3			| type	| value |
+| - | - | - |
+| danmu				| str	| 弹幕口令[0,15] |
+| danmu_view		| str	|  |
+| reject			| bool	|  |
+
 ### ANCHOR_LOT_END
-抽奖(天选时刻) 结束
+抽奖(天选时刻)结束
 | key | type | value |
 | - | - | - |
 | cmd	| str	| "ANCHOR_LOT_END" |
@@ -1207,7 +1201,7 @@ SC 删除，约每110秒更新
 | id	| num	| 抽奖id |
 
 ### ANCHOR_LOT_AWARD
-抽奖(天选时刻) 中奖名单
+抽奖(天选时刻) 中奖名单，在`ANCHOR_LOT_END`后约`1~180ms`
 | key | type | value |
 | - | - | - |
 | cmd	| str	| "ANCHOR_LOT_AWARD" |
@@ -1231,7 +1225,7 @@ SC 删除，约每110秒更新
 | uid	| num	| uid |
 | uname	| num	| 用户名 |
 | face	| num	| 头像 |
-| level	| num	| 直播观众等级 |
+| level	| num	| 直播观众等级 UL |
 | color	| num	| 直播观众等级_颜色 int(RGB24) |
 | num	| num	| 数量 |
 
@@ -1244,19 +1238,20 @@ SC 删除，约每110秒更新
 | key		| type	| value |
 | - | - | - |
 | uid		| num	| 主播uid |
-| rank		| num	| [1-100] |
-| countdown	| num	| [3600] |
-| timestamp	| num	| 当前时间UnixTimeStamp(秒) |
-| cache_key	| str	| `f"rank_change:{256bit}"` |
+| rank		| num	| [0-100] |
+| countdown	| num	| [0,3600] |
+| timestamp	| num	| 当前时间TimeStamp(秒) |
+| cache_key	| str	| `f"rank_change:{hex_256bit}"` |
 
 ### PREPARING
-结束直播
+？结束直播
 | key		| type	| value |
 | - | - | - |
 | cmd		| str	| "PREPARING" |
 | roomid	| str	| 直播间id |
 
 ### DANMU_MSG
+弹幕！
 | key | type | value |
 | - | - | - |
 | cmd	| str	| "DANMU_MSG" |
@@ -1287,8 +1282,8 @@ SC 删除，约每110秒更新
 | 0:1	| num		| 弹幕位置 |
 | 0:2	| num		| 弹幕字体大小 |
 | 0:3	| num		| 弹幕颜色 |
-| 0:4	| num		| UnixTimeStamp(毫秒) |
-| 0:5	| num		| ？用户发送时间UnixTimeStamp(秒) |
+| 0:4	| num		| TimeStamp(毫秒) |
+| 0:5	| num		| ？用户发送时间TimeStamp(秒) |
 | 0:6	| num		| 0? |
 | 0:7	| str		| HEX:crc32(uid) |
 | 0:8	| num		| ? |
@@ -1377,6 +1372,7 @@ SC 删除，约每110秒更新
 | 3:12	| num		| 主播uid |
 
 ### CUT_OFF
+切断直播！
 **根据JavaScript文件分析**
 | key | type | value |
 | - | - | - |
@@ -1420,6 +1416,108 @@ SC 删除，约每110秒更新
 | up_uid				|  | |
 | add_score				|  | |
 
+### SHOPPING_CART_SHOW
+？购物车  
+开播后约30ms内发送`status=1`的包
+| key | type | value |
+| - | - | - |
+| cmd	| str	| "SHOPPING_CART_SHOW" |
+| data	| obj	| |
+#### SHOPPING_CART_SHOW__data
+| key                   | type	| value |
+| - | - | - |
+| status | num | |
+
+### WIDGET_BANNER
+2023春节 9046样本
+| key | type | value |
+| - | - | - |
+| cmd	| str	| "WIDGET_BANNER" |
+| data	| obj	| |
+#### WIDGET_BANNER__data
+| key			| type	| value |
+| - | - | - |
+| timestamp		| num	| 当前时间TimeStamp(秒) |
+| widget_list	| obj	| "***ID***":{} |
+#### WIDGET_BANNER__data__widget_list__ID
+| key 15			| type	| value |
+| - | - | - |
+| id				| num	| ***ID*** |
+| title				| str	| 307:"争先拜大年" 309:"花灯闹元宵" |
+| cover				| str	| "" |
+| web_cover			| str	| "" |
+| tip_text			| str	| 307:"春节活动" 309:"花灯闹元宵" |
+| tip_text_color	| str	| 307:"#FFFFFF" 309:"#ffeaa0" |
+| tip_bottom_color	| str	| 307:"#8F0606" 309:"#cf442d" |
+| jump_url			| str	|  |
+| url				| str	| "" |
+| stay_time			| num	| 5 |
+| site				| num	| 1 |
+| platform_in		| arr	| ["live","blink","live_link","web","pc_link"] |
+| type				| str	| 1 |
+| band_id			| num	| 307:101566 309:101598 |
+| sub_key			| str	| "" |
+| sub_data			| str	| urlencode(json) |
+| is_add			| bool	| true |
+```py
+id_307="spring_festival_2023"
+id_309="lantern_festival_2023"
+jump_url=f"https://live.bilibili.com/activity/live-activity-battle/index.html?app_name={id}&is_live_half_webview=1&hybrid_rotate_d=1&hybrid_half_ui=1,3,100p,70p,0,0,0,0,12,0;2,2,375,100p,0,0,0,0,12,0;3,3,100p,70p,0,0,0,0,12,0;4,2,375,100p,0,0,0,0,12,0;5,3,100p,70p,0,0,0,0,12,0;6,3,100p,70p,0,0,0,0,12,0;7,3,100p,70p,0,0,0,0,12,0;8,3,100p,70p,0,0,0,0,12,0&room_id={直播间id}&uid={uid}#/"
+```
+
+### GOTO_BUY_FLOW
+移动端 购买装扮
+| key | type | value |
+| - | - | - |
+| cmd	| str	| "GOTO_BUY_FLOW" |
+| data	| obj	| |
+#### GOTO_BUY_FLOW__data
+| key                   | type	| value |
+| - | - | - |
+| text | str | "X**正在去买" |
+
+### RECOMMEND_CARD
+| key | type | value |
+| :- | - | - |
+| cmd	| str	| "RECOMMEND_CARD" |
+| data	| obj	| |
+#### RECOMMEND_CARD__data
+| key				| type | value |
+| - | - | - |
+| title_icon | str | https://i0.hdslb.com/bfs/live/3053f47729c4974b1cfe4cd98482c28d4e23a1c2.png |
+| recommend_list	| array	| obj[] |
+| timestamp			| num	| 当前时间TimeStamp(秒) |
+#### RECOMMEND_CARD__data__recommend_list__0
+```json
+{"shopping_card_detail":{"goods_id":"{}","goods_name":"{装扮名称}","goods_price":"{最低价格}","goods_max_price":"","sale_status":0,"coupon_name":"","goods_icon":"http://i0.hdslb.com/bfs/garb/item/7b805767338eb54bbfa324e925d08cbddc88f496.jpg","goods_status":1,"source":5,"h5_url":"https://www.bilibili.com/h5/mall/suit/detail?id=32833&navhide=1&from_id=480432362&s_video=0&f_source=zhibo&is_live_half_webview=1&hybrid_rotate_d=0&hybrid_half_ui=1,3,100p,70p,0,0,30,100,12,0;2,2,375,100p,0,0,30,100,0,0;3,3,100p,70p,0,0,30,100,12,0;4,2,375,100p,0,0,30,100,0,0;5,3,100p,70p,0,0,30,100,12,0;6,3,100p,70p,0,0,30,100,12,0;7,3,100p,70p,0,0,30,100,12,0&web_type=1&source={source}&goods_id={goods_id}#/virdress","jump_link":"","schema_url":"","is_pre_sale":0,"activity_info":null,"pre_sale_info":null,"early_bird_info":null,"timestamp":当前时间,"coupon_discount_price":"","selling_point":"","hot_buy_num":xxxx,"gift_buy_info":null,"is_exclusive":false,"coupon_id":"","reward_info":null,"goods_tag_list":null,"virtual_extra_info":{"goods_type":1,"web_container_type":1},"price_info":{"normal":{"prefix_price":"","sale_price":"{最低价格}","suffix_price":"起","strock_price":"","sale_start_time":xxxx,"sale_end_time":0},"activity":null},"btn_info":{"card_btn_status":1,"card_btn_title":"去抢购","card_btn_style":1},"goods_sort_id":0},"recommend_card_extra":null}
+```
+
+### COMMON_NOTICE_DANMAKU
+| key | type | value |
+| - | - | - |
+| cmd	| str	| "COMMON_NOTICE_DANMAKU" |
+| data	| obj	| |
+#### COMMON_NOTICE_DANMAKU__data
+| key                   | type	| value |
+| - | - | - |
+| data |  | |
+```json
+{"cmd":"COMMON_NOTICE_DANMAKU","data":{"biz_id":0,"content_segments":[{"font_color":"#998EFF","font_color_dark":"#998EFF","highlight_font_color":"#998EFF","highlight_font_color_dark":"#998EFF","text":"<%恭喜主播 {XXXX} %>成为 上小时人气榜 第 {yyyy} 名！","type":1}],"danmaku_style":{"background_color":[],"background_color_dark":[]},"danmaku_uri":"","dmscore":144,"terminals":[4]}}
+{"cmd":"COMMON_NOTICE_DANMAKU","data":{"biz_id":0,"content_segments":[{"font_color":"#998EFF","font_color_dark":"#998EFF","text":"恭喜主播 {XXXX} 成为{ZZZZ}第{YYYY}名","type":1}],"danmaku_style":{"background_color":null,"background_color_dark":null},"danmaku_uri":"","dmscore":144,"terminals":[4]}}
+{"cmd":"COMMON_NOTICE_DANMAKU","data":{"biz_id":0,"content_segments":[{"font_color":"#99A5AE","font_color_dark":"#99A5AE","text":"恭喜主播 {XXXX} 成为{ZZZZ}当前第{YYYY}名","type":1}],"danmaku_style":{"background_color":null,"background_color_dark":null},"danmaku_uri":"","dmscore":144,"terminals":[5]}}
+{"cmd":"COMMON_NOTICE_DANMAKU","data":{"biz_id":0,"content_segments":[{"font_color":"#CCCCCC","font_color_dark":"#CCCCCC","text":"恭喜主播 {XXXX} ","type":1},{"font_color":"#F494AF","font_color_dark":"#F494AF","text":"成为{ZZZZ}当前第{YYYY}名","type":1}],"danmaku_style":{"background_color":null,"background_color_dark":null},"danmaku_uri":"","dmscore":144,"terminals":[1,2,3]}}
+{"cmd":"COMMON_NOTICE_DANMAKU","data":{"biz_id":0,"content_segments":[{"font_color":"#FFC73E","font_color_dark":"#FFC73E","highlight_font_color":"#CCCCCC","highlight_font_color_dark":"#CCCCCC","text":"<%恭喜主播 {XXXX} %>成为 上小时人气榜 第 {YYYY} 名！","type":1}],"danmaku_style":{"background_color":["#66000000"],"background_color_dark":["#66000000"]},"danmaku_uri":"","dmscore":144,"terminals":[1,2,3,5]}}
+{"cmd":"COMMON_NOTICE_DANMAKU","data":{"content_segments":[{"background_color":null,"background_color_dark":null,"font_bold":false,"font_color":"#F294AE","font_color_dark":"","highlight_font_color":"","highlight_font_color_dark":"","img_height":0,"img_url":"","img_width":0,"text":"恭喜{XXXX}成为红包收割机虚拟星耀赛道第{Y}名！","type":1}],"danmaku_style":{"background_color":null,"background_color_dark":null},"dmscore":144,"terminals":[1,2,3,4,5]}}
+{"cmd":"COMMON_NOTICE_DANMAKU","data":{"content_segments":[{"background_color":null,"background_color_dark":null,"font_bold":false,"font_color":"#F294AE","font_color_dark":"","highlight_font_color":"","highlight_font_color_dark":"","img_height":0,"img_url":"","img_width":0,"text":"恭喜{XXXX}荣获上一个锦鲤小时榜冠军，获得{Y}倍加成，价值{Z}元红包雨！","type":1}],"danmaku_style":{"background_color":null,"background_color_dark":null},"dmscore":144,"terminals":[1,2,3,4,5]}}
+{"cmd":"COMMON_NOTICE_DANMAKU","data":{"content_segments":[{"background_color":null,"background_color_dark":null,"font_bold":false,"font_color":"#F294AE","font_color_dark":"","highlight_font_color":"","highlight_font_color_dark":"","img_height":0,"img_url":"","img_width":0,"text":"距离锦鲤小时榜结束还有5分钟，最高10倍的锦鲤红包就在前方！","type":1},{"background_color":["#FA729A"],"background_color_dark":null,"font_bold":false,"font_color":"#FFFFFF","font_color_dark":"","highlight_font_color":"","highlight_font_color_dark":"","img_height":0,"img_url":"","img_width":0,"text":"【前往查看】","type":3,"uri":"https://live.bilibili.com/activity/live-activity-battle/index.html?app_name=spring_festival_2023&tab=rank&hour=1&with_menu=0&show_close=0&is_live_half_webview=1&hybrid_rotate_d=1&hybrid_half_ui=1,3,100p,70p,0,0,0,0,12,0;2,2,375,100p,0,0,0,0,12,0;3,3,100p,70p,0,0,0,0,12,0;4,2,375,100p,0,0,0,0,12,0;5,3,100p,70p,0,0,0,0,12,0;6,3,100p,70p,0,0,0,0,12,0;7,3,100p,70p,0,0,0,0,12,0;8,3,100p,70p,0,0,0,0,12,0&room_id=21013446&uid=387636363#/"}],"danmaku_style":{"background_color":null,"background_color_dark":null},"dmscore":144,"terminals":[1,2,3,4,5]}}
+{"cmd":"COMMON_NOTICE_DANMAKU","data":{"content_segments":[{"font_color":"#61666d","font_color_dark":"#a2a7ae","highlight_font_color":"#FFB027","highlight_font_color_dark":"#FFB027","text":"<%{YYYY}%> 被点亮啦！恭喜 <%{XXXX}%> 成为星球守护者！","type":1}],"dmscore":144,"terminals":[4,5]}}
+{"cmd":"COMMON_NOTICE_DANMAKU","data":{"content_segments":[{"font_color":"#FB7299","text":"{XXXX} 送出的红包为主播新增{YYYY}个粉丝！","type":1}],"dmscore":144,"terminals":[2,3,5]}}
+{"cmd":"COMMON_NOTICE_DANMAKU","data":{"content_segments":[{"font_color":"#FB7299","text":"花灯闹元宵限时任务：任务即将结束，抓紧完成获取{x}红包奖励吧！未完成任务将无法获得奖励","type":1}],"dmscore":144,"terminals":[1,2,3,4,5]}}
+{"cmd":"COMMON_NOTICE_DANMAKU","data":{"content_segments":[{"font_color":"#FB7299","text":"{XXXX}在元气赏中五连抽！送出了好多礼物！","type":1}],"dmscore":144,"terminals":[1,2,3,4,5]}}
+{"cmd":"COMMON_NOTICE_DANMAKU","data":{"content_segments":[{"font_color":"#FB7299","text":"新春限时任务：恭喜主播完成限时任务，直播间派发{XXX}元红包，速抢手慢无！新任务将在30s后开启","type":1}],"dmscore":144,"terminals":[1,2,3,4,5]}}
+{"cmd":"COMMON_NOTICE_DANMAKU","data":{"content_segments":[{"font_color":"#FB7299","text":"新春限时任务：任务即将结束，抓紧完成获取{XXX}元红包奖励吧！未完成任务将无法获得奖励","type":1}],"dmscore":144,"terminals":[1,2,3,4,5]}}
+{"cmd":"COMMON_NOTICE_DANMAKU","data":{"content_segments":[{"font_color":"#FFFFFF","font_color_dark":"#FFFFFF","highlight_font_color":"#FFB027","highlight_font_color_dark":"#FFB027","text":"<%{YYYY}%> 被点亮啦！恭喜 <%{XXXX}%> 成为星球守护者！","type":1}],"dmscore":144,"terminals":[1,2,3]}}
+```
 ### XXXXXXXXXXX
 | key | type | value |
 | - | - | - |
@@ -1435,12 +1533,13 @@ SC 删除，约每110秒更新
 | - | - | - |
 | dmscore			| num	| 偶数? |
 | guard_level		| num	| 舰长等级 <br> 0:无 <br> 1:总督 <br> 2:提督 <br> 3:舰长 |
-| privilege_type	| num	| 2:提督 3:舰长 |
+| privilege_type	| num	| ！待确定！2:提督 3:舰长 |
+| lot_status		| num	| 抽奖状态 0:开始 2:结束 |
 
 uid hash 示例
 | type				| value		| 备注 |
 | -	| - | - |
-| uid　　　　			| `12345678`	|
+| uid　　　　			|	`12345678`	|
 | 十六进制hash			|	`"9ae0daaf"`	|crc32
 | 十进制　hash			|	`2598427311`	|十六进制转十进制
 | 字符串型十进制　hash	|	`"2598427311"`	|十六进制转十进制转字符串
@@ -1497,372 +1596,6 @@ for i in range(1,len(a)):print(str(a[i]-a[i-1])[0:4])
 | 37-40 舰长	| 16736523	| 16736523	| 16765060	| 6809855	|
 | 37-40 提督	| 16736523	| 16736523	| 16765060	| 16771156	|
 | 37-40 总督	| 16736523	| 16736523	| 16765060	| 16771156	|
-```css
-getMasterLevelStyl(level)
-	if level <= 10
-		(#61C05A)
-	else if level <= 20
-		(#5896DE)
-	else if level <= 30
-		(#A068F1)
-	else if level <= 40
-		(#FF86B2)
-
-getFansLevelStyl(level)
-	if level <= 4
-		(#61DDCB)
-	else if level <= 8
-		(#5896DE)
-	else if level <= 12
-		(#A068F1)
-	else if level <= 16
-		(#FF86B2)
-	else if level <= 20
-		(#f6be18)
-	else if level <= 40
-		(#f6be18)
-
-getNewFansBgColorStart(level)
-	if level <= 24
-		(#529d92)
-	else if level <= 28
-		(#7680a0)
-	else if level <= 32
-		(#7a6dca)
-	else if level <= 36
-		(#c65d8b)
-	else if level <= 40
-		(#fead5d)
-
-getNewFansBgColorEnd(level)
-	if level <= 24
-		(#1a544b)
-	else if level <= 28
-		(#414967)
-	else if level <= 32
-		(#341160)
-	else if level <= 36
-		(#851332)
-	else if level <= 40
-		(#ff6913)
-
-getNewFansBorderColor(level)
-	if level <= 24
-		(#67E8FF)
-	else if level <= 28
-		(#67E8FF)
-	else if level <= 32
-		(#FFE854)
-	else if level <= 36
-		(#FF7AC8)
-	else if level <= 40
-		(#FFE854)
-
-getNewFansTxtColor(level)
-	if level <= 24
-		(#414967)
-	else if level <= 28
-		(#414967)
-	else if level <= 32
-		(#4B2F83)
-	else if level <= 36
-		(#B74C77)
-	else if level <= 40
-		(#FA8511)
-.user-level-icon,
-.up-level-icon
-	width: 40px
-	height: 16px
-	border-radius: 2px
-	border: 1px solid
-	display: inline-block
-	box-sizing: border-box
-	line-height: 14px
-	text-align: center
-	vertical-align: middle
-	font-style: normal
-	font-size: 12px
-	font-weight: normal
-
-.fans-level-icon
-	width: 54px
-	height: 16px
-	border-radius: 2px
-	border: 1px solid
-	display: inline-block
-	box-sizing: border-box
-	line-height: 14px
-	text-align: center
-	vertical-align: middle
-	font-style: normal
-	font-size: 12px
-	font-weight: normal
-
-.user-level-icon
-	for i in (1..60)
-		&.lv-{i}
-			color: getUserLevelStyl(i)
-			border-color: getUserLevelStyl(i)
-.up-level-icon
-	for i in (1..60)
-		&.lv-{i}
-			color: getMasterLevelStyl(i)
-			border-color: getMasterLevelStyl(i)
-
-.fans-level-icon
-	for i in (1..20)
-		&.lv-{i}
-			position: relative
-			color: getFansLevelStyl(i)
-			border-color: getFansLevelStyl(i)
-			background-color getFansLevelStyl(i)
-
-			&:after
-				right: 0
-				background: #FFF
-				position: absolute
-				height: 14px
-				width: 14px
-				display: inline-block
-				content: \" i \"
-	for i in (21..40)
-		&.lv-{i}
-			position: relative
-			color: getNewFansTxtColor(i)
-			border: 1px solid getNewFansBgColorStart(i)
-			background-image: linear-gradient(270deg, getNewFansBgColorStart(i) 0%, getNewFansBgColorEnd(i) 100%)
-
-			&:after
-				right: 0
-				background: #FFF
-				position: absolute
-				height: 14px
-				width: 16px
-				display: inline-block
-				content: \" i \"
-
-
-
-// WEBPACK FOOTER //
-// ./src/style/src/style/level.styl
-```
-```css
-.gray-9 { color: rgb(153, 153, 153); }
-.gray-6 { color: rgb(102, 102, 102); }
-.blue { color: rgb(35, 174, 230); }
-.black { color: rgb(35, 35, 35); }
-.pink { color: rgb(255, 148, 177); }
-.user-level-icon.lv-1 { color: rgb(150, 150, 150); border-color: rgb(150, 150, 150); }
-.user-level-icon.lv-2 { color: rgb(150, 150, 150); border-color: rgb(150, 150, 150); }
-.user-level-icon.lv-3 { color: rgb(150, 150, 150); border-color: rgb(150, 150, 150); }
-.user-level-icon.lv-4 { color: rgb(150, 150, 150); border-color: rgb(150, 150, 150); }
-.user-level-icon.lv-5 { color: rgb(150, 150, 150); border-color: rgb(150, 150, 150); }
-.user-level-icon.lv-6 { color: rgb(150, 150, 150); border-color: rgb(150, 150, 150); }
-.user-level-icon.lv-7 { color: rgb(150, 150, 150); border-color: rgb(150, 150, 150); }
-.user-level-icon.lv-8 { color: rgb(150, 150, 150); border-color: rgb(150, 150, 150); }
-.user-level-icon.lv-9 { color: rgb(150, 150, 150); border-color: rgb(150, 150, 150); }
-.user-level-icon.lv-10 { color: rgb(150, 150, 150); border-color: rgb(150, 150, 150); }
-.user-level-icon.lv-11 { color: rgb(97, 192, 90); border-color: rgb(97, 192, 90); }
-.user-level-icon.lv-12 { color: rgb(97, 192, 90); border-color: rgb(97, 192, 90); }
-.user-level-icon.lv-13 { color: rgb(97, 192, 90); border-color: rgb(97, 192, 90); }
-.user-level-icon.lv-14 { color: rgb(97, 192, 90); border-color: rgb(97, 192, 90); }
-.user-level-icon.lv-15 { color: rgb(97, 192, 90); border-color: rgb(97, 192, 90); }
-.user-level-icon.lv-16 { color: rgb(97, 192, 90); border-color: rgb(97, 192, 90); }
-.user-level-icon.lv-17 { color: rgb(97, 192, 90); border-color: rgb(97, 192, 90); }
-.user-level-icon.lv-18 { color: rgb(97, 192, 90); border-color: rgb(97, 192, 90); }
-.user-level-icon.lv-19 { color: rgb(97, 192, 90); border-color: rgb(97, 192, 90); }
-.user-level-icon.lv-20 { color: rgb(97, 192, 90); border-color: rgb(97, 192, 90); }
-.user-level-icon.lv-21 { color: rgb(88, 150, 222); border-color: rgb(88, 150, 222); }
-.user-level-icon.lv-22 { color: rgb(88, 150, 222); border-color: rgb(88, 150, 222); }
-.user-level-icon.lv-23 { color: rgb(88, 150, 222); border-color: rgb(88, 150, 222); }
-.user-level-icon.lv-24 { color: rgb(88, 150, 222); border-color: rgb(88, 150, 222); }
-.user-level-icon.lv-25 { color: rgb(88, 150, 222); border-color: rgb(88, 150, 222); }
-.user-level-icon.lv-26 { color: rgb(88, 150, 222); border-color: rgb(88, 150, 222); }
-.user-level-icon.lv-27 { color: rgb(88, 150, 222); border-color: rgb(88, 150, 222); }
-.user-level-icon.lv-28 { color: rgb(88, 150, 222); border-color: rgb(88, 150, 222); }
-.user-level-icon.lv-29 { color: rgb(88, 150, 222); border-color: rgb(88, 150, 222); }
-.user-level-icon.lv-30 { color: rgb(88, 150, 222); border-color: rgb(88, 150, 222); }
-.user-level-icon.lv-31 { color: rgb(160, 104, 241); border-color: rgb(160, 104, 241); }
-.user-level-icon.lv-32 { color: rgb(160, 104, 241); border-color: rgb(160, 104, 241); }
-.user-level-icon.lv-33 { color: rgb(160, 104, 241); border-color: rgb(160, 104, 241); }
-.user-level-icon.lv-34 { color: rgb(160, 104, 241); border-color: rgb(160, 104, 241); }
-.user-level-icon.lv-35 { color: rgb(160, 104, 241); border-color: rgb(160, 104, 241); }
-.user-level-icon.lv-36 { color: rgb(160, 104, 241); border-color: rgb(160, 104, 241); }
-.user-level-icon.lv-37 { color: rgb(160, 104, 241); border-color: rgb(160, 104, 241); }
-.user-level-icon.lv-38 { color: rgb(160, 104, 241); border-color: rgb(160, 104, 241); }
-.user-level-icon.lv-39 { color: rgb(160, 104, 241); border-color: rgb(160, 104, 241); }
-.user-level-icon.lv-40 { color: rgb(160, 104, 241); border-color: rgb(160, 104, 241); }
-.user-level-icon.lv-41 { color: rgb(255, 134, 178); border-color: rgb(255, 134, 178); }
-.user-level-icon.lv-42 { color: rgb(255, 134, 178); border-color: rgb(255, 134, 178); }
-.user-level-icon.lv-43 { color: rgb(255, 134, 178); border-color: rgb(255, 134, 178); }
-.user-level-icon.lv-44 { color: rgb(255, 134, 178); border-color: rgb(255, 134, 178); }
-.user-level-icon.lv-45 { color: rgb(255, 134, 178); border-color: rgb(255, 134, 178); }
-.user-level-icon.lv-46 { color: rgb(255, 134, 178); border-color: rgb(255, 134, 178); }
-.user-level-icon.lv-47 { color: rgb(255, 134, 178); border-color: rgb(255, 134, 178); }
-.user-level-icon.lv-48 { color: rgb(255, 134, 178); border-color: rgb(255, 134, 178); }
-.user-level-icon.lv-49 { color: rgb(255, 134, 178); border-color: rgb(255, 134, 178); }
-.user-level-icon.lv-50 { color: rgb(255, 134, 178); border-color: rgb(255, 134, 178); }
-.user-level-icon.lv-51 { color: rgb(255, 159, 61); border-color: rgb(255, 159, 61); }
-.user-level-icon.lv-52 { color: rgb(255, 159, 61); border-color: rgb(255, 159, 61); }
-.user-level-icon.lv-53 { color: rgb(255, 159, 61); border-color: rgb(255, 159, 61); }
-.user-level-icon.lv-54 { color: rgb(255, 159, 61); border-color: rgb(255, 159, 61); }
-.user-level-icon.lv-55 { color: rgb(255, 159, 61); border-color: rgb(255, 159, 61); }
-.user-level-icon.lv-56 { color: rgb(255, 159, 61); border-color: rgb(255, 159, 61); }
-.user-level-icon.lv-57 { color: rgb(255, 159, 61); border-color: rgb(255, 159, 61); }
-.user-level-icon.lv-58 { color: rgb(255, 159, 61); border-color: rgb(255, 159, 61); }
-.user-level-icon.lv-59 { color: rgb(255, 159, 61); border-color: rgb(255, 159, 61); }
-.user-level-icon.lv-60 { color: rgb(255, 159, 61); border-color: rgb(255, 159, 61); }
-.up-level-icon.lv-1 { color: rgb(97, 192, 90); border-color: rgb(97, 192, 90); }
-.up-level-icon.lv-2 { color: rgb(97, 192, 90); border-color: rgb(97, 192, 90); }
-.up-level-icon.lv-3 { color: rgb(97, 192, 90); border-color: rgb(97, 192, 90); }
-.up-level-icon.lv-4 { color: rgb(97, 192, 90); border-color: rgb(97, 192, 90); }
-.up-level-icon.lv-5 { color: rgb(97, 192, 90); border-color: rgb(97, 192, 90); }
-.up-level-icon.lv-6 { color: rgb(97, 192, 90); border-color: rgb(97, 192, 90); }
-.up-level-icon.lv-7 { color: rgb(97, 192, 90); border-color: rgb(97, 192, 90); }
-.up-level-icon.lv-8 { color: rgb(97, 192, 90); border-color: rgb(97, 192, 90); }
-.up-level-icon.lv-9 { color: rgb(97, 192, 90); border-color: rgb(97, 192, 90); }
-.up-level-icon.lv-10 { color: rgb(97, 192, 90); border-color: rgb(97, 192, 90); }
-.up-level-icon.lv-11 { color: rgb(88, 150, 222); border-color: rgb(88, 150, 222); }
-.up-level-icon.lv-12 { color: rgb(88, 150, 222); border-color: rgb(88, 150, 222); }
-.up-level-icon.lv-13 { color: rgb(88, 150, 222); border-color: rgb(88, 150, 222); }
-.up-level-icon.lv-14 { color: rgb(88, 150, 222); border-color: rgb(88, 150, 222); }
-.up-level-icon.lv-15 { color: rgb(88, 150, 222); border-color: rgb(88, 150, 222); }
-.up-level-icon.lv-16 { color: rgb(88, 150, 222); border-color: rgb(88, 150, 222); }
-.up-level-icon.lv-17 { color: rgb(88, 150, 222); border-color: rgb(88, 150, 222); }
-.up-level-icon.lv-18 { color: rgb(88, 150, 222); border-color: rgb(88, 150, 222); }
-.up-level-icon.lv-19 { color: rgb(88, 150, 222); border-color: rgb(88, 150, 222); }
-.up-level-icon.lv-20 { color: rgb(88, 150, 222); border-color: rgb(88, 150, 222); }
-.up-level-icon.lv-21 { color: rgb(160, 104, 241); border-color: rgb(160, 104, 241); }
-.up-level-icon.lv-22 { color: rgb(160, 104, 241); border-color: rgb(160, 104, 241); }
-.up-level-icon.lv-23 { color: rgb(160, 104, 241); border-color: rgb(160, 104, 241); }
-.up-level-icon.lv-24 { color: rgb(160, 104, 241); border-color: rgb(160, 104, 241); }
-.up-level-icon.lv-25 { color: rgb(160, 104, 241); border-color: rgb(160, 104, 241); }
-.up-level-icon.lv-26 { color: rgb(160, 104, 241); border-color: rgb(160, 104, 241); }
-.up-level-icon.lv-27 { color: rgb(160, 104, 241); border-color: rgb(160, 104, 241); }
-.up-level-icon.lv-28 { color: rgb(160, 104, 241); border-color: rgb(160, 104, 241); }
-.up-level-icon.lv-29 { color: rgb(160, 104, 241); border-color: rgb(160, 104, 241); }
-.up-level-icon.lv-30 { color: rgb(160, 104, 241); border-color: rgb(160, 104, 241); }
-.up-level-icon.lv-31 { color: rgb(255, 134, 178); border-color: rgb(255, 134, 178); }
-.up-level-icon.lv-32 { color: rgb(255, 134, 178); border-color: rgb(255, 134, 178); }
-.up-level-icon.lv-33 { color: rgb(255, 134, 178); border-color: rgb(255, 134, 178); }
-.up-level-icon.lv-34 { color: rgb(255, 134, 178); border-color: rgb(255, 134, 178); }
-.up-level-icon.lv-35 { color: rgb(255, 134, 178); border-color: rgb(255, 134, 178); }
-.up-level-icon.lv-36 { color: rgb(255, 134, 178); border-color: rgb(255, 134, 178); }
-.up-level-icon.lv-37 { color: rgb(255, 134, 178); border-color: rgb(255, 134, 178); }
-.up-level-icon.lv-38 { color: rgb(255, 134, 178); border-color: rgb(255, 134, 178); }
-.up-level-icon.lv-39 { color: rgb(255, 134, 178); border-color: rgb(255, 134, 178); }
-.up-level-icon.lv-40 { color: rgb(255, 134, 178); border-color: rgb(255, 134, 178); }
-.up-level-icon.lv-41 { }
-.up-level-icon.lv-42 { }
-.up-level-icon.lv-43 { }
-.up-level-icon.lv-44 { }
-.up-level-icon.lv-45 { }
-.up-level-icon.lv-46 { }
-.up-level-icon.lv-47 { }
-.up-level-icon.lv-48 { }
-.up-level-icon.lv-49 { }
-.up-level-icon.lv-50 { }
-.up-level-icon.lv-51 { }
-.up-level-icon.lv-52 { }
-.up-level-icon.lv-53 { }
-.up-level-icon.lv-54 { }
-.up-level-icon.lv-55 { }
-.up-level-icon.lv-56 { }
-.up-level-icon.lv-57 { }
-.up-level-icon.lv-58 { }
-.up-level-icon.lv-59 { }
-.up-level-icon.lv-60 { }
-.fans-level-icon.lv-1 { position: relative; color: rgb(97, 221, 203); border-color: rgb(97, 221, 203); background-color: rgb(97, 221, 203); }
-.fans-level-icon.lv-1::after { right: 0px; background: rgb(255, 255, 255); position: absolute; height: 14px; width: 14px; display: inline-block; content: " 1 "; }
-.fans-level-icon.lv-2 { position: relative; color: rgb(97, 221, 203); border-color: rgb(97, 221, 203); background-color: rgb(97, 221, 203); }
-.fans-level-icon.lv-2::after { right: 0px; background: rgb(255, 255, 255); position: absolute; height: 14px; width: 14px; display: inline-block; content: " 2 "; }
-.fans-level-icon.lv-3 { position: relative; color: rgb(97, 221, 203); border-color: rgb(97, 221, 203); background-color: rgb(97, 221, 203); }
-.fans-level-icon.lv-3::after { right: 0px; background: rgb(255, 255, 255); position: absolute; height: 14px; width: 14px; display: inline-block; content: " 3 "; }
-.fans-level-icon.lv-4 { position: relative; color: rgb(97, 221, 203); border-color: rgb(97, 221, 203); background-color: rgb(97, 221, 203); }
-.fans-level-icon.lv-4::after { right: 0px; background: rgb(255, 255, 255); position: absolute; height: 14px; width: 14px; display: inline-block; content: " 4 "; }
-.fans-level-icon.lv-5 { position: relative; color: rgb(88, 150, 222); border-color: rgb(88, 150, 222); background-color: rgb(88, 150, 222); }
-.fans-level-icon.lv-5::after { right: 0px; background: rgb(255, 255, 255); position: absolute; height: 14px; width: 14px; display: inline-block; content: " 5 "; }
-.fans-level-icon.lv-6 { position: relative; color: rgb(88, 150, 222); border-color: rgb(88, 150, 222); background-color: rgb(88, 150, 222); }
-.fans-level-icon.lv-6::after { right: 0px; background: rgb(255, 255, 255); position: absolute; height: 14px; width: 14px; display: inline-block; content: " 6 "; }
-.fans-level-icon.lv-7 { position: relative; color: rgb(88, 150, 222); border-color: rgb(88, 150, 222); background-color: rgb(88, 150, 222); }
-.fans-level-icon.lv-7::after { right: 0px; background: rgb(255, 255, 255); position: absolute; height: 14px; width: 14px; display: inline-block; content: " 7 "; }
-.fans-level-icon.lv-8 { position: relative; color: rgb(88, 150, 222); border-color: rgb(88, 150, 222); background-color: rgb(88, 150, 222); }
-.fans-level-icon.lv-8::after { right: 0px; background: rgb(255, 255, 255); position: absolute; height: 14px; width: 14px; display: inline-block; content: " 8 "; }
-.fans-level-icon.lv-9 { position: relative; color: rgb(160, 104, 241); border-color: rgb(160, 104, 241); background-color: rgb(160, 104, 241); }
-.fans-level-icon.lv-9::after { right: 0px; background: rgb(255, 255, 255); position: absolute; height: 14px; width: 14px; display: inline-block; content: " 9 "; }
-.fans-level-icon.lv-10 { position: relative; color: rgb(160, 104, 241); border-color: rgb(160, 104, 241); background-color: rgb(160, 104, 241); }
-.fans-level-icon.lv-10::after { right: 0px; background: rgb(255, 255, 255); position: absolute; height: 14px; width: 14px; display: inline-block; content: " 10 "; }
-.fans-level-icon.lv-11 { position: relative; color: rgb(160, 104, 241); border-color: rgb(160, 104, 241); background-color: rgb(160, 104, 241); }
-.fans-level-icon.lv-11::after { right: 0px; background: rgb(255, 255, 255); position: absolute; height: 14px; width: 14px; display: inline-block; content: " 11 "; }
-.fans-level-icon.lv-12 { position: relative; color: rgb(160, 104, 241); border-color: rgb(160, 104, 241); background-color: rgb(160, 104, 241); }
-.fans-level-icon.lv-12::after { right: 0px; background: rgb(255, 255, 255); position: absolute; height: 14px; width: 14px; display: inline-block; content: " 12 "; }
-.fans-level-icon.lv-13 { position: relative; color: rgb(255, 134, 178); border-color: rgb(255, 134, 178); background-color: rgb(255, 134, 178); }
-.fans-level-icon.lv-13::after { right: 0px; background: rgb(255, 255, 255); position: absolute; height: 14px; width: 14px; display: inline-block; content: " 13 "; }
-.fans-level-icon.lv-14 { position: relative; color: rgb(255, 134, 178); border-color: rgb(255, 134, 178); background-color: rgb(255, 134, 178); }
-.fans-level-icon.lv-14::after { right: 0px; background: rgb(255, 255, 255); position: absolute; height: 14px; width: 14px; display: inline-block; content: " 14 "; }
-.fans-level-icon.lv-15 { position: relative; color: rgb(255, 134, 178); border-color: rgb(255, 134, 178); background-color: rgb(255, 134, 178); }
-.fans-level-icon.lv-15::after { right: 0px; background: rgb(255, 255, 255); position: absolute; height: 14px; width: 14px; display: inline-block; content: " 15 "; }
-.fans-level-icon.lv-16 { position: relative; color: rgb(255, 134, 178); border-color: rgb(255, 134, 178); background-color: rgb(255, 134, 178); }
-.fans-level-icon.lv-16::after { right: 0px; background: rgb(255, 255, 255); position: absolute; height: 14px; width: 14px; display: inline-block; content: " 16 "; }
-.fans-level-icon.lv-17 { position: relative; color: rgb(246, 190, 24); border-color: rgb(246, 190, 24); background-color: rgb(246, 190, 24); }
-.fans-level-icon.lv-17::after { right: 0px; background: rgb(255, 255, 255); position: absolute; height: 14px; width: 14px; display: inline-block; content: " 17 "; }
-.fans-level-icon.lv-18 { position: relative; color: rgb(246, 190, 24); border-color: rgb(246, 190, 24); background-color: rgb(246, 190, 24); }
-.fans-level-icon.lv-18::after { right: 0px; background: rgb(255, 255, 255); position: absolute; height: 14px; width: 14px; display: inline-block; content: " 18 "; }
-.fans-level-icon.lv-19 { position: relative; color: rgb(246, 190, 24); border-color: rgb(246, 190, 24); background-color: rgb(246, 190, 24); }
-.fans-level-icon.lv-19::after { right: 0px; background: rgb(255, 255, 255); position: absolute; height: 14px; width: 14px; display: inline-block; content: " 19 "; }
-.fans-level-icon.lv-20 { position: relative; color: rgb(246, 190, 24); border-color: rgb(246, 190, 24); background-color: rgb(246, 190, 24); }
-.fans-level-icon.lv-20::after { right: 0px; background: rgb(255, 255, 255); position: absolute; height: 14px; width: 14px; display: inline-block; content: " 20 "; }
-.fans-level-icon.lv-21 { position: relative; color: rgb(65, 73, 103); border: 1px solid rgb(82, 157, 146); background-image: linear-gradient(270deg, rgb(82, 157, 146) 0%, rgb(26, 84, 75) 100%); }
-.fans-level-icon.lv-21::after { right: 0px; background: rgb(255, 255, 255); position: absolute; height: 14px; width: 16px; display: inline-block; content: " 21 "; }
-.fans-level-icon.lv-22 { position: relative; color: rgb(65, 73, 103); border: 1px solid rgb(82, 157, 146); background-image: linear-gradient(270deg, rgb(82, 157, 146) 0%, rgb(26, 84, 75) 100%); }
-.fans-level-icon.lv-22::after { right: 0px; background: rgb(255, 255, 255); position: absolute; height: 14px; width: 16px; display: inline-block; content: " 22 "; }
-.fans-level-icon.lv-23 { position: relative; color: rgb(65, 73, 103); border: 1px solid rgb(82, 157, 146); background-image: linear-gradient(270deg, rgb(82, 157, 146) 0%, rgb(26, 84, 75) 100%); }
-.fans-level-icon.lv-23::after { right: 0px; background: rgb(255, 255, 255); position: absolute; height: 14px; width: 16px; display: inline-block; content: " 23 "; }
-.fans-level-icon.lv-24 { position: relative; color: rgb(65, 73, 103); border: 1px solid rgb(82, 157, 146); background-image: linear-gradient(270deg, rgb(82, 157, 146) 0%, rgb(26, 84, 75) 100%); }
-.fans-level-icon.lv-24::after { right: 0px; background: rgb(255, 255, 255); position: absolute; height: 14px; width: 16px; display: inline-block; content: " 24 "; }
-.fans-level-icon.lv-25 { position: relative; color: rgb(65, 73, 103); border: 1px solid rgb(118, 128, 160); background-image: linear-gradient(270deg, rgb(118, 128, 160) 0%, rgb(65, 73, 103) 100%); }
-.fans-level-icon.lv-25::after { right: 0px; background: rgb(255, 255, 255); position: absolute; height: 14px; width: 16px; display: inline-block; content: " 25 "; }
-.fans-level-icon.lv-26 { position: relative; color: rgb(65, 73, 103); border: 1px solid rgb(118, 128, 160); background-image: linear-gradient(270deg, rgb(118, 128, 160) 0%, rgb(65, 73, 103) 100%); }
-.fans-level-icon.lv-26::after { right: 0px; background: rgb(255, 255, 255); position: absolute; height: 14px; width: 16px; display: inline-block; content: " 26 "; }
-.fans-level-icon.lv-27 { position: relative; color: rgb(65, 73, 103); border: 1px solid rgb(118, 128, 160); background-image: linear-gradient(270deg, rgb(118, 128, 160) 0%, rgb(65, 73, 103) 100%); }
-.fans-level-icon.lv-27::after { right: 0px; background: rgb(255, 255, 255); position: absolute; height: 14px; width: 16px; display: inline-block; content: " 27 "; }
-.fans-level-icon.lv-28 { position: relative; color: rgb(65, 73, 103); border: 1px solid rgb(118, 128, 160); background-image: linear-gradient(270deg, rgb(118, 128, 160) 0%, rgb(65, 73, 103) 100%); }
-.fans-level-icon.lv-28::after { right: 0px; background: rgb(255, 255, 255); position: absolute; height: 14px; width: 16px; display: inline-block; content: " 28 "; }
-.fans-level-icon.lv-29 { position: relative; color: rgb(75, 47, 131); border: 1px solid rgb(122, 109, 202); background-image: linear-gradient(270deg, rgb(122, 109, 202) 0%, rgb(52, 17, 96) 100%); }
-.fans-level-icon.lv-29::after { right: 0px; background: rgb(255, 255, 255); position: absolute; height: 14px; width: 16px; display: inline-block; content: " 29 "; }
-.fans-level-icon.lv-30 { position: relative; color: rgb(75, 47, 131); border: 1px solid rgb(122, 109, 202); background-image: linear-gradient(270deg, rgb(122, 109, 202) 0%, rgb(52, 17, 96) 100%); }
-.fans-level-icon.lv-30::after { right: 0px; background: rgb(255, 255, 255); position: absolute; height: 14px; width: 16px; display: inline-block; content: " 30 "; }
-.fans-level-icon.lv-31 { position: relative; color: rgb(75, 47, 131); border: 1px solid rgb(122, 109, 202); background-image: linear-gradient(270deg, rgb(122, 109, 202) 0%, rgb(52, 17, 96) 100%); }
-.fans-level-icon.lv-31::after { right: 0px; background: rgb(255, 255, 255); position: absolute; height: 14px; width: 16px; display: inline-block; content: " 31 "; }
-.fans-level-icon.lv-32 { position: relative; color: rgb(75, 47, 131); border: 1px solid rgb(122, 109, 202); background-image: linear-gradient(270deg, rgb(122, 109, 202) 0%, rgb(52, 17, 96) 100%); }
-.fans-level-icon.lv-32::after { right: 0px; background: rgb(255, 255, 255); position: absolute; height: 14px; width: 16px; display: inline-block; content: " 32 "; }
-.fans-level-icon.lv-33 { position: relative; color: rgb(183, 76, 119); border: 1px solid rgb(198, 93, 139); background-image: linear-gradient(270deg, rgb(198, 93, 139) 0%, rgb(133, 19, 50) 100%); }
-.fans-level-icon.lv-33::after { right: 0px; background: rgb(255, 255, 255); position: absolute; height: 14px; width: 16px; display: inline-block; content: " 33 "; }
-.fans-level-icon.lv-34 { position: relative; color: rgb(183, 76, 119); border: 1px solid rgb(198, 93, 139); background-image: linear-gradient(270deg, rgb(198, 93, 139) 0%, rgb(133, 19, 50) 100%); }
-.fans-level-icon.lv-34::after { right: 0px; background: rgb(255, 255, 255); position: absolute; height: 14px; width: 16px; display: inline-block; content: " 34 "; }
-.fans-level-icon.lv-35 { position: relative; color: rgb(183, 76, 119); border: 1px solid rgb(198, 93, 139); background-image: linear-gradient(270deg, rgb(198, 93, 139) 0%, rgb(133, 19, 50) 100%); }
-.fans-level-icon.lv-35::after { right: 0px; background: rgb(255, 255, 255); position: absolute; height: 14px; width: 16px; display: inline-block; content: " 35 "; }
-.fans-level-icon.lv-36 { position: relative; color: rgb(183, 76, 119); border: 1px solid rgb(198, 93, 139); background-image: linear-gradient(270deg, rgb(198, 93, 139) 0%, rgb(133, 19, 50) 100%); }
-.fans-level-icon.lv-36::after { right: 0px; background: rgb(255, 255, 255); position: absolute; height: 14px; width: 16px; display: inline-block; content: " 36 "; }
-.fans-level-icon.lv-37 { position: relative; color: rgb(250, 133, 17); border: 1px solid rgb(254, 173, 93); background-image: linear-gradient(270deg, rgb(254, 173, 93) 0%, rgb(255, 105, 19) 100%); }
-.fans-level-icon.lv-37::after { right: 0px; background: rgb(255, 255, 255); position: absolute; height: 14px; width: 16px; display: inline-block; content: " 37 "; }
-.fans-level-icon.lv-38 { position: relative; color: rgb(250, 133, 17); border: 1px solid rgb(254, 173, 93); background-image: linear-gradient(270deg, rgb(254, 173, 93) 0%, rgb(255, 105, 19) 100%); }
-.fans-level-icon.lv-38::after { right: 0px; background: rgb(255, 255, 255); position: absolute; height: 14px; width: 16px; display: inline-block; content: " 38 "; }
-.fans-level-icon.lv-39 { position: relative; color: rgb(250, 133, 17); border: 1px solid rgb(254, 173, 93); background-image: linear-gradient(270deg, rgb(254, 173, 93) 0%, rgb(255, 105, 19) 100%); }
-.fans-level-icon.lv-39::after { right: 0px; background: rgb(255, 255, 255); position: absolute; height: 14px; width: 16px; display: inline-block; content: " 39 "; }
-.fans-level-icon.lv-40 { position: relative; color: rgb(250, 133, 17); border: 1px solid rgb(254, 173, 93); background-image: linear-gradient(270deg, rgb(254, 173, 93) 0%, rgb(255, 105, 19) 100%); }
-.fans-level-icon.lv-40::after { right: 0px; background: rgb(255, 255, 255); position: absolute; height: 14px; width: 16px; display: inline-block; content: " 40 "; }
-```
-
-### 观众等级UL_color
-|st|e|color|color_hex|
-|-|-|-|-|
-|  1 | 10 |  9868950 | #969696 |
-| 11 | 20 |  6406234 | #61C05A |
-| 21 | 30 |  5805790 | #5896DE |
-| 31 | 40 | 10512625 | #A068F1 |
-| 41 | 50 | 16746162 | #FF86B2 |
-| 51 | 60 | 16752445 | #FF9F3D |
 
 
 # url
@@ -1883,3 +1616,4 @@ getNewFansTxtColor(level)
 [url_15]:https://i0.hdslb.com/bfs/live/cb2e160ac4f562b347bb5ae6e635688ebc69580f.png
 [url_17]:https://i0.hdslb.com/bfs/live/b4961bcfba56a26b69c35690dfcbdabbeb973c64.png
 [url_16]:https://i0.hdslb.com/bfs/live/23678e3d90402bea6a65251b3e728044c21b1f0f.png
+[热门榜功能下线公告]:https://link.bilibili.com/p/eden/news#/newsdetail?id=3270

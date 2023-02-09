@@ -22,9 +22,9 @@ from my_lib.debug import flag_debug
 ssl._create_default_https_context = ssl._create_unverified_context
 requests.packages.urllib3.disable_warnings()
 logging.basicConfig(format='%(asctime)s [%(levelname)s] %(message)s', level=logging.INFO)
-
+USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36 Edg/109.0.1518.52"
 headers = {
-	'User-Agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36 Edg/105.0.1343.53",
+	'User-Agent': USER_AGENT,
 	'origin': "https://www.bilibili.com",
 	'referer': "https://www.bilibili.com",
 	"Connection": "keep-alive"
@@ -55,7 +55,7 @@ def Program_FLAG(flag: str) -> None:
 		logging.warning(f"Program_FLAG {flag}")
 
 
-def Downloader(url_DL: str, filename: str) -> bytes:
+def Downloader(url_DL: str, filename: str, headers: dict = headers) -> bytes:
 	"""
 	下载
 	"""
@@ -114,7 +114,20 @@ def get_Danmaku(cid: str, Segment_Index: str, retry: str = "") -> bytes:
 	获取弹幕
 	"""
 	logging.debug(f"{bvid}: [Danmaku] [{cid}] {Segment_Index} {retry}")
-	File_Content = Downloader(f'https://api.bilibili.com/x/v2/dm/web/seg.so?type=1&oid={cid}&segment_index={Segment_Index}', f"[{bvid}]_[{cid}]_[Danmaku]_[{Segment_Index+retry}].bin")
+	tempString = ""
+	# if Segment_Index == "1":tempString = "&pull_mode=1&ps=120000&pe=360000"
+	# else:tempString = ""
+
+	headers = {
+		'Host': "api.bilibili.com",
+		"Connection": "keep-alive",
+		'Accept': "application/json, text/plain, */*",
+		'User-Agent': USER_AGENT,
+		'origin': "https://www.bilibili.com",
+		'referer': f"https://www.bilibili.com/video/{bvid}/",
+		'Accept-Encoding': "gzip, deflate, br",
+	}
+	File_Content = Downloader(f"https://api.bilibili.com/x/v2/dm/web/seg.so?type=1&oid={cid}&pid={avid_in}&segment_index={Segment_Index}{tempString}", f"[{bvid}]_[{cid}]_[Danmaku]_[{Segment_Index+retry}].bin", headers=headers)
 	if P_flag[12] and P_flag[1]: return b""
 	dump_Data(f"[{bvid}]_[{cid}]_[Danmaku]_[{Segment_Index+retry}].bin", File_Content)
 	return File_Content
@@ -227,6 +240,8 @@ def main_Func():
 		Danmaku_Final_Binary = b""
 		duration = int(This["duration"])
 		Segment_Count = math.ceil(duration/360)
+		# if time.time() < time.time()+Segment_Count*2*60+1800:
+		# 	logging.warning("[Change_2023-02-08] 弹幕正在处理，请注意文件内容")
 		logging.debug(f"[{bvid}][Special_Danmaku]: P{i_for_videos}")
 		DL_Data_Extra_Info = Downloader(f'https://api.bilibili.com/x/v2/dm/web/view?type=1&oid={cid}', f"[{bvid}]_[{cid}]_[BAS]_[INFO].bin")
 		if P_flag[16]: continue
@@ -316,9 +331,6 @@ def main_Func():
 					del this["weight"]
 			P_flag[13] = False
 			# ==================
-			try: Time_File_Create = json.loads(open(f"{File_Name}.json", "r", encoding="utf-8"))["info"]["File_Create_Time"]
-			except FileNotFoundError: Time_File_Create = Time_Process_Danmaku
-			else: Time_File_Create = Time_Process_Danmaku
 			try: json_proccess["commandDms"] = ExInfo_Json["commandDms"]
 			except KeyError: json_proccess["commandDms"] = []
 			try: Danmaku_Count = len(json_proccess["elems"])
@@ -340,7 +352,7 @@ def main_Func():
 			json_proccess["info"]["danmaku_web_reported"] = Json_Info['stat']['danmaku']	# num	get
 			json_proccess["info"]["danmaku_proto_reported"] = ExInfo_Proto.count			# num	get
 			json_proccess["info"]["File_Create_Time_Start"] = int(Time_Start_Process)		# num	set unix_timestamp
-			json_proccess["info"]["File_Create_Time"] = int(Time_File_Create)				# num	set unix_timestamp
+			json_proccess["info"]["File_Create_Time"] = int(Time_Process_Danmaku)				# num	set unix_timestamp
 			json_proccess["info"]["is_live_record"] = P_flag[2]								# bool	GET
 			Json_Write_Data = json.dumps(json_proccess, ensure_ascii=False, separators=(',', ':')).replace("},{\"id\"", "},\n{\"id\"")
 			del json_proccess
