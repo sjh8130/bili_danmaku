@@ -425,7 +425,7 @@
 ```
 
 ### SEND_GIFT
-送礼物，实时
+送礼物
 | key	| type | value |
 | - | - | - |
 | cmd	| str	| "SEND_GIFT" |
@@ -513,7 +513,7 @@
 | guard_level	| num | 舰长等级 |
 
 ### ONLINE_RANK_TOP3
-高能用户前三(左)，实时
+高能用户前三(左)
 | key	| type	| value |
 | - | - | - |
 | cmd	| str	| "ONLINE_RANK_TOP3" |
@@ -522,7 +522,7 @@
 | key		| type	| value |
 | - | - | - |
 | dmscore	| num	| 112 |
-| list		| array	| obj\[1\] |
+| list		| array	| obj[1] |
 #### ONLINE_RANK_TOP3__data__list
 | key		| type	| value |
 | - | - | - |
@@ -542,7 +542,7 @@
 | count | num	| 最大值约为10000[1-100xx] |
 
 ### INTERACT_WORD
-进入直播间、关注主播通知，实时（高精度？）
+进入直播间、关注主播通知（高精度）500ms
 | key | type	| value |
 | - | - | - |
 | cmd	| str	| "INTERACT_WORD" |
@@ -550,27 +550,74 @@
 #### INTERACT_WORD__data
 | key				| type	| value |
 | - | - | - |
-| contribution		| obj	| |
-| core_user_type	| num	| 大部分为0?[0-5] |
+| contribution		| obj	| 与舰长等级有关 |
+| core_user_type	| num	| ?大部分为0[0-5] |
 | dmscore			| num	| [dmscore](#others) |
 | fans_medal		| obj	| [粉丝牌信息](#粉丝牌信息medal_info) |
-| identities		| array	| |
+| identities		| array	| `highestIdentity` |
 | is_spread			| num	| 0,1 |
 | msg_type			| num	| |
-| privilege_type	| num	| [privilege_type](#others) |
+| privilege_type	| num	| [privilege_type](#others) is_spread==1:`0` |
 | roomid			| num	| |
-| score				| num	| TimeStamp(毫秒)??? |
+| score				| num	| TimeStamp(毫秒) |
 | spread_desc		| str	| is_spread==1:"流量包推广" |
 | spread_info		| str	| is_spread==1:"#FF649E" |
-| tail_icon			| num	| [0,101] |
+| tail_icon			| num	| [0,101,102] |
 | timestamp			| num	| TimeStamp(秒) |
-| trigger_time		| num	| TimeStamp(皮秒)? |
+| trigger_time		| num	| TimeStamp(皮秒)(100ps) |
 | uid				| num	| 发送者uid |
 | uname				| str	| 发送者 用户名 |
 | uname_color		| str	| "" |
-#### INTERACT_WORD__score
-msg_type=1: TimeStamp
-msg_type=2: 关注时间TimeStamp
+#### INTERACT_WORD__identities
+```js
+t[t.Normal = 1] = "Normal",
+t[t.Manager = 2] = "Manager",
+t[t.Fans = 3] = "Fans",
+t[t.Vip = 4] = "Vip",
+t[t.SVip = 5] = "SVip",
+t[t.GuardJian = 6] = "GuardJian",
+t[t.GuardTi = 7] = "GuardTi",
+t[t.GuardZong = 8] = "GuardZong"
+```
+#### INTERACT_WORD__msg_type
+```js
+t[t.Entry = 1] = "Entry",
+t[t.Attention = 2] = "Attention",
+t[t.Share = 3] = "Share",
+t[t.SpecialAttention = 4] = "SpecialAttention",
+t[t.MutualAttention = 5] = "MutualAttention",
+t[t.Link = 6] = "Link"
+"Entry:进入直播间"
+"Entry:光临直播间"！舰长
+e.createBehaviorElement = function(t) {
+	var e,
+	r,
+	n = t.username,
+	o = t.identity,
+	i = t.nameColor,
+	a = t.msgType,
+	c = t.text,
+	u = ((e = {})[L.Sv.Entry] = o < L.R$.GuardJian ? "进入" : "光临",
+	e[L.Sv.Attention] = "关注了",
+	e[L.Sv.Share] = "分享了",
+	e[L.Sv.SpecialAttention] = "特别关注了",
+	e[L.Sv.MutualAttention] = "互粉了",
+	e[L.Sv.Link] = c,
+	e), 
+	s = (0, C.H)(i), 
+	l = this.createElement("span", "t-over-hidden interact-name v-middle", n, [["style", "color: " + s + "; margin-right: 4px;"]]), 
+	f = this.createElement("span", "flex-no-shrink v-middle", u[a] + (a !== L.Sv.Link ? "直播间" : ""), a > L.Sv.Entry && a !== L.Sv.Link ? [["style", "color: #F7B500"]] : [["style", "color: #999999"]]);
+	if (t.icon) {
+		var h = t.icon;
+		r = this.createIcon(h, [["style", "width: 13px;height: 13px; margin-left: 4px;"]])
+	}
+	return {
+		name: l,
+		desc: f,
+		icon: r
+	}
+}
+```
 #### INTERACT_WORD__core_user_type
 |core_user_type|等级|VIP|粉丝牌&舰长|直播观众等级|直播UP|粉丝|关注|认证|
 |-|-|-|-|-|-|-|-|-|
@@ -578,22 +625,13 @@ msg_type=2: 关注时间TimeStamp
 |2|LV6|年度大会员|||UP40|257w||个人认证：百大|
 |2|LV6|年度大会员|30总督，25个舰长||UP28+|3w|||
 #### INTERACT_WORD__data__contribution
-在21232条信息中，有6个不为0--------6/21232
 | key | type	| value |
 | - | - | - |
-| grade | num	| 0,1,2,3 |
-
-|contribution|等级|VIP|当前主播-打赏相关|粉丝牌&舰长|直播观众等级|直播UP|粉丝|关注|认证|
-|-|-|-|-|-|-|-|-|-|-|
-|3|Lv3|大会员|粉丝牌20|?|?|?|33|16|无|
-|1>>3|Lv6|年度大会员|数万元SC|?|?|40|257w|~440|个人认证：`2021年度巅峰主播、bilibili 2020百大UP主、知名游戏UP主`|
-|-|Lv6|年度大会员|?|?|?|40|155w|~90|个人认证：`2021年度巅峰主播、bilibili 知名游戏UP主、直播高能主播`|
-|-|Lv6|年度大会员|粉丝牌28|4舰长|?|15|1.6w|~80|无|
-#### INTERACT_WORD__data__identities
-```
-[1]
-[3,1]
-"privilege_type": 3, "identities": [6, 1]
+| grade | num	| 舰长等级 |
+```json
+"score":1674560093850
+"timestamp":1674560093
+"trigger_time":1674560092752782600
 ```
 
 ### HOT_RANK_CHANGED_V2
@@ -670,7 +708,7 @@ msg_type=2: 关注时间TimeStamp
 | fans_club		| num	| 粉丝团成员(活跃人数) |
 
 ### LIKE_INFO_V3_CLICK
-点赞(移动端 双击屏幕)，实时，和`LIKE_INFO_V3_UPDATE`同时发送，实时&每5秒最多发送一次
+点赞(移动端 双击屏幕)，和`LIKE_INFO_V3_UPDATE`同时发送，实时&每5秒最多发送一次
 | key | type | value |
 | - | - | - |
 | cmd	| str	| "LIKE_INFO_V3_CLICK" |
@@ -695,7 +733,7 @@ msg_type=2: 关注时间TimeStamp
 | grade | num | 0 |
 
 ### LIKE_INFO_V3_UPDATE
-点赞(移动端 双击屏幕)，实时，和`LIKE_INFO_V3_CLICK`同时发送，实时&每5秒最多发送一次
+点赞(移动端 双击屏幕)，和`LIKE_INFO_V3_CLICK`同时发送，实时&每5秒最多发送一次
 | key | type | value |
 | - | - | - |
 | cmd	| str	| "LIKE_INFO_V3_UPDATE" |
@@ -728,7 +766,7 @@ msg_type=2: 关注时间TimeStamp
 ```
 
 ### ENTRY_EFFECT
-欢迎舰长、提督、(?)进入直播间，实时(高精度?)
+欢迎舰长进入直播间，高精度
 | key | type | value |
 | - | - | - |
 | cmd	| str	| "ENTRY_EFFECT" |
@@ -777,7 +815,7 @@ msg_type=2: 关注时间TimeStamp
 | room_id_list	| array	| [1,2,3,...] |
 
 ### GUARD_BUY
-舰长购买，实时  
+舰长购买  
 "GUARD_BUY" "USER_TOAST_MSG" "ONLINE_RANK_V2" "ONLINE_RANK_TOP3" "NOTICE_MSG"
 | key | type | value |
 | - | - | - |
@@ -1257,23 +1295,23 @@ SC 删除，约每110秒更新
 | cmd	| str	| "DANMU_MSG" |
 | info	| array	| |
 #### DANMU_MSG__info
-| list	| type	| value |
+| array	| type	| value |
 | - | - | - |
 | 0		| array	| 弹幕属性 |
-| 1		| str	| 弹幕内容 |
-| 2		| array	| 用户主站信息 |
-| 3		| array	| 粉丝牌 |
-| 4		| array	| 用户直播区信息 |
+| 1		| str	| `content`弹幕内容 |
+| 2		| array	| `userInfo`用户主站信息 |
+| 3		| array	| `fansMedal`粉丝牌 |
+| 4		| array	| `user_level`用户直播区信息 |
 | 5		| array	| ？ |
 | 6		| num	| ？0 |
-| 7		| num	| ？[舰长等级](#others) |
+| 7		| num	| `guardLevel`[舰长等级](#others) |
 | 8		| null	| ？ |
-| 9		| obj	|  |
-| 10	| num	| ？0 |
-| 11	| num	| ？0 |
+| 9		| obj	| `validation` |
+| 10	| num	|  |
+| 11	| num	|  |
 | 12	| null	| ？null |
 | 13	| null	| ？null |
-| 14	| num	| ？0 |
+| 14	| num	| `lpl` |
 | 15	| num	| ？高能榜 |
 #### DANMU_MSG__info__0
 | array	| type		| value |
@@ -1283,25 +1321,25 @@ SC 删除，约每110秒更新
 | 0:2	| num		| 弹幕字体大小 |
 | 0:3	| num		| 弹幕颜色 |
 | 0:4	| num		| TimeStamp(毫秒) |
-| 0:5	| num		| ？用户发送时间TimeStamp(秒) |
+| 0:5	| num		| **RANDOM** |
 | 0:6	| num		| 0? |
 | 0:7	| str		| HEX:crc32(uid) |
 | 0:8	| num		| ? |
 | 0:9	| num		| ? |
-| 0:10	| num		| ? |
-| 0:11	| str		| 0:10==5::`"#1453BAFF,#4C2263A2,#3353BAFF"` |
-| 0:12	| num		| ? |
+| 0:10	| num		| `chatBubbleType` |
+| 0:11	| str		| `chatBubbleColor` 0:10==5::`"#1453BAFF,#4C2263A2,#3353BAFF"` |
+| 0:12	| num		| `dmType` 1:emoticon 2:voice |
 | 0:13	| obj/str	| 发送表情包时：{obj...} <br> 其他:`"{}"` |
-| 0:14	| obj/str	| "{}" |
-| 0:15	| obj 		|  |
+| 0:14	| obj/str	| `voiceInfo` "{}" |
+| 0:15	| obj 		| `emots?` |
 | 0:16	| obj 		|  |20230119
 #### DANMU_MSG__info__0__4
 | array	| type	| value | 备注 |
 | - | - | - | - |
-| 4:0	| num	| 用户UL等级 |
+| 4:0	| num	| `userLevel`用户UL等级 |
 | 4:1	| num	| ？0 |
 | 4:2	| num	| UL等级 颜色 |
-| 4:3	| str	| `user_level_rank` 直播 用户排名|">50000"
+| 4:3	| str	| `rank` 直播 用户排名|">50000"
 | 4:4	| num	| 0 |
 #### DANMU_MSG__info__0__15
 | key				| type	| value |
@@ -1344,32 +1382,38 @@ SC 删除，约每110秒更新
 | activity_source	| num	| ？0 |
 | not_show			| num	| ？0 |
 #### DANMU_MSG__info__2
-| array	| type		| value |
+| array	| type	| value |
 | - | - | - |
-| 2:0	| num		| 用户uid |
-| 2:1	| str		| 用户名 |
-| 2:2	| num		| ？0 |
-| 2:3	| num		| ？0 |
-| 2:4	| num		| ？0 |
-| 2:5	| num		| ？10000 |
-| 2:6	| num		| ？1 |
-| 2:7	| str		| ？舰长:`"#00D1F1"` |
+| 2:0	| num	| `uid`用户uid |
+| 2:1	| str	| `username`用户名 |
+| 2:2	| num	| `isAdmin` `("div", t + "-icon dp-i-block p-relative v-middle", null, [["title", "这是位大人物 " + p.randomEmoji.happy()]])`|
+| 2:3	| num	| `isSvip` |
+| 2:4	| num	| `isSvip` |
+| 2:5	| num	| ？10000 |
+| 2:6	| num	| ？1 |
+| 2:7	| str	| `usernameColor` 舰长:`"#00D1F1"` |
 #### DANMU_MSG__info__3
-| array	| type		| value |
+| array	| type	| value |
 | - | - | - |
-| 3:0	| num		| 粉丝牌 等级 |
-| 3:1	| str		| 粉丝团 称号 |
-| 3:2	| num		| 主播 用户名 |
-| 3:3	| num		| 直播间ID |
-| 3:4	| num		| [medal_color](#medal_color) |
-| 3:5	| str		| ? |
-| 3:6	| num		| ? |
-| 3:7	| num		| [medal_color_start](#medal_color) |
-| 3:8	| num		| [medal_color_border](#medal_color) |
-| 3:9	| num		| [medal_color_end](#medal_color) |
-| 3:10	| num		| [舰长等级](#others) |
-| 3:11	| num		| ？[is_lighted](#粉丝牌信息medal_info) |
-| 3:12	| num		| 主播uid |
+| 3:0	| num	| 粉丝牌 等级 |
+| 3:1	| str	| 粉丝团 称号 |
+| 3:2	| num	| 主播 用户名 |
+| 3:3	| num	| 直播间ID |
+| 3:4	| num	| [medal_color](#medal_color) |
+| 3:5	| str	| `special` |
+| 3:6	| num	| `iconId` |
+| 3:7	| num	| [medal_color_start](#medal_color) |
+| 3:8	| num	| [medal_color_border](#medal_color) |
+| 3:9	| num	| [medal_color_end](#medal_color) |
+| 3:10	| num	| [舰长等级](#others) |
+| 3:11	| num	| ？[is_lighted](#粉丝牌信息medal_info) |
+| 3:12	| num	| 主播uid |
+#### DANMU_MSG__info__9
+validation
+| key	| type	| value |
+| - | - | - |
+| ts	| num	| 粉丝牌 等级 |
+| ct	| str	| 粉丝团 称号 |
 
 ### CUT_OFF
 切断直播！
@@ -1518,6 +1562,82 @@ jump_url=f"https://live.bilibili.com/activity/live-activity-battle/index.html?ap
 {"cmd":"COMMON_NOTICE_DANMAKU","data":{"content_segments":[{"font_color":"#FB7299","text":"新春限时任务：任务即将结束，抓紧完成获取{XXX}元红包奖励吧！未完成任务将无法获得奖励","type":1}],"dmscore":144,"terminals":[1,2,3,4,5]}}
 {"cmd":"COMMON_NOTICE_DANMAKU","data":{"content_segments":[{"font_color":"#FFFFFF","font_color_dark":"#FFFFFF","highlight_font_color":"#FFB027","highlight_font_color_dark":"#FFB027","text":"<%{YYYY}%> 被点亮啦！恭喜 <%{XXXX}%> 成为星球守护者！","type":1}],"dmscore":144,"terminals":[1,2,3]}}
 ```
+
+### POPULARITY_RED_POCKET_NEW
+| key | type | value |
+| - | - | - |
+| cmd	| str	| "POPULARITY_RED_POCKET_NEW" |
+| data	| obj	| |
+#### POPULARITY_RED_POCKET_NEW__data
+| key			| type	| value |
+| :- | - | - |
+| lot_id		| num	| 抽奖id |
+| start_time	| num	| 开始时间 |
+| current_time	| num	| 当前时间 |
+| wait_num		| num	|  |
+| uname			| str	| 用户名 |
+| uid			| num	| uid |
+| action		| str	| "送出" |
+| num			| num	| 1 |
+| gift_name		| str	| "红包" |
+| gift_id		| num	| 13000 |
+| price			| num	| 价格(rmb*10) |
+| name_color	| str	| 舰长:"#00D1F1" |
+| medal_info	| obj	| [medal_info](#粉丝牌信息medal_info) |
+
+### POPULARITY_RED_POCKET_START
+| key | type | value |
+| - | - | - |
+| cmd	| str	| "POPULARITY_RED_POCKET_START" |
+| data	| obj	| |
+#### POPULARITY_RED_POCKET_START__data
+| key				| type	| value |
+| :- | - | - |
+| lot_id			| num | 抽奖id |
+| sender_uid		| num	| uid |
+| sender_name		| str	| 用户名 |
+| sender_face		| str	| 头像URL |
+| join_requirement	| num	| 1 |
+| danmu				| str	| "老板大气！点点红包抽礼物" |
+| current_time		| num	| 1674562037 |
+| start_time		| num	| 1674562036 |
+| end_time			| num	| 1674562216 |
+| last_time			| num	| 180 |
+| remove_time		| num	| 1674562231 |
+| replace_time		| num	| 1674562226 |
+| lot_status		| num	| 1 |
+| h5_url			| str	| f"https://live.bilibili.com/p/html/live-app-red-envelope/popularity.html?is_live_half_webview=1&hybrid_half_ui=1,5,100p,100p,000000,0,50,0,0,1;2,5,100p,100p,000000,0,50,0,0,1;3,5,100p,100p,000000,0,50,0,0,1;4,5,100p,100p,000000,0,50,0,0,1;5,5,100p,100p,000000,0,50,0,0,1;6,5,100p,100p,000000,0,50,0,0,1;7,5,100p,100p,000000,0,50,0,0,1;8,5,100p,100p,000000,0,50,0,0,1&hybrid_rotate_d=1&hybrid_biz=popularityRedPacket&lotteryId={lot_id}" |
+| user_status		| num	| 2 |
+| awards			| array	|  |
+| lot_config_id		| num	| 5 |
+| total_price		| num	| 41600 |
+| wait_num			| num	| 0 |
+
+### POPULARITY_RED_POCKET_WINNER_LIST
+| key | type | value |
+| - | - | - |
+| cmd	| str	| "POPULARITY_RED_POCKET_WINNER_LIST" |
+| data	| obj	| |
+#### POPULARITY_RED_POCKET_WINNER_LIST__data
+| key			| type	| value |
+| - | - | - |
+| lot_id		| num	| 抽奖id |
+| total_num		| num	| |
+| winner_info	| list	| list[total_num] |
+| awards		| obj	| |
+| version		| num	| 1 |
+#### POPULARITY_RED_POCKET_WINNER_LIST__data__winner_info
+| array				| type	| value |
+| - | - | - |
+| winner_info[i][0]	| num	| uid |
+| winner_info[i][1]	| str	| name |
+| winner_info[i][2]	| num	| bag_id |
+| winner_info[i][3]	| num	| gift_id |
+
+#### POPULARITY_RED_POCKET_WINNER_LIST__data__winner_info
+| key			| type	| value |
+| - | - | - |
+
 ### XXXXXXXXXXX
 | key | type | value |
 | - | - | - |
@@ -1531,7 +1651,7 @@ jump_url=f"https://live.bilibili.com/activity/live-activity-battle/index.html?ap
 ### others
 | key				| type	| value |
 | - | - | - |
-| dmscore			| num	| 偶数? |
+| dmscore			| num	| ~~偶数~~ |
 | guard_level		| num	| 舰长等级 <br> 0:无 <br> 1:总督 <br> 2:提督 <br> 3:舰长 |
 | privilege_type	| num	| ！待确定！2:提督 3:舰长 |
 | lot_status		| num	| 抽奖状态 0:开始 2:结束 |

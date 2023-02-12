@@ -49,8 +49,6 @@ with open(IN_INFO_1, "r") as HASH_1, \
 	LEN_P2 = len(PKT_2)
 	i = 0
 	j = 0
-	print(f"{LEN_P1}+{LEN_P2} = {LEN_P1+LEN_P2}")
-	print(f"{os.stat(IN_FILE_1).st_size}+{os.stat(IN_FILE_2).st_size} = {os.stat(IN_FILE_1).st_size+os.stat(IN_FILE_2).st_size}")
 	while True:
 		a = PKT_1[i]
 		b = PKT_2[j]
@@ -95,4 +93,8 @@ with open(IN_INFO_1, "r") as HASH_1, \
 			break
 	OUT_FI.close()
 	print()
-	print(output_frames, output_F_size)
+	print( "Frames\t\tSize")
+	print(f"{LEN_P1}\t\t{os.stat(IN_FILE_1).st_size}")
+	print(f"{LEN_P2}\t\t{os.stat(IN_FILE_2).st_size}")
+	print(f"{LEN_P1+LEN_P2}\t\t{os.stat(IN_FILE_1).st_size+os.stat(IN_FILE_2).st_size}")
+	print(f"{output_frames}\t\t{output_F_size}")
