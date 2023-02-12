@@ -2,13 +2,10 @@
 from google.protobuf.json_format import MessageToJson
 import ssl
 import requests
-import binascii
-import math
+from binascii import crc32
 import time
 import json
 import sys
-import tarfile
-import threading
 import logging
 
 try: import zzzz as dm_pb2
@@ -171,7 +168,7 @@ def XML_Special_Process(Proto_data) -> str:
 	for this in Proto_data:
 		Ex_Extra_Data = ""
 		if P_flag[4]: Ex_Extra_Data = f"<!-- SPECIAL: {this.command}{this.extra} -->"
-		out1 += f"\t<d p=\"{format(this.progress/1000, '.5f')},1,25,16777215,{int(time.mktime(time.strptime(this.ctime, '%Y-%m-%d %H:%M:%S')))},999,{hex(binascii.crc32(str(this.mid).encode()) ^ 0xFFFFFFFF).lstrip('0x').lstrip('0')},{this.id},11\">{this.content}</d>{Ex_Extra_Data}\n"
+		out1 += f"\t<d p=\"{format(this.progress/1000, '.5f')},1,25,16777215,{int(time.mktime(time.strptime(this.ctime, '%Y-%m-%d %H:%M:%S')))},999,{hex(crc32(str(this.mid).encode()) ^ 0xFFFFFFFF).lstrip('0x').lstrip('0')},{this.id},11\">{this.content}</d>{Ex_Extra_Data}\n"
 	return out1
 
 
@@ -195,7 +192,7 @@ def main_Func():
 	video_info = json.loads(Downloader(url_info_1, f"[{bvid}]_[0]_[Video]_[INFO].json"))
 	try: video_info["data"]["ugc_season"]["sections"] = []
 	except: pass
-	threading.Thread(dump_Data(f"[{bvid}]_[0]_[Video]_[INFO].json", bytes(json.dumps(video_info, ensure_ascii=False, separators=(",", ":"), indent="\t"), encoding="utf-8"))).start()
+	dump_Data(f"[{bvid}]_[0]_[Video]_[INFO].json", bytes(json.dumps(video_info, ensure_ascii=False, separators=(",", ":"), indent="\t"), encoding="utf-8"))
 	# ================================ 视频信息?
 	logging.debug(f"{bvid} Video info 2")
 	if P_flag[8]: video_info_detail = '{"data":{"Related":[],"Reply":{"replies":[]}}}'
@@ -205,7 +202,7 @@ def main_Func():
 	Vid_detail_json["data"]["Reply"]["replies"] = []
 	try: Vid_detail_json["data"]["View"]["ugc_season"]["sections"] = []
 	except: pass
-	threading.Thread(dump_Data(f"[{bvid}]_[0]_[Video]_[INFO_Detail].json", bytes(json.dumps(Vid_detail_json, ensure_ascii=False, separators=(',', ':'), indent="\t"), encoding="utf-8"))).start()
+	dump_Data(f"[{bvid}]_[0]_[Video]_[INFO_Detail].json", bytes(json.dumps(Vid_detail_json, ensure_ascii=False, separators=(',', ':'), indent="\t"), encoding="utf-8"))
 	# ================================ 加载
 	Json_Info = video_info["data"]
 	Main_Title = Json_Info["title"]
@@ -218,7 +215,7 @@ def main_Func():
 	if P_flag[14]: return
 	# ================================ 字幕
 	for subs in Json_Info["subtitle"]["list"]:
-		threading.Thread(dump_Data(f"[{bvid}]_[Subtitle]_[{subs['id']}]_[{subs['lan']}].bcc", Downloader(subs["subtitle_url"], f"[{bvid}]_[Subtitle]_[{subs['id']}]_[{subs['lan']}].bcc"), Always_Write=True)).start()
+		dump_Data(f"[{bvid}]_[Subtitle]_[{subs['id']}]_[{subs['lan']}].bcc", Downloader(subs["subtitle_url"], f"[{bvid}]_[Subtitle]_[{subs['id']}]_[{subs['lan']}].bcc"), Always_Write=True)
 		logging.debug(f"[{bvid}]: 字幕")
 	if P_flag[15]: return
 	# ================================ 分集处理
@@ -239,16 +236,16 @@ def main_Func():
 		if P_flag[12] and P_flag[1]: break
 		Danmaku_Final_Binary = b""
 		duration = int(This["duration"])
-		Segment_Count = math.ceil(duration/360)
-		# if time.time() < time.time()+Segment_Count*2*60+1800:
-		# 	logging.warning("[Change_2023-02-08] 弹幕正在处理，请注意文件内容")
+		Segment_Count = (duration/360).__ceil__()
+		if time.time() < time.time()+Segment_Count*6000/11+7200:
+			logging.warning("[Change_2023-02-08] 弹幕正在处理，请注意文件内容")
 		logging.debug(f"[{bvid}][Special_Danmaku]: P{i_for_videos}")
 		DL_Data_Extra_Info = Downloader(f'https://api.bilibili.com/x/v2/dm/web/view?type=1&oid={cid}', f"[{bvid}]_[{cid}]_[BAS]_[INFO].bin")
 		if P_flag[16]: continue
 		ExInfo_Proto = dm_pb2.DmWebViewReply()
 		ExInfo_Proto.ParseFromString(DL_Data_Extra_Info)
 		ExInfo_Json = json.loads(MessageToJson(ExInfo_Proto, indent=0, ensure_ascii=False))
-		threading.Thread(dump_Data(f"[{bvid}]_[{cid}]_[BAS]_[INFO].bin", DL_Data_Extra_Info)).start()
+		dump_Data(f"[{bvid}]_[{cid}]_[BAS]_[INFO].bin", DL_Data_Extra_Info)
 		if (not P_flag[6]): XML_Write_Data = f"""<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<i>
 \t<chatserver>chat.bilibili.com</chatserver>
 \t<chatid>{cid}</chatid>
@@ -260,7 +257,7 @@ def main_Func():
 """
 		P_Title = str(This["part"])
 		if P_Title == "": P_Title = f"P{i_for_videos}"
-		logging.info(f"{P_Date}|{bvid}|{avid}|P{i_for_videos}/{Num_of_Videos}|{cid}|{duration}|{math.ceil(duration/360)}|{Main_Title}|{P_Title}")
+		logging.info(f"{P_Date}|{bvid}|{avid}|P{i_for_videos}/{Num_of_Videos}|{cid}|{duration}|{Segment_Count}|{Main_Title}|{P_Title}")
 		if P_Title == Main_Title: P_Title = ""
 		File_Name = f"[{P_Date}][{bvid}][{avid}][P{i_for_videos}][{cid}]{Main_Title.replace('_', '＿')}_{P_Title.replace('_', '＿')}".replace("\\", "＼").replace("/", "／").replace(":", "：").replace("*", "＊").replace("?", "？").replace("<", "＜").replace(">", "＞").replace("|", "｜").replace("\"", "＂").replace("\r", "").replace("\n", "").rstrip("_")	# \/:*?"<>|
 		# [1656432000][BV*********][av*********][P**][cid]MainTitle_P-Title
