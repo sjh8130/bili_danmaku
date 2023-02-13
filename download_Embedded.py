@@ -2,21 +2,22 @@
 import os
 import requests
 import json
-import math
 import time
 import sys
 import tarfile
 import io
 
-x={'User-Agent':"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.66 Safari/537.36 Edg/103.0.1264.44",'origin':"https://www.bilibili.com",'referer':"https://www.bilibili.com"}
-def v(b):
-	try:c=requests.get(b,headers=x)
+USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36 Edg/109.0.1518.52"
+x={'User-Agent':USER_AGENT,'origin':"https://www.bilibili.com",'referer':"https://www.bilibili.com","Connection":"keep-alive"}
+
+def v(b,x=x):
+	try:c=requests.get(b.replace("http://","https://"),headers=x)
 	except:v(b)
 	return c
 def o(b,c):
 	d=v(b)
 	print(f"[NET]:HTTP {d.status_code}\t{b}")
-	e=tarfile.TarInfo(f"[{r}]_[{c[0]}]_[{c[1]}]_[{c[2]}].{c[3]}")
+	e=tarfile.TarInfo(c)
 	e.size=len(d.content)
 	e.mtime=time.time().__trunc__()
 	a.addfile(tarinfo=e,fileobj=io.BytesIO(d.content))
@@ -25,19 +26,19 @@ def o(b,c):
 def p():
 	global a
 	with tarfile.open(name=r+".tar",mode="w",bufsize=4194304)as a:
-		b=json.loads(o(b=f"https://api.bilibili.com/x/web-interface/view?bvid={r}",c=["0","Video","INFO","json"]))["data"]
-		o(b=f"https://api.bilibili.com/x/web-interface/view/detail?bvid={r}",c=["0","Video","INFO_Detail","json"])
-		c=b["pubdate"]
-		for d in b["subtitle"]["list"]:o(b=d["subtitle_url"].replace("http://", "https://"),c=["0","Subs",f"{d['id']}_{d['lan']}","bcc"])
+		y={'Host':"api.bilibili.com","Connection":"keep-alive",'Accept':"application/json, text/plain, */*",'User-Agent':USER_AGENT,'origin':"https://www.bilibili.com",'referer':f"https://www.bilibili.com/video/{r}/",'Accept-Encoding':"gzip, deflate, br",}
+		b=json.loads(o(b=f"https://api.bilibili.com/x/web-interface/view?bvid={r}",c=f"[{r}]_[0]_[Video]_[INFO].json"))["data"]
+		o(b=f"https://api.bilibili.com/x/web-interface/view/detail?bvid={r}",c=f"[{r}]_[0]_[Video]_[INFO_Detail].json")
+		for d in b["subtitle"]["list"]:o(b=d["subtitle_url"],c=f"[{r}]_[0]_[Subs]_[{d['id']}_{d['lan']}].bcc")
 		for e in b["pages"]:
 			f=str(e["cid"])
 			g=int(e["duration"])
-			h=math.ceil(g/360)
-			o(b=f'https://api.bilibili.com/x/v2/dm/web/view?type=1&oid={f}',c=[f,"BAS","INFO","bin"])
-			print(f"{c}|{r}|av00000000|PXX/{len(b['pages'])}|{f}|{g}|{h}|title|ptitle")
+			h=(g/360).__ceil__()
+			o(b=f'https://api.bilibili.com/x/v2/dm/web/view?type=1&oid={f}',c=f"[{r}]_[{f}]_[BAS]_[INFO].bin",x=y)
+			print(f"{b['pubdate']}|{r}|av00000000|PXX/{len(b['pages'])}|{f}|{g}|{h}|title|ptitle")
 			for i in range(h):
-				o(f'https://api.bilibili.com/x/v2/dm/web/seg.so?type=1&oid={f}&segment_index={str(i+1)}',c=[f,"Danmaku",str(i+1),"bin"])
-				o(f'https://api.bilibili.com/x/v2/dm/web/seg.so?type=1&oid={f}&segment_index={str(i+1)}',c=[f,"Danmaku",str(i+1)+"_B1","bin"])
+				o(f'https://api.bilibili.com/x/v2/dm/web/seg.so?type=1&oid={f}&segment_index={str(i+1)}',c=f"[{r}]_[{f}]_[Danmaku]_[{i+1}].bin",x=y)
+				o(f'https://api.bilibili.com/x/v2/dm/web/seg.so?type=1&oid={f}&segment_index={str(i+1)}',c=f"[{r}]_[{f}]_[Danmaku]_[{i+1}]_B1.bin",x=y)
 			j={}
 			j["elems"]=["Embedded"]
 			j["commandDms"]=[]
@@ -47,7 +48,7 @@ def p():
 			j["info"]["bvid"]=b['bvid']
 			j["info"]["avid"]=b['aid']
 			j["info"]["V_Name"]=b["title"]
-			j["info"]["pubdate"]=int(c)
+			j["info"]["pubdate"]=b["pubdate"]
 			j["info"]["i_ctime"]=b['ctime']
 			j["info"]["P_Name"]=e["part"]
 			j["info"]["duration"]=g
@@ -95,4 +96,5 @@ if __name__=='__main__':
 				print(f"{int(time.time().__trunc__())}:{t['bvid']}")
 				r=t['bvid']
 				p()
+				os.system("/root/aliyunpan/aliyunpan upload /root/work /")
 		time.sleep(15)

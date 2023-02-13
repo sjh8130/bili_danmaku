@@ -394,6 +394,7 @@
 | [link](#WIN_ACTIVITY_USER)	| WIN_ACTIVITY_USER | |
 
 ### WARNING
+[TOP](#直播弹幕格式)  
 `Anchor`
 | key				| type	| value |
 | - | - | - |
@@ -401,7 +402,7 @@
 | msg				| str	| ? |
 
 ### LIVE
-| key				| type	| value |
+| key 7,8			| type	| value |
 | - | - | - |
 | cmd				| str	| "LIVE" |
 | live_key			| str	| ?*int64* |
@@ -425,6 +426,7 @@
 ```
 
 ### SEND_GIFT
+[TOP](#直播弹幕格式)  
 送礼物
 | key	| type | value |
 | - | - | - |
@@ -492,6 +494,7 @@
 | uname					| str	| 发送者 用户名 |
 
 ### ONLINE_RANK_V2
+[TOP](#直播弹幕格式)  
 高能用户前七(左)，实时
 | key	| type	| value |
 | - | - | - |
@@ -503,7 +506,7 @@
 | list		| array	| obj[7] |
 | rank_type	| str	| "gold-rank" |
 #### ONLINE_RANK_V2__data__list
-| key			| type	| value |
+| key 6			| type	| value |
 | - | - | - |
 | uid			| num | uid |
 | face			| str | 头像URL |
@@ -513,6 +516,7 @@
 | guard_level	| num | 舰长等级 |
 
 ### ONLINE_RANK_TOP3
+[TOP](#直播弹幕格式)  
 高能用户前三(左)
 | key	| type	| value |
 | - | - | - |
@@ -530,6 +534,7 @@
 | rank		| num	| 排名(1-3) |
 
 ### ONLINE_RANK_COUNT
+[TOP](#直播弹幕格式)  
 高能用户
 约每N*5秒发送一次  
 | key | type | value |
@@ -542,15 +547,16 @@
 | count | num	| 最大值约为10000[1-100xx] |
 
 ### INTERACT_WORD
+[TOP](#直播弹幕格式)  
 进入直播间、关注主播通知（高精度）500ms
 | key | type	| value |
 | - | - | - |
 | cmd	| str	| "INTERACT_WORD" |
 | data	| obj	| |
 #### INTERACT_WORD__data
-| key				| type	| value |
+| key 18			| type	| value |
 | - | - | - |
-| contribution		| obj	| 与舰长等级有关 |
+| contribution		| obj	| [与舰长等级有关](#INTERACT_WORD__data__contribution) |
 | core_user_type	| num	| ?大部分为0[0-5] |
 | dmscore			| num	| [dmscore](#others) |
 | fans_medal		| obj	| [粉丝牌信息](#粉丝牌信息medal_info) |
@@ -569,6 +575,7 @@
 | uname				| str	| 发送者 用户名 |
 | uname_color		| str	| "" |
 #### INTERACT_WORD__identities
+[BACK](#INTERACT_WORD__data)
 ```js
 t[t.Normal = 1] = "Normal",
 t[t.Manager = 2] = "Manager",
@@ -580,6 +587,7 @@ t[t.GuardTi = 7] = "GuardTi",
 t[t.GuardZong = 8] = "GuardZong"
 ```
 #### INTERACT_WORD__msg_type
+[BACK](#INTERACT_WORD__data)
 ```js
 t[t.Entry = 1] = "Entry",
 t[t.Attention = 2] = "Attention",
@@ -619,12 +627,14 @@ e.createBehaviorElement = function(t) {
 }
 ```
 #### INTERACT_WORD__core_user_type
+[BACK](#INTERACT_WORD__data)
 |core_user_type|等级|VIP|粉丝牌&舰长|直播观众等级|直播UP|粉丝|关注|认证|
 |-|-|-|-|-|-|-|-|-|
 |1|LV6+|年度大会员|30总督|UL25+||55|1300||
 |2|LV6|年度大会员|||UP40|257w||个人认证：百大|
 |2|LV6|年度大会员|30总督，25个舰长||UP28+|3w|||
 #### INTERACT_WORD__data__contribution
+[BACK](#INTERACT_WORD__data)
 | key | type	| value |
 | - | - | - |
 | grade | num	| 舰长等级 |
@@ -635,6 +645,7 @@ e.createBehaviorElement = function(t) {
 ```
 
 ### HOT_RANK_CHANGED_V2
+[TOP](#直播弹幕格式)  
 [已移除][热门榜功能下线公告]  
 计时器每半小时(1800秒)重置一次，计时重置后，约每15秒或(N*15)秒发送一次
 | key | type | value |
@@ -642,7 +653,7 @@ e.createBehaviorElement = function(t) {
 | cmd	| str	| "HOT_RANK_CHANGED_V2" |
 | data	| obj	| |
 #### HOT_RANK_CHANGED_V2__data
-| key			| type	| value |
+| key 12		| type	| value |
 | - | - | - |
 | rank			| num	| 排名[1-50] |
 | trend			| num	| 0 |
@@ -658,6 +669,7 @@ e.createBehaviorElement = function(t) {
 | rank_desc		| str	| `f"{分区名称}top50"` |
 
 ### HOT_RANK_CHANGED
+[TOP](#直播弹幕格式)  
 [已移除][热门榜功能下线公告]  
 计时器每半小时(1800秒)重置一次，计时重置后，约每5秒或(N*5)秒发送一次
 | key | type | value |
@@ -665,7 +677,7 @@ e.createBehaviorElement = function(t) {
 | cmd	| str	| "HOT_RANK_CHANGED" |
 | data	| obj	| |
 #### HOT_RANK_CHANGED__data
-| key			| type	| value |
+| key 12		| type	| value |
 | - | - | - |
 | rank			| num	| 排名[1-50] |
 | trend			| num	| ? |
@@ -681,26 +693,28 @@ e.createBehaviorElement = function(t) {
 | rank_desc		| str	| "" |
 
 ### WATCHED_CHANGE
+[TOP](#直播弹幕格式)  
 约每5秒发送一次
 | key | type | value |
 | - | - | - |
 | cmd	| str	| "WATCHED_CHANGE" |
 | data	| obj	| |
 #### WATCHED_CHANGE__data
-| key			| type	| value |
+| key 3			| type	| value |
 | - | - | - |
 | num			| num	| 人数 |
 | text_small	| str	| str(num) <br> "x.y万" |
 | text_large	| str	| f"num人看过" <br> "x.y万人看过" |
 
 ### ROOM_REAL_TIME_MESSAGE_UPDATE
+[TOP](#直播弹幕格式)  
 (每N*60秒&数值更新)发送一次，更新关注数、粉丝团人数
 | key | type | value |
 | - | - | - |
 | cmd	| str	| "ROOM_REAL_TIME_MESSAGE_UPDATE" |
 | data	| obj	| |
 #### ROOM_REAL_TIME_MESSAGE_UPDATE__data
-| key			| type	| value |
+| key 4			| type	| value |
 | - | - | - |
 | roomid		| num	| 直播间ID |
 | fans			| num	| 关注 |
@@ -708,13 +722,14 @@ e.createBehaviorElement = function(t) {
 | fans_club		| num	| 粉丝团成员(活跃人数) |
 
 ### LIKE_INFO_V3_CLICK
+[TOP](#直播弹幕格式)  
 点赞(移动端 双击屏幕)，和`LIKE_INFO_V3_UPDATE`同时发送，实时&每5秒最多发送一次
 | key | type | value |
 | - | - | - |
 | cmd	| str	| "LIKE_INFO_V3_CLICK" |
 | data	| obj	| |
 #### LIKE_INFO_V3_CLICK__data
-| key				| type	| value |
+| key 11			| type	| value |
 | - | - | - |
 | show_area			| num	| 0 <br> 1(30s) |
 | msg_type			| num	| 6 |
@@ -733,6 +748,7 @@ e.createBehaviorElement = function(t) {
 | grade | num | 0 |
 
 ### LIKE_INFO_V3_UPDATE
+[TOP](#直播弹幕格式)  
 点赞(移动端 双击屏幕)，和`LIKE_INFO_V3_CLICK`同时发送，实时&每5秒最多发送一次
 | key | type | value |
 | - | - | - |
@@ -744,13 +760,14 @@ e.createBehaviorElement = function(t) {
 | click_count	| num | 点赞数量 |
 
 ### HOT_ROOM_NOTIFY
-***description***
+[TOP](#直播弹幕格式)  
+description
 | key | type | value |
 | - | - | - |
 | cmd	| str	| "HOT_ROOM_NOTIFY" |
 | data	| obj	| |
 #### HOT_ROOM_NOTIFY__data
-| key					| type | value |
+| key 4					| type | value |
 | - | - | - |
 | threshold				| num | 10000 |
 | ttl					| num | 300 |
@@ -766,6 +783,7 @@ e.createBehaviorElement = function(t) {
 ```
 
 ### ENTRY_EFFECT
+[TOP](#直播弹幕格式)  
 欢迎舰长进入直播间，高精度
 | key | type | value |
 | - | - | - |
@@ -804,6 +822,7 @@ e.createBehaviorElement = function(t) {
 | mobile_dynamic_url_webp	| str	| Tag_1 |
 
 ### STOP_LIVE_ROOM_LIST
+[TOP](#直播弹幕格式)  
 每30秒发送一次~~(`HH:mm:29`,`HH:mm:59`)~~，推送很多[12,223]直播间ID?
 | key | type | value |
 | - | - | - |
@@ -815,6 +834,7 @@ e.createBehaviorElement = function(t) {
 | room_id_list	| array	| [1,2,3,...] |
 
 ### GUARD_BUY
+[TOP](#直播弹幕格式)  
 舰长购买  
 "GUARD_BUY" "USER_TOAST_MSG" "ONLINE_RANK_V2" "ONLINE_RANK_TOP3" "NOTICE_MSG"
 | key | type | value |
@@ -835,6 +855,7 @@ e.createBehaviorElement = function(t) {
 | end_time		| num	| 购买时间 TimeStamp(秒) |
 
 ### USER_TOAST_MSG
+[TOP](#直播弹幕格式)  
 舰长购买通知，实时，显示在聊天区
 | key | type | value |
 | - | - | - |
@@ -868,8 +889,9 @@ e.createBehaviorElement = function(t) {
 | username				| str	| 用户名 |
 
 ### NOTICE_MSG
-滚动横幅，实时
-| key			| type	| value |
+[TOP](#直播弹幕格式)  
+滚动横幅
+| key 17		| type	| value |
 | - | - | - |
 | cmd			| str	| "NOTICE_MSG" |
 | id			| num	|  |
@@ -947,6 +969,7 @@ e.createBehaviorElement = function(t) {
 ```
 
 ### HOT_RANK_SETTLEMENT_V2
+[TOP](#直播弹幕格式)  
 [已移除][热门榜功能下线公告]  
 每30分(1800秒 `HH:25:05, HH:55:05`)广播一次，小分区排行榜topxx
 | key | type | value |
@@ -970,6 +993,7 @@ f"https://live.bilibili.com/p/html/live-app-hotrank/result.html?is_live_half_web
 ```
 
 ### HOT_RANK_SETTLEMENT
+[TOP](#直播弹幕格式)  
 [已移除][热门榜功能下线公告]  
 每30分(1800秒 `HH:25:05, HH:55:05`)广播一次，大分区排行榜topxx
 | key | type | value |
@@ -991,6 +1015,7 @@ f"https://live.bilibili.com/p/html/live-app-hotrank/result.html?is_live_half_web
 | url		| str	| [HOT_RANK_SETTLEMENT_V2:data:url](#HOT_RANK_SETTLEMENT_V2__data) |
 
 ### SUPER_CHAT_MESSAGE
+[TOP](#直播弹幕格式)  
 SuperChat
 | key | type | value |
 | - | - | - |
@@ -998,7 +1023,7 @@ SuperChat
 | data		| obj	| |
 | roomid	| num	| 直播间ID |
 #### SUPER_CHAT_MESSAGE__data
-| key(27)					| type	| value |
+| key 27					| type	| value |
 | - | - | - |
 | background_bottom_color	| str	| [table](#SUPER_CHAT_MESSAGE__PriceTable) |
 | background_color			| str	| [table](#SUPER_CHAT_MESSAGE__PriceTable) |
@@ -1034,7 +1059,7 @@ SuperChat
 | gift_name					| str	| "醒目留言" |
 | gift_id					| num	| 1 |
 #### SUPER_CHAT_MESSAGE__data__user_info
-| key						| type	| value |
+| key 12					| type	| value |
 | - | - | - |
 | face						| str	| 头像 |
 | face_frame				| str	| 头像框 |
@@ -1059,6 +1084,7 @@ SuperChat
 | 2000+			| #000000					| #000000			| #000000				| #000000					| #000000					| #000000				|
 
 ### SUPER_CHAT_MESSAGE_JPN
+[TOP](#直播弹幕格式)  
 SuperChat 日本語  
 ？某些主播的直播间会一直发送此包  
 ！有重复发包`1100ms/1.1s`  
@@ -1070,7 +1096,7 @@ SuperChat 日本語
 | data		| obj	| |
 | roomid	| str	| str(直播间ID) |
 #### SUPER_CHAT_MESSAGE_JPN__data
-| key(20)					| type	| value |
+| key 20					| type	| value |
 | - | - | - |
 | id						| str	| str(SUPER_CHAT_MESSAGE__data__id) |
 | uid						| str	| str(SUPER_CHAT_MESSAGE__data__uid) |
@@ -1094,6 +1120,7 @@ SuperChat 日本語
 | gift						| obj	|  |
 
 ### SUPER_CHAT_MESSAGE_DELETE
+[TOP](#直播弹幕格式)  
 SC 删除，约每110秒更新
 | key | type | value |
 | - | - | - |
@@ -1102,17 +1129,18 @@ SC 删除，约每110秒更新
 #### SUPER_CHAT_MESSAGE_DELETE__data
 | key		| type	| value |
 | - | - | - |
-| ids		| array	| SC id(num) |
+| ids		| array	| SC id |
 | roomid	| num	| 直播间id |
 
 ### DANMU_AGGREGATION
+[TOP](#直播弹幕格式)  
 抽奖通知，每秒最多更新一次，每个抽奖最多发送`max_time-1`个包 `天选时刻&红包`可以同时存在  
 | key | type | value |
 | - | - | - |
 | cmd	| str	| "DANMU_AGGREGATION" |
 | data	| obj	| |
 #### DANMU_AGGREGATION__data
-| key					| type	| value |
+| key 11				| type	| value |
 | :- | - | - |
 | activity_identity		| str	| 抽奖id |
 | activity_source		| num	| 1:天选时刻 2:礼物红包 |
@@ -1127,18 +1155,19 @@ SC 删除，约每110秒更新
 | timestamp				| num	| 当前时间TimeStamp(秒) |
 
 ### SPECIAL_GIFT
+[TOP](#直播弹幕格式)  
 开始：实时  
 结束：20秒后？ ，一次发送2个相同的包（2样本）
 | key | type | value |
 | - | - | - |
 | cmd	| str	| "SPECIAL_GIFT" |
 | data	| obj	| |
-#### SEND_GIFT__39
+#### SEND_GIFT__data
 | key | type | value |
 | - | - | - |
 | 39	| obj	| |
 #### SEND_GIFT__data__39
-| key		| type	| value |
+| key 7		| type	| value |
 | - | - | - |
 | action	| str	| (start|end) |
 | content	| str	|  |
@@ -1153,6 +1182,7 @@ SC 删除，约每110秒更新
 ```
 
 ### GUARD_HONOR_THOUSAND
+[TOP](#直播弹幕格式)  
 | key | type | value |
 | - | - | - |
 | cmd	| str	| "GUARD_HONOR_THOUSAND" |
@@ -1164,6 +1194,7 @@ SC 删除，约每110秒更新
 | del	| array	| 用户uid |
 
 ### ANCHOR_LOT_CHECKSTATUS
+[TOP](#直播弹幕格式)  
 抽奖(天选时刻)检查？
 | key | type | value |
 | - | - | - |
@@ -1179,6 +1210,7 @@ SC 删除，约每110秒更新
 | uid				| num	| 主播uid |
 
 ### ANCHOR_LOT_START
+[TOP](#直播弹幕格式)  
 抽奖(天选时刻)开始
 | key | type | value |
 | - | - | - |
@@ -1207,7 +1239,7 @@ SC 删除，约每110秒更新
 | id				| num	| 抽奖id |
 | is_broadcast		| num	| 1 |
 | join_type			| num	| ？ |
-| lot_status		| num	| 0:开始 1:正在抽奖 2:开奖 |
+| lot_status		| num	| [lot_status](#others) [0,1,2] |
 | max_time			| num	| 开奖时间(300,600,900)秒 |
 | require_text		| str	| "抽奖条件: 关注主播""至少成为主播的舰长/提督/总督" |
 | require_type		| num	| 抽奖条件 1:礼物抽奖 2: 3:大航海 ~~4:UL?~~ |
@@ -1228,6 +1260,7 @@ SC 删除，约每110秒更新
 | reject			| bool	|  |
 
 ### ANCHOR_LOT_END
+[TOP](#直播弹幕格式)  
 抽奖(天选时刻)结束
 | key | type | value |
 | - | - | - |
@@ -1239,13 +1272,14 @@ SC 删除，约每110秒更新
 | id	| num	| 抽奖id |
 
 ### ANCHOR_LOT_AWARD
+[TOP](#直播弹幕格式)  
 抽奖(天选时刻) 中奖名单，在`ANCHOR_LOT_END`后约`1~180ms`
 | key | type | value |
 | - | - | - |
 | cmd	| str	| "ANCHOR_LOT_AWARD" |
 | data	| obj	| |
 #### ANCHOR_LOT_AWARD__data
-| key				| type	| value |
+| key 10			| type	| value |
 | :- | - | - |
 | award_dont_popup	| num	| 1 |
 | award_image		| str	| 奖品图像？ |
@@ -1254,11 +1288,11 @@ SC 删除，约每110秒更新
 | award_type		| num	| 0 |
 | award_users		| array	| obj |
 | id				| num	| 抽奖id |
-| lot_status		| num	| 2 |
+| lot_status		| num	| [lot_status](#others) 2 |
 | url				| str	| https://live.bilibili.com/p/html/live-lottery/anchor-join.html?is_live_half_webview=1&hybrid_biz=live-lottery-anchor&hybrid_half_ui=1,5,100p,100p,000000,0,30,0,0,1;2,5,100p,100p,000000,0,30,0,0,1;3,5,100p,100p,000000,0,30,0,0,1;4,5,100p,100p,000000,0,30,0,0,1;5,5,100p,100p,000000,0,30,0,0,1;6,5,100p,100p,000000,0,30,0,0,1;7,5,100p,100p,000000,0,30,0,0,1;8,5,100p,100p,000000,0,30,0,0,1 |
 | web_url			| str	| "https://live.bilibili.com/p/html/live-lottery/anchor-join.html" |
 #### ANCHOR_LOT_AWARD__data__award_users
-| key	| type	| value |
+| key 6	| type	| value |
 | :- | - | - |
 | uid	| num	| uid |
 | uname	| num	| 用户名 |
@@ -1268,6 +1302,7 @@ SC 删除，约每110秒更新
 | num	| num	| 数量 |
 
 ### POPULAR_RANK_CHANGED
+[TOP](#直播弹幕格式)  
 | key | type | value |
 | - | - | - |
 | cmd	| str	| "POPULAR_RANK_CHANGED" |
@@ -1282,6 +1317,7 @@ SC 删除，约每110秒更新
 | cache_key	| str	| `f"rank_change:{hex_256bit}"` |
 
 ### PREPARING
+[TOP](#直播弹幕格式)  
 ？结束直播
 | key		| type	| value |
 | - | - | - |
@@ -1289,6 +1325,7 @@ SC 删除，约每110秒更新
 | roomid	| str	| 直播间id |
 
 ### DANMU_MSG
+[TOP](#直播弹幕格式)  
 弹幕！
 | key | type | value |
 | - | - | - |
@@ -1297,50 +1334,93 @@ SC 删除，约每110秒更新
 #### DANMU_MSG__info
 | array	| type	| value |
 | - | - | - |
-| 0		| array	| 弹幕属性 |
-| 1		| str	| `content`弹幕内容 |
+| 0		| array	| [弹幕属性](#DANMU_MSG__info__0) |
+| 1		| str	| `content`弹幕内容/表情包名称 |
 | 2		| array	| `userInfo`用户主站信息 |
-| 3		| array	| `fansMedal`粉丝牌 |
-| 4		| array	| `user_level`用户直播区信息 |
+| 3		| array	| `fansMedal`[粉丝牌](#DANMU_MSG__info__3) |
+| 4		| array	| `user_level`[用户直播区信息](#DANMU_MSG__info__4) |
 | 5		| array	| ？ |
 | 6		| num	| ？0 |
 | 7		| num	| `guardLevel`[舰长等级](#others) |
 | 8		| null	| ？ |
-| 9		| obj	| `validation` |
-| 10	| num	|  |
-| 11	| num	|  |
+| 9		| obj	| [`validation`](#DANMU_MSG__info__9) |
+| 10	| num	| ?0 |
+| 11	| num	| ?0 |
 | 12	| null	| ？null |
 | 13	| null	| ？null |
 | 14	| num	| `lpl` |
-| 15	| num	| ？高能榜 |
+| 15	| num	| dmscore |
 #### DANMU_MSG__info__0
 | array	| type		| value |
 | - | - | - |
-| 0:0	| num		| ？0？send_from_me |
-| 0:1	| num		| 弹幕位置 |
-| 0:2	| num		| 弹幕字体大小 |
-| 0:3	| num		| 弹幕颜色 |
-| 0:4	| num		| TimeStamp(毫秒) |
-| 0:5	| num		| **RANDOM** |
-| 0:6	| num		| 0? |
-| 0:7	| str		| HEX:crc32(uid) |
-| 0:8	| num		| ? |
-| 0:9	| num		| ? |
-| 0:10	| num		| `chatBubbleType` |
-| 0:11	| str		| `chatBubbleColor` 0:10==5::`"#1453BAFF,#4C2263A2,#3353BAFF"` |
-| 0:12	| num		| `dmType` 1:emoticon 2:voice |
-| 0:13	| obj/str	| 发送表情包时：{obj...} <br> 其他:`"{}"` |
-| 0:14	| obj/str	| `voiceInfo` "{}" |
-| 0:15	| obj 		| `emots?` |
-| 0:16	| obj 		|  |20230119
-#### DANMU_MSG__info__0__4
+| 0[0]	| num		| ？0 |
+| 0[1]	| num		| 弹幕位置 |
+| 0[2]	| num		| 弹幕字体大小 |
+| 0[3]	| num		| 弹幕颜色 |
+| 0[4]	| num		| TimeStamp(毫秒) |
+| 0[5]	| num		| **RANDOM** |
+| 0[6]	| num		| 0? |
+| 0[7]	| str		| HEX:crc32(uid) |
+| 0[8]	| num		| ? |
+| 0[9]	| num		| ? |
+| 0[10]	| num		| `chatBubbleType` |
+| 0[11]	| str		| `chatBubbleColor` 0[10]==5::`"#1453BAFF,#4C2263A2,#3353BAFF"` |
+| 0[12]	| num		| `dmType` 1:emoticon 2:voice |
+| 0[13]	| obj/str	| 发送表情包时：[`{obj...}`](#DANMU_MSG__info__0__13) <br> 其他:`"{}"` |
+| 0[14]	| obj/str	| `voiceInfo` "{}" |
+| 0[15]	| obj 		| [`emots?`](#DANMU_MSG__info__0__15) |
+| 0[16]	| obj 		| [goto](#DANMU_MSG__info__0__16) |20230119
+#### DANMU_MSG__info__2
+| array	| type	| value |
+| - | - | - |
+| 2[0]	| num	| `uid`用户uid |
+| 2[1]	| str	| `username`用户名 |
+| 2[2]	| num	| `isAdmin` `("div", t + "-icon dp-i-block p-relative v-middle", null, [["title", "这是位大人物 " + p.randomEmoji.happy()]])`|
+| 2[3]	| num	| `isSvip` |
+| 2[4]	| num	| `isSvip` |
+| 2[5]	| num	| ？10000 |
+| 2[6]	| num	| ？1 |
+| 2[7]	| str	| `usernameColor` 舰长:`"#00D1F1"` |
+#### DANMU_MSG__info__3
+| array	| type	| value |
+| - | - | - |
+| 3[0]	| num	| 粉丝牌 等级 |
+| 3[1]	| str	| 粉丝团 称号 |
+| 3[2]	| num	| 主播 用户名 |
+| 3[3]	| num	| 直播间ID |
+| 3[4]	| num	| [medal_color](#medal_color) |
+| 3[5]	| str	| `special` |
+| 3[6]	| num	| `iconId` |
+| 3[7]	| num	| [medal_color_start](#medal_color) |
+| 3[8]	| num	| [medal_color_border](#medal_color) |
+| 3[9]	| num	| [medal_color_end](#medal_color) |
+| 3[10]	| num	| [舰长等级](#others) |
+| 3[11]	| num	| ？[is_lighted](#粉丝牌信息medal_info) |
+| 3[12]	| num	| 主播uid |
+#### DANMU_MSG__info__4
 | array	| type	| value | 备注 |
 | - | - | - | - |
-| 4:0	| num	| `userLevel`用户UL等级 |
-| 4:1	| num	| ？0 |
-| 4:2	| num	| UL等级 颜色 |
-| 4:3	| str	| `rank` 直播 用户排名|">50000"
-| 4:4	| num	| 0 |
+| 4[0]	| num	| `userLevel`用户UL等级 |
+| 4[1]	| num	| ？0 |
+| 4[2]	| num	| UL等级 颜色 |
+| 4[3]	| str	| `rank` 直播 用户排名|">50000"
+| 4[4]	| num	| 0 |
+#### DANMU_MSG__info__9
+validation
+| key	| type	| value |
+| - | - | - |
+| ts	| num	| TimeStamp(秒) |
+| ct	| str	| 64bit |
+#### DANMU_MSG__info__0__13
+| key				| type	| value |
+| - | - | - |
+| bulge_display		| num	| 0,1 |
+| emoticon_unique	| str	| 表情包id |
+| height			| num	| 高 |
+| in_player_area	| num	| 0,1 |
+| is_dynamic		| num	| 0,1 |
+| url				| str	| URL |
+| width				| num	| 宽 |
 #### DANMU_MSG__info__0__15
 | key				| type	| value |
 | - | - | - |
@@ -1350,16 +1430,16 @@ SC 删除，约每110秒更新
 #### DANMU_MSG__info__0__15__extra
 | key						| type	| value |
 | - | - | - |
-| send_from_me				| bool	| 0 |
+| send_from_me				| bool	| false |
 | mode						| num	| 0 |
-| color						| num	| 0 |
-| dm_type					| num	| 0 |
+| color						| num	| 弹幕颜色 |
+| dm_type					| num	| 0:文本 1:表情包 |
 | font_size					| num	| 弹幕字体大小 |
 | player_mode				| num	| ？1 |
 | show_player_type			| num	| ？0 |
-| content					| str	| 弹幕内容 |
+| content					| str	| 弹幕内容/表情包名称 |
 | user_hash					| str	| `str(DEC:crc32(uid))`十六进制转十进制转字符串 |
-| emoticon_unique			| str	| 房间表情ID |
+| emoticon_unique			| str	| 表情ID |
 | bulge_display				| num	| 展示粉丝牌 |
 | recommend_score			| num	| ？弹幕推荐等级/？智能屏蔽等级 |
 | main_state_dm_color		| str	| ？"" |
@@ -1373,49 +1453,17 @@ SC 删除，约每110秒更新
 | jump_to_url				| str	| ？"" |
 | space_type				| str	| ？"" |
 | space_url					| str	| ？"" |
-| animation					| obj	| 0 |
-| emots						| null?	| 0 |
+| animation					| obj	| {} |
+| emots						| null?	| ？null |
 #### DANMU_MSG__info__0__16
 | key				| type	| value |
 | - | - | - |
 | activity_identity	| str	| ？"" |
 | activity_source	| num	| ？0 |
 | not_show			| num	| ？0 |
-#### DANMU_MSG__info__2
-| array	| type	| value |
-| - | - | - |
-| 2:0	| num	| `uid`用户uid |
-| 2:1	| str	| `username`用户名 |
-| 2:2	| num	| `isAdmin` `("div", t + "-icon dp-i-block p-relative v-middle", null, [["title", "这是位大人物 " + p.randomEmoji.happy()]])`|
-| 2:3	| num	| `isSvip` |
-| 2:4	| num	| `isSvip` |
-| 2:5	| num	| ？10000 |
-| 2:6	| num	| ？1 |
-| 2:7	| str	| `usernameColor` 舰长:`"#00D1F1"` |
-#### DANMU_MSG__info__3
-| array	| type	| value |
-| - | - | - |
-| 3:0	| num	| 粉丝牌 等级 |
-| 3:1	| str	| 粉丝团 称号 |
-| 3:2	| num	| 主播 用户名 |
-| 3:3	| num	| 直播间ID |
-| 3:4	| num	| [medal_color](#medal_color) |
-| 3:5	| str	| `special` |
-| 3:6	| num	| `iconId` |
-| 3:7	| num	| [medal_color_start](#medal_color) |
-| 3:8	| num	| [medal_color_border](#medal_color) |
-| 3:9	| num	| [medal_color_end](#medal_color) |
-| 3:10	| num	| [舰长等级](#others) |
-| 3:11	| num	| ？[is_lighted](#粉丝牌信息medal_info) |
-| 3:12	| num	| 主播uid |
-#### DANMU_MSG__info__9
-validation
-| key	| type	| value |
-| - | - | - |
-| ts	| num	| 粉丝牌 等级 |
-| ct	| str	| 粉丝团 称号 |
 
 ### CUT_OFF
+[TOP](#直播弹幕格式)  
 切断直播！
 **根据JavaScript文件分析**
 | key | type | value |
@@ -1423,6 +1471,7 @@ validation
 | cmd	| str	| "CUT_OFF" |
 
 ### MESSAGEBOX_USER_GAIN_MEDAL
+[TOP](#直播弹幕格式)  
 **根据JavaScript文件分析**
 | key | type | value |
 | - | - | - |
@@ -1435,6 +1484,7 @@ validation
 | toast			|  | |
 
 ### MESSAGEBOX_USER_MEDAL_CHANGE
+[TOP](#直播弹幕格式)  
 **根据JavaScript文件分析**
 | key | type | value |
 | - | - | - |
@@ -1449,18 +1499,21 @@ validation
 | upper_bound_content	|  | |
 
 ### MESSAGEBOX_USER_MEDAL_COMPENSATION
+[TOP](#直播弹幕格式)  
 **根据JavaScript文件分析**
 | key | type | value |
 | - | - | - |
 | cmd	| str	| "MESSAGEBOX_USER_MEDAL_COMPENSATION" |
 | data	| obj	| |
 #### MESSAGEBOX_USER_MEDAL_COMPENSATION__data
+[TOP](#直播弹幕格式)  
 | key                   | type	| value |
 | - | - | - |
 | up_uid				|  | |
 | add_score				|  | |
 
 ### SHOPPING_CART_SHOW
+[TOP](#直播弹幕格式)  
 ？购物车  
 开播后约30ms内发送`status=1`的包
 | key | type | value |
@@ -1473,6 +1526,7 @@ validation
 | status | num | |
 
 ### WIDGET_BANNER
+[TOP](#直播弹幕格式)  
 2023春节 9046样本
 | key | type | value |
 | - | - | - |
@@ -1510,6 +1564,7 @@ jump_url=f"https://live.bilibili.com/activity/live-activity-battle/index.html?ap
 ```
 
 ### GOTO_BUY_FLOW
+[TOP](#直播弹幕格式)  
 移动端 购买装扮
 | key | type | value |
 | - | - | - |
@@ -1521,6 +1576,7 @@ jump_url=f"https://live.bilibili.com/activity/live-activity-battle/index.html?ap
 | text | str | "X**正在去买" |
 
 ### RECOMMEND_CARD
+[TOP](#直播弹幕格式)  
 | key | type | value |
 | :- | - | - |
 | cmd	| str	| "RECOMMEND_CARD" |
@@ -1537,6 +1593,7 @@ jump_url=f"https://live.bilibili.com/activity/live-activity-battle/index.html?ap
 ```
 
 ### COMMON_NOTICE_DANMAKU
+[TOP](#直播弹幕格式)  
 | key | type | value |
 | - | - | - |
 | cmd	| str	| "COMMON_NOTICE_DANMAKU" |
@@ -1564,6 +1621,7 @@ jump_url=f"https://live.bilibili.com/activity/live-activity-battle/index.html?ap
 ```
 
 ### POPULARITY_RED_POCKET_NEW
+[TOP](#直播弹幕格式)  
 | key | type | value |
 | - | - | - |
 | cmd	| str	| "POPULARITY_RED_POCKET_NEW" |
@@ -1572,20 +1630,21 @@ jump_url=f"https://live.bilibili.com/activity/live-activity-battle/index.html?ap
 | key			| type	| value |
 | :- | - | - |
 | lot_id		| num	| 抽奖id |
-| start_time	| num	| 开始时间 |
-| current_time	| num	| 当前时间 |
+| start_time	| num	| 开始时间TimeStamp(秒) |
+| current_time	| num	| 当前时间TimeStamp(秒) |
 | wait_num		| num	|  |
 | uname			| str	| 用户名 |
 | uid			| num	| uid |
-| action		| str	| "送出" |
+| action		| str	| `"送出"` |
 | num			| num	| 1 |
-| gift_name		| str	| "红包" |
-| gift_id		| num	| 13000 |
-| price			| num	| 价格(rmb*10) |
+| gift_name		| str	| `"红包"` |
+| gift_id		| num	| `13000` |
+| price			| num	| 价格(RMB*10) |
 | name_color	| str	| 舰长:"#00D1F1" |
 | medal_info	| obj	| [medal_info](#粉丝牌信息medal_info) |
 
 ### POPULARITY_RED_POCKET_START
+[TOP](#直播弹幕格式)  
 | key | type | value |
 | - | - | - |
 | cmd	| str	| "POPULARITY_RED_POCKET_START" |
@@ -1593,7 +1652,7 @@ jump_url=f"https://live.bilibili.com/activity/live-activity-battle/index.html?ap
 #### POPULARITY_RED_POCKET_START__data
 | key				| type	| value |
 | :- | - | - |
-| lot_id			| num | 抽奖id |
+| lot_id			| num	| 抽奖id |
 | sender_uid		| num	| uid |
 | sender_name		| str	| 用户名 |
 | sender_face		| str	| 头像URL |
@@ -1605,15 +1664,23 @@ jump_url=f"https://live.bilibili.com/activity/live-activity-battle/index.html?ap
 | last_time			| num	| 180 |
 | remove_time		| num	| 1674562231 |
 | replace_time		| num	| 1674562226 |
-| lot_status		| num	| 1 |
+| lot_status		| num	| [lot_status](#others) 1 |
 | h5_url			| str	| f"https://live.bilibili.com/p/html/live-app-red-envelope/popularity.html?is_live_half_webview=1&hybrid_half_ui=1,5,100p,100p,000000,0,50,0,0,1;2,5,100p,100p,000000,0,50,0,0,1;3,5,100p,100p,000000,0,50,0,0,1;4,5,100p,100p,000000,0,50,0,0,1;5,5,100p,100p,000000,0,50,0,0,1;6,5,100p,100p,000000,0,50,0,0,1;7,5,100p,100p,000000,0,50,0,0,1;8,5,100p,100p,000000,0,50,0,0,1&hybrid_rotate_d=1&hybrid_biz=popularityRedPacket&lotteryId={lot_id}" |
 | user_status		| num	| 2 |
-| awards			| array	|  |
-| lot_config_id		| num	| 5 |
-| total_price		| num	| 41600 |
+| awards			| array	| obj[3] |
+| lot_config_id		| num	| 红包预设 |
+| total_price		| num	| 礼物总价值*0.8 |
 | wait_num			| num	| 0 |
+#### POPULARITY_RED_POCKET_START__data__awards
+| [i]key				| type	| value |
+| :- | - | - |
+| [i]gift_id			| num | 礼物id |
+| [i]gift_name			| num | 礼物名称 |
+| [i]gift_pic			| num | 礼物图像URL(140*140) |
+| [i]num				| num | 数量 |
 
 ### POPULARITY_RED_POCKET_WINNER_LIST
+[TOP](#直播弹幕格式)  
 | key | type | value |
 | - | - | - |
 | cmd	| str	| "POPULARITY_RED_POCKET_WINNER_LIST" |
@@ -1623,22 +1690,27 @@ jump_url=f"https://live.bilibili.com/activity/live-activity-battle/index.html?ap
 | - | - | - |
 | lot_id		| num	| 抽奖id |
 | total_num		| num	| |
-| winner_info	| list	| list[total_num] |
-| awards		| obj	| |
+| winner_info	| array	| array[total_num] |
+| awards		| obj	| ${gift_id}:{obj...} |
 | version		| num	| 1 |
 #### POPULARITY_RED_POCKET_WINNER_LIST__data__winner_info
 | array				| type	| value |
 | - | - | - |
 | winner_info[i][0]	| num	| uid |
 | winner_info[i][1]	| str	| name |
-| winner_info[i][2]	| num	| bag_id |
+| winner_info[i][2]	| num	| `bag_id` |
 | winner_info[i][3]	| num	| gift_id |
-
-#### POPULARITY_RED_POCKET_WINNER_LIST__data__winner_info
+#### POPULARITY_RED_POCKET_WINNER_LIST__data__awards
 | key			| type	| value |
 | - | - | - |
+| {gift_id}award_type		| num	|  |
+| {gift_id}award_name		| str	| 礼物名称 |
+| {gift_id}award_pic		| str	| URL(140*140) |
+| {gift_id}award_big_pic	| str	| URL(360*360) |
+| {gift_id}award_price		| num	| 礼物价格(RMB*1000) |
 
 ### XXXXXXXXXXX
+[TOP](#直播弹幕格式)  
 | key | type | value |
 | - | - | - |
 | cmd	| str	| "XXXXXXXXXXX" |
@@ -1649,20 +1721,13 @@ jump_url=f"https://live.bilibili.com/activity/live-activity-battle/index.html?ap
 | data |  | |
 
 ### others
+[TOP](#直播弹幕格式)  
 | key				| type	| value |
 | - | - | - |
 | dmscore			| num	| ~~偶数~~ |
 | guard_level		| num	| 舰长等级 <br> 0:无 <br> 1:总督 <br> 2:提督 <br> 3:舰长 |
-| privilege_type	| num	| ！待确定！2:提督 3:舰长 |
-| lot_status		| num	| 抽奖状态 0:开始 2:结束 |
-
-uid hash 示例
-| type				| value		| 备注 |
-| -	| - | - |
-| uid　　　　			|	`12345678`	|
-| 十六进制hash			|	`"9ae0daaf"`	|crc32
-| 十进制　hash			|	`2598427311`	|十六进制转十进制
-| 字符串型十进制　hash	|	`"2598427311"`	|十六进制转十进制转字符串
+| privilege_type	| num	| ！待确定 2:提督 3:舰长 |
+| lot_status		| num	| 抽奖状态 0:开始 1:正在抽奖 2:开奖 |
 
 ```
 face:http(s)?://i[0-3].hdslb.com/bfs/(face|baselabs)/[0-9a-f]{40}.(jpg|png|gif|webp)
