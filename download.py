@@ -206,8 +206,7 @@ def main_Func():
 	# ================================ 加载
 	Json_Info = video_info["data"]
 	Main_Title = Json_Info["title"]
-	P_Date = str(Json_Info["pubdate"])
-	if Main_Title == "": Main_Title = "Fake_MainTitle"
+	P_Date = int(Json_Info["pubdate"])
 	Num_of_Videos = int(len(Json_Info["pages"]))
 	# ================================ bvid aid 检查
 	if Json_Info["bvid"] != bvid: logging.error(f"[bvid]: bvid mismatch {Json_Info['bvid']}|{bvid}")
@@ -232,12 +231,13 @@ def main_Func():
 		P_flag[2] = False
 		i_for_videos += 1
 		NET_count[0] = 0
-		cid = str(This["cid"])
+		cid = int(This["cid"])
 		if P_flag[12] and P_flag[1]: break
 		Danmaku_Final_Binary = b""
 		duration = int(This["duration"])
 		Segment_Count = (duration/360).__ceil__()
-		if time.time() < time.time()+Segment_Count*6000/11+7200:
+		# if time.time() < P_Date+Segment_Count*3000/12.5+duration*2:
+		if time.time() < P_Date+62000:
 			logging.warning("[Change_2023-02-08] 弹幕正在处理，请注意文件内容")
 		logging.debug(f"[{bvid}][Special_Danmaku]: P{i_for_videos}")
 		DL_Data_Extra_Info = Downloader(f'https://api.bilibili.com/x/v2/dm/web/view?type=1&oid={cid}', f"[{bvid}]_[{cid}]_[BAS]_[INFO].bin")
@@ -300,14 +300,14 @@ def main_Func():
 			del json_proccess["state"]
 			del Temp_Binary
 			# ==================
-			P_flag[13] = False
 			try:
 				json_proccess["elems"]
-				P_flag[13] = True
 			except KeyError:
 				json_proccess["elems"] = []
-			if P_flag[13]:
+			else:
 				for this in json_proccess["elems"]:
+					this["ctime"] = int(this["ctime"])
+					this["usermid"] = int(this["usermid"])
 					if not P_flag[2] and this["attr"] == 2: P_flag[2] = True
 					del this["idStr"]
 					del this["test19"]
@@ -326,7 +326,6 @@ def main_Func():
 					if this["replyCount"] == 0: del this["replyCount"]
 					del this["likes"]
 					del this["weight"]
-			P_flag[13] = False
 			# ==================
 			try: json_proccess["commandDms"] = ExInfo_Json["commandDms"]
 			except KeyError: json_proccess["commandDms"] = []
@@ -334,22 +333,22 @@ def main_Func():
 			except KeyError: Danmaku_Count = 0
 			json_proccess["info"] = {}
 			json_proccess["info"]["Ver"] = "V5_20220916"
-			json_proccess["info"]["dmk_Ver"] = 2
+			json_proccess["info"]["dmk_Ver"] = 3
 			json_proccess["info"]["owner"] = Json_Info['owner']								# dict	get all
-			json_proccess["info"]["bvid"] = Json_Info['bvid']								# str	get all
-			json_proccess["info"]["avid"] = Json_Info['aid']								# num	get all
-			json_proccess["info"]["V_Name"] = Json_Info["title"]							# str	get all
-			json_proccess["info"]["pubdate"] = Json_Info['pubdate']							# num	get all unix_timestamp
+			json_proccess["info"]["bvid"] = bvid											# str	get all
+			json_proccess["info"]["avid"] = avid_in											# num	get all
+			json_proccess["info"]["V_Name"] = Main_Title									# str	get all
+			json_proccess["info"]["pubdate"] = P_Date										# num	get all unix_timestamp
 			json_proccess["info"]["i_ctime"] = Json_Info['ctime']							# num	get all unix_timestamp
 			json_proccess["info"]["P_Name"] = This["part"]									# str	get part
-			json_proccess["info"]["cid"] = This["cid"]										# num	get part
-			json_proccess["info"]["duration"] = This["duration"]							# num	get part
+			json_proccess["info"]["cid"] = cid												# num	get part
+			json_proccess["info"]["duration"] = duration									# num	get part
 			json_proccess["info"]["segment_count"] = Segment_Count							# num	set
 			json_proccess["info"]["danmaku_count"] = Danmaku_Count							# num	set
 			json_proccess["info"]["danmaku_web_reported"] = Json_Info['stat']['danmaku']	# num	get
 			json_proccess["info"]["danmaku_proto_reported"] = ExInfo_Proto.count			# num	get
 			json_proccess["info"]["File_Create_Time_Start"] = int(Time_Start_Process)		# num	set unix_timestamp
-			json_proccess["info"]["File_Create_Time"] = int(Time_Process_Danmaku)				# num	set unix_timestamp
+			json_proccess["info"]["File_Create_Time"] = int(Time_Process_Danmaku)			# num	set unix_timestamp
 			json_proccess["info"]["is_live_record"] = P_flag[2]								# bool	GET
 			Json_Write_Data = json.dumps(json_proccess, ensure_ascii=False, separators=(',', ':')).replace("},{\"id\"", "},\n{\"id\"")
 			del json_proccess

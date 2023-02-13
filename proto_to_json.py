@@ -61,6 +61,7 @@ if __name__ == '__main__':
 	j1["commandDms"] = []
 	j1["info"] = {}
 	j1["info"]["Ver"] = "V5_20220916"
+	j1["info"]["dmk_Ver"] = 3
 	j1["info"]["owner"] = {"mid":0, "name":"Fake_Username", "face":"http://[::]/a.jpg"}
 	j1["info"]["bvid"] = "Fake_BVID"
 	j1["info"]["avid"] = 0
