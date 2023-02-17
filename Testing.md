@@ -1330,15 +1330,16 @@ SC 删除，约每110秒更新
 | - | - | - |
 | cmd	| str	| "DANMU_MSG" |
 | info	| array	| |
+| dm_v2	| str	| base64(proto) [define](#danmu_msg__dm_v2) |
 #### DANMU_MSG__info
 | array	| type	| value |  |
 | - | - | - | - |
 | 0		| array	| [弹幕属性](#DANMU_MSG__info__0) |
-| 1		| str	| `text/content` 弹幕内容/表情包名称 |
-| 2		| array	| `userInfo`用户主站信息 |
-| 3		| array	| `fansMedal`[粉丝牌](#DANMU_MSG__info__3) |
-| 4		| array	| `user_level`[用户直播区信息](#DANMU_MSG__info__4) |
-| 5		| array	| `title `头衔[URL][头衔] |
+| 1		| str	| `text/content` <br> 弹幕内容/表情包名称 |
+| 2		| array	| `userInfo`用户主站信息 | "https://account.bilibili.com/account/home"
+| 3		| array	| `fansMedal`[粉丝牌](#DANMU_MSG__info__3) | "https://link.bilibili.com/p/center/index#/user-center/wearing-center/my-medal"
+| 4		| array	| `user_level`[用户直播区信息](#DANMU_MSG__info__4) | "https://link.bilibili.com/p/center/index#/user-center/my-info/operation"
+| 5		| array	| `title `头衔[URL][头衔] | "https://link.bilibili.com/p/center/index#/user-center/wearing-center/library"
 | 6		| num	| ？0 |
 | 7		| num	| `guardLevel`[舰长等级](#others) |
 | 8		| null	| ？ |
@@ -1348,7 +1349,7 @@ SC 删除，约每110秒更新
 | 12	| null	| ？null |
 | 13	| null	| ？null |
 | 14	| num	| `lpl` |
-| 15	| num	| dmscore |7:5932 14:2130 21:3134 28:1575 35:4418 42:4236 49:6731 56:4400 63:3991 70:4223 77:18 105:9546 112:408 210:主播
+| 15	| num	| 7*N |7:5932 14:2130 21:3134 28:1575 35:4418 42:4236 49:6731 56:4400 63:3991 70:4223 77:18 105:9546 112:408 210:主播
 #### DANMU_MSG__info__0
 | array	| type		| value |  |
 | - | - | - | - |
@@ -1363,8 +1364,8 @@ SC 删除，约每110秒更新
 | 0[8]	| num		| ? |
 | 0[9]	| num		| `type` ? [0,1,2,7] |
 | 0[10]	| num		| `chatBubbleType` |
-| 0[11]	| str		| `chatBubbleColor` chatBubbleType==5::`"#1453BAFF,#4C2263A2,#3353BAFF"` chatBubbleType==2::`"#1453BAFF,#4C2263A2,#3353BAFF"` |
-| 0[12]	| num		| `dmType` <br> 1:emoticon <br> 2:voice 6: |
+| 0[11]	| str		| `chatBubbleColor` <br> 5:`"#1453BAFF,#4C2263A2,#3353BAFF"` <br> 2:`"#1453BAFF,#4C2263A2,#3353BAFF"` |
+| 0[12]	| num		| `dmType` <br> 1:emoticon <br> 2:voice <br> 6: |
 | 0[13]	| obj/str	| 表情包时：[`{obj...}`](#DANMU_MSG__info__0__13) <br> 其他:`"{}"` |
 | 0[14]	| obj/str	| [`voiceInfo`](#DANMU_MSG__info__0__14) `"{}"` |
 | 0[15]	| obj 		| [`emoticons`](#DANMU_MSG__info__0__15) |
@@ -1372,14 +1373,14 @@ SC 删除，约每110秒更新
 #### DANMU_MSG__info__2
 | array	| type	| value |  |
 | - | - | - | - |
-| 2[0]	| num	| `uid`用户uid |
-| 2[1]	| str	| `username`用户名 |
-| 2[2]	| num	| `isAdmin` |
+| 2[0]	| num	| `uid` 用户uid |
+| 2[1]	| str	| `username` 用户名 |
+| 2[2]	| num	| `isAdmin` 房管 |
 | 2[3]	| num	| `isSvip` |
 | 2[4]	| num	| `isSvip` |
 | 2[5]	| num	| `rank` ？10000 LV0:5000 |
 | 2[6]	| num	| `verify` bool |https://s1.hdslb.com/bfs/blive-engineer/live-web-player/room-player.min.js
-| 2[7]	| str	| `usernameColor` 舰长:`"#00D1F1"`提督:`"#E17AFF"` |
+| 2[7]	| str	| `usernameColor` <br> 舰长:`"#00D1F1"` <br> 提督:`"#E17AFF"` |
 #### DANMU_MSG__info__3
 | array	| type	| value |
 | - | - | - |
@@ -1400,7 +1401,7 @@ SC 删除，约每110秒更新
 user_level
 | array	| type		| value | 备注 |
 | - | - | - | - |
-| 4[0]	| num		| `userLevel`用户UL等级 |
+| 4[0]	| num		| `userLevel` 用户UL等级 |
 | 4[1]	| num		| ？0 |
 | 4[2]	| num		| UL等级 颜色 |
 | 4[3]	| str/num	| `rank` 直播 用户排名|">50000"
@@ -1424,7 +1425,7 @@ validation/checkInfo
 | height			| num	| 高 |
 | in_player_area	| num	| 0,1 |
 | is_dynamic		| num	| 0,1 |
-| url				| str	| URL |
+| url				| str	| 表情包URL |
 | width				| num	| 宽 |
 #### DANMU_MSG__info__0__14
 | key			| type	| value |
@@ -1441,8 +1442,8 @@ validation/checkInfo
 | show_player_type	| num	| 0 |
 | extra				| str	| [json](#DANMU_MSG__info__0_15__extra) |
 #### DANMU_MSG__info__0__15__extra
-| key						| type		| value |
-| - | - | - |
+| key						| type		| value |  |
+| - | - | - | - |
 | send_from_me				| bool		| false |
 | mode						| num		| 0 |
 | color						| num		| 弹幕颜色 |
@@ -1489,6 +1490,84 @@ emoticonOptions
 | not_show			| num	| ？0 |
 ```json
 "emots":{"[dog]":{"emoticon_id":208,"emoji":"[dog]","descript":"[dog]","url":"http://i0.hdslb.com/bfs/live/4428c84e694fbf4e0ef6c06e958d9352c3582740.png","width":20,"height":20,"emoticon_unique":"emoji_208","count":1}}
+```
+### DANMU_MSG__dm_v2
+| id	| key						| type		| value |
+| - | - | - | - |
+| 01	| send_from_me				| bool		| false |
+| 01	| send_from_me				| bool		| false |
+| 01	| send_from_me				| bool		| false |
+| 01	| send_from_me				| bool		| false |
+| 01	| send_from_me				| bool		| false |
+| 01	| send_from_me				| bool		| false |
+| 01	| send_from_me				| bool		| false |
+| 01	| send_from_me				| bool		| false |
+| 01	| send_from_me				| bool		| false |
+| 01	| send_from_me				| bool		| false |
+| 01	| send_from_me				| bool		| false |
+| 01	| send_from_me				| bool		| false |
+| 01	| send_from_me				| bool		| false |
+| 01	| send_from_me				| bool		| false |
+| 01	| send_from_me				| bool		| false |
+| 01	| send_from_me				| bool		| false |
+| 01	| send_from_me				| bool		| false |
+| 01	| send_from_me				| bool		| false |
+| 01	| send_from_me				| bool		| false |
+| 01	| send_from_me				| bool		| false |
+
+2023-02-17
+```proto
+syntax = "proto3";
+message dm_V2 {
+	int64  dmid = 1;				// 1=10
+	string dmid_unique = 2;			// f"{roomid}{dmid}"
+	int32  mode = 3;				// 弹幕类型 1:顶部正向滚动弹幕 4:底部弹幕_舰长_ 5?:顶部弹幕_总督_
+	int32  fontsize = 4;			// 弹幕字号
+	uint32 color = 5;				// 弹幕颜色
+	string midHash = 6;				// 发送着mid hash
+	string content = 7;				// 弹幕正文
+	int64  ctime = 8;				// 发送时间TimeStamp(毫秒)
+	bytes unknown_09 = 9;			// 
+	int64  dmid_2 = 10;				// 1=10
+	bytes unknown_11 = 11;			// 
+	bytes unknown_12 = 12;			// 
+	chatBubble chat_bubble = 13;	// 聊天气泡
+	bytes unknown_14 = 14;			// 
+	repeated emots emots = 15;		// 表情
+	bytes unknown_16 = 16;			// 
+	bytes unknown_17 = 17;			// 
+	lottery lottery = 18;			// 抽奖
+	bytes unknown_19 = 19;			// 
+	bytes unknown_20 = 20;			// 
+	bytes unknown_21 = 21;			// 
+	bytes unknown_22 = 22;			// 
+	bytes unknown_23 = 23;			// 
+}
+message emots{
+	string desc = 1;
+	emots_detail detail = 2;
+}
+message emots_detail{
+	string emoticon_unique = 1;
+	string url = 2;
+	bool in_player_area = 3;
+	bool is_dynamic = 4;
+	int32 unknown5 = 5;
+	int32 height = 6;
+	int32 width = 7;
+}
+message lottery{
+	bytes unknown_lottery_0001 = 1;
+	int32 is_lottery = 2;
+	string lotteryId = 3;
+	bytes unknown_lottery_0004 = 4;
+}
+message chatBubble{
+	int32 chat_bubble_type = 1;
+	string chat_bubble_color = 2;
+	bytes unknown_chat_bubble_0003 = 3;
+	bytes unknown_chat_bubble_0004 = 4;
+}
 ```
 
 ### CUT_OFF
