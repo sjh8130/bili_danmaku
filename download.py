@@ -296,7 +296,7 @@ def main_Func():
 			logging.debug(f"[{bvid}][File_JSON] 开始处理 P{i_for_videos}")
 			Temp_Binary = dm_pb2.DmSegMobileReply()
 			Temp_Binary.ParseFromString(Danmaku_Final_Binary)
-			json_proccess = json.loads(MessageToJson(Temp_Binary, indent=0, ensure_ascii=False, including_default_value_fields=True))
+			json_proccess = json.loads(MessageToJson(Temp_Binary, indent=None, ensure_ascii=False, including_default_value_fields=True))
 			del json_proccess["state"]
 			del Temp_Binary
 			# ==================
