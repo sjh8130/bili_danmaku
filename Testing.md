@@ -1491,83 +1491,32 @@ emoticonOptions
 ```json
 "emots":{"[dog]":{"emoticon_id":208,"emoji":"[dog]","descript":"[dog]","url":"http://i0.hdslb.com/bfs/live/4428c84e694fbf4e0ef6c06e958d9352c3582740.png","width":20,"height":20,"emoticon_unique":"emoji_208","count":1}}
 ```
-### DANMU_MSG__dm_v2
-| id	| key						| type		| value |
+#### DANMU_MSG__dm_v2
+上线时间 2023-02-17 05:50:13~~05:50:24(UTC+8)
+| id	| key			| type		| value |
 | - | - | - | - |
-| 01	| send_from_me				| bool		| false |
-| 01	| send_from_me				| bool		| false |
-| 01	| send_from_me				| bool		| false |
-| 01	| send_from_me				| bool		| false |
-| 01	| send_from_me				| bool		| false |
-| 01	| send_from_me				| bool		| false |
-| 01	| send_from_me				| bool		| false |
-| 01	| send_from_me				| bool		| false |
-| 01	| send_from_me				| bool		| false |
-| 01	| send_from_me				| bool		| false |
-| 01	| send_from_me				| bool		| false |
-| 01	| send_from_me				| bool		| false |
-| 01	| send_from_me				| bool		| false |
-| 01	| send_from_me				| bool		| false |
-| 01	| send_from_me				| bool		| false |
-| 01	| send_from_me				| bool		| false |
-| 01	| send_from_me				| bool		| false |
-| 01	| send_from_me				| bool		| false |
-| 01	| send_from_me				| bool		| false |
-| 01	| send_from_me				| bool		| false |
+| 01	| dmid			| int64		|  |
+| 02	| dmid_unique	| string	|  |
+| 03	| mode			| uint32	| 弹幕类型 |
+| 04	| fontsize		| uint32	| 弹幕字号 |
+| 05	| color			| uint32	| 弹幕颜色 |
+| 06	| midHash		| string	| 发送着mid hash |
+| 07	| content		| string	| 弹幕正文 |
+| 08	| ctime			| int64		| 发送时间TimeStamp(毫秒) |
+| 09	| ?				| ?			|  |
+| 10	| dmid			| int64		|  |
+| 11	| ?				| ?			|  |
+| 12	| ?				| ?			|  |
+| 13	| chat_bubble	| 			| 聊天气泡 |
+| 14	| dm_type		| uint32	|  |
+| 15	| emots			| repeat	| 表情 |
+| 16	| ?				| ?			|  |
+| 17	| ?				| ?			|  |
+| 18	| lottery		| 			| 抽奖 |
 
-2023-02-17
-```proto
+```protobuf
 syntax = "proto3";
-message dm_V2 {
-	int64  dmid = 1;				// 1=10
-	string dmid_unique = 2;			// f"{roomid}{dmid}"
-	int32  mode = 3;				// 弹幕类型 1:顶部正向滚动弹幕 4:底部弹幕_舰长_ 5?:顶部弹幕_总督_
-	int32  fontsize = 4;			// 弹幕字号
-	uint32 color = 5;				// 弹幕颜色
-	string midHash = 6;				// 发送着mid hash
-	string content = 7;				// 弹幕正文
-	int64  ctime = 8;				// 发送时间TimeStamp(毫秒)
-	bytes unknown_09 = 9;			// 
-	int64  dmid_2 = 10;				// 1=10
-	bytes unknown_11 = 11;			// 
-	bytes unknown_12 = 12;			// 
-	chatBubble chat_bubble = 13;	// 聊天气泡
-	bytes unknown_14 = 14;			// 
-	repeated emots emots = 15;		// 表情
-	bytes unknown_16 = 16;			// 
-	bytes unknown_17 = 17;			// 
-	lottery lottery = 18;			// 抽奖
-	bytes unknown_19 = 19;			// 
-	bytes unknown_20 = 20;			// 
-	bytes unknown_21 = 21;			// 
-	bytes unknown_22 = 22;			// 
-	bytes unknown_23 = 23;			// 
-}
-message emots{
-	string desc = 1;
-	emots_detail detail = 2;
-}
-message emots_detail{
-	string emoticon_unique = 1;
-	string url = 2;
-	bool in_player_area = 3;
-	bool is_dynamic = 4;
-	int32 unknown5 = 5;
-	int32 height = 6;
-	int32 width = 7;
-}
-message lottery{
-	bytes unknown_lottery_0001 = 1;
-	int32 is_lottery = 2;
-	string lotteryId = 3;
-	bytes unknown_lottery_0004 = 4;
-}
-message chatBubble{
-	int32 chat_bubble_type = 1;
-	string chat_bubble_color = 2;
-	bytes unknown_chat_bubble_0003 = 3;
-	bytes unknown_chat_bubble_0004 = 4;
-}
+message dm_V2 {}
 ```
 
 ### CUT_OFF
