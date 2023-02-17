@@ -1,4 +1,3 @@
-# 
 ## 主站弹幕格式
 | id	| type		| protobuf-name	| -- |
 | -:	| -:		| -				| - |
@@ -414,14 +413,14 @@
 | roomid			| num	| 房间号 |
 ```json
 {
-	"cmd": "LIVE",
-	"live_key": "123456789012345678",
-	"voice_background": "",
-	"sub_session_key": "123456789012345678sub_time:1234567890",
-	"live_platform": "events_broadcast",
-	"live_model": 0,
-	"live_time": 1234567890, // ？仅在开播时存在
-	"roomid": 12345
+	"cmd":"LIVE",
+	"live_key":"123456789012345678",
+	"voice_background":"",
+	"sub_session_key":"123456789012345678sub_time:1234567890",
+	"live_platform":"events_broadcast",
+	"live_model":0,
+	"live_time":1234567890,	// ？仅在开播时存在
+	"roomid":12345
 }
 ```
 
@@ -605,24 +604,24 @@ e.createBehaviorElement = function(t) {
 	i = t.nameColor,
 	a = t.msgType,
 	c = t.text,
-	u = ((e = {})[L.Sv.Entry] = o < L.R$.GuardJian ? "进入" : "光临",
+	u = ((e = {})[L.Sv.Entry] = o < L.R$.GuardJian ? "进入" :"光临",
 	e[L.Sv.Attention] = "关注了",
 	e[L.Sv.Share] = "分享了",
 	e[L.Sv.SpecialAttention] = "特别关注了",
 	e[L.Sv.MutualAttention] = "互粉了",
 	e[L.Sv.Link] = c,
-	e), 
-	s = (0, C.H)(i), 
-	l = this.createElement("span", "t-over-hidden interact-name v-middle", n, [["style", "color: " + s + "; margin-right: 4px;"]]), 
-	f = this.createElement("span", "flex-no-shrink v-middle", u[a] + (a !== L.Sv.Link ? "直播间" : ""), a > L.Sv.Entry && a !== L.Sv.Link ? [["style", "color: #F7B500"]] : [["style", "color: #999999"]]);
+	e),
+	s = (0,C.H)(i),
+	l = this.createElement("span","t-over-hidden interact-name v-middle",n,[["style","color:" + s + "; margin-right:4px;"]]),
+	f = this.createElement("span","flex-no-shrink v-middle",u[a] + (a !== L.Sv.Link ? "直播间" :""),a > L.Sv.Entry && a !== L.Sv.Link ? [["style","color:#F7B500"]] :[["style","color: #999999"]]);
 	if (t.icon) {
 		var h = t.icon;
-		r = this.createIcon(h, [["style", "width: 13px;height: 13px; margin-left: 4px;"]])
+		r = this.createIcon(h,[["style","width: 13px;height: 13px; margin-left: 4px;"]])
 	}
 	return {
-		name: l,
-		desc: f,
-		icon: r
+		name:l,
+		desc:f,
+		icon:r
 	}
 }
 ```
@@ -865,7 +864,7 @@ description
 | key 23				| type	| value |
 | - | - | - |
 | anchor_show			| bool	| true |
-| color					| str	| 舰长:"#00D1F1" <br> 提督:"#E17AFF" <br> 总督: |
+| color					| str	| 舰长:"#00D1F1" <br> 提督:"#E17AFF" <br> 总督:"" |
 | dmscore				| num	| 舰长:90 提督:96 总督: |
 | effect_id				| num	| 舰长:397 提督:398 总督: |
 | end_time				| num	| TimeStamp(秒) |
@@ -971,7 +970,7 @@ description
 ### HOT_RANK_SETTLEMENT_V2
 [TOP](#直播弹幕格式)  
 [已移除][热门榜功能下线公告]  
-每30分(1800秒 `HH:25:05, HH:55:05`)广播一次，小分区排行榜topxx
+每30分(1800秒 `HH:25:05,HH:55:05`)广播一次，小分区排行榜topxx
 | key | type | value |
 | - | - | - |
 | cmd	| str	| "HOT_RANK_SETTLEMENT_V2" |
@@ -995,7 +994,7 @@ f"https://live.bilibili.com/p/html/live-app-hotrank/result.html?is_live_half_web
 ### HOT_RANK_SETTLEMENT
 [TOP](#直播弹幕格式)  
 [已移除][热门榜功能下线公告]  
-每30分(1800秒 `HH:25:05, HH:55:05`)广播一次，大分区排行榜topxx
+每30分(1800秒 `HH:25:05,HH:55:05`)广播一次，大分区排行榜topxx
 | key | type | value |
 | - | - | - |
 | cmd	| str	| "HOT_RANK_SETTLEMENT" |
@@ -1177,8 +1176,8 @@ SC 删除，约每110秒更新
 | storm_gif	| str	| GIF图像 |
 | time		| num	| 持续时间 |
 ```json
-{"cmd":"SPECIAL_GIFT", "data": {"39": {"action":"start", "content":"可爱即正义~~", "hadJoin": 0, "id":"123412341234", "num": 1, "storm_gif":"http://static.hdslb.com/live-static/live-room/images/gift-section/mobilegift/2/jiezou.gif?2017011901", "time": 90}}}
-{"cmd":"SPECIAL_GIFT", "data": {"39": {"action":"end", "id": 123412341234}}}
+{"cmd":"SPECIAL_GIFT","data":{"39":{"action":"start","content":"可爱即正义~~","hadJoin":0,"id":"123412341234","num":1,"storm_gif":"http://static.hdslb.com/live-static/live-room/images/gift-section/mobilegift/2/jiezou.gif?2017011901","time":90}}}
+{"cmd":"SPECIAL_GIFT","data":{"39":{"action":"end","id":123412341234}}}
 ```
 
 ### GUARD_HONOR_THOUSAND
@@ -1229,7 +1228,7 @@ SC 删除，约每110秒更新
 | current_time		| num	| 当前时间TimeStamp(秒) |
 | danmu				| str	| 弹幕口令[0,15] |
 | danmu_new			| array	| obj |
-| danmu_type		| num	| `danmu_type: 0 === this.danmuType ? "文案弹幕" : "表情弹幕"` |
+| danmu_type		| num	| `danmu_type:0 === this.danmuType ? "文案弹幕" :"表情弹幕"` |
 | gift_id			| num	| 0 |
 | gift_name			| str	| 礼物抽奖：抽奖条件 |
 | gift_num			| num	| 礼物抽奖：数量 |
@@ -1332,14 +1331,14 @@ SC 删除，约每110秒更新
 | cmd	| str	| "DANMU_MSG" |
 | info	| array	| |
 #### DANMU_MSG__info
-| array	| type	| value |
-| - | - | - |
+| array	| type	| value |  |
+| - | - | - | - |
 | 0		| array	| [弹幕属性](#DANMU_MSG__info__0) |
-| 1		| str	| `content`弹幕内容/表情包名称 |
+| 1		| str	| `text/content` 弹幕内容/表情包名称 |
 | 2		| array	| `userInfo`用户主站信息 |
 | 3		| array	| `fansMedal`[粉丝牌](#DANMU_MSG__info__3) |
 | 4		| array	| `user_level`[用户直播区信息](#DANMU_MSG__info__4) |
-| 5		| array	| ？ |
+| 5		| array	| `title `头衔[URL][头衔] |
 | 6		| num	| ？0 |
 | 7		| num	| `guardLevel`[舰长等级](#others) |
 | 8		| null	| ？ |
@@ -1349,64 +1348,70 @@ SC 删除，约每110秒更新
 | 12	| null	| ？null |
 | 13	| null	| ？null |
 | 14	| num	| `lpl` |
-| 15	| num	| dmscore |
+| 15	| num	| dmscore |7:5932 14:2130 21:3134 28:1575 35:4418 42:4236 49:6731 56:4400 63:3991 70:4223 77:18 105:9546 112:408 210:主播
 #### DANMU_MSG__info__0
-| array	| type		| value |
-| - | - | - |
+| array	| type		| value |  |
+| - | - | - | - |
 | 0[0]	| num		| ？0 |
 | 0[1]	| num		| 弹幕位置 |
 | 0[2]	| num		| 弹幕字体大小 |
 | 0[3]	| num		| 弹幕颜色 |
 | 0[4]	| num		| TimeStamp(毫秒) |
-| 0[5]	| num		| **RANDOM** |
+| 0[5]	| num		| `dmid` **RANDOM**/天选时刻 为 0 |浏览器网页端：进入直播间时间TimeStamp(秒) iOS/Android:随机
 | 0[6]	| num		| 0? |
 | 0[7]	| str		| HEX:crc32(uid) |
 | 0[8]	| num		| ? |
-| 0[9]	| num		| ? |
+| 0[9]	| num		| `type` ? [0,1,2,7] |
 | 0[10]	| num		| `chatBubbleType` |
-| 0[11]	| str		| `chatBubbleColor` 0[10]==5::`"#1453BAFF,#4C2263A2,#3353BAFF"` |
-| 0[12]	| num		| `dmType` 1:emoticon 2:voice |
-| 0[13]	| obj/str	| 发送表情包时：[`{obj...}`](#DANMU_MSG__info__0__13) <br> 其他:`"{}"` |
-| 0[14]	| obj/str	| `voiceInfo` "{}" |
-| 0[15]	| obj 		| [`emots?`](#DANMU_MSG__info__0__15) |
+| 0[11]	| str		| `chatBubbleColor` chatBubbleType==5::`"#1453BAFF,#4C2263A2,#3353BAFF"` chatBubbleType==2::`"#1453BAFF,#4C2263A2,#3353BAFF"` |
+| 0[12]	| num		| `dmType` <br> 1:emoticon <br> 2:voice 6: |
+| 0[13]	| obj/str	| 表情包时：[`{obj...}`](#DANMU_MSG__info__0__13) <br> 其他:`"{}"` |
+| 0[14]	| obj/str	| [`voiceInfo`](#DANMU_MSG__info__0__14) `"{}"` |
+| 0[15]	| obj 		| [`emoticons`](#DANMU_MSG__info__0__15) |
 | 0[16]	| obj 		| [goto](#DANMU_MSG__info__0__16) |20230119
 #### DANMU_MSG__info__2
-| array	| type	| value |
-| - | - | - |
+| array	| type	| value |  |
+| - | - | - | - |
 | 2[0]	| num	| `uid`用户uid |
 | 2[1]	| str	| `username`用户名 |
-| 2[2]	| num	| `isAdmin` `("div", t + "-icon dp-i-block p-relative v-middle", null, [["title", "这是位大人物 " + p.randomEmoji.happy()]])`|
+| 2[2]	| num	| `isAdmin` |
 | 2[3]	| num	| `isSvip` |
 | 2[4]	| num	| `isSvip` |
-| 2[5]	| num	| ？10000 |
-| 2[6]	| num	| ？1 |
-| 2[7]	| str	| `usernameColor` 舰长:`"#00D1F1"` |
+| 2[5]	| num	| `rank` ？10000 LV0:5000 |
+| 2[6]	| num	| `verify` bool |https://s1.hdslb.com/bfs/blive-engineer/live-web-player/room-player.min.js
+| 2[7]	| str	| `usernameColor` 舰长:`"#00D1F1"`提督:`"#E17AFF"` |
 #### DANMU_MSG__info__3
 | array	| type	| value |
 | - | - | - |
-| 3[0]	| num	| 粉丝牌 等级 |
-| 3[1]	| str	| 粉丝团 称号 |
-| 3[2]	| num	| 主播 用户名 |
-| 3[3]	| num	| 直播间ID |
-| 3[4]	| num	| [medal_color](#medal_color) |
-| 3[5]	| str	| `special` |
-| 3[6]	| num	| `iconId` |
-| 3[7]	| num	| [medal_color_start](#medal_color) |
-| 3[8]	| num	| [medal_color_border](#medal_color) |
-| 3[9]	| num	| [medal_color_end](#medal_color) |
-| 3[10]	| num	| [舰长等级](#others) |
-| 3[11]	| num	| ？[is_lighted](#粉丝牌信息medal_info) |
-| 3[12]	| num	| 主播uid |
+| 3[0]	| num	| `level` 粉丝牌 等级 |
+| 3[1]	| str	| `label` 粉丝团 称号 |
+| 3[2]	| num	| `anchorUsername` 主播 用户名 |
+| 3[3]	| num	| `shortRoomID` 直播间ID |
+| 3[4]	| num	| [`medalColor`](#medal_color) |
+| 3[5]	| str	| `special` "" |
+| 3[6]	| num	| `iconId` 0 |
+| 3[7]	| num	| [`medalColorBorder`](#medal_color) |
+| 3[8]	| num	| [`medalColorStart`](#medal_color) |
+| 3[9]	| num	| [`medalColorEnd`](#medal_color) |
+| 3[10]	| num	| [`guardLevel`](#others) 舰长等级 |
+| 3[11]	| num	| [`isLight`](#粉丝牌信息medal_info) |
+| 3[12]	| num	| `anchorId` 主播uid |
 #### DANMU_MSG__info__4
-| array	| type	| value | 备注 |
+user_level
+| array	| type		| value | 备注 |
 | - | - | - | - |
-| 4[0]	| num	| `userLevel`用户UL等级 |
-| 4[1]	| num	| ？0 |
-| 4[2]	| num	| UL等级 颜色 |
-| 4[3]	| str	| `rank` 直播 用户排名|">50000"
-| 4[4]	| num	| 0 |
+| 4[0]	| num		| `userLevel`用户UL等级 |
+| 4[1]	| num		| ？0 |
+| 4[2]	| num		| UL等级 颜色 |
+| 4[3]	| str/num	| `rank` 直播 用户排名|">50000"
+| 4[4]	| num		| ? [0,1,2,3] |
+#### DANMU_MSG__info__5
+| array	| type	| value |
+| - | - | - |
+| 5[0]	| str	| identification |
+| 5[1]	| str	| identification `title` |
 #### DANMU_MSG__info__9
-validation
+validation/checkInfo
 | key	| type	| value |
 | - | - | - |
 | ts	| num	| TimeStamp(秒) |
@@ -1421,6 +1426,14 @@ validation
 | is_dynamic		| num	| 0,1 |
 | url				| str	| URL |
 | width				| num	| 宽 |
+#### DANMU_MSG__info__0__14
+| key			| type	| value |
+| - | - | - |
+| file_duration	| num	|  |
+| file_format	| str	|  |
+| file_id		| str	|  |
+| text			| str	|  |
+| voice_url		| str	|  |
 #### DANMU_MSG__info__0__15
 | key				| type	| value |
 | - | - | - |
@@ -1428,39 +1441,55 @@ validation
 | show_player_type	| num	| 0 |
 | extra				| str	| [json](#DANMU_MSG__info__0_15__extra) |
 #### DANMU_MSG__info__0__15__extra
-| key						| type	| value |
+| key						| type		| value |
 | - | - | - |
-| send_from_me				| bool	| false |
-| mode						| num	| 0 |
-| color						| num	| 弹幕颜色 |
-| dm_type					| num	| 0:文本 1:表情包 |
-| font_size					| num	| 弹幕字体大小 |
-| player_mode				| num	| ？1 |
-| show_player_type			| num	| ？0 |
-| content					| str	| 弹幕内容/表情包名称 |
-| user_hash					| str	| `str(DEC:crc32(uid))`十六进制转十进制转字符串 |
-| emoticon_unique			| str	| 表情ID |
-| bulge_display				| num	| 展示粉丝牌 |
-| recommend_score			| num	| ？弹幕推荐等级/？智能屏蔽等级 |
-| main_state_dm_color		| str	| ？"" |
-| objective_state_dm_color	| str	| ？"" |
-| direction					| num	| ？0 |
-| pk_direction				| num	| ？0 |
-| quartet_direction			| num	| ？0 |
-| anniversary_crowd			| num	| ？0 |
-| yeah_space_type			| str	| ？"" |
-| yeah_space_url			| str	| ？"" |
-| jump_to_url				| str	| ？"" |
-| space_type				| str	| ？"" |
-| space_url					| str	| ？"" |
-| animation					| obj	| {} |
-| emots						| null?	| ？null |
+| send_from_me				| bool		| false |
+| mode						| num		| 0 |
+| color						| num		| 弹幕颜色 |
+| dm_type					| num		| 0:文本 1:表情包 |
+| font_size					| num		| `25` 弹幕字体大小 |
+| player_mode				| num		| 弹幕位置 |
+| show_player_type			| num		| 0 |
+| content					| str		| 弹幕内容/表情包名称 |
+| user_hash					| str		| `str(DEC:crc32(uid))`十六进制转十进制转字符串 |
+| emoticon_unique			| str		| 表情ID |
+| bulge_display				| num		| 0:官方表情包 1:房间表情包 |
+| recommend_score			| num		| ？弹幕推荐等级/？智能屏蔽等级 |
+| main_state_dm_color		| str		| "" |
+| objective_state_dm_color	| str		| "" |
+| direction					| num		| 0 |
+| pk_direction				| num		| 0 |
+| quartet_direction			| num		| 0 |
+| anniversary_crowd			| num		| 0 |
+| yeah_space_type			| str		| "" |
+| yeah_space_url			| str		| "" |
+| jump_to_url				| str		| "" |
+| space_type				| str		| "" |
+| space_url					| str		| "" |
+| animation					| obj		| {} |
+| emots						| obj/null	| 新的表情包 k:v{obj...} |
+| is_audited				| bool		|  | 20230217
+#### DANMU_MSG__info__0__15__extra__emots
+emoticonOptions
+| key				| type		| value |
+| - | - | - |
+| emoticon_id		| str	|  |
+| emoji 			| str	|  |
+| descript 			| str	|  |
+| url				| str	|  |
+| width				| str	|  |
+| height 			| str	|  |
+| emoticon_unique	| str	|  |
+| count 			| str	|  |
 #### DANMU_MSG__info__0__16
 | key				| type	| value |
 | - | - | - |
 | activity_identity	| str	| ？"" |
 | activity_source	| num	| ？0 |
 | not_show			| num	| ？0 |
+```json
+"emots":{"[dog]":{"emoticon_id":208,"emoji":"[dog]","descript":"[dog]","url":"http://i0.hdslb.com/bfs/live/4428c84e694fbf4e0ef6c06e958d9352c3582740.png","width":20,"height":20,"emoticon_unique":"emoji_208","count":1}}
+```
 
 ### CUT_OFF
 [TOP](#直播弹幕格式)  
@@ -1521,9 +1550,9 @@ validation
 | cmd	| str	| "SHOPPING_CART_SHOW" |
 | data	| obj	| |
 #### SHOPPING_CART_SHOW__data
-| key                   | type	| value |
+| key		| type	| value |
 | - | - | - |
-| status | num | |
+| status	| num | |
 
 ### WIDGET_BANNER
 [TOP](#直播弹幕格式)  
@@ -1709,6 +1738,21 @@ jump_url=f"https://live.bilibili.com/activity/live-activity-battle/index.html?ap
 | {gift_id}award_big_pic	| str	| URL(360*360) |
 | {gift_id}award_price		| num	| 礼物价格(RMB*1000) |
 
+### ROOM_BLOCK_MSG
+| key | type | value |
+| - | - | - |
+| cmd	| str	| "ROOM_BLOCK_MSG" |
+| data	| obj	| |
+| uid		| str |  |
+| uname		| str |  |
+### ROOM_BLOCK_MSG__data
+| key		| type | value |
+| - | - | - |
+| dmscore	| num | 30 |
+| operator	| num | 1 |
+| uid		| num |  |
+| uname		| str |  |
+
 ### XXXXXXXXXXX
 [TOP](#直播弹幕格式)  
 | key | type | value |
@@ -1802,3 +1846,4 @@ for i in range(1,len(a)):print(str(a[i]-a[i-1])[0:4])
 [url_17]:https://i0.hdslb.com/bfs/live/b4961bcfba56a26b69c35690dfcbdabbeb973c64.png
 [url_16]:https://i0.hdslb.com/bfs/live/23678e3d90402bea6a65251b3e728044c21b1f0f.png
 [热门榜功能下线公告]:https://link.bilibili.com/p/eden/news#/newsdetail?id=3270
+[头衔]:https://link.bilibili.com/p/center/index#/user-center/wearing-center/library
