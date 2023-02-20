@@ -49,7 +49,7 @@ while(page <= int(pages)):
 	b = list(bs4.BeautifulSoup(a, "lxml").select(".tw-comment-history-item", limit=999))
 	# out["info"]["title"] = str(bs4.BeautifulSoup(a, "lxml").title.contents[0]).replace(" Comment - TwitCasting", "").replace(" コメント - ツイキャス", "")
 	if page == 0:
-		out["info"]["title"] = str(bs4.BeautifulSoup(a, "lxml").select(".tw-basic-page-header-path", limit=1)[0].contents[3].contents[1].contents[0]).rstrip(" ","")
+		out["info"]["title"] = str(bs4.BeautifulSoup(a, "lxml").select(".tw-basic-page-header-path", limit=1)[0].contents[3].contents[1].contents[0]).rstrip(" ")
 		pages = int(bs4.BeautifulSoup(a, "lxml").select(".tw-pager", limit=1)[0].contents[-1].contents[0])
 	for i in b:
 		out["comment"].append({
