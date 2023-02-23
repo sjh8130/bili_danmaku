@@ -386,6 +386,8 @@
 | msg				| str	| ? |
 
 ### LIVE
+[TOP](#直播弹幕格式)  
+开播
 | key 7,8			| type	| value |
 | - | - | - |
 | cmd				| str	| "LIVE" |
@@ -470,7 +472,7 @@
 | switch				| bool		| true |
 | tag_image				| str		| "" |
 | tid					| str		| rnd=tid |
-| timestamp				| int		| TimeStamp(秒) |
+| timestamp				| num		| TimeStamp(秒) |
 | top_list				| null		| null |
 | total_coin			| num		| 礼物总价,RMB*1000 |
 | uid					| num		| 发送者uid |
@@ -514,19 +516,19 @@
 | cmd	| str	| "ONLINE_RANK_V2" |
 | data	| obj	| |
 #### ONLINE_RANK_V2__data
-| key		| type	| value |
+| key		| type			| value |
 | - | - | - |
-| list		| array	| obj[7] |
-| rank_type	| str	| "gold-rank" |
+| list		| array(obj)	| _7_ |
+| rank_type	| str			| "gold-rank" |
 #### ONLINE_RANK_V2__data__list
-| key 6			| type	| value |
+| array[obj] 6			| type	| value |
 | - | - | - |
-| uid			| num | uid |
-| face			| str | 头像URL |
-| score			| str | 贡献值 |
-| uname			| str | 用户名 |
-| rank			| num | 排名(1-7) |
-| guard_level	| num | 舰长等级 |
+| list[i].uid			| num | uid |
+| list[i].face			| str | 头像URL |
+| list[i].score			| str | 贡献值 |
+| list[i].uname			| str | 用户名 |
+| list[i].rank			| num | 排名(1-7) |
+| list[i].guard_level	| num | 舰长等级 |
 
 ### ONLINE_RANK_TOP3
 [TOP](#直播弹幕格式)  
@@ -536,15 +538,15 @@
 | cmd	| str	| "ONLINE_RANK_TOP3" |
 | data	| obj	| |
 #### ONLINE_RANK_TOP3__data
-| key		| type	| value |
+| key		| type			| value |
 | - | - | - |
-| dmscore	| num	| 112 |
-| list		| array	| obj[1] |
+| dmscore	| num			| 112 |
+| list		| array(obj)	| _1_ |
 #### ONLINE_RANK_TOP3__data__list
-| key		| type	| value |
+| array[obj] 2	| type	| value |
 | - | - | - |
-| msg		| str	| `f"恭喜 <%{用户名}%> 成为高能用户"` |
-| rank		| num	| 排名(1-3) |
+| list[0]msg	| str	| `f"恭喜 <%{用户名}%> 成为高能用户"` |
+| list[0]rank	| num	| 排名(1-3) |
 
 ### ONLINE_RANK_COUNT
 [TOP](#直播弹幕格式)  
@@ -920,11 +922,11 @@ SuperChat
 | end_time					| num	| TimeStamp(秒) |
 | gift						| obj	|  |
 | id						| num	| SC id |
-| is_ranked					| num	| ? |
-| is_send_audit				| num	| 0 |
+| is_ranked					| num	| 1 |
+| is_send_audit				| num	| 0,1 |
 | medal_info				| obj	| [medal_info](#粉丝牌信息medal_info):medal_color为`#RRGGBB` |
 | message					| str	| SC 内容 |
-| message_font_color		| str	| "#A3F6FF" |
+| message_font_color		| str	|  |
 | message_trans				| str	| SC 日本語 翻译 |
 | price						| num	| 价格 |
 | rate						| num	| 1000 |
@@ -940,7 +942,7 @@ SuperChat
 | - | - | - |
 | gift_id					| num	| 12000 |
 | gift_name					| str	| "醒目留言" |
-| gift_id					| num	| 1 |
+| num						| num	| 1 |
 #### SUPER_CHAT_MESSAGE__data__user_info
 | key 12					| type	| value |
 | - | - | - |
@@ -982,7 +984,7 @@ SuperChat 日本語
 | - | - | - |
 | id						| str	| str(SUPER_CHAT_MESSAGE__data__id) |
 | uid						| str	| str(SUPER_CHAT_MESSAGE__data__uid) |
-| price						| num	|  |
+| price						| num	| SC价格 |
 | rate						| num	| 1000 |
 | message					| str	| 原始SC内容 |
 | message_jpn				| str	| 翻译后SC内容 |
@@ -993,7 +995,7 @@ SuperChat 日本語
 | background_price_color	| str	|  |
 | background_bottom_color	| str	|  |
 | ts						| num	| TimeStamp(秒) |
-| token						| str	|  |
+| token						| str	| 64bit |
 | medal_info				| obj	| [medal_info](#粉丝牌信息medal_info) 没有(guard_level,is_lighted,medal_color_border,medal_color_end,medal_color_start) |
 | user_info					| obj	|  |
 | time						| num	|  |
@@ -1009,10 +1011,10 @@ SC 删除，约每110秒更新
 | cmd	| str	| "SUPER_CHAT_MESSAGE_DELETE" |
 | data	| obj	| |
 #### SUPER_CHAT_MESSAGE_DELETE__data
-| key		| type	| value |
+| key		| type			| value |
 | - | - | - |
-| ids		| array	| num(SC_id) |
-| roomid	| num	| 长_短直播间ID |
+| ids		| array(num)	| SC_id |
+| roomid	| num			| 长_短直播间ID |
 
 ### DANMU_AGGREGATION
 [TOP](#直播弹幕格式)  
@@ -1068,10 +1070,10 @@ SC 删除，约每110秒更新
 | cmd	| str	| "GUARD_HONOR_THOUSAND" |
 | data	| obj	| |
 #### GUARD_HONOR_THOUSAND__data
-| key	| type	| value |
+| key	| type			| value |
 | - | - | - |
-| add	| array	| 用户uid |
-| del	| array	| 用户uid |
+| add	| array(num)	| 用户uid |
+| del	| array(num)	| 用户uid |
 
 ### ANCHOR_LOT_CHECKSTATUS
 [TOP](#直播弹幕格式)  
@@ -1099,45 +1101,45 @@ SC 删除，约每110秒更新
 #### ANCHOR_LOT_START__data
 | key 33			| type	| value |
 | - | - | - |
-| asset_icon		| str	| https://i0.hdslb.com/bfs/live/627ee2d9e71c682810e7dc4400d5ae2713442c02.png |
-| asset_icon_webp	| str	| https://i0.hdslb.com/bfs/live/b47453a0d42f30673b6d030159a96d07905d677a.webp |
-| award_image		| str	|  |
-| award_name		| str	| 礼物名称 |
-| award_num			| num	| 礼物数量[1,100] |
-| award_type		| num	| 0 |
-| cur_gift_num		| num	| 0 |
-| current_time		| num	| 当前时间TimeStamp(秒) |
-| danmu				| str	| 弹幕口令[0,15] |
-| danmu_new			| array	| obj |
-| danmu_type		| num	| `danmu_type:0 === this.danmuType ? "文案弹幕" :"表情弹幕"` |
-| gift_id			| num	| 0 |
-| gift_name			| str	| 礼物抽奖：抽奖条件 |
-| gift_num			| num	| 礼物抽奖：数量 |
-| gift_price		| num	| 礼物抽奖：礼物价格(RMB*1000) |
-| goaway_time		| num	| 180? |
-| goods_id			| num	|  |
-| id				| num	| 抽奖id |
-| is_broadcast		| num	| 1 |
-| join_type			| num	| ？ |
-| lot_status		| num	| [lot_status](#others) [0,1,2] |
-| max_time			| num	| 开奖时间(300,600,900)秒 |
-| require_text		| str	| "抽奖条件: 关注主播""至少成为主播的舰长/提督/总督" |
-| require_type		| num	| 抽奖条件 1:礼物抽奖 2: 3:大航海 ~~4:UL?~~ |
-| require_value		| num	| [0,1]关注状态/[1,20]粉丝牌等级/[1,3]舰长等级 |
-| room_id			| num	| 长_短直播间ID |
-| send_gift_ensure	| num	| 0 |
-| show_panel		| num	| 1 |
-| start_dont_popup	| num	| 0 |
-| status			| num	| 1 |
-| time				| num	| 剩余时间(秒) |
-| url				| str	| https://live.bilibili.com/p/html/live-lottery/anchor-join.html?is_live_half_webview=1&hybrid_biz=live-lottery-anchor&hybrid_half_ui=1,5,100p,100p,000000,0,30,0,0,1;2,5,100p,100p,000000,0,30,0,0,1;3,5,100p,100p,000000,0,30,0,0,1;4,5,100p,100p,000000,0,30,0,0,1;5,5,100p,100p,000000,0,30,0,0,1;6,5,100p,100p,000000,0,30,0,0,1;7,5,100p,100p,000000,0,30,0,0,1;8,5,100p,100p,000000,0,30,0,0,1 |
-| web_url			| str	| https://live.bilibili.com/p/html/live-lottery/anchor-join.html |
+| asset_icon		| str			| https://i0.hdslb.com/bfs/live/627ee2d9e71c682810e7dc4400d5ae2713442c02.png |
+| asset_icon_webp	| str			| https://i0.hdslb.com/bfs/live/b47453a0d42f30673b6d030159a96d07905d677a.webp |
+| award_image		| str			|  |
+| award_name		| str			| 礼物名称 |
+| award_num			| num			| 礼物数量[1,100] |
+| award_type		| num			| 0 |
+| cur_gift_num		| num			| 0 |
+| current_time		| num			| 当前时间TimeStamp(秒) |
+| danmu				| str			| 弹幕口令[0,15] |
+| danmu_new			| array(obj)	| _1_ |
+| danmu_type		| num			| `danmu_type:0 === this.danmuType ? "文案弹幕" :"表情弹幕"` |
+| gift_id			| num			| 0 |
+| gift_name			| str			| 礼物抽奖：抽奖条件 |
+| gift_num			| num			| 礼物抽奖：数量 |
+| gift_price		| num			| 礼物抽奖：礼物价格(RMB*1000) |
+| goaway_time		| num			| 180? |
+| goods_id			| num			|  |
+| id				| num			| 抽奖id |
+| is_broadcast		| num			| 1 |
+| join_type			| num			| ？ |
+| lot_status		| num			| [lot_status](#others) [0,1,2] |
+| max_time			| num			| 开奖时间(300,600,900)秒 |
+| require_text		| str			| "抽奖条件: 关注主播""至少成为主播的舰长/提督/总督" |
+| require_type		| num			| 抽奖条件 1:礼物抽奖 2: 3:大航海 ~~4:UL?~~ |
+| require_value		| num			| [0,1]关注状态/[1,20]粉丝牌等级/[1,3]舰长等级 |
+| room_id			| num			| 长_短直播间ID |
+| send_gift_ensure	| num			| 0 |
+| show_panel		| num			| 1 |
+| start_dont_popup	| num			| 0 |
+| status			| num			| 1 |
+| time				| num			| 剩余时间(秒) |
+| url				| str			| https://live.bilibili.com/p/html/live-lottery/anchor-join.html?is_live_half_webview=1&hybrid_biz=live-lottery-anchor&hybrid_half_ui=1,5,100p,100p,000000,0,30,0,0,1;2,5,100p,100p,000000,0,30,0,0,1;3,5,100p,100p,000000,0,30,0,0,1;4,5,100p,100p,000000,0,30,0,0,1;5,5,100p,100p,000000,0,30,0,0,1;6,5,100p,100p,000000,0,30,0,0,1;7,5,100p,100p,000000,0,30,0,0,1;8,5,100p,100p,000000,0,30,0,0,1 |
+| web_url			| str			| https://live.bilibili.com/p/html/live-lottery/anchor-join.html |
 #### ANCHOR_LOT_START__data__danmu_new
-| key 3			| type	| value |
+| array 3					| type	| value |
 | - | - | - |
-| danmu				| str	| 弹幕口令[0,15] |
-| danmu_view		| str	|  |
-| reject			| bool	|  |
+| danmu_new[0].danmu		| str	| 弹幕口令[0,15] |
+| danmu_new[0].danmu_view	| str	|  |
+| danmu_new[0].reject		| bool	|  |
 
 ### ANCHOR_LOT_END
 [TOP](#直播弹幕格式)  
@@ -1161,16 +1163,16 @@ SC 删除，约每110秒更新
 #### ANCHOR_LOT_AWARD__data
 | key 10			| type	| value |
 | :- | - | - |
-| award_dont_popup	| num	| 1 |
-| award_image		| str	| 奖品图像？ |
-| award_name		| str	| 奖品名称 |
-| award_num			| num	| 1 |
-| award_type		| num	| 0 |
-| award_users		| array	| obj |
-| id				| num	| 抽奖id |
-| lot_status		| num	| [lot_status](#others) 2 |
-| url				| str	| https://live.bilibili.com/p/html/live-lottery/anchor-join.html?is_live_half_webview=1&hybrid_biz=live-lottery-anchor&hybrid_half_ui=1,5,100p,100p,000000,0,30,0,0,1;2,5,100p,100p,000000,0,30,0,0,1;3,5,100p,100p,000000,0,30,0,0,1;4,5,100p,100p,000000,0,30,0,0,1;5,5,100p,100p,000000,0,30,0,0,1;6,5,100p,100p,000000,0,30,0,0,1;7,5,100p,100p,000000,0,30,0,0,1;8,5,100p,100p,000000,0,30,0,0,1 |
-| web_url			| str	| "https://live.bilibili.com/p/html/live-lottery/anchor-join.html" |
+| award_dont_popup	| num			| 1 |
+| award_image		| str			| 奖品图像？ |
+| award_name		| str			| 奖品名称 |
+| award_num			| num			| 1 |
+| award_type		| num			| 0 |
+| award_users		| array(obj)	| 中奖用户 |
+| id				| num			| 抽奖id |
+| lot_status		| num			| [lot_status](#others) 2 |
+| url				| str			| https://live.bilibili.com/p/html/live-lottery/anchor-join.html?is_live_half_webview=1&hybrid_biz=live-lottery-anchor&hybrid_half_ui=1,5,100p,100p,000000,0,30,0,0,1;2,5,100p,100p,000000,0,30,0,0,1;3,5,100p,100p,000000,0,30,0,0,1;4,5,100p,100p,000000,0,30,0,0,1;5,5,100p,100p,000000,0,30,0,0,1;6,5,100p,100p,000000,0,30,0,0,1;7,5,100p,100p,000000,0,30,0,0,1;8,5,100p,100p,000000,0,30,0,0,1 |
+| web_url			| str			| "https://live.bilibili.com/p/html/live-lottery/anchor-join.html" |
 #### ANCHOR_LOT_AWARD__data__award_users
 | key 6	| type	| value |
 | :- | - | - |
@@ -1178,7 +1180,7 @@ SC 删除，约每110秒更新
 | uname	| num	| 用户名 |
 | face	| num	| 头像 |
 | level	| num	| 直播观众等级 UL |
-| color	| num	| 直播观众等级_颜色 int(RGB24) |
+| color	| num	| 直播观众等级_颜色 num(RGB24) |
 | num	| num	| 数量 |
 
 ### POPULAR_RANK_CHANGED
@@ -1212,7 +1214,7 @@ SC 删除，约每110秒更新
 | - | - | - |
 | cmd	| str	| "DANMU_MSG" |
 | info	| array	| |
-| dm_v2	| str	| base64(proto) [define](#danmu_msg__dm_v2) |
+| dm_v2	| str	| base64(proto) UTF-8 [define](#danmu_msg__dm_v2) |
 #### DANMU_MSG__info
 | array	| type	| value |  |
 | - | - | - | - |
@@ -1639,12 +1641,12 @@ PK{"cmd":"COMMON_NOTICE_DANMAKU","data":{"content_segments":[{"font_color":"#FB7
 | total_price		| num	| 礼物总价值*0.8 |
 | wait_num			| num	| 0 |
 #### POPULARITY_RED_POCKET_START__data__awards
-| [i]key				| type	| value |
+| [i].key				| type	| value |
 | :- | - | - |
-| [i]gift_id			| num | 礼物id |
-| [i]gift_name			| num | 礼物名称 |
-| [i]gift_pic			| num | 礼物图像URL(140*140) |
-| [i]num				| num | 数量 |
+| [i].gift_id			| num | 礼物id |
+| [i].gift_name			| num | 礼物名称 |
+| [i].gift_pic			| num | 礼物图像URL(140*140) |
+| [i].num				| num | 数量 |
 
 ### POPULARITY_RED_POCKET_WINNER_LIST
 [TOP](#直播弹幕格式)  
@@ -1661,12 +1663,12 @@ PK{"cmd":"COMMON_NOTICE_DANMAKU","data":{"content_segments":[{"font_color":"#FB7
 | awards		| obj	| ${gift_id}:{obj...} |
 | version		| num	| 1 |
 #### POPULARITY_RED_POCKET_WINNER_LIST__data__winner_info
-| array				| type	| value |
+| array					| type	| value |
 | - | - | - |
-| winner_info[i][0]	| num	| uid |
-| winner_info[i][1]	| str	| name |
-| winner_info[i][2]	| num	| `bag_id` |
-| winner_info[i][3]	| num	| gift_id |
+| winner_info\[i\]\[0\]	| num	| uid |
+| winner_info\[i\]\[1\]	| str	| name |
+| winner_info\[i\]\[2\]	| num	| `bag_id` |
+| winner_info\[i\]\[3\]	| num	| gift_id |
 #### POPULARITY_RED_POCKET_WINNER_LIST__data__awards
 | key			| type	| value |
 | - | - | - |
@@ -1715,6 +1717,92 @@ timestamp: N*5
 | jump_url_pink | str | https://live.bilibili.com/p/html/live-app-hotrank/index.html?clientType=1&ruid=￥{uid}&conf_id=￥{conf_id}&is_live_half_webview=1&hybrid_rotate_d=1&hybrid_half_ui=1,3,100p,70p,ffffff,0,30,100,12,0;2,2,375,100p,ffffff,0,30,100,0,0;3,3,100p,70p,ffffff,0,30,100,12,0;4,2,375,100p,ffffff,0,30,100,0,0;5,3,100p,70p,ffffff,0,30,100,0,0;6,3,100p,70p,ffffff,0,30,100,0,0;7,3,100p,70p,ffffff,0,30,100,0,0;8,3,100p,70p,ffffff,0,30,100,0,0#/area-rank |
 | jump_url_web | str | https://live.bilibili.com/p/html/live-app-hotrank/index.html?clientType=2&ruid=￥{uid}&conf_id=￥{conf_id}#/area-rank |
 
+### HOT_BUY_NUM
+[TOP](#直播弹幕格式)  
+| key | type | value |
+| - | - | - |
+| cmd	| str	| "HOT_BUY_NUM" |
+| data	| obj	| |
+#### HOT_BUY_NUM__data
+| key		| type	| value |
+| - | - | - |
+| goods_id	| str | id |
+| num		| num |  |
+
+### PK_BATTLE_END
+[TOP](#直播弹幕格式)  
+| key		| type	| value |
+| - | - | - |
+| cmd		| str	| "PK_BATTLE_END" |
+| pk_id		| str	| |
+| pk_status	| num	|  |
+| timestamp	| obj	| TimeStamp(秒) |
+| data		| obj	| |
+#### PK_BATTLE_END__data
+| key			| type	| value |
+| - | - | - |
+| battle_type	| num	| |
+| timer			| num	| |
+| init_info		| obj	| |
+| match_info	| obj	| |
+#### PK_BATTLE_END__&2_info
+| key			| type	| value |
+| - | - | - |
+| room_id		| num	| 我方直播间id or 对方直播间id |
+| votes			| num	| |
+| winner_type	| num	| |
+| best_uname	| num	| 最高贡献者 |
+
+```js
+// pk_status
+pre = 101
+process = 201
+lastMinute = 301
+normalFreeze = 401
+combineStreamFreeze = 402
+lastMinuteFreeze = 501
+punish = 601
+punishError = 610
+end = 1001
+lastMinuteEnd = 1101
+matchOverTime = 1201
+cancelMatch = 1301
+combineStreamFailed = 1401
+videoPunishWithNormal = 701
+videoPunishWithFinalHit = 702
+// winner_type
+draw= 1 
+normalWin= 2 
+lastMinuteWin= 3 
+fail = -1
+```
+
+### WIDGET_GIFT_STAR_PROCESS
+[TOP](#直播弹幕格式)  
+| key | type | value |
+| - | - | - |
+| cmd	| str	| "WIDGET_GIFT_STAR_PROCESS" |
+| data	| obj	| |
+#### WIDGET_GIFT_STAR_PROCESS__data
+| key		| type | value |
+| - | - | - |
+| start_date		| num	| yyyyMMdd(星期一) |
+| process_list		| array	| obj(3) |
+| finished			| bool	| |
+| ddl_timestamp		| num	| TimeStamp(秒) 下一个星期一00:00:00 UTC+8 |
+| version			| num	| 当前时间TimeStamp(毫秒) |
+| reward_gift		| num	| |
+| reward_gift_img	| str	| |
+| reward_gift_name	| str	| "礼物星球" |
+#### WIDGET_GIFT_STAR_PROCESS__data__process_list
+| key			| type | value |
+| - | - | - |
+| gift_id		| num	| |
+| gift_img		| str	| |
+| gift_name		| str	| |
+| completed_num	| num	| |
+| target_num	| num	| |
+
 ### XXXXXXXXXXX
 [TOP](#直播弹幕格式)  
 | key | type | value |
@@ -1724,19 +1812,7 @@ timestamp: N*5
 #### XXXXXXXXXXX__data
 | key                   | type	| value |
 | - | - | - |
-| data |  | |
-
-### XXXXXXXXXXX
-[TOP](#直播弹幕格式)  
-| key | type | value |
-| - | - | - |
-| cmd	| str	| "XXXXXXXXXXX" |
-| data	| obj	| |
-#### XXXXXXXXXXX__data
-| key		| type	| value |
-| - | - | - |
-| goods_id	| str | id |
-| num		| num |  |
+| data	| xxx	| |
 
 ### others
 [TOP](#直播弹幕格式)  
@@ -1751,7 +1827,6 @@ timestamp: N*5
 未知List
 functionX(t){t[t.backgroundTask=1]="backgroundTask"}
 functionX(t){t[t.chaosPK=1]="chaosPK",t[t.videoChasoPK=2]="videoChasoPK",t[t.videoPK=6]="videoPK"}
-functionX(t){t[t.draw=1]="draw",t[t.normalWin=2]="normalWin",t[t.lastMinuteWin=3]="lastMinuteWin",t[t.fail=-1]="fail"}
 functionX(t){t[t.Entry=1]="Entry",t[t.Attention=2]="Attention",t[t.Share=3]="Share",t[t.SpecialAttention=4]="SpecialAttention",t[t.MutualAttention=5]="MutualAttention",t[t.Link=6]="Link"}
 functionX(t){t[t.Entry=1]="Entry",t[t.Follow=2]="Follow",t[t.Share=3]="Share"}
 functionX(t){t[t.GiftAnimation=0]="GiftAnimation",t[t.SuperGift=1]="SuperGift",t[t.LotteryDanmaku=2]="LotteryDanmaku",t[t.Notice=3]="Notice",t[t.buffCard=4]="buffCard",t[t.SuperChat=5]="SuperChat",t[t.EntryInfo=6]="EntryInfo",t[t.EmojiAnimation=7]="EmojiAnimation",t[t.EmojiDanmaku=8]="EmojiDanmaku"}
@@ -1776,7 +1851,6 @@ functionX(t){t[t.other=0]="other",t[t["2g"]=2]="2g",t[t["3g"]=3]="3g",t[t["4g"]=
 functionX(t){t[t.PK_PRE=200]="PK_PRE",t[t.PK_START=300]="PK_START",t[t.PK_END=400]="PK_END",t[t.PK_AGAIN=400]="PK_AGAIN",t[t.PK_SETTLE=400]="PK_SETTLE",t[t.PK_PROCESS=300]="PK_PROCESS",t[t.PK_MATCH=100]="PK_MATCH",t[t.PK_MIC_END=2044]="PK_MIC_END",t[t.PK_CLICK_AGAIN=400]="PK_CLICK_AGAIN"}
 functionX(t){t[t.pre=0]="pre",t[t.process=1]="process",t[t.lastMinute=2]="lastMinute",t[t.end=3]="end",t[t.freeze=4]="freeze",t[t.punish=5]="punish",t[t.lastMinuteFreeze=6]="lastMinuteFreeze",t[t.lastMinuteEnd=7]="lastMinuteEnd",t[t.videoPunish=8]="videoPunish"}
 functionX(t){t[t.pre=0]="pre",t[t.start=1]="start",t[t.process=2]="process",t[t.changeType=3]="changeType",t[t.end=4]="end",t[t.settle=5]="settle",t[t.sendGift=6]="sendGift",t[t.buffer=7]="buffer",t[t.triggerBoom=8]="triggerBoom",t[t.punish=9]="punish",t[t.settleNew=10]="settleNew",t[t.finalHit=11]="finalHit",t[t.videoPunishBegin=12]="videoPunishBegin",t[t.videoPunishEnd=13]="videoPunishEnd"}
-functionX(t){t[t.pre=101]="pre",t[t.process=201]="process",t[t.lastMinute=301]="lastMinute",t[t.normalFreeze=401]="normalFreeze",t[t.combineStreamFreeze=402]="combineStreamFreeze",t[t.lastMinuteFreeze=501]="lastMinuteFreeze",t[t.punish=601]="punish",t[t.punishError=610]="punishError",t[t.end=1001]="end",t[t.lastMinuteEnd=1101]="lastMinuteEnd",t[t.matchOverTime=1201]="matchOverTime",t[t.cancelMatch=1301]="cancelMatch",t[t.combineStreamFailed=1401]="combineStreamFailed",t[t.videoPunishWithNormal=701]="videoPunishWithNormal",t[t.videoPunishWithFinalHit=702]="videoPunishWithFinalHit"}
 functionX(t){t[t.process=0]="process",t[t.draw=1]="draw",t[t.win=2]="win",t[t.fail=3]="fail"}
 functionX(t){t[t.random=1]="random",t[t.again=2]="again",t[t.force=3]="force"}
 functionX(t){t[t.Web=1]="Web",t[t.Android=2]="Android",t[t.Ios=3]="Ios",t[t.H5=4]="H5"}
@@ -1786,6 +1860,7 @@ functionX(t){t[t.Web=1]="Web",t[t.Android=2]="Android",t[t.Ios=3]="Ios",t[t.H5=4
 face:http(s)?://[is][0-3].hdslb.com/bfs/(face|baselabs)/[0-9a-f]{40}.(jpg|png|gif|webp)
 face:http(s)?://[is][0-3].hdslb.com/bfs/face/member/noface.jpg
 for i in range(1,len(a)):print(str(a[i]-a[i-1])[0:4])
+(\d{16})?\{"cmd":"XXXXXXXXXX",.{1,}\n
 ```
 
 ### 粉丝牌信息medal_info
@@ -1796,10 +1871,10 @@ for i in range(1,len(a)):print(str(a[i]-a[i-1])[0:4])
 | guard_level			| num		| [舰长等级](#others) |
 | icon_id				| num		| 0 |
 | is_lighted			| num		| 0: <br> 1: 七天内在直播间有互动 |
-| medal_color			| num/str	| int(HEX:RGB24) / #RGB24 |
-| medal_color_border	| num		| int(HEX:RGB24) |
-| medal_color_end		| num		| int(HEX:RGB24) |
-| medal_color_start		| num		| int(HEX:RGB24) |
+| medal_color			| num/str	| int(RGB24) / #RGB24 |
+| medal_color_border	| num		| int(RGB24) |
+| medal_color_end		| num		| int(RGB24) |
+| medal_color_start		| num		| int(RGB24) |
 | medal_level			| num		| 粉丝牌等级 |
 | medal_name			| str		| 粉丝团称号 |
 | special				| str		| "" |

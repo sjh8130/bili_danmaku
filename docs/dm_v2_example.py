@@ -9,14 +9,14 @@ outfile= "B:\\test.json"
 proc = {"default": []}
 with open(infile, "r", 1048576, encoding="utf-8") as file:
 	for item in file.readlines():
-		success = False
+		if item.find("DANMU_MSG") == -1 :
+			continue
 		for i in range(len(item)):
 			try:
 				temp_json = json.loads(item[i:])
 			except json.decoder.JSONDecodeError:
 				continue
 			else:
-				success = True
 				break
 		if temp_json["cmd"] != "DANMU_MSG":
 			continue
