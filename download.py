@@ -237,8 +237,6 @@ def main_Func():
 		duration = int(This["duration"])
 		Segment_Count = (duration/360).__ceil__()
 		# if time.time() < P_Date+Segment_Count*3000/12.5+duration*2:
-		if time.time() < P_Date+62000:
-			logging.warning("[Change_2023-02-08] 弹幕正在处理，请注意文件内容")
 		logging.debug(f"[{bvid}][Special_Danmaku]: P{i_for_videos}")
 		DL_Data_Extra_Info = Downloader(f'https://api.bilibili.com/x/v2/dm/web/view?type=1&oid={cid}', f"[{bvid}]_[{cid}]_[BAS]_[INFO].bin")
 		if P_flag[16]: continue

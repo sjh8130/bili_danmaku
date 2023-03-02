@@ -10,18 +10,19 @@ import io
 USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36 Edg/109.0.1518.52"
 x={'User-Agent':USER_AGENT,'origin':"https://www.bilibili.com",'referer':"https://www.bilibili.com","Connection":"keep-alive"}
 
-def v(b,x=x):
-	try:c=requests.get(b.replace("http://","https://"),headers=x)
-	except:v(b)
+def v(b,x=x,d=0):
+	print(f"[NET] {b}")
+	if d==9:return b""
+	try:c=requests.get(b.replace("http://","https://"),headers=x,timeout=10).content
+	except:c=v(b,d=d+1)
 	return c
-def o(b,c):
-	d=v(b)
-	print(f"[NET]:HTTP {d.status_code}\t{b}")
+def o(b,c,x=x):
+	d=v(b,x)
 	e=tarfile.TarInfo(c)
-	e.size=len(d.content)
+	e.size=len(d)
 	e.mtime=time.time().__trunc__()
-	a.addfile(tarinfo=e,fileobj=io.BytesIO(d.content))
-	return d.content
+	a.addfile(tarinfo=e,fileobj=io.BytesIO(d))
+	return d
 
 def p():
 	global a
