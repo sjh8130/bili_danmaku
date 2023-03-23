@@ -1,3 +1,4 @@
+// 已废弃
 syntax = "proto3";
 message dm_V2 {
              int64 dmid        =  1; // 1=10
@@ -64,7 +65,8 @@ message dm_V2 {
     repeated bytes reserve_62  = 62;
     repeated bytes reserve_63  = 63;
     repeated bytes reserve_64  = 64;
-}message emots{
+}
+message emots{
     string desc = 1;
     emots_detail detail = 2;
     repeated bytes unknown_XXX_03 =  3;

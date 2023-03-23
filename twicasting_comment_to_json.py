@@ -8,8 +8,12 @@ import requests
 ssl._create_default_https_context = ssl._create_unverified_context
 requests.packages.urllib3.disable_warnings()
 
-user = sys.argv[1]
-movie_id = sys.argv[2]
+if "#" in sys.argv[1]:
+	user = sys.argv[1].split("#")[0]
+	movie_id = sys.argv[1].split("#")[1]
+else:
+	user = sys.argv[1]
+	movie_id = sys.argv[2]
 try:
 	pages = int(sys.argv[3])
 except:
@@ -41,7 +45,7 @@ def downloader(page, retry_times=0):
 
 out = {"comment": [], "info": {"user": user, "movie_id": int(movie_id), "title": ""}}
 page = 0
-while(page <= int(pages)):
+while (page <= int(pages)):
 	# a = open(f"twicasting_{user}_{movie_id}_{page}.html", encoding="utf-8").read()
 	a = downloader(page)
 	if a == "BREAK":
@@ -58,10 +62,8 @@ while(page <= int(pages)):
 			"content": str(i.select(".tw-comment-history-item__content__text")[0].contents[0]).lstrip("\n").lstrip("\t").lstrip(" ").rstrip(" "),
 			"user_id": i.select(".tw-comment-history-item__details__user-link")[0].attrs['href'][1:],
 			"username": str(i.select(".tw-comment-history-item__details__user-link")[0].contents[0]).lstrip("\n").lstrip("\t").lstrip(" ").rstrip(" "),
-			"user_img": "https:"+i.select(".tw-comment-history-item__user__icon")[0].attrs['src']
+			"user_img": ("https:"+i.select(".tw-comment-history-item__user__icon")[0].attrs['src']).replace("https:https://", "https://")
 		})
 	page += 1
 
-out_json = json.dumps(out, ensure_ascii=False, separators=(",", ":"), indent="\t")
-# print(out_json)
-open(f"twicasting_{user}_{movie_id}.json", "w", encoding="utf-8").write(out_json)
+open(f"twicasting_{user}_{movie_id}.json", "w", encoding="utf-8").write(json.dumps(out, ensure_ascii=False, separators=(",", ":"), indent="\t"))

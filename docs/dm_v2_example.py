@@ -1,20 +1,27 @@
 import json
+import time
 from google.protobuf.json_format import MessageToJson
 from base64 import b64decode
-import Live_dm_v2_pb2 as live_dm
+# import Live_dm_v2_pb2 as live_dm
+import Live_dm_v2_2023_03_23_pb2 as live_dm
 import sys
 
+st = time.time()
 infile = sys.argv[1]
 outfile= "B:\\test.json"
 proc = {"default": []}
+i = 0
+temp_proto = live_dm.dm_V2()
 with open(infile, "r", 1048576, encoding="utf-8") as file:
 	for item in file.readlines():
-		if item.find("DANMU_MSG") == -1 :
+		if item.find("dm_v2") == -1:
 			continue
 		for i in range(len(item)):
 			try:
 				temp_json = json.loads(item[i:])
-			except json.decoder.JSONDecodeError:
+			except json.decoder.JSONDecodeError as err:
+				if err.msg == "Extra data": i = err.pos
+				# if err.msg == "Expecting value": i = err.pos
 				continue
 			else:
 				break
@@ -24,8 +31,20 @@ with open(infile, "r", 1048576, encoding="utf-8") as file:
 			decoded_B64 = b64decode(temp_json["dm_v2"])
 		except KeyError:
 			continue
-		temp_proto = live_dm.dm_V2()
 		temp_proto.ParseFromString(decoded_B64)
 		proc["default"].append(json.loads(MessageToJson(temp_proto, indent=0, including_default_value_fields=False)))
-final_file = json.dumps(proc, ensure_ascii=False, indent=None, separators=(",", ":")).replace("},{\"dmid\"","},\n{\"dmid\"")
+for this in proc["default"]:
+	break
+	del this["content"]
+	del this["fontsize"]
+	del this["mode"]
+	del this["color"]
+	del this["chatBubble"]
+	del this["dmid"]
+	del this["midHash"]
+	del this["ctime"]
+	del this["validation"]
+final_file = json.dumps(proc, ensure_ascii=False, indent=None, separators=(",", ":")).replace("},{\"idStr\"","},\n{\"idStr\"").replace(",\"unknown17\":[\"\"]","").replace(",\"unknownUserinfo14\":[\"\"]","").replace(",\"title\":{}","").replace(",\"chatBubble\":{}","")
 open(outfile, "w", encoding="utf-8").write(final_file)
+et = time.time()
+print(et-st)
