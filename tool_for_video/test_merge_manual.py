@@ -34,7 +34,7 @@ with open(IN_INFO_1, "r") as HASH_1, \
 	OUT_L = "========        "	# 输出文件1
 	OUT_R = "        ========"	# 输出文件2
 	OUT_A = "================"	# 文件1和文件2的帧内容相同，输出
-	OUT_S = "++++++SKIP++++++"	# 文件1和文件2的帧内容相同，输出
+	OUT_S = "++++++SKIP++++++"	# 跳过
 	LEN_P1 = len(PKT_1)
 	LEN_P2 = len(PKT_2)
 	i = 0
@@ -42,6 +42,7 @@ with open(IN_INFO_1, "r") as HASH_1, \
 	k = "A"
 	s = 0
 	err_c = 0
+	print(f"XXXXXXXXXXXXXXXX\tOutput\tSkip\tPOS_L\tPOS_R",end="")
 	while True:
 		if i == LEN_P1 and j == LEN_P2:
 			print("\n__END__")
@@ -60,11 +61,12 @@ with open(IN_INFO_1, "r") as HASH_1, \
 			k = "A"
 			i += 1
 			j += 1
-			print(OUT_A,output_frames,s,end="\r")
+			print(f"{OUT_A}\t{output_frames}\t{s}\t{i}\t{j}",end="\r")
 		else:
 			if (k.__contains__("L") and i <= LEN_P1-1) or (i< LEN_P1 and j==LEN_P2):
 				if k.__contains__("S"):
 					s += 1
+					print(f"{OUT_S}\t{output_frames}\t{s}\t{i}\t{j}",end="\r")
 				else:
 					FILE_1.seek(int(a["pos"]))
 					OUT_FI.write(FILE_1.read(int(a["size"])))
@@ -72,11 +74,12 @@ with open(IN_INFO_1, "r") as HASH_1, \
 					print_control = 0
 					output_frames += 1
 					output_F_size += int(a["size"])
+					print(f"{OUT_L}\t{output_frames}\t{s}\t{i}\t{j}",end="\r")
 				i += 1
-				print(OUT_L,output_frames,s,end="\r")
 			elif k.__contains__("R"):
 				if k.__contains__("S"):
 					s += 1
+					print(f"{OUT_S}\t{output_frames}\t{s}\t{i}\t{j}",end="\r")
 				else:
 					FILE_2.seek(int(b["pos"]))
 					OUT_FI.write(FILE_2.read(int(b["size"])))
@@ -84,8 +87,8 @@ with open(IN_INFO_1, "r") as HASH_1, \
 					output_frames += 1
 					output_F_size += int(b["size"])
 					if print_control != 2: print()
+					print(f"{OUT_R}\t{output_frames}\t{s}\t{i}\t{j}",end="\r")
 				j += 1
-				print(OUT_R,output_frames,s,end="\r")
 			elif k == "A": k = input("\nNext:")
 			elif i == LEN_P1 and j == LEN_P2:
 				break
