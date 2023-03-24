@@ -6,7 +6,7 @@ from typing import ClassVar as _ClassVar, Iterable as _Iterable, Mapping as _Map
 DESCRIPTOR: _descriptor.FileDescriptor
 
 class dm_V2(_message.Message):
-    __slots__ = ["id_str", "mode", "fontsize", "color", "mid_hash", "content", "ctime", "unknown_08", "dmid", "unknown_10", "unknown_11", "chat_bubble", "unknown_13", "emots", "unknown_15", "unknown_16", "unknown_17", "unknown_18", "validation", "userinfo", "fan_medal_ext", "unknown_22", "unknown_23", "unknown_24", "unknown_25", "unknown_26", "unknown_27", "unknown_28", "unknown_29", "unknown_30", "unknown_31", "unknown_32", "unknown_33", "unknown_34", "unknown_35", "unknown_36", "unknown_37", "unknown_38", "unknown_39", "unknown_40", "unknown_41", "unknown_42", "unknown_43", "unknown_44", "unknown_45", "unknown_46", "unknown_47", "unknown_48", "unknown_49", "unknown_50", "unknown_51", "unknown_52", "unknown_53", "unknown_54", "unknown_55", "unknown_56", "unknown_57", "unknown_58", "unknown_59", "unknown_60", "unknown_61", "unknown_62", "unknown_63", "unknown_64"]
+    __slots__ = ["id_str", "mode", "fontsize", "color", "mid_hash", "content", "ctime", "unknown_08", "dmid", "unknown_10", "type", "chat_bubble", "unknown_13", "emots", "unknown_15", "unknown_16", "lottery", "unknown_18", "validation", "userinfo", "fan_medal_ext", "unknown_22", "unknown_23", "unknown_24", "unknown_25", "unknown_26", "unknown_27", "unknown_28", "unknown_29", "unknown_30", "unknown_31", "unknown_32", "unknown_33", "unknown_34", "unknown_35", "unknown_36", "unknown_37", "unknown_38", "unknown_39", "unknown_40", "unknown_41", "unknown_42", "unknown_43", "unknown_44", "unknown_45", "unknown_46", "unknown_47", "unknown_48", "unknown_49", "unknown_50", "unknown_51", "unknown_52", "unknown_53", "unknown_54", "unknown_55", "unknown_56", "unknown_57", "unknown_58", "unknown_59", "unknown_60", "unknown_61", "unknown_62", "unknown_63", "unknown_64"]
     ID_STR_FIELD_NUMBER: _ClassVar[int]
     MODE_FIELD_NUMBER: _ClassVar[int]
     FONTSIZE_FIELD_NUMBER: _ClassVar[int]
@@ -17,13 +17,13 @@ class dm_V2(_message.Message):
     UNKNOWN_08_FIELD_NUMBER: _ClassVar[int]
     DMID_FIELD_NUMBER: _ClassVar[int]
     UNKNOWN_10_FIELD_NUMBER: _ClassVar[int]
-    UNKNOWN_11_FIELD_NUMBER: _ClassVar[int]
+    TYPE_FIELD_NUMBER: _ClassVar[int]
     CHAT_BUBBLE_FIELD_NUMBER: _ClassVar[int]
     UNKNOWN_13_FIELD_NUMBER: _ClassVar[int]
     EMOTS_FIELD_NUMBER: _ClassVar[int]
     UNKNOWN_15_FIELD_NUMBER: _ClassVar[int]
     UNKNOWN_16_FIELD_NUMBER: _ClassVar[int]
-    UNKNOWN_17_FIELD_NUMBER: _ClassVar[int]
+    LOTTERY_FIELD_NUMBER: _ClassVar[int]
     UNKNOWN_18_FIELD_NUMBER: _ClassVar[int]
     VALIDATION_FIELD_NUMBER: _ClassVar[int]
     USERINFO_FIELD_NUMBER: _ClassVar[int]
@@ -81,13 +81,13 @@ class dm_V2(_message.Message):
     unknown_08: _containers.RepeatedScalarFieldContainer[bytes]
     dmid: int
     unknown_10: _containers.RepeatedScalarFieldContainer[bytes]
-    unknown_11: _containers.RepeatedScalarFieldContainer[bytes]
+    type: int
     chat_bubble: chat_bubble
     unknown_13: _containers.RepeatedScalarFieldContainer[bytes]
     emots: _containers.RepeatedCompositeFieldContainer[emots]
     unknown_15: _containers.RepeatedScalarFieldContainer[bytes]
     unknown_16: _containers.RepeatedScalarFieldContainer[bytes]
-    unknown_17: _containers.RepeatedScalarFieldContainer[bytes]
+    lottery: lottery
     unknown_18: _containers.RepeatedScalarFieldContainer[bytes]
     validation: validation
     userinfo: userinfo
@@ -135,7 +135,7 @@ class dm_V2(_message.Message):
     unknown_62: _containers.RepeatedScalarFieldContainer[bytes]
     unknown_63: _containers.RepeatedScalarFieldContainer[bytes]
     unknown_64: _containers.RepeatedScalarFieldContainer[bytes]
-    def __init__(self, id_str: _Optional[str] = ..., mode: _Optional[int] = ..., fontsize: _Optional[int] = ..., color: _Optional[int] = ..., mid_hash: _Optional[str] = ..., content: _Optional[str] = ..., ctime: _Optional[int] = ..., unknown_08: _Optional[_Iterable[bytes]] = ..., dmid: _Optional[int] = ..., unknown_10: _Optional[_Iterable[bytes]] = ..., unknown_11: _Optional[_Iterable[bytes]] = ..., chat_bubble: _Optional[_Union[chat_bubble, _Mapping]] = ..., unknown_13: _Optional[_Iterable[bytes]] = ..., emots: _Optional[_Iterable[_Union[emots, _Mapping]]] = ..., unknown_15: _Optional[_Iterable[bytes]] = ..., unknown_16: _Optional[_Iterable[bytes]] = ..., unknown_17: _Optional[_Iterable[bytes]] = ..., unknown_18: _Optional[_Iterable[bytes]] = ..., validation: _Optional[_Union[validation, _Mapping]] = ..., userinfo: _Optional[_Union[userinfo, _Mapping]] = ..., fan_medal_ext: _Optional[_Union[fan_medal_ext, _Mapping]] = ..., unknown_22: _Optional[_Iterable[bytes]] = ..., unknown_23: _Optional[_Iterable[bytes]] = ..., unknown_24: _Optional[_Iterable[bytes]] = ..., unknown_25: _Optional[_Iterable[bytes]] = ..., unknown_26: _Optional[_Iterable[bytes]] = ..., unknown_27: _Optional[_Iterable[bytes]] = ..., unknown_28: _Optional[_Iterable[bytes]] = ..., unknown_29: _Optional[_Iterable[bytes]] = ..., unknown_30: _Optional[_Iterable[bytes]] = ..., unknown_31: _Optional[_Iterable[bytes]] = ..., unknown_32: _Optional[_Iterable[bytes]] = ..., unknown_33: _Optional[_Iterable[bytes]] = ..., unknown_34: _Optional[_Iterable[bytes]] = ..., unknown_35: _Optional[_Iterable[bytes]] = ..., unknown_36: _Optional[_Iterable[bytes]] = ..., unknown_37: _Optional[_Iterable[bytes]] = ..., unknown_38: _Optional[_Iterable[bytes]] = ..., unknown_39: _Optional[_Iterable[bytes]] = ..., unknown_40: _Optional[_Iterable[bytes]] = ..., unknown_41: _Optional[_Iterable[bytes]] = ..., unknown_42: _Optional[_Iterable[bytes]] = ..., unknown_43: _Optional[_Iterable[bytes]] = ..., unknown_44: _Optional[_Iterable[bytes]] = ..., unknown_45: _Optional[_Iterable[bytes]] = ..., unknown_46: _Optional[_Iterable[bytes]] = ..., unknown_47: _Optional[_Iterable[bytes]] = ..., unknown_48: _Optional[_Iterable[bytes]] = ..., unknown_49: _Optional[_Iterable[bytes]] = ..., unknown_50: _Optional[_Iterable[bytes]] = ..., unknown_51: _Optional[_Iterable[bytes]] = ..., unknown_52: _Optional[_Iterable[bytes]] = ..., unknown_53: _Optional[_Iterable[bytes]] = ..., unknown_54: _Optional[_Iterable[bytes]] = ..., unknown_55: _Optional[_Iterable[bytes]] = ..., unknown_56: _Optional[_Iterable[bytes]] = ..., unknown_57: _Optional[_Iterable[bytes]] = ..., unknown_58: _Optional[_Iterable[bytes]] = ..., unknown_59: _Optional[_Iterable[bytes]] = ..., unknown_60: _Optional[_Iterable[bytes]] = ..., unknown_61: _Optional[_Iterable[bytes]] = ..., unknown_62: _Optional[_Iterable[bytes]] = ..., unknown_63: _Optional[_Iterable[bytes]] = ..., unknown_64: _Optional[_Iterable[bytes]] = ...) -> None: ...
+    def __init__(self, id_str: _Optional[str] = ..., mode: _Optional[int] = ..., fontsize: _Optional[int] = ..., color: _Optional[int] = ..., mid_hash: _Optional[str] = ..., content: _Optional[str] = ..., ctime: _Optional[int] = ..., unknown_08: _Optional[_Iterable[bytes]] = ..., dmid: _Optional[int] = ..., unknown_10: _Optional[_Iterable[bytes]] = ..., type: _Optional[int] = ..., chat_bubble: _Optional[_Union[chat_bubble, _Mapping]] = ..., unknown_13: _Optional[_Iterable[bytes]] = ..., emots: _Optional[_Iterable[_Union[emots, _Mapping]]] = ..., unknown_15: _Optional[_Iterable[bytes]] = ..., unknown_16: _Optional[_Iterable[bytes]] = ..., lottery: _Optional[_Union[lottery, _Mapping]] = ..., unknown_18: _Optional[_Iterable[bytes]] = ..., validation: _Optional[_Union[validation, _Mapping]] = ..., userinfo: _Optional[_Union[userinfo, _Mapping]] = ..., fan_medal_ext: _Optional[_Union[fan_medal_ext, _Mapping]] = ..., unknown_22: _Optional[_Iterable[bytes]] = ..., unknown_23: _Optional[_Iterable[bytes]] = ..., unknown_24: _Optional[_Iterable[bytes]] = ..., unknown_25: _Optional[_Iterable[bytes]] = ..., unknown_26: _Optional[_Iterable[bytes]] = ..., unknown_27: _Optional[_Iterable[bytes]] = ..., unknown_28: _Optional[_Iterable[bytes]] = ..., unknown_29: _Optional[_Iterable[bytes]] = ..., unknown_30: _Optional[_Iterable[bytes]] = ..., unknown_31: _Optional[_Iterable[bytes]] = ..., unknown_32: _Optional[_Iterable[bytes]] = ..., unknown_33: _Optional[_Iterable[bytes]] = ..., unknown_34: _Optional[_Iterable[bytes]] = ..., unknown_35: _Optional[_Iterable[bytes]] = ..., unknown_36: _Optional[_Iterable[bytes]] = ..., unknown_37: _Optional[_Iterable[bytes]] = ..., unknown_38: _Optional[_Iterable[bytes]] = ..., unknown_39: _Optional[_Iterable[bytes]] = ..., unknown_40: _Optional[_Iterable[bytes]] = ..., unknown_41: _Optional[_Iterable[bytes]] = ..., unknown_42: _Optional[_Iterable[bytes]] = ..., unknown_43: _Optional[_Iterable[bytes]] = ..., unknown_44: _Optional[_Iterable[bytes]] = ..., unknown_45: _Optional[_Iterable[bytes]] = ..., unknown_46: _Optional[_Iterable[bytes]] = ..., unknown_47: _Optional[_Iterable[bytes]] = ..., unknown_48: _Optional[_Iterable[bytes]] = ..., unknown_49: _Optional[_Iterable[bytes]] = ..., unknown_50: _Optional[_Iterable[bytes]] = ..., unknown_51: _Optional[_Iterable[bytes]] = ..., unknown_52: _Optional[_Iterable[bytes]] = ..., unknown_53: _Optional[_Iterable[bytes]] = ..., unknown_54: _Optional[_Iterable[bytes]] = ..., unknown_55: _Optional[_Iterable[bytes]] = ..., unknown_56: _Optional[_Iterable[bytes]] = ..., unknown_57: _Optional[_Iterable[bytes]] = ..., unknown_58: _Optional[_Iterable[bytes]] = ..., unknown_59: _Optional[_Iterable[bytes]] = ..., unknown_60: _Optional[_Iterable[bytes]] = ..., unknown_61: _Optional[_Iterable[bytes]] = ..., unknown_62: _Optional[_Iterable[bytes]] = ..., unknown_63: _Optional[_Iterable[bytes]] = ..., unknown_64: _Optional[_Iterable[bytes]] = ...) -> None: ...
 
 class chat_bubble(_message.Message):
     __slots__ = ["chat_bubble_type", "chat_bubble_color", "unknown_chat_bubble_03", "unknown_chat_bubble_04", "unknown_chat_bubble_05", "unknown_chat_bubble_06", "unknown_chat_bubble_07", "unknown_chat_bubble_08"]
@@ -178,7 +178,7 @@ class emots(_message.Message):
     def __init__(self, desc: _Optional[str] = ..., detail: _Optional[_Union[emots_detail, _Mapping]] = ..., unknown_emots_03: _Optional[_Iterable[bytes]] = ..., unknown_emots_04: _Optional[_Iterable[bytes]] = ..., unknown_emots_05: _Optional[_Iterable[bytes]] = ..., unknown_emots_06: _Optional[_Iterable[bytes]] = ..., unknown_emots_07: _Optional[_Iterable[bytes]] = ..., unknown_emots_08: _Optional[_Iterable[bytes]] = ...) -> None: ...
 
 class emots_detail(_message.Message):
-    __slots__ = ["emoticon_unique", "emots_url", "is_dynamic", "in_player_area", "unknown_emots_detail_0005", "height", "width", "reserve_emots_detail_08", "reserve_emots_detail_09", "reserve_emots_detail_10", "reserve_emots_detail_11", "reserve_emots_detail_12", "reserve_emots_detail_13", "reserve_emots_detail_14", "reserve_emots_detail_15", "reserve_emots_detail_16"]
+    __slots__ = ["emoticon_unique", "emots_url", "is_dynamic", "in_player_area", "unknown_emots_detail_0005", "height", "width", "unknown_emots_detail_08", "unknown_emots_detail_09", "unknown_emots_detail_10", "unknown_emots_detail_11", "unknown_emots_detail_12", "unknown_emots_detail_13", "unknown_emots_detail_14", "unknown_emots_detail_15", "unknown_emots_detail_16"]
     EMOTICON_UNIQUE_FIELD_NUMBER: _ClassVar[int]
     EMOTS_URL_FIELD_NUMBER: _ClassVar[int]
     IS_DYNAMIC_FIELD_NUMBER: _ClassVar[int]
@@ -186,15 +186,15 @@ class emots_detail(_message.Message):
     UNKNOWN_EMOTS_DETAIL_0005_FIELD_NUMBER: _ClassVar[int]
     HEIGHT_FIELD_NUMBER: _ClassVar[int]
     WIDTH_FIELD_NUMBER: _ClassVar[int]
-    RESERVE_EMOTS_DETAIL_08_FIELD_NUMBER: _ClassVar[int]
-    RESERVE_EMOTS_DETAIL_09_FIELD_NUMBER: _ClassVar[int]
-    RESERVE_EMOTS_DETAIL_10_FIELD_NUMBER: _ClassVar[int]
-    RESERVE_EMOTS_DETAIL_11_FIELD_NUMBER: _ClassVar[int]
-    RESERVE_EMOTS_DETAIL_12_FIELD_NUMBER: _ClassVar[int]
-    RESERVE_EMOTS_DETAIL_13_FIELD_NUMBER: _ClassVar[int]
-    RESERVE_EMOTS_DETAIL_14_FIELD_NUMBER: _ClassVar[int]
-    RESERVE_EMOTS_DETAIL_15_FIELD_NUMBER: _ClassVar[int]
-    RESERVE_EMOTS_DETAIL_16_FIELD_NUMBER: _ClassVar[int]
+    UNKNOWN_EMOTS_DETAIL_08_FIELD_NUMBER: _ClassVar[int]
+    UNKNOWN_EMOTS_DETAIL_09_FIELD_NUMBER: _ClassVar[int]
+    UNKNOWN_EMOTS_DETAIL_10_FIELD_NUMBER: _ClassVar[int]
+    UNKNOWN_EMOTS_DETAIL_11_FIELD_NUMBER: _ClassVar[int]
+    UNKNOWN_EMOTS_DETAIL_12_FIELD_NUMBER: _ClassVar[int]
+    UNKNOWN_EMOTS_DETAIL_13_FIELD_NUMBER: _ClassVar[int]
+    UNKNOWN_EMOTS_DETAIL_14_FIELD_NUMBER: _ClassVar[int]
+    UNKNOWN_EMOTS_DETAIL_15_FIELD_NUMBER: _ClassVar[int]
+    UNKNOWN_EMOTS_DETAIL_16_FIELD_NUMBER: _ClassVar[int]
     emoticon_unique: str
     emots_url: str
     is_dynamic: int
@@ -202,16 +202,36 @@ class emots_detail(_message.Message):
     unknown_emots_detail_0005: _containers.RepeatedScalarFieldContainer[bytes]
     height: int
     width: int
-    reserve_emots_detail_08: _containers.RepeatedScalarFieldContainer[bytes]
-    reserve_emots_detail_09: _containers.RepeatedScalarFieldContainer[bytes]
-    reserve_emots_detail_10: _containers.RepeatedScalarFieldContainer[bytes]
-    reserve_emots_detail_11: _containers.RepeatedScalarFieldContainer[bytes]
-    reserve_emots_detail_12: _containers.RepeatedScalarFieldContainer[bytes]
-    reserve_emots_detail_13: _containers.RepeatedScalarFieldContainer[bytes]
-    reserve_emots_detail_14: _containers.RepeatedScalarFieldContainer[bytes]
-    reserve_emots_detail_15: _containers.RepeatedScalarFieldContainer[bytes]
-    reserve_emots_detail_16: _containers.RepeatedScalarFieldContainer[bytes]
-    def __init__(self, emoticon_unique: _Optional[str] = ..., emots_url: _Optional[str] = ..., is_dynamic: _Optional[int] = ..., in_player_area: _Optional[int] = ..., unknown_emots_detail_0005: _Optional[_Iterable[bytes]] = ..., height: _Optional[int] = ..., width: _Optional[int] = ..., reserve_emots_detail_08: _Optional[_Iterable[bytes]] = ..., reserve_emots_detail_09: _Optional[_Iterable[bytes]] = ..., reserve_emots_detail_10: _Optional[_Iterable[bytes]] = ..., reserve_emots_detail_11: _Optional[_Iterable[bytes]] = ..., reserve_emots_detail_12: _Optional[_Iterable[bytes]] = ..., reserve_emots_detail_13: _Optional[_Iterable[bytes]] = ..., reserve_emots_detail_14: _Optional[_Iterable[bytes]] = ..., reserve_emots_detail_15: _Optional[_Iterable[bytes]] = ..., reserve_emots_detail_16: _Optional[_Iterable[bytes]] = ...) -> None: ...
+    unknown_emots_detail_08: _containers.RepeatedScalarFieldContainer[bytes]
+    unknown_emots_detail_09: _containers.RepeatedScalarFieldContainer[bytes]
+    unknown_emots_detail_10: _containers.RepeatedScalarFieldContainer[bytes]
+    unknown_emots_detail_11: _containers.RepeatedScalarFieldContainer[bytes]
+    unknown_emots_detail_12: _containers.RepeatedScalarFieldContainer[bytes]
+    unknown_emots_detail_13: _containers.RepeatedScalarFieldContainer[bytes]
+    unknown_emots_detail_14: _containers.RepeatedScalarFieldContainer[bytes]
+    unknown_emots_detail_15: _containers.RepeatedScalarFieldContainer[bytes]
+    unknown_emots_detail_16: _containers.RepeatedScalarFieldContainer[bytes]
+    def __init__(self, emoticon_unique: _Optional[str] = ..., emots_url: _Optional[str] = ..., is_dynamic: _Optional[int] = ..., in_player_area: _Optional[int] = ..., unknown_emots_detail_0005: _Optional[_Iterable[bytes]] = ..., height: _Optional[int] = ..., width: _Optional[int] = ..., unknown_emots_detail_08: _Optional[_Iterable[bytes]] = ..., unknown_emots_detail_09: _Optional[_Iterable[bytes]] = ..., unknown_emots_detail_10: _Optional[_Iterable[bytes]] = ..., unknown_emots_detail_11: _Optional[_Iterable[bytes]] = ..., unknown_emots_detail_12: _Optional[_Iterable[bytes]] = ..., unknown_emots_detail_13: _Optional[_Iterable[bytes]] = ..., unknown_emots_detail_14: _Optional[_Iterable[bytes]] = ..., unknown_emots_detail_15: _Optional[_Iterable[bytes]] = ..., unknown_emots_detail_16: _Optional[_Iterable[bytes]] = ...) -> None: ...
+
+class lottery(_message.Message):
+    __slots__ = ["unknown_lottery_01", "activity_source", "activity_identity", "not_show", "unknown_lottery_05", "unknown_lottery_06", "unknown_lottery_07", "unknown_lottery_08"]
+    UNKNOWN_LOTTERY_01_FIELD_NUMBER: _ClassVar[int]
+    ACTIVITY_SOURCE_FIELD_NUMBER: _ClassVar[int]
+    ACTIVITY_IDENTITY_FIELD_NUMBER: _ClassVar[int]
+    NOT_SHOW_FIELD_NUMBER: _ClassVar[int]
+    UNKNOWN_LOTTERY_05_FIELD_NUMBER: _ClassVar[int]
+    UNKNOWN_LOTTERY_06_FIELD_NUMBER: _ClassVar[int]
+    UNKNOWN_LOTTERY_07_FIELD_NUMBER: _ClassVar[int]
+    UNKNOWN_LOTTERY_08_FIELD_NUMBER: _ClassVar[int]
+    unknown_lottery_01: _containers.RepeatedScalarFieldContainer[bytes]
+    activity_source: int
+    activity_identity: str
+    not_show: int
+    unknown_lottery_05: _containers.RepeatedScalarFieldContainer[bytes]
+    unknown_lottery_06: _containers.RepeatedScalarFieldContainer[bytes]
+    unknown_lottery_07: _containers.RepeatedScalarFieldContainer[bytes]
+    unknown_lottery_08: _containers.RepeatedScalarFieldContainer[bytes]
+    def __init__(self, unknown_lottery_01: _Optional[_Iterable[bytes]] = ..., activity_source: _Optional[int] = ..., activity_identity: _Optional[str] = ..., not_show: _Optional[int] = ..., unknown_lottery_05: _Optional[_Iterable[bytes]] = ..., unknown_lottery_06: _Optional[_Iterable[bytes]] = ..., unknown_lottery_07: _Optional[_Iterable[bytes]] = ..., unknown_lottery_08: _Optional[_Iterable[bytes]] = ...) -> None: ...
 
 class validation(_message.Message):
     __slots__ = ["ct", "ts", "unknown_validation_03", "unknown_validation_04", "unknown_validation_05", "unknown_validation_06", "unknown_validation_07", "unknown_validation_08"]
@@ -268,7 +288,7 @@ class userinfo(_message.Message):
     def __init__(self, uid: _Optional[int] = ..., name: _Optional[str] = ..., usernameColor: _Optional[str] = ..., avatar_url: _Optional[str] = ..., unknown_userinfo_05: _Optional[_Iterable[bytes]] = ..., unknown_userinfo_06: _Optional[_Iterable[bytes]] = ..., rank: _Optional[int] = ..., unknown_userinfo_08: _Optional[_Iterable[bytes]] = ..., unknown_userinfo_09: _Optional[_Iterable[bytes]] = ..., fan_medal: _Optional[_Union[fan_medal, _Mapping]] = ..., live_user_lnfo: _Optional[_Union[live_user_lnfo, _Mapping]] = ..., title: _Optional[_Union[title, _Mapping]] = ..., unknown_userinfo_14: _Optional[_Iterable[bytes]] = ..., unknown_userinfo_15: _Optional[_Iterable[bytes]] = ..., unknown_userinfo_16: _Optional[_Iterable[bytes]] = ...) -> None: ...
 
 class fan_medal(_message.Message):
-    __slots__ = ["medal_level", "medal_name", "unknown_fan_medal_03", "color1", "unknown_fan_medal_05", "medal_color_start", "color3", "medal_color_end", "guard_level", "isLighted"]
+    __slots__ = ["medal_level", "medal_name", "unknown_fan_medal_03", "color1", "unknown_fan_medal_05", "medal_color_start", "color3", "medal_color_end", "anchor_guard_level", "isLighted", "unknown_fan_medal_11", "unknown_fan_medal_12", "unknown_fan_medal_13", "unknown_fan_medal_14", "unknown_fan_medal_15", "unknown_fan_medal_16"]
     MEDAL_LEVEL_FIELD_NUMBER: _ClassVar[int]
     MEDAL_NAME_FIELD_NUMBER: _ClassVar[int]
     UNKNOWN_FAN_MEDAL_03_FIELD_NUMBER: _ClassVar[int]
@@ -277,8 +297,14 @@ class fan_medal(_message.Message):
     MEDAL_COLOR_START_FIELD_NUMBER: _ClassVar[int]
     COLOR3_FIELD_NUMBER: _ClassVar[int]
     MEDAL_COLOR_END_FIELD_NUMBER: _ClassVar[int]
-    GUARD_LEVEL_FIELD_NUMBER: _ClassVar[int]
+    ANCHOR_GUARD_LEVEL_FIELD_NUMBER: _ClassVar[int]
     ISLIGHTED_FIELD_NUMBER: _ClassVar[int]
+    UNKNOWN_FAN_MEDAL_11_FIELD_NUMBER: _ClassVar[int]
+    UNKNOWN_FAN_MEDAL_12_FIELD_NUMBER: _ClassVar[int]
+    UNKNOWN_FAN_MEDAL_13_FIELD_NUMBER: _ClassVar[int]
+    UNKNOWN_FAN_MEDAL_14_FIELD_NUMBER: _ClassVar[int]
+    UNKNOWN_FAN_MEDAL_15_FIELD_NUMBER: _ClassVar[int]
+    UNKNOWN_FAN_MEDAL_16_FIELD_NUMBER: _ClassVar[int]
     medal_level: int
     medal_name: str
     unknown_fan_medal_03: _containers.RepeatedScalarFieldContainer[bytes]
@@ -287,14 +313,20 @@ class fan_medal(_message.Message):
     medal_color_start: int
     color3: int
     medal_color_end: int
-    guard_level: int
+    anchor_guard_level: int
     isLighted: int
-    def __init__(self, medal_level: _Optional[int] = ..., medal_name: _Optional[str] = ..., unknown_fan_medal_03: _Optional[_Iterable[bytes]] = ..., color1: _Optional[int] = ..., unknown_fan_medal_05: _Optional[_Iterable[bytes]] = ..., medal_color_start: _Optional[int] = ..., color3: _Optional[int] = ..., medal_color_end: _Optional[int] = ..., guard_level: _Optional[int] = ..., isLighted: _Optional[int] = ...) -> None: ...
+    unknown_fan_medal_11: _containers.RepeatedScalarFieldContainer[bytes]
+    unknown_fan_medal_12: _containers.RepeatedScalarFieldContainer[bytes]
+    unknown_fan_medal_13: _containers.RepeatedScalarFieldContainer[bytes]
+    unknown_fan_medal_14: _containers.RepeatedScalarFieldContainer[bytes]
+    unknown_fan_medal_15: _containers.RepeatedScalarFieldContainer[bytes]
+    unknown_fan_medal_16: _containers.RepeatedScalarFieldContainer[bytes]
+    def __init__(self, medal_level: _Optional[int] = ..., medal_name: _Optional[str] = ..., unknown_fan_medal_03: _Optional[_Iterable[bytes]] = ..., color1: _Optional[int] = ..., unknown_fan_medal_05: _Optional[_Iterable[bytes]] = ..., medal_color_start: _Optional[int] = ..., color3: _Optional[int] = ..., medal_color_end: _Optional[int] = ..., anchor_guard_level: _Optional[int] = ..., isLighted: _Optional[int] = ..., unknown_fan_medal_11: _Optional[_Iterable[bytes]] = ..., unknown_fan_medal_12: _Optional[_Iterable[bytes]] = ..., unknown_fan_medal_13: _Optional[_Iterable[bytes]] = ..., unknown_fan_medal_14: _Optional[_Iterable[bytes]] = ..., unknown_fan_medal_15: _Optional[_Iterable[bytes]] = ..., unknown_fan_medal_16: _Optional[_Iterable[bytes]] = ...) -> None: ...
 
 class live_user_lnfo(_message.Message):
-    __slots__ = ["User_Level", "live_exp", "live_rank", "unknown_live_user_lnfo_04", "unknown_live_user_lnfo_05", "unknown_live_user_lnfo_06", "unknown_live_user_lnfo_07", "unknown_live_user_lnfo_08"]
+    __slots__ = ["User_Level", "UL_color", "live_rank", "unknown_live_user_lnfo_04", "unknown_live_user_lnfo_05", "unknown_live_user_lnfo_06", "unknown_live_user_lnfo_07", "unknown_live_user_lnfo_08"]
     USER_LEVEL_FIELD_NUMBER: _ClassVar[int]
-    LIVE_EXP_FIELD_NUMBER: _ClassVar[int]
+    UL_COLOR_FIELD_NUMBER: _ClassVar[int]
     LIVE_RANK_FIELD_NUMBER: _ClassVar[int]
     UNKNOWN_LIVE_USER_LNFO_04_FIELD_NUMBER: _ClassVar[int]
     UNKNOWN_LIVE_USER_LNFO_05_FIELD_NUMBER: _ClassVar[int]
@@ -302,14 +334,14 @@ class live_user_lnfo(_message.Message):
     UNKNOWN_LIVE_USER_LNFO_07_FIELD_NUMBER: _ClassVar[int]
     UNKNOWN_LIVE_USER_LNFO_08_FIELD_NUMBER: _ClassVar[int]
     User_Level: int
-    live_exp: int
+    UL_color: int
     live_rank: str
     unknown_live_user_lnfo_04: _containers.RepeatedScalarFieldContainer[bytes]
     unknown_live_user_lnfo_05: _containers.RepeatedScalarFieldContainer[bytes]
     unknown_live_user_lnfo_06: _containers.RepeatedScalarFieldContainer[bytes]
     unknown_live_user_lnfo_07: _containers.RepeatedScalarFieldContainer[bytes]
     unknown_live_user_lnfo_08: _containers.RepeatedScalarFieldContainer[bytes]
-    def __init__(self, User_Level: _Optional[int] = ..., live_exp: _Optional[int] = ..., live_rank: _Optional[str] = ..., unknown_live_user_lnfo_04: _Optional[_Iterable[bytes]] = ..., unknown_live_user_lnfo_05: _Optional[_Iterable[bytes]] = ..., unknown_live_user_lnfo_06: _Optional[_Iterable[bytes]] = ..., unknown_live_user_lnfo_07: _Optional[_Iterable[bytes]] = ..., unknown_live_user_lnfo_08: _Optional[_Iterable[bytes]] = ...) -> None: ...
+    def __init__(self, User_Level: _Optional[int] = ..., UL_color: _Optional[int] = ..., live_rank: _Optional[str] = ..., unknown_live_user_lnfo_04: _Optional[_Iterable[bytes]] = ..., unknown_live_user_lnfo_05: _Optional[_Iterable[bytes]] = ..., unknown_live_user_lnfo_06: _Optional[_Iterable[bytes]] = ..., unknown_live_user_lnfo_07: _Optional[_Iterable[bytes]] = ..., unknown_live_user_lnfo_08: _Optional[_Iterable[bytes]] = ...) -> None: ...
 
 class title(_message.Message):
     __slots__ = ["title1", "title", "unknown_title_03", "unknown_title_04", "unknown_title_05", "unknown_title_06", "unknown_title_07", "unknown_title_08"]
