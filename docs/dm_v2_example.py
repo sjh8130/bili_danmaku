@@ -35,16 +35,20 @@ with open(infile, "r", 1048576, encoding="utf-8") as file:
 		proc["default"].append(json.loads(MessageToJson(temp_proto, indent=0, including_default_value_fields=False)))
 for this in proc["default"]:
 	break
-	del this["content"]
-	del this["fontsize"]
 	del this["mode"]
+	del this["fontsize"]
 	del this["color"]
-	del this["chatBubble"]
-	del this["dmid"]
 	del this["midHash"]
+	del this["content"]
 	del this["ctime"]
+	try:del this["dmid"]
+	except:pass
+	del this["chatBubble"]
+	try:del this["emots"]
+	except:pass
 	del this["validation"]
-final_file = json.dumps(proc, ensure_ascii=False, indent=None, separators=(",", ":")).replace("},{\"idStr\"","},\n{\"idStr\"").replace(",\"unknown17\":[\"\"]","").replace(",\"unknownUserinfo14\":[\"\"]","").replace(",\"title\":{}","").replace(",\"chatBubble\":{}","")
+	del this["fanMedalExt"]
+final_file = json.dumps(proc, ensure_ascii=False, indent=None, separators=(",", ":")).replace("},{\"idStr\"","},\n{\"idStr\"").replace(",\"unknown17\":[\"\"]","").replace(",\"unknownUserinfo14\":[\"\"]","").replace(",\"title\":{}","").replace(",\"chatBubble\":{}","").replace(",\"lottery\":{}","")
 open(outfile, "w", encoding="utf-8").write(final_file)
 et = time.time()
 print(et-st)
