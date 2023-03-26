@@ -1092,7 +1092,7 @@ SuperChat 日本語
 | background_price_color	| str	|  |
 | background_bottom_color	| str	|  |
 | ts						| num	| TimeStamp(秒) |
-| token						| str	| 64bit |
+| token						| str	| hex(64bit) |
 | medal_info				| obj	| [medal_info](#粉丝牌信息medal_info) 没有(guard_level,is_lighted,medal_color_border,medal_color_end,medal_color_start) |
 | user_info					| obj	|  |
 | time						| num	|  |
@@ -1461,7 +1461,7 @@ validation/checkInfo
 | key	| type	| value |
 |-|-|-|
 | ts	| num	| TimeStamp(秒) |
-| ct	| str	| 64bit |
+| ct	| str	| hex(64bit) |
 #### DANMU_MSG__info__0__13
 | key				| type	| value |
 |-|-|-|
@@ -1515,7 +1515,7 @@ validation/checkInfo
 | animation					| obj		| {} |
 | emots						| obj/null	| 新的表情包 k:v{obj...} |
 | is_audited				| bool		|  | 20230217
-| id_str					| str		| 144bit | 20230308
+| id_str					| str		| hex(132bit/144bit) | 20230308
 #### DANMU_MSG__info__0__15__extra__emots
 emoticonOptions
 | key				| type	| value |
@@ -1555,48 +1555,6 @@ emoticonOptions
 1678377738736567{"cmd":"CUT_OFF","msg":"直播中涉及低俗内容","roomid":12345}
 "禁播游戏" "版权相关" "违反直播规范"
 ```
-
-### MESSAGEBOX_USER_GAIN_MEDAL
-[TOP](#直播弹幕格式)  
-**根据JavaScript文件分析**
-| key	| type	| value |
-|-|-|-|
-| cmd	| str	| "MESSAGEBOX_USER_GAIN_MEDAL" |
-| data	| obj	| |
-#### MESSAGEBOX_USER_GAIN_MEDAL__data
-| key		| type	| value |
-|-|-|-|
-| up_uid	| XXX	| |
-| toast		| XXX	| |
-
-### MESSAGEBOX_USER_MEDAL_CHANGE
-[TOP](#直播弹幕格式)  
-**根据JavaScript文件分析**
-| key	| type	| value |
-|-|-|-|
-| cmd	| str	| "MESSAGEBOX_USER_MEDAL_CHANGE" |
-| data	| obj	| |
-#### MESSAGEBOX_USER_MEDAL_CHANGE__data
-| key					| type	| value |
-|-|-|-|
-| up_uid				| XXX	| |
-| unlock				| XXX	| |
-| multi_unlock_level	| XXX	| |
-| upper_bound_content	| XXX	| |
-
-### MESSAGEBOX_USER_MEDAL_COMPENSATION
-[TOP](#直播弹幕格式)  
-**根据JavaScript文件分析**
-| key	| type	| value |
-|-|-|-|
-| cmd	| str	| "MESSAGEBOX_USER_MEDAL_COMPENSATION" |
-| data	| obj	| |
-#### MESSAGEBOX_USER_MEDAL_COMPENSATION__data
-[TOP](#直播弹幕格式)  
-| key		| type	| value |
-|-|-|-|
-| up_uid	| XXX	| |
-| add_score	| XXX	| |
 
 ### SHOPPING_CART_SHOW
 [TOP](#直播弹幕格式)  
@@ -1644,7 +1602,7 @@ emoticonOptions
 | type				| str	| WIDGET_BANNER__REF |
 | band_id			| num	| WIDGET_BANNER__REF |
 | sub_key			| str	| WIDGET_BANNER__REF |
-| sub_data			| str	| urlencode(json) |
+| sub_data			| str	| urlencoded(json) |
 | is_add			| bool	| true |
 ```py
 jump_url=f"https://live.bilibili.com/activity/live-activity-battle/index.html?app_name={WIDGET_BANNER__REF}&is_live_half_webview=1&hybrid_rotate_d=1&hybrid_half_ui=1,3,100p,70p,0,0,0,0,12,0;2,2,375,100p,0,0,0,0,12,0;3,3,100p,70p,0,0,0,0,12,0;4,2,375,100p,0,0,0,0,12,0;5,3,100p,70p,0,0,0,0,12,0;6,3,100p,70p,0,0,0,0,12,0;7,3,100p,70p,0,0,0,0,12,0;8,3,100p,70p,0,0,0,0,12,0&room_id={直播间id}&uid={uid}#/"
@@ -2692,6 +2650,25 @@ with `DANMU_MSG`
 {"cmd":"PK_BATTLE_PROCESS","data":{"battle_type":2,"init_info":{"room_id":12345,"votes":123,"best_uname":"XXX","vision_desc":0},"match_info":{"room_id":A,"votes":456,"best_uname":"XXX","vision_desc":0}},"pk_id":321224507,"pk_status":301,"timestamp":1676000000}
 {"cmd":"PK_BATTLE_PROCESS","data":{"battle_type":2,"init_info":{"room_id":12345,"votes":123,"best_uname":"","vision_desc":0},"match_info":{"room_id":A,"votes":456,"best_uname":"","vision_desc":0}},"pk_id":321224540,"pk_status":301,"timestamp":1676000000}
 {"cmd":"PK_BATTLE_PROCESS","data":{"battle_type":2,"init_info":{"room_id":12345,"votes":123,"best_uname":"XXX","vision_desc":0},"match_info":{"room_id":A,"votes":456,"best_uname":"XXX","vision_desc":0}},"pk_id":321224540,"pk_status":301,"timestamp":1676000000}
+```
+
+### SHOPPING_BUBBLES_STYLE
+[TOP](#直播弹幕格式)  
+| key	| type	| value |
+|-|-|-|
+| cmd	| str	| "SHOPPING_BUBBLES_STYLE" |
+| data	| obj	| |
+#### SHOPPING_BUBBLES_STYLE__data
+| key						| type		| value |
+|-|-|-|
+| interval_between_bubbles	| num		| |
+| interval_between_queues	| num		| |
+| cycle_time				| num		| |
+| goods_count				| num		| |
+| checksum					| str		| **md5("null")** |
+| bubbles_list				| null/?	| |
+```json
+1679630221396764{"cmd":"SHOPPING_BUBBLES_STYLE","data":{"interval_between_bubbles":10,"interval_between_queues":10,"cycle_time":180,"goods_count":0,"checksum":"37a6259cc0c1dae299a7866489dff0bd","bubbles_list":null}}
 ```
 
 ### XXXXXXXXXXX

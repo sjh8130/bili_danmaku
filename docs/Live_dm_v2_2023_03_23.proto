@@ -134,7 +134,7 @@ message userinfo{//20
     repeated bytes unknown_userinfo_08 = 8;     // 
     repeated bytes unknown_userinfo_09 = 9;     // 
     fan_medal fan_medal = 11;                   // [3] 粉丝牌
-    live_user_lnfo live_user_lnfo = 12;         // [4] 用户直播区信息
+    live_user_info live_user_info = 12;         // [4] 用户直播区信息
     title title = 13;                           // [5] 头衔
     repeated bytes unknown_userinfo_14 = 14;    // 
     repeated bytes unknown_userinfo_15 = 15;    // 
@@ -158,19 +158,19 @@ message fan_medal{//20-11
     repeated bytes unknown_fan_medal_15 = 15;
     repeated bytes unknown_fan_medal_16 = 16;
 }
-message live_user_lnfo{//20-12
+message live_user_info{//20-12
     uint32 User_Level = 1;                      // [4][0]
     uint32 UL_color = 2;                        // [4][2]
     string live_rank = 3;                       // [4][3]
-    repeated bytes unknown_live_user_lnfo_04 = 4;
-    repeated bytes unknown_live_user_lnfo_05 = 5;
-    repeated bytes unknown_live_user_lnfo_06 = 6;
-    repeated bytes unknown_live_user_lnfo_07 = 7;
-    repeated bytes unknown_live_user_lnfo_08 = 8;
+    repeated bytes unknown_live_user_info_04 = 4;
+    repeated bytes unknown_live_user_info_05 = 5;
+    repeated bytes unknown_live_user_info_06 = 6;
+    repeated bytes unknown_live_user_info_07 = 7;
+    repeated bytes unknown_live_user_info_08 = 8;
 }
 message title{//20-13
     string title1 = 1;                          // [5][x]
-    string title = 2;                           // [5][x]
+    string title2 = 2;                          // [5][x]
     repeated bytes unknown_title_03 =  3;
     repeated bytes unknown_title_04 =  4;
     repeated bytes unknown_title_05 =  5;
