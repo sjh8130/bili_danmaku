@@ -7,7 +7,7 @@ except ModuleNotFoundError: import dm_pb2
 def fp(a: str, b: int): return f"{a}:{b} " if b else ""
 
 
-def proto2xml(this: dm_pb2.DanmakuElem, exdata: bool, enable_weight: bool = False):
+def proto2xml(this: dm_pb2.DanmakuElem, extra_data: bool, enable_weight: bool = False):
 	"""
 	Text
 	"""
@@ -17,5 +17,5 @@ def proto2xml(this: dm_pb2.DanmakuElem, exdata: bool, enable_weight: bool = Fals
 	else: weight = "9"
 	# action = this.action
 	# animation = this.animation
-	if exdata: Ext_Data = f"<!-- {Danmaku_ATTR_TYPE(this.attr)}{fp('mid', this.usermid)}{fp('Likes', this.likes)}{fp('Reply', this.reply_count)} -->".replace("  ", " ")
+	if extra_data: Ext_Data = f"<!-- {Danmaku_ATTR_TYPE(this.attr)}{fp('mid', this.usermid)}{fp('Likes', this.likes)}{fp('Reply', this.reply_count)} -->".replace("  ", " ")
 	return f"\t<d p=\"{format(this.progress/1000, '.5f')},{this.mode},{this.fontsize},{this.color},{this.ctime},{this.pool},{this.midHash},{this.id},{weight}\">{content}</d>{Ext_Data}\n"

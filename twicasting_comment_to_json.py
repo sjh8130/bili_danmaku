@@ -46,7 +46,7 @@ def downloader(page, retry_times=0):
 out = {"comment": [], "info": {"user": user, "movie_id": int(movie_id), "title": ""}}
 page = 0
 while (page <= int(pages)):
-	# a = open(f"twicasting_{user}_{movie_id}_{page}.html", encoding="utf-8").read()
+	# a = open(f"twitcasting_{user}_{movie_id}_{page}.html", encoding="utf-8").read()
 	a = downloader(page)
 	if a == "BREAK":
 		break
@@ -66,4 +66,4 @@ while (page <= int(pages)):
 		})
 	page += 1
 
-open(f"twicasting_{user}_{movie_id}.json", "w", encoding="utf-8").write(json.dumps(out, ensure_ascii=False, separators=(",", ":"), indent="\t"))
+open(f"twitcasting_{user}_{movie_id}.json", "w", encoding="utf-8").write(json.dumps(out, ensure_ascii=False, separators=(",", ":"), indent="\t"))

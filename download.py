@@ -154,7 +154,7 @@ def XML_Process(Proto_data) -> str:
 	logging.debug(f"{bvid}: XML_Process")
 	this: dm_pb2.DanmakuElem
 	out0 = ""
-	for this in Proto_data: out0 += proto2xml(this=this, exdata=P_flag[4], enable_weight=P_flag[17])
+	for this in Proto_data: out0 += proto2xml(this=this, extra_data=P_flag[4], enable_weight=P_flag[17])
 	return out0
 
 
@@ -269,24 +269,24 @@ def main_Func():
 		# 弹幕分段下载
 		for segments in range(Segment_Count):
 			if P_flag[12] and P_flag[1]: break
-			try: Danmaku_Binarys = get_Danmaku(cid, str(segments+1))
-			except json.decoder.JSONDecodeError: Danmaku_Binarys = b""
+			try: Danmaku_Binary = get_Danmaku(cid, str(segments+1))
+			except json.decoder.JSONDecodeError: Danmaku_Binary = b""
 			# 重试
-			if len(Danmaku_Binarys) < RETRY_SIZE and (not P_flag[8]):
-				temp_filelen = len(Danmaku_Binarys)
+			if len(Danmaku_Binary) < RETRY_SIZE and (not P_flag[8]):
+				temp_filelen = len(Danmaku_Binary)
 				retry_file = []
 				for retry_i in range(RETRY_TIMES):
-					if len(Danmaku_Binarys) == 0: break
+					if len(Danmaku_Binary) == 0: break
 					try: retry_file.append(get_Danmaku(cid, str(segments+1), retry=f"_R{retry_i+1}"))
 					except json.decoder.JSONDecodeError: retry_file.append(b"")
 					if len(retry_file[retry_i]) > temp_filelen:
-						Danmaku_Binarys = retry_file[retry_i]
+						Danmaku_Binary = retry_file[retry_i]
 						del retry_file, temp_filelen
 						break
-			Danmaku_Final_Binary += Danmaku_Binarys
+			Danmaku_Final_Binary += Danmaku_Binary
 			if (not P_flag[6]):
 				xml_t1 = dm_pb2.DmSegMobileReply()
-				xml_t1.ParseFromString(Danmaku_Binarys)
+				xml_t1.ParseFromString(Danmaku_Binary)
 				XML_Write_Data += XML_Process(xml_t1.elems)
 		# if Segment_Count != 1: dump_Data(f"[{bvid}]_[{cid}]_[Danmaku]_[ALL].bin", Danmaku_Final_Binary, Always_Write=True)
 		Time_Process_Danmaku = time.time()
@@ -294,16 +294,16 @@ def main_Func():
 			logging.debug(f"[{bvid}][File_JSON] 开始处理 P{i_for_videos}")
 			Temp_Binary = dm_pb2.DmSegMobileReply()
 			Temp_Binary.ParseFromString(Danmaku_Final_Binary)
-			json_proccess = json.loads(MessageToJson(Temp_Binary, indent=None, ensure_ascii=False, including_default_value_fields=True))
-			del json_proccess["state"]
+			json_process = json.loads(MessageToJson(Temp_Binary, indent=None, ensure_ascii=False, including_default_value_fields=True))
+			del json_process["state"]
 			del Temp_Binary
 			# ==================
 			try:
-				json_proccess["elems"]
+				json_process["elems"]
 			except KeyError:
-				json_proccess["elems"] = []
+				json_process["elems"] = []
 			else:
-				for this in json_proccess["elems"]:
+				for this in json_process["elems"]:
 					this["ctime"] = int(this["ctime"])
 					this["usermid"] = int(this["usermid"])
 					if not P_flag[2] and this["attr"] == 2: P_flag[2] = True
@@ -325,31 +325,31 @@ def main_Func():
 					del this["likes"]
 					del this["weight"]
 			# ==================
-			try: json_proccess["commandDms"] = ExInfo_Json["commandDms"]
-			except KeyError: json_proccess["commandDms"] = []
-			try: Danmaku_Count = len(json_proccess["elems"])
+			try: json_process["commandDms"] = ExInfo_Json["commandDms"]
+			except KeyError: json_process["commandDms"] = []
+			try: Danmaku_Count = len(json_process["elems"])
 			except KeyError: Danmaku_Count = 0
-			json_proccess["info"] = {}
-			json_proccess["info"]["Ver"] = "V5_20220916"
-			json_proccess["info"]["dmk_Ver"] = 3
-			json_proccess["info"]["owner"] = Json_Info['owner']								# dict	get all
-			json_proccess["info"]["bvid"] = bvid											# str	get all
-			json_proccess["info"]["avid"] = avid_in											# num	get all
-			json_proccess["info"]["V_Name"] = Main_Title									# str	get all
-			json_proccess["info"]["pubdate"] = P_Date										# num	get all unix_timestamp
-			json_proccess["info"]["i_ctime"] = Json_Info['ctime']							# num	get all unix_timestamp
-			json_proccess["info"]["P_Name"] = This["part"]									# str	get part
-			json_proccess["info"]["cid"] = cid												# num	get part
-			json_proccess["info"]["duration"] = duration									# num	get part
-			json_proccess["info"]["segment_count"] = Segment_Count							# num	set
-			json_proccess["info"]["danmaku_count"] = Danmaku_Count							# num	set
-			json_proccess["info"]["danmaku_web_reported"] = Json_Info['stat']['danmaku']	# num	get
-			json_proccess["info"]["danmaku_proto_reported"] = ExInfo_Proto.count			# num	get
-			json_proccess["info"]["File_Create_Time_Start"] = int(Time_Start_Process)		# num	set unix_timestamp
-			json_proccess["info"]["File_Create_Time"] = int(Time_Process_Danmaku)			# num	set unix_timestamp
-			json_proccess["info"]["is_live_record"] = P_flag[2]								# bool	GET
-			Json_Write_Data = json.dumps(json_proccess, ensure_ascii=False, separators=(',', ':')).replace("},{\"id\"", "},\n{\"id\"")
-			del json_proccess
+			json_process["info"] = {}
+			json_process["info"]["Ver"] = "V5_20220916"
+			json_process["info"]["dmk_Ver"] = 3
+			json_process["info"]["owner"] = Json_Info['owner']							# dict	get all
+			json_process["info"]["bvid"] = bvid											# str	get all
+			json_process["info"]["avid"] = avid_in										# num	get all
+			json_process["info"]["V_Name"] = Main_Title									# str	get all
+			json_process["info"]["pubdate"] = P_Date									# num	get all unix_timestamp
+			json_process["info"]["i_ctime"] = Json_Info['ctime']						# num	get all unix_timestamp
+			json_process["info"]["P_Name"] = This["part"]								# str	get part
+			json_process["info"]["cid"] = cid											# num	get part
+			json_process["info"]["duration"] = duration									# num	get part
+			json_process["info"]["segment_count"] = Segment_Count						# num	set
+			json_process["info"]["danmaku_count"] = Danmaku_Count						# num	set
+			json_process["info"]["danmaku_web_reported"] = Json_Info['stat']['danmaku']	# num	get
+			json_process["info"]["danmaku_proto_reported"] = ExInfo_Proto.count			# num	get
+			json_process["info"]["File_Create_Time_Start"] = int(Time_Start_Process)	# num	set unix_timestamp
+			json_process["info"]["File_Create_Time"] = int(Time_Process_Danmaku)		# num	set unix_timestamp
+			json_process["info"]["is_live_record"] = P_flag[2]							# bool	GET
+			Json_Write_Data = json.dumps(json_process, ensure_ascii=False, separators=(',', ':')).replace("},{\"id\"", "},\n{\"id\"")
+			del json_process
 			logging.debug(f"[{bvid}][File_JSON P{i_for_videos}]: 结束处理")
 		if P_flag[12]: err_sign = "ERR_"
 		if (not P_flag[5]):

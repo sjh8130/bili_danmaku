@@ -48,7 +48,7 @@ for this in proc["default"]:
 	except:pass
 	del this["validation"]
 	del this["fanMedalExt"]
-final_file = json.dumps(proc, ensure_ascii=False, indent=None, separators=(",", ":")).replace("},{\"idStr\"","},\n{\"idStr\"").replace(",\"unknown17\":[\"\"]","").replace(",\"unknownUserinfo14\":[\"\"]","").replace(",\"title\":{}","").replace(",\"chatBubble\":{}","").replace(",\"lottery\":{}","")
+final_file = json.dumps(proc, ensure_ascii=False, indent=None, separators=(",", ":")).replace("},{\"idStr\"","},\n{\"idStr\"").replace(",\"title\":{}","").replace(",\"chatBubble\":{}","").replace(",\"lottery\":{}","").replace(",\"unknownUserinfo14\":[\"\"]","")
 open(outfile, "w", encoding="utf-8").write(final_file)
 et = time.time()
 print(et-st)

@@ -254,7 +254,7 @@ class validation(_message.Message):
     def __init__(self, ct: _Optional[str] = ..., ts: _Optional[int] = ..., unknown_validation_03: _Optional[_Iterable[bytes]] = ..., unknown_validation_04: _Optional[_Iterable[bytes]] = ..., unknown_validation_05: _Optional[_Iterable[bytes]] = ..., unknown_validation_06: _Optional[_Iterable[bytes]] = ..., unknown_validation_07: _Optional[_Iterable[bytes]] = ..., unknown_validation_08: _Optional[_Iterable[bytes]] = ...) -> None: ...
 
 class userinfo(_message.Message):
-    __slots__ = ["uid", "name", "usernameColor", "avatar_url", "unknown_userinfo_05", "unknown_userinfo_06", "rank", "unknown_userinfo_08", "unknown_userinfo_09", "fan_medal", "live_user_lnfo", "title", "unknown_userinfo_14", "unknown_userinfo_15", "unknown_userinfo_16"]
+    __slots__ = ["uid", "name", "usernameColor", "avatar_url", "unknown_userinfo_05", "unknown_userinfo_06", "rank", "unknown_userinfo_08", "unknown_userinfo_09", "fan_medal", "live_user_info", "title", "unknown_userinfo_14", "unknown_userinfo_15", "unknown_userinfo_16"]
     UID_FIELD_NUMBER: _ClassVar[int]
     NAME_FIELD_NUMBER: _ClassVar[int]
     USERNAMECOLOR_FIELD_NUMBER: _ClassVar[int]
@@ -265,7 +265,7 @@ class userinfo(_message.Message):
     UNKNOWN_USERINFO_08_FIELD_NUMBER: _ClassVar[int]
     UNKNOWN_USERINFO_09_FIELD_NUMBER: _ClassVar[int]
     FAN_MEDAL_FIELD_NUMBER: _ClassVar[int]
-    LIVE_USER_LNFO_FIELD_NUMBER: _ClassVar[int]
+    LIVE_USER_INFO_FIELD_NUMBER: _ClassVar[int]
     TITLE_FIELD_NUMBER: _ClassVar[int]
     UNKNOWN_USERINFO_14_FIELD_NUMBER: _ClassVar[int]
     UNKNOWN_USERINFO_15_FIELD_NUMBER: _ClassVar[int]
@@ -280,12 +280,12 @@ class userinfo(_message.Message):
     unknown_userinfo_08: _containers.RepeatedScalarFieldContainer[bytes]
     unknown_userinfo_09: _containers.RepeatedScalarFieldContainer[bytes]
     fan_medal: fan_medal
-    live_user_lnfo: live_user_lnfo
+    live_user_info: live_user_info
     title: title
     unknown_userinfo_14: _containers.RepeatedScalarFieldContainer[bytes]
     unknown_userinfo_15: _containers.RepeatedScalarFieldContainer[bytes]
     unknown_userinfo_16: _containers.RepeatedScalarFieldContainer[bytes]
-    def __init__(self, uid: _Optional[int] = ..., name: _Optional[str] = ..., usernameColor: _Optional[str] = ..., avatar_url: _Optional[str] = ..., unknown_userinfo_05: _Optional[_Iterable[bytes]] = ..., unknown_userinfo_06: _Optional[_Iterable[bytes]] = ..., rank: _Optional[int] = ..., unknown_userinfo_08: _Optional[_Iterable[bytes]] = ..., unknown_userinfo_09: _Optional[_Iterable[bytes]] = ..., fan_medal: _Optional[_Union[fan_medal, _Mapping]] = ..., live_user_lnfo: _Optional[_Union[live_user_lnfo, _Mapping]] = ..., title: _Optional[_Union[title, _Mapping]] = ..., unknown_userinfo_14: _Optional[_Iterable[bytes]] = ..., unknown_userinfo_15: _Optional[_Iterable[bytes]] = ..., unknown_userinfo_16: _Optional[_Iterable[bytes]] = ...) -> None: ...
+    def __init__(self, uid: _Optional[int] = ..., name: _Optional[str] = ..., usernameColor: _Optional[str] = ..., avatar_url: _Optional[str] = ..., unknown_userinfo_05: _Optional[_Iterable[bytes]] = ..., unknown_userinfo_06: _Optional[_Iterable[bytes]] = ..., rank: _Optional[int] = ..., unknown_userinfo_08: _Optional[_Iterable[bytes]] = ..., unknown_userinfo_09: _Optional[_Iterable[bytes]] = ..., fan_medal: _Optional[_Union[fan_medal, _Mapping]] = ..., live_user_info: _Optional[_Union[live_user_info, _Mapping]] = ..., title: _Optional[_Union[title, _Mapping]] = ..., unknown_userinfo_14: _Optional[_Iterable[bytes]] = ..., unknown_userinfo_15: _Optional[_Iterable[bytes]] = ..., unknown_userinfo_16: _Optional[_Iterable[bytes]] = ...) -> None: ...
 
 class fan_medal(_message.Message):
     __slots__ = ["medal_level", "medal_name", "unknown_fan_medal_03", "color1", "unknown_fan_medal_05", "medal_color_start", "color3", "medal_color_end", "anchor_guard_level", "isLighted", "unknown_fan_medal_11", "unknown_fan_medal_12", "unknown_fan_medal_13", "unknown_fan_medal_14", "unknown_fan_medal_15", "unknown_fan_medal_16"]
@@ -323,30 +323,30 @@ class fan_medal(_message.Message):
     unknown_fan_medal_16: _containers.RepeatedScalarFieldContainer[bytes]
     def __init__(self, medal_level: _Optional[int] = ..., medal_name: _Optional[str] = ..., unknown_fan_medal_03: _Optional[_Iterable[bytes]] = ..., color1: _Optional[int] = ..., unknown_fan_medal_05: _Optional[_Iterable[bytes]] = ..., medal_color_start: _Optional[int] = ..., color3: _Optional[int] = ..., medal_color_end: _Optional[int] = ..., anchor_guard_level: _Optional[int] = ..., isLighted: _Optional[int] = ..., unknown_fan_medal_11: _Optional[_Iterable[bytes]] = ..., unknown_fan_medal_12: _Optional[_Iterable[bytes]] = ..., unknown_fan_medal_13: _Optional[_Iterable[bytes]] = ..., unknown_fan_medal_14: _Optional[_Iterable[bytes]] = ..., unknown_fan_medal_15: _Optional[_Iterable[bytes]] = ..., unknown_fan_medal_16: _Optional[_Iterable[bytes]] = ...) -> None: ...
 
-class live_user_lnfo(_message.Message):
-    __slots__ = ["User_Level", "UL_color", "live_rank", "unknown_live_user_lnfo_04", "unknown_live_user_lnfo_05", "unknown_live_user_lnfo_06", "unknown_live_user_lnfo_07", "unknown_live_user_lnfo_08"]
+class live_user_info(_message.Message):
+    __slots__ = ["User_Level", "UL_color", "live_rank", "unknown_live_user_info_04", "unknown_live_user_info_05", "unknown_live_user_info_06", "unknown_live_user_info_07", "unknown_live_user_info_08"]
     USER_LEVEL_FIELD_NUMBER: _ClassVar[int]
     UL_COLOR_FIELD_NUMBER: _ClassVar[int]
     LIVE_RANK_FIELD_NUMBER: _ClassVar[int]
-    UNKNOWN_LIVE_USER_LNFO_04_FIELD_NUMBER: _ClassVar[int]
-    UNKNOWN_LIVE_USER_LNFO_05_FIELD_NUMBER: _ClassVar[int]
-    UNKNOWN_LIVE_USER_LNFO_06_FIELD_NUMBER: _ClassVar[int]
-    UNKNOWN_LIVE_USER_LNFO_07_FIELD_NUMBER: _ClassVar[int]
-    UNKNOWN_LIVE_USER_LNFO_08_FIELD_NUMBER: _ClassVar[int]
+    UNKNOWN_LIVE_USER_INFO_04_FIELD_NUMBER: _ClassVar[int]
+    UNKNOWN_LIVE_USER_INFO_05_FIELD_NUMBER: _ClassVar[int]
+    UNKNOWN_LIVE_USER_INFO_06_FIELD_NUMBER: _ClassVar[int]
+    UNKNOWN_LIVE_USER_INFO_07_FIELD_NUMBER: _ClassVar[int]
+    UNKNOWN_LIVE_USER_INFO_08_FIELD_NUMBER: _ClassVar[int]
     User_Level: int
     UL_color: int
     live_rank: str
-    unknown_live_user_lnfo_04: _containers.RepeatedScalarFieldContainer[bytes]
-    unknown_live_user_lnfo_05: _containers.RepeatedScalarFieldContainer[bytes]
-    unknown_live_user_lnfo_06: _containers.RepeatedScalarFieldContainer[bytes]
-    unknown_live_user_lnfo_07: _containers.RepeatedScalarFieldContainer[bytes]
-    unknown_live_user_lnfo_08: _containers.RepeatedScalarFieldContainer[bytes]
-    def __init__(self, User_Level: _Optional[int] = ..., UL_color: _Optional[int] = ..., live_rank: _Optional[str] = ..., unknown_live_user_lnfo_04: _Optional[_Iterable[bytes]] = ..., unknown_live_user_lnfo_05: _Optional[_Iterable[bytes]] = ..., unknown_live_user_lnfo_06: _Optional[_Iterable[bytes]] = ..., unknown_live_user_lnfo_07: _Optional[_Iterable[bytes]] = ..., unknown_live_user_lnfo_08: _Optional[_Iterable[bytes]] = ...) -> None: ...
+    unknown_live_user_info_04: _containers.RepeatedScalarFieldContainer[bytes]
+    unknown_live_user_info_05: _containers.RepeatedScalarFieldContainer[bytes]
+    unknown_live_user_info_06: _containers.RepeatedScalarFieldContainer[bytes]
+    unknown_live_user_info_07: _containers.RepeatedScalarFieldContainer[bytes]
+    unknown_live_user_info_08: _containers.RepeatedScalarFieldContainer[bytes]
+    def __init__(self, User_Level: _Optional[int] = ..., UL_color: _Optional[int] = ..., live_rank: _Optional[str] = ..., unknown_live_user_info_04: _Optional[_Iterable[bytes]] = ..., unknown_live_user_info_05: _Optional[_Iterable[bytes]] = ..., unknown_live_user_info_06: _Optional[_Iterable[bytes]] = ..., unknown_live_user_info_07: _Optional[_Iterable[bytes]] = ..., unknown_live_user_info_08: _Optional[_Iterable[bytes]] = ...) -> None: ...
 
 class title(_message.Message):
-    __slots__ = ["title1", "title", "unknown_title_03", "unknown_title_04", "unknown_title_05", "unknown_title_06", "unknown_title_07", "unknown_title_08"]
+    __slots__ = ["title1", "title2", "unknown_title_03", "unknown_title_04", "unknown_title_05", "unknown_title_06", "unknown_title_07", "unknown_title_08"]
     TITLE1_FIELD_NUMBER: _ClassVar[int]
-    TITLE_FIELD_NUMBER: _ClassVar[int]
+    TITLE2_FIELD_NUMBER: _ClassVar[int]
     UNKNOWN_TITLE_03_FIELD_NUMBER: _ClassVar[int]
     UNKNOWN_TITLE_04_FIELD_NUMBER: _ClassVar[int]
     UNKNOWN_TITLE_05_FIELD_NUMBER: _ClassVar[int]
@@ -354,14 +354,14 @@ class title(_message.Message):
     UNKNOWN_TITLE_07_FIELD_NUMBER: _ClassVar[int]
     UNKNOWN_TITLE_08_FIELD_NUMBER: _ClassVar[int]
     title1: str
-    title: str
+    title2: str
     unknown_title_03: _containers.RepeatedScalarFieldContainer[bytes]
     unknown_title_04: _containers.RepeatedScalarFieldContainer[bytes]
     unknown_title_05: _containers.RepeatedScalarFieldContainer[bytes]
     unknown_title_06: _containers.RepeatedScalarFieldContainer[bytes]
     unknown_title_07: _containers.RepeatedScalarFieldContainer[bytes]
     unknown_title_08: _containers.RepeatedScalarFieldContainer[bytes]
-    def __init__(self, title1: _Optional[str] = ..., title: _Optional[str] = ..., unknown_title_03: _Optional[_Iterable[bytes]] = ..., unknown_title_04: _Optional[_Iterable[bytes]] = ..., unknown_title_05: _Optional[_Iterable[bytes]] = ..., unknown_title_06: _Optional[_Iterable[bytes]] = ..., unknown_title_07: _Optional[_Iterable[bytes]] = ..., unknown_title_08: _Optional[_Iterable[bytes]] = ...) -> None: ...
+    def __init__(self, title1: _Optional[str] = ..., title2: _Optional[str] = ..., unknown_title_03: _Optional[_Iterable[bytes]] = ..., unknown_title_04: _Optional[_Iterable[bytes]] = ..., unknown_title_05: _Optional[_Iterable[bytes]] = ..., unknown_title_06: _Optional[_Iterable[bytes]] = ..., unknown_title_07: _Optional[_Iterable[bytes]] = ..., unknown_title_08: _Optional[_Iterable[bytes]] = ...) -> None: ...
 
 class fan_medal_ext(_message.Message):
     __slots__ = ["anchorId", "anchorUsername", "roomid", "unknown_fan_medal_ext_04", "unknown_fan_medal_ext_05", "unknown_fan_medal_ext_06", "unknown_fan_medal_ext_07", "unknown_fan_medal_ext_08"]
