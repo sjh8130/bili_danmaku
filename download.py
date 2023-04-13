@@ -168,7 +168,7 @@ def XML_Special_Process(Proto_data) -> str:
 	for this in Proto_data:
 		Ex_Extra_Data = ""
 		if P_flag[4]: Ex_Extra_Data = f"<!-- SPECIAL: {this.command}{this.extra} -->"
-		out1 += f"\t<d p=\"{format(this.progress/1000, '.5f')},1,25,16777215,{int(time.mktime(time.strptime(this.ctime, '%Y-%m-%d %H:%M:%S')))},999,{hex(crc32(str(this.mid).encode()) ^ 0xFFFFFFFF).lstrip('0x').lstrip('0')},{this.id},11\">{this.content}</d>{Ex_Extra_Data}\n"
+		out1 += f"\t<d p=\"{format(this.progress/1000, '.5f')},1,25,16777215,{int(time.mktime(time.strptime(this.ctime, '%Y-%m-%d %H:%M:%S')))},999,{hex(crc32(str(this.mid).encode()) ^ 0xFFFFFFFF)[2:].lstrip('0')},{this.id},11\">{this.content}</d>{Ex_Extra_Data}\n"
 	return out1
 
 
@@ -400,15 +400,15 @@ if __name__ == '__main__':
 		vids = json.loads(vids)
 	except:
 		vids = vids.split(",")
-	
+
 	for vid in vids:
 		vid = str(vid)
-		P_flag[2] = False  # X
-		P_flag[12] = False  # X
-		P_flag[13] = False  # X
-		P_flag[14] = False  # X
-		P_flag[15] = False  # X
-		P_flag[16] = False  # X
+		P_flag[2] = False	# X
+		P_flag[12] = False	# X
+		P_flag[13] = False	# X
+		P_flag[14] = False	# X
+		P_flag[15] = False	# X
+		P_flag[16] = False	# X
 		if vid.find("https://www.bilibili.com/video/") == 0: vid = vid.lstrip("https://www.bilibili.com/video/")
 		if vid.find("http://www.bilibili.com/video/") == 0: vid = vid.lstrip("http://www.bilibili.com/video/")
 		if vid.find("https://b23.tv/BV1") == 0 or vid.find("https://b23.tv/av") == 0: vid = vid.lstrip("https://b23.tv/")

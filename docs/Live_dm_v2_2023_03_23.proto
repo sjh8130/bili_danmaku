@@ -10,17 +10,17 @@ message dm_V2 {
     repeated bytes unknown_08  =  8; // 
              int64 dmid        =  9; // [0][5]
     repeated bytes unknown_10  = 10; // 
-            uint32 type        = 11; // [0][9]
-       chat_bubble chat_bubble = 12; // [0][11]
+            uint32 type        = 11; // [0][9] 
+       chat_bubble chat_bubble = 12; // [0][11] chat bubble
     repeated bytes unknown_13  = 13; // 
-    repeated emots emots       = 14; // [0][15]表情 repeated
+    repeated emots emots       = 14; // 表情 [0][15] repeated
     repeated bytes unknown_15  = 15; // 
     repeated bytes unknown_16  = 16; // 
-           lottery lottery     = 17; // 
+           lottery lottery     = 17; // 抽奖 [0][16]
     repeated bytes unknown_18  = 18; // 
         validation validation  = 19; // [9]
-          userinfo userinfo    = 20; // [2]用户主站信息
-     fan_medal_ext fan_medal_ext=21; // [3]粉丝牌
+          userinfo userinfo    = 20; // 用户主站信息 [2]
+     fan_medal_ext fan_medal_ext=21; // 粉丝牌 [3]
     repeated bytes unknown_22  = 22; // 
     repeated bytes unknown_23  = 23; // 
     repeated bytes unknown_24  = 24; // 
@@ -68,12 +68,12 @@ message dm_V2 {
 message chat_bubble{//12
     uint32 chat_bubble_type  = 1;               // [0][10]
     string chat_bubble_color = 2;               // [0][11]
-    repeated bytes unknown_chat_bubble_03 = 3;
-    repeated bytes unknown_chat_bubble_04 = 4;
-    repeated bytes unknown_chat_bubble_05 = 5;
-    repeated bytes unknown_chat_bubble_06 = 6;
-    repeated bytes unknown_chat_bubble_07 = 7;
-    repeated bytes unknown_chat_bubble_08 = 8;
+    // repeated bytes unknown_chat_bubble_03 = 3;
+    // repeated bytes unknown_chat_bubble_04 = 4;
+    // repeated bytes unknown_chat_bubble_05 = 5;
+    // repeated bytes unknown_chat_bubble_06 = 6;
+    // repeated bytes unknown_chat_bubble_07 = 7;
+    // repeated bytes unknown_chat_bubble_08 = 8;
 }
 message emots{//14
     string desc = 1;                            // 
@@ -90,9 +90,9 @@ message emots_detail{//14-2
     string emots_url = 2;                       // [0][13]/[0][15].extra.emots
     uint32 is_dynamic = 3;                      // [0][13]/[0][15].extra.emots
     uint32 in_player_area = 4;                  // [0][13]/[0][15].extra.emots
-    repeated bytes unknown_emots_detail_0005 = 5;
-    uint32 height = 6;                           // [0][13]/[0][15].extra.emots
-    uint32 width = 7;                            // [0][13]/[0][15].extra.emots
+    uint32 bulge_display = 5;                   // [0][13]/[0][15].extra.emots
+    uint32 height = 6;                          // [0][13]/[0][15].extra.emots
+    uint32 width = 7;                           // [0][13]/[0][15].extra.emots
     repeated bytes unknown_emots_detail_08 =  8;
     repeated bytes unknown_emots_detail_09 =  9;
     repeated bytes unknown_emots_detail_10 = 10;
@@ -116,27 +116,28 @@ message lottery{//17
 message validation{//19
     string ct = 1;
     uint32 ts = 2;
-    repeated bytes unknown_validation_03 =  3;
-    repeated bytes unknown_validation_04 =  4;
-    repeated bytes unknown_validation_05 =  5;
-    repeated bytes unknown_validation_06 =  6;
-    repeated bytes unknown_validation_07 =  7;
-    repeated bytes unknown_validation_08 =  8;
+    // repeated bytes unknown_validation_03 =  3;
+    // repeated bytes unknown_validation_04 =  4;
+    // repeated bytes unknown_validation_05 =  5;
+    // repeated bytes unknown_validation_06 =  6;
+    // repeated bytes unknown_validation_07 =  7;
+    // repeated bytes unknown_validation_08 =  8;
 }
 message userinfo{//20
     uint64 uid = 1;                             // [2][0]用户uid
     string name = 2;                            // [2][1]用户名
-    string usernameColor = 3;                   // [2][7]
-    string avatar_url = 4;                      // 用户头像URL
+    string username_color = 3;                  // [2][7]
+    string face = 4;                            // 用户头像URL
     repeated bytes unknown_userinfo_05 = 5;     // 
     repeated bytes unknown_userinfo_06 = 6;     // 
     uint32 rank = 7;                            // [2][5]实名验证？手机号验证？
-    repeated bytes unknown_userinfo_08 = 8;     // 
+    uint32 unknown_userinfo_08 = 8;             // 始终为1？
     repeated bytes unknown_userinfo_09 = 9;     // 
+    uint32 is_admin = 10;                       // 房管 [2][2]
     fan_medal fan_medal = 11;                   // [3] 粉丝牌
     live_user_info live_user_info = 12;         // [4] 用户直播区信息
     title title = 13;                           // [5] 头衔
-    repeated bytes unknown_userinfo_14 = 14;    // 
+    repeated bytes unknown_userinfo_14 = 14;    // ？string
     repeated bytes unknown_userinfo_15 = 15;    // 
     repeated bytes unknown_userinfo_16 = 16;    // 
 }
@@ -144,13 +145,13 @@ message fan_medal{//20-11
     uint32 medal_level = 1;                     // [3][0] 粉丝牌等级
     string medal_name = 2;                      // [3][1] 粉丝团称号
     repeated bytes unknown_fan_medal_03 = 3;    // 
-    uint32 color1 = 4;                          // [3][4]or[3][7]
+    uint32 medal_color = 4;                     // [3][4]or[3][7]
     repeated bytes unknown_fan_medal_05 = 5;    // 
     uint32 medal_color_start = 6;               // [3][8]
-    uint32 color3 = 7;                          // [3][4]or[3][7]
+    uint32 medal_color_border = 7;              // [3][4]or[3][7]
     uint32 medal_color_end = 8;                 // [3][9]
     uint32 anchor_guard_level = 9;              // [3][10] 粉丝牌舰长等级
-    uint32 isLighted = 10;                      // [3][11]
+    uint32 is_lighted = 10;                     // [3][11]?
     repeated bytes unknown_fan_medal_11 = 11;
     repeated bytes unknown_fan_medal_12 = 12;
     repeated bytes unknown_fan_medal_13 = 13;
@@ -179,8 +180,8 @@ message title{//20-13
     repeated bytes unknown_title_08 =  8;
 }
 message fan_medal_ext{//21
-    uint64 anchorId = 1;                        // [3][12]
-    string anchorUsername = 2;                  // [3][2]
+    uint64 anchor_id = 1;                       // [3][12]
+    string anchor_username = 2;                 // [3][2]
     uint32 roomid = 3;                          // 
     repeated bytes unknown_fan_medal_ext_04 = 4;
     repeated bytes unknown_fan_medal_ext_05 = 5;

@@ -5,7 +5,7 @@ import sys
 
 """
 修视频？
-使用ffmpeg的hash来修复视频文件
+使用ffmpeg计算的hash来修复视频文件
 for %a in (*.flv) do ffmpeg -v warning -hide_banner -i "%~na.flv" -c copy "%~na.aac" -c copy "%~na.264"
 
 for %a in (*.flv) do ffmpeg -v warning -hide_banner -i "%~na.flv" -vn -c copy "%~na.aac"
