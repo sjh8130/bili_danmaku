@@ -354,7 +354,7 @@
 | [link](#SHOPPING_CART_SHOW)					| SHOPPING_CART_SHOW					| ？购物车 |
 | [link](#SPECIAL_GIFT)							| SPECIAL_GIFT							| 特殊礼物 |
 | [link](#STARLIVE_PK_MSG)						| STARLIVE_PK_MSG						| |
-| [link](#STOP_LIVE_ROOM_LIST)					| STOP_LIVE_ROOM_LIST					| |
+| [link](#STOP_LIVE_ROOM_LIST)					| STOP_LIVE_ROOM_LIST					| @ |
 | [link](#SUPER_CHAT_AUDIT)						| SUPER_CHAT_AUDIT						| |
 | [link](#SUPER_CHAT_ENTRANCE)					| SUPER_CHAT_ENTRANCE					| SuperChat@ |
 | [link](#SUPER_CHAT_MESSAGE)					| SUPER_CHAT_MESSAGE					| SuperChat |
@@ -376,7 +376,7 @@
 | [link](#VIDEO_CONNECTION_MSG)					| VIDEO_CONNECTION_MSG					| |
 | [link](#VOICE_JOIN_STATUS)					| VOICE_JOIN_STATUS						| 语音@ |
 | [link](#VTR_GIFT_LOTTERY)						| VTR_GIFT_LOTTERY						| |
-| [link](#WARNING)								| WARNING								| |
+| [link](#WARNING)								| WARNING								| 警告 |
 | [link](#WATCH_LPL_EXPIRED)					| WATCH_LPL_EXPIRED						| |
 | [link](#WATCHED_CHANGE)						| WATCHED_CHANGE						| 观看人数 |
 | [link](#WEB_REPORT_CONTROL)					| WEB_REPORT_CONTROL					| |
@@ -398,6 +398,8 @@
 "图片内容不适宜，请立即调整"
 "禁止在直播间内展示平台外的评论、弹幕内容，请立即调整"
 "违反直播分区规范，请立即更换至游戏区"
+"禁止直播违禁游戏，请立即更换"
+"直播中涉及低俗内容"
 ```
 
 ### LIVE
@@ -672,7 +674,7 @@ Link = 6
 ```json
 1678629815790402{"cmd":"WATCHED_CHANGE","data":{"num":       0,"text_small":       "0","text_large":       "0人看过"}}
 1680359646610910{"cmd":"WATCHED_CHANGE","data":{"num":    9999,"text_small":    "9999","text_large":    "9999人看过"}}
-1680621619250262{"cmd":"WATCHED_CHANGE","data":{"num":   10032,"text_small":   "1.0万","text_large":   "1.0万人看过"}}
+1681999812840693{"cmd":"WATCHED_CHANGE","data":{"num":   10001,"text_small":   "1.0万","text_large":   "1.0万人看过"}}
 1680378491137492{"cmd":"WATCHED_CHANGE","data":{"num":61382191,"text_small":"6138.2万","text_large":"6138.2万人看过"}}
 ```
 
@@ -1305,16 +1307,16 @@ SC 删除
 		"award_num": 1,
 		"award_type": 0,
 		"award_users": [
-			{"uid":1,"uname":"A","face":"https://i0.hdslb.com/bfs/face/XXX.jpg","level": 11,"color": 6406234,"num":1},
-			{"uid":2,"uname":"B","face":"http://i0.hdslb.com/bfs/baselabs/XXX.png","level": 21,"color": 5805790,"num":1},
-			{"uid":3,"uname":"C","face":"https://i2.hdslb.com/bfs/face/XXX.jpg","level": 11,"color": 6406234,"num":1},
-			{"uid":4,"uname":"D","face":"https://i0.hdslb.com/bfs/face/XXX.jpg","level": 15,"color": 6406234,"num":1},
-			{"uid":5,"uname":"E","face":"https://i1.hdslb.com/bfs/face/XXX.jpg","level": 12,"color": 6406234,"num":1},
-			{"uid":6,"uname":"F","face":"https://i2.hdslb.com/bfs/face/XXX.jpg","level": 9,"color": 9868950,"num":1},
-			{"uid":7,"uname":"G","face":"https://i1.hdslb.com/bfs/face/XXX.jpg","level": 24,"color": 5805790,"num":1},
-			{"uid":8,"uname":"H","face":"https://i0.hdslb.com/bfs/face/member/noface.jpg","level": 0,"color": 9868950,"num":1},
-			{"uid":9,"uname":"I","face":"http://i0.hdslb.com/bfs/face/XXX.jpg","level": 21,"color": 5805790,"num":1},
-			{"uid":0,"uname":"J","face":"https://i2.hdslb.com/bfs/face/XXX.jpg","level": 10,"color": 9868950,"num":1}
+			{"uid":1,"uname":"A","face":"https://i0.hdslb.com/bfs/face/XXX.jpg",          "level":11,"color":6406234,"num":1},
+			{"uid":2,"uname":"B","face":"http://i0.hdslb.com/bfs/baselabs/XXX.png",       "level":21,"color":5805790,"num":1},
+			{"uid":3,"uname":"C","face":"https://i2.hdslb.com/bfs/face/XXX.jpg",          "level":11,"color":6406234,"num":1},
+			{"uid":4,"uname":"D","face":"https://i0.hdslb.com/bfs/face/XXX.jpg",          "level":15,"color":6406234,"num":1},
+			{"uid":5,"uname":"E","face":"https://i1.hdslb.com/bfs/face/XXX.jpg",          "level":12,"color":6406234,"num":1},
+			{"uid":6,"uname":"F","face":"https://i2.hdslb.com/bfs/face/XXX.jpg",          "level": 9,"color":9868950,"num":1},
+			{"uid":7,"uname":"G","face":"https://i1.hdslb.com/bfs/face/XXX.jpg",          "level":24,"color":5805790,"num":1},
+			{"uid":8,"uname":"H","face":"https://i0.hdslb.com/bfs/face/member/noface.jpg","level": 0,"color":9868950,"num":1},
+			{"uid":9,"uname":"I","face":"http://i0.hdslb.com/bfs/face/XXX.jpg",           "level":21,"color":5805790,"num":1},
+			{"uid":10,"uname":"J","face":"https://i2.hdslb.com/bfs/face/XXX.jpg",         "level":10,"color":9868950,"num":1}
 		],
 		"id": 12345,
 		"lot_status": 2,
@@ -1714,7 +1716,7 @@ PK{"cmd":"COMMON_NOTICE_DANMAKU","data":{"content_segments":[{"font_color":"#FB7
 | name_color	| str	| 舰长:"#00D1F1" |
 | medal_info	| obj	| [medal_info](#粉丝牌信息medal_info) |
 ```json
-1678201324.029{"cmd":"POPULARITY_RED_POCKET_NEW","data":{"lot_id":123,"start_time":1678201324,"current_time":1678201324,"wait_num":0,"uname":"直播小电视","uid":1407831746,"action":"送出","num":1,"gift_name":"红包","gift_id":13000,"price":950,"name_color":"","medal_info":{"target_id":0,"special":"","icon_id":0,"anchor_uname":"","anchor_roomid":0,"medal_level":0,"medal_name":"","medal_color":0,"medal_color_start":0,"medal_color_end":0,"medal_color_border":0,"is_lighted":0,"guard_level":0}}}
+1678201324029000{"cmd":"POPULARITY_RED_POCKET_NEW","data":{"lot_id":123,"start_time":1678201324,"current_time":1678201324,"wait_num":0,"uname":"直播小电视","uid":1407831746,"action":"送出","num":1,"gift_name":"红包","gift_id":13000,"price":950,"name_color":"","medal_info":{"target_id":0,"special":"","icon_id":0,"anchor_uname":"","anchor_roomid":0,"medal_level":0,"medal_name":"","medal_color":0,"medal_color_start":0,"medal_color_end":0,"medal_color_border":0,"is_lighted":0,"guard_level":0}}}
 ```
 
 ### POPULARITY_RED_POCKET_START
@@ -1855,7 +1857,7 @@ PK{"cmd":"COMMON_NOTICE_DANMAKU","data":{"content_segments":[{"font_color":"#FB7
 |-|-|-|
 | cmd		| str	| "ROOM_BLOCK_MSG" |
 | data		| obj	| |
-| uid		| str	| |
+| uid		| str	| str uid |
 | uname		| str	| |
 #### ROOM_BLOCK_MSG__data
 | key		| type	| value |
@@ -2330,7 +2332,7 @@ with `DANMU_MSG`
 |-|-|-|
 | status	| num	| 0 |
 ```json
-1674560418.853{"cmd":"RING_STATUS_CHANGE","data":{"status":0}}
+1674560418853000{"cmd":"RING_STATUS_CHANGE","data":{"status":0}}
 ```
 
 ### RING_STATUS_CHANGE_V2
@@ -2747,6 +2749,60 @@ with `DANMU_MSG`
 1680367774.344{"cmd":"LIVE_OPEN_PLATFORM_GAME","data":{"msg_type":"panel_reset", "msg_sub_type":"panel_reset", "game_name":"XXXX","game_code":"16502xxxxxxxx","game_id":"XXXXXXXX-XXXX-4XXX-XXXX-XXXXXXXXXXXX","game_status":"","game_msg":"","game_conf":"","interactive_panel_conf":"","timestamp":1680367773,"block_uids":null}}
 1680368696.086{"cmd":"LIVE_OPEN_PLATFORM_GAME","data":{"msg_type":"panel_reset", "msg_sub_type":"panel_reset", "game_name":"XXXX","game_code":"16502xxxxxxxx","game_id":"XXXXXXXX-XXXX-4XXX-XXXX-XXXXXXXXXXXX","game_status":"","game_msg":"","game_conf":"","interactive_panel_conf":"","timestamp":1680368695,"block_uids":null}}
 1680372165.896{"cmd":"LIVE_OPEN_PLATFORM_GAME","data":{"msg_type":"game_end",    "msg_sub_type":"game_end",    "game_name":"XXXX","game_code":"16502xxxxxxxx","game_id":"XXXXXXXX-XXXX-4XXX-XXXX-XXXXXXXXXXXX","game_status":"","game_msg":"","game_conf":"","interactive_panel_conf":"","timestamp":1680372164,"block_uids":[]}}
+```
+
+### room_admin_entrance
+[TOP](#直播弹幕格式)  
+设置房管  **小写**  
+| key	| type	| value |
+|-|-|-|
+| cmd		| str	| "room_admin_entrance" |
+| dmscore	| obj	| 45 |
+| level		| obj	| 1 |
+| msg		| obj	| "系统提示：你已被主播设为房管" |
+| uid		| obj	| uid |
+```json
+{"cmd":"room_admin_entrance","dmscore":45,"level":1,"msg":"系统提示：你已被主播设为房管","uid":xxxx}
+```
+
+### ROOM_ADMINS
+[TOP](#直播弹幕格式)  
+全部房管 FIFO  
+| key	| type	| value |
+|-|-|-|
+| cmd	| str	| "ROOM_ADMINS" |
+| uids	| []num	| |
+```json
+{"cmd":"ROOM_ADMINS","uids":[1,2]}
+```
+
+### ROOM_ADMIN_REVOKE
+[TOP](#直播弹幕格式)  
+移除房管
+| key	| type	| value |
+|-|-|-|
+| cmd	| str	| "ROOM_ADMIN_REVOKE" |
+| msg	| str	| "撤销房管" |
+| uid	| num	| |
+```json
+{"cmd":"ROOM_ADMIN_REVOKE","msg":"撤销房管","uid":xxxx}
+```
+
+### MVROLECHANGE
+[TOP](#直播弹幕格式)  
+| key			| type	| value |
+|-|-|-|
+| cmd			| str	| "MVROLECHANGE" |
+| data			| obj	| |
+#### MVROLECHANGE__data
+| key			| type	| value |
+|-|-|-|
+| change_uid	| num	| uid |
+| role			| num	| |
+| room_id		| num	| 直播间id |
+| ts			| num	| 当前时间TimeStamp(秒) 向上取整 |
+```json
+{"cmd":"MVROLECHANGE","data":{"change_uid":xxx,"role":0,"room_id":12345,"ts":1681995001}}
 ```
 
 ### XXXXXXXXXXX
