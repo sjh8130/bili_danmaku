@@ -10,7 +10,10 @@ requests.packages.urllib3.disable_warnings()
 
 if "#" in sys.argv[1]:
 	user = sys.argv[1].split("#")[0]
-	movie_id = sys.argv[1].split("#")[1]
+	movie_id = sys.argv[1].split("#")[1].split("_")[0]
+elif "twitcasting.tv" in sys.argv[1]:	# movie URL
+	user = sys.argv[1].split("/")[3]
+	movie_id = sys.argv[1].split("/")[5]
 else:
 	user = sys.argv[1]
 	movie_id = sys.argv[2]
@@ -29,19 +32,19 @@ headers = {
 	'User-Agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36 Edg/109.0.1518.52"
 }
 
-
-def downloader(page, retry_times=0):
+session = requests.Session()
+def downloader(page, retries=0):
 	url = f"https://{TWITCASTING_URL}/{user}/moviecomment/{movie_id}-{page}"
-	print(url, retry_times)
+	print(url, retries)
 	try:
-		content = requests.get(url=url, headers=headers, verify=False, timeout=30).content
+		time.sleep(0.5)
+		content = session.request(method='GET', url=url, headers=headers, verify=False, timeout=30).content
 	except KeyboardInterrupt:
 		print("BREAK")
 		return "BREAK"
 	except:
-		content = downloader(page, retry_times+1)
+		content = downloader(page, retries+1)
 	return content
-
 
 out = {"comment": [], "info": {"user": user, "movie_id": int(movie_id), "title": ""}}
 page = 0
@@ -65,5 +68,5 @@ while (page <= int(pages)):
 			"user_img": ("https:"+i.select(".tw-comment-history-item__user__icon")[0].attrs['src']).replace("https:https://", "https://")
 		})
 	page += 1
-
-open(f"twitcasting_{user}_{movie_id}.json", "w", encoding="utf-8").write(json.dumps(out, ensure_ascii=False, separators=(",", ":"), indent="\t"))
+session.close()
+open(f"twitcasting_{user}_{movie_id}.json", "w", encoding="utf-8").write(json.dumps(out, ensure_ascii=False, separators=(",", ":"), indent="\t").replace("\n\t\t\t","").replace("\n\t\t}","}"))

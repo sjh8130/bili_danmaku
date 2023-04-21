@@ -31,8 +31,9 @@ NET_count = [0, 0]
 err_sign = ""
 P_flag = []
 for _ in range(64): P_flag.append(False)
-RETRY_TIMES = 2
+RETRIES = 2
 RETRY_SIZE = 2048
+session = requests.Session()
 
 
 def Program_FLAG(flag: str) -> None:
@@ -84,7 +85,7 @@ def Downloader(url_DL: str, filename: str, headers: dict = headers) -> bytes:
 		time.sleep(SLEEP_TIME)
 		while True:
 			try:
-				DL_Data = requests.get(url_DL, headers=headers, verify=False, timeout=10)
+				DL_Data = session.request(method='GET', url=url_DL, headers=headers, verify=False, timeout=10)
 			except TimeoutError:
 				logging.warning("[Downloader] TimeoutError " + url_DL)
 				continue
@@ -106,11 +107,11 @@ def Downloader(url_DL: str, filename: str, headers: dict = headers) -> bytes:
 		return DL_Data.content
 
 
-def get_Danmaku(cid: str, Segment_Index: str, retry: str = "") -> bytes:
+def get_Danmaku(cid: str, Segment_Index: str, retries: str = "") -> bytes:
 	"""
 	获取弹幕
 	"""
-	logging.debug(f"{bvid}: [Danmaku] [{cid}] {Segment_Index} {retry}")
+	logging.debug(f"{bvid}: [Danmaku] [{cid}] {Segment_Index} {retries}")
 	tempString = ""
 	# if Segment_Index == "1":tempString = "&pull_mode=1&ps=120000&pe=360000"
 	# else:tempString = ""
@@ -124,9 +125,9 @@ def get_Danmaku(cid: str, Segment_Index: str, retry: str = "") -> bytes:
 		'referer': f"https://www.bilibili.com/video/{bvid}/",
 		'Accept-Encoding': "gzip, deflate, br",
 	}
-	File_Content = Downloader(f"https://api.bilibili.com/x/v2/dm/web/seg.so?type=1&oid={cid}&pid={avid_in}&segment_index={Segment_Index}{tempString}", f"[{bvid}]_[{cid}]_[Danmaku]_[{Segment_Index+retry}].bin", headers=headers)
+	File_Content = Downloader(f"https://api.bilibili.com/x/v2/dm/web/seg.so?type=1&oid={cid}&pid={avid_in}&segment_index={Segment_Index}{tempString}", f"[{bvid}]_[{cid}]_[Danmaku]_[{Segment_Index+retries}].bin", headers=headers)
 	if P_flag[12] and P_flag[1]: return b""
-	dump_Data(f"[{bvid}]_[{cid}]_[Danmaku]_[{Segment_Index+retry}].bin", File_Content)
+	dump_Data(f"[{bvid}]_[{cid}]_[Danmaku]_[{Segment_Index+retries}].bin", File_Content)
 	return File_Content
 
 
@@ -273,15 +274,15 @@ def main_Func():
 			except json.decoder.JSONDecodeError: Danmaku_Binary = b""
 			# 重试
 			if len(Danmaku_Binary) < RETRY_SIZE and (not P_flag[8]):
-				temp_filelen = len(Danmaku_Binary)
+				temp_file_len = len(Danmaku_Binary)
 				retry_file = []
-				for retry_i in range(RETRY_TIMES):
+				for retry_i in range(RETRIES):
 					if len(Danmaku_Binary) == 0: break
-					try: retry_file.append(get_Danmaku(cid, str(segments+1), retry=f"_R{retry_i+1}"))
+					try: retry_file.append(get_Danmaku(cid, str(segments+1), retries=f"_R{retry_i+1}"))
 					except json.decoder.JSONDecodeError: retry_file.append(b"")
-					if len(retry_file[retry_i]) > temp_filelen:
+					if len(retry_file[retry_i]) > temp_file_len:
 						Danmaku_Binary = retry_file[retry_i]
-						del retry_file, temp_filelen
+						del retry_file, temp_file_len
 						break
 			Danmaku_Final_Binary += Danmaku_Binary
 			if (not P_flag[6]):
@@ -430,4 +431,5 @@ if __name__ == '__main__':
 		logging.info(f"{bvid}|{avid}")
 
 		main_Func()
+	session.close()
 	logging.info("Exit")
