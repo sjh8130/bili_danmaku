@@ -139,11 +139,11 @@ def get_Special_Danmaku(input: dm_pb2.DmWebViewReply) -> bytes:
 	BAS_danmaku = b""
 	i_for_BAS = 1
 	for URL_special_dms in input.special_dms:
-		BAS_Data = Downloader(URL_special_dms, f"[{bvid}]_[{cid}]_[BAS]_[{ URL_special_dms[27:67]}].bin")
+		BAS_Data = Downloader(URL_special_dms, f"[{bvid}]_[{cid}]_[BAS]_[{URL_special_dms[27:67]}].bin")
 		logging.debug(f"[BAS_DL]: Download {i_for_BAS}")
 		if P_flag[12] and P_flag[1]: break
 		BAS_danmaku += BAS_Data
-		dump_Data(f"[{bvid}]_[{cid}]_[BAS]_[{ URL_special_dms[27:67]}].bin", BAS_Data)
+		dump_Data(f"[{bvid}]_[{cid}]_[BAS]_[{URL_special_dms[27:67]}].bin", BAS_Data)
 		i_for_BAS += 1
 	return BAS_danmaku
 
