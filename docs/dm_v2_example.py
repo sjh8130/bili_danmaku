@@ -47,6 +47,8 @@ with open(infile, "r", 1048576, encoding="utf-8") as file, open(outfile, "w", en
 			del temp_json2["midHash"]	# 5
 			del temp_json2["content"]	# 6
 			del temp_json2["ctime"]	# 7
+			try: del temp_json2["DmType"]	# 8
+			except: pass
 			try: del temp_json2["dmid"]	# 9
 			except: pass
 			# try: del temp_json2["type"]	# 11
@@ -74,3 +76,4 @@ with open(infile, "r", 1048576, encoding="utf-8") as file, open(outfile, "w", en
 	final_file.close()
 et = time.time()
 print(et-st)
+time.sleep(5)

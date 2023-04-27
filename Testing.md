@@ -259,7 +259,7 @@
 | [link](#GOTO_BUY_FLOW)						| GOTO_BUY_FLOW							| 移动端 购买* |
 | [link](#GIFT_PANEL_PLAN)						| GIFT_PANEL_PLAN						| |
 | [link](#GIFT_STAR_PROCESS)					| GIFT_STAR_PROCESS						| 礼物星球：进度|
-| [link](#GUARD_ACHIEVEMENT_ROOM)				| GUARD_ACHIEVEMENT_ROOM				| |
+| [link](#GUARD_ACHIEVEMENT_ROOM)				| GUARD_ACHIEVEMENT_ROOM				| 恭喜主播xxx舰队规模突破xxx |
 | [link](#GUARD_BENEFIT_RECEIVE)				| GUARD_BENEFIT_RECEIVE					| |
 | [link](#GUARD_BUY)							| GUARD_BUY								| 通知栏：舰长购买 |
 | [link](#GUARD_HONOR_THOUSAND)					| GUARD_HONOR_THOUSAND					| 千舰 |
@@ -299,12 +299,12 @@
 | [link](#PK_AGAIN)								| PK_AGAIN								| |
 | [link](#PK_BATTLE_CRIT)						| PK_BATTLE_CRIT						| |
 | [link](#PK_BATTLE_END)						| PK_BATTLE_END							| PK@ |
-| [link](#PK_BATTLE_FINAL_PROCESS)				| PK_BATTLE_FINAL_PROCESS				| |
+| [link](#PK_BATTLE_FINAL_PROCESS)				| PK_BATTLE_FINAL_PROCESS				| PK@ |
 | [link](#PK_BATTLE_GIFT)						| PK_BATTLE_GIFT						| |
-| [link](#PK_BATTLE_PRE_NEW)					| PK_BATTLE_PRE_NEW						| |
+| [link](#PK_BATTLE_PRE_NEW)					| PK_BATTLE_PRE_NEW						| PK@ |
 | [link](#PK_BATTLE_PRO_TYPE)					| PK_BATTLE_PRO_TYPE					| |
-| [link](#PK_BATTLE_PROCESS_NEW)				| PK_BATTLE_PROCESS_NEW					| |
-| [link](#PK_BATTLE_PUNISH_END)					| PK_BATTLE_PUNISH_END					| |
+| [link](#PK_BATTLE_PROCESS_NEW)				| PK_BATTLE_PROCESS_NEW					| PK@ |
+| [link](#PK_BATTLE_PUNISH_END)					| PK_BATTLE_PUNISH_END					| PK@  |
 | [link](#PK_BATTLE_RANK_CHANGE)				| PK_BATTLE_RANK_CHANGE					| |
 | [link](#PK_BATTLE_SETTLE_NEW)					| PK_BATTLE_SETTLE_NEW					| |
 | [link](#PK_BATTLE_SETTLE_V2)					| PK_BATTLE_SETTLE_V2					| |
@@ -321,16 +321,16 @@
 | [link](#PK_PROCESS)							| PK_PROCESS							| |
 | [link](#PK_SETTLE)							| PK_SETTLE								| |
 | [link](#PK_START)								| PK_START								| |
-| [link](#PLAY_TAG)								| PLAY_TAG								| 比赛：事件 |
+| [link](#PLAY_TAG)								| PLAY_TAG								| LOL 比赛：事件 |
 | [link](#PLAY_TOGETHER)						| PLAY_TOGETHER							| |
-| [link](#POPULAR_RANK_CHANGED)					| POPULAR_RANK_CHANGED					| |
+| [link](#POPULAR_RANK_CHANGED)					| POPULAR_RANK_CHANGED					| @ |
 | [link](#POPULARITY_RED_POCKET_NEW)			| POPULARITY_RED_POCKET_NEW				| 人气红包 |
 | [link](#POPULARITY_RED_POCKET_START)			| POPULARITY_RED_POCKET_START			| 人气红包 |
 | [link](#POPULARITY_RED_POCKET_WINNER_LIST)	| POPULARITY_RED_POCKET_WINNER_LIST		| 人气红包 |
 | [link](#PREPARING)							| PREPARING								| 下播/被下播 |
 | [link](#RAFFLE_END)							| RAFFLE_END							| |
 | [link](#RAFFLE_START)							| RAFFLE_START							| |
-| [link](#RANK_REM)								| RANK_REM								| |
+| [link](#RANK_REM)								| RANK_REM								| @ |
 | [link](#RECOMMEND_CARD)						| RECOMMEND_CARD						| 主播推荐商品 |
 | [link](#RED_POCKET_START)						| RED_POCKET_START						| |
 | [link](#REENTER_LIVE_ROOM)					| REENTER_LIVE_ROOM						| |
@@ -387,7 +387,7 @@
 
 ### WARNING
 [TOP](#直播弹幕格式)  
-`Anchor`
+**警告**
 | key		| type	| value |
 |-|-|-|
 | cmd		| str	| "WARNING" |
@@ -469,7 +469,7 @@
 | is_naming				| bool		|  |
 | is_special_batch		| num		| 0 |
 | magnification			| float		| 0 |
-| medal_info			| obj		| [粉丝牌信息](#粉丝牌信息medal_info) | 无 anchor_uname,anchor_roomid
+| medal_info			| obj		| [粉丝牌信息](#粉丝牌信息medal_info) | 不包含 anchor_uname, anchor_roomid
 | name_color			| str		| "" |
 | num					| num		| 礼物数量 |
 | original_gift_name	| str		| "" |
@@ -523,7 +523,7 @@
 | uid					| num		| 接收者uid |
 | uname					| str		| 接收者用户名 |
 ```json
-
+{}
 ```
 
 ### ONLINE_RANK_V2
@@ -638,21 +638,15 @@ MutualAttention = 5
 Link = 6
 "Entry:进入直播间"
 "Entry:光临直播间"！舰长
-	n = t.username,
-	o = t.identity,
-	i = t.nameColor,
-	a = t.msgType,
-	c = t.text,
-	u = ((e = {})[L.Sv.Entry] = o < L.R$.GuardJian ? "进入" :"光临",
+	u = ((e = {})[L.Sv.Entry] = identity < 3 ? "进入" :"光临",
 	e[L.Sv.Attention] = "关注了",
 	e[L.Sv.Share] = "分享了",
 	e[L.Sv.SpecialAttention] = "特别关注了",
 	e[L.Sv.MutualAttention] = "互粉了",
-	e[L.Sv.Link] = c,
+	e[L.Sv.Link] = text,
 	e),
-	s = (0,C.H)(i),
-	l = this.createElement("span","t-over-hidden interact-name v-middle",n,[["style","color:" + s + "; margin-right:4px;"]]),
-	f = this.createElement("span","flex-no-shrink v-middle",u[a] + (a !== L.Sv.Link ? "直播间" :""),a > L.Sv.Entry && a !== L.Sv.Link ? [["style","color:#F7B500"]] :[["style","color: #999999"]]);
+	l = this.createElement("span","t-over-hidden interact-name v-middle",username,[["style","color:" + t.nameColor + "; margin-right:4px;"]]),
+	f = this.createElement("span","flex-no-shrink v-middle",u[msgType] + (msgType !== L.Sv.Link ? "直播间" :""),msgType > L.Sv.Entry && msgType !== L.Sv.Link ? [["style","color:#F7B500"]] :[["style","color: #999999"]]);
 ```
 ```json
 1678277503147255{"cmd":"INTERACT_WORD","data":{"contribution":{"grade":1},"core_user_type":0,"dmscore":34,"fans_medal":xxxx,"identities":[8,3,1],"is_spread":0,"msg_type":1,"privilege_type":1,"roomid":12345,"score":1728800893855,"spread_desc":"","spread_info":"","tail_icon":0,"timestamp":1678277502,"trigger_time":1678277501785694700,"uid":12345,"uname":"xxx","uname_color":""}}
@@ -883,7 +877,7 @@ description
 | num					| num	| 1? |
 | op_type				| num	| 1: <br> 2: <br> 3: <br> 4: |
 | payflow_id			| str	| 订单号(25) |
-| price					| num	| RMB*1000 <br> 续费舰长138 <br> ?158 <br> 舰长198 <br> 提督1998 <br> 总督19998 |
+| price					| num	| RMB*1000 <br> 续费舰长138 <br> 舰长158 <br> 舰长198 <br> 提督1598 <br> 提督1998 <br> 总督19998 |
 | role_name				| str	| "舰长" "提督" "总督" |
 | room_effect_id		| num	| 舰长:590 <br> 提督:591 <br> 总督:592 |
 | start_time			| num	| 购买时间 TimeStamp(秒) |
@@ -895,12 +889,12 @@ description
 | user_show				| bool	| true |
 | username				| str	| 用户名 |
 ```json
-1678276849538877{"cmd":"USER_TOAST_MSG","data":{"anchor_show":true,"color":"#00D1F1","dmscore":90, "effect_id":397,"end_time":1678276850,"face_effect_id":44,"gift_id":10003,"guard_level":3,"is_show":0,"num":1,"op_type":3,"payflow_id":"2303081958514902124940705","price":138000,  "role_name":"舰长","room_effect_id":590,"start_time":1678276850,"svga_block":0,"target_guard_count":728,"toast_msg":"<%XXX%> 开通了舰长，今天是TA陪伴主播的第31天","uid":12345,"unit":"月","user_show":true,"username":"XXX"}}
-1681128586842494{"cmd":"USER_TOAST_MSG","data":{"anchor_show":true,"color":"#00D1F1","dmscore":90, "effect_id":397,"end_time":1681128585,"face_effect_id":44,"gift_id":10003,"guard_level":3,"is_show":0,"num":1,"op_type":2,"payflow_id":"2304102009151052106735478","price":158000,  "role_name":"舰长","room_effect_id":590,"start_time":1681128585,"svga_block":0,"target_guard_count":187,"toast_msg":"<%XXX%> 开通了舰长，今天是TA陪伴主播的第181天","uid":12345,"unit":"月","user_show":true,"username":"XXX"}}
-1678201235575000{"cmd":"USER_TOAST_MSG","data":{"anchor_show":true,"color":"#00D1F1","dmscore":90, "effect_id":397,"end_time":1678201235,"face_effect_id":44,"gift_id":10003,"guard_level":3,"is_show":0,"num":1,"op_type":2,"payflow_id":"2303072300042342176961034","price":198000,  "role_name":"舰长","room_effect_id":590,"start_time":1678201235,"svga_block":0,"target_guard_count":584,"toast_msg":"<%XXX%> 开通了舰长，今天是TA陪伴主播的第31天","uid":12345,"unit":"月","user_show":true,"username":"XXX"}}
-1678201569375848{"cmd":"USER_TOAST_MSG","data":{"anchor_show":true,"color":"#E17AFF","dmscore":96, "effect_id":398,"end_time":1678201569,"face_effect_id":43,"gift_id":10002,"guard_level":2,"is_show":0,"num":1,"op_type":2,"payflow_id":"2303072305508472189992166","price":1598000, "role_name":"提督","room_effect_id":591,"start_time":1678201569,"svga_block":0,"target_guard_count":598,"toast_msg":"<%XXX%> 续费了提督，今天是TA陪伴主播的第1023天","uid":12345,"unit":"月","user_show":true,"username":"XXX"}}
-1678202425381497{"cmd":"USER_TOAST_MSG","data":{"anchor_show":true,"color":"#E17AFF","dmscore":96, "effect_id":398,"end_time":1678202425,"face_effect_id":43,"gift_id":10002,"guard_level":2,"is_show":0,"num":1,"op_type":1,"payflow_id":"2303072320108582147357623","price":1998000, "role_name":"提督","room_effect_id":591,"start_time":1678202425,"svga_block":0,"target_guard_count":619,"toast_msg":"<%XXX%> 开通了提督，今天是TA陪伴主播的第61天","uid":12345,"unit":"月","user_show":true,"username":"XXX"}}
-1678276859218749{"cmd":"USER_TOAST_MSG","data":{"anchor_show":true,"color":"#FF7C28","dmscore":102,"effect_id":399,"end_time":1678276859,"face_effect_id":42,"gift_id":10001,"guard_level":1,"is_show":0,"num":1,"op_type":1,"payflow_id":"2303082000479852109045421","price":19998000,"role_name":"总督","room_effect_id":592,"start_time":1678276859,"svga_block":0,"target_guard_count":729,"toast_msg":"<%XXX%> 续费了总督，今天是TA陪伴主播的第12天","uid":12345,"unit":"月","user_show":true,"username":"XXX"}}
+1678276849538877{"cmd":"USER_TOAST_MSG","data":{"anchor_show":true,"color":"#00D1F1","dmscore":90, "effect_id":397,"end_time":1678276850,"face_effect_id":44,"gift_id":10003,"guard_level":3,"is_show":0,"num":1,"op_type":3,"payflow_id":"2303081958514902124940705","price":138000,  "role_name":"舰长","room_effect_id":590,"start_time":1678276850,"svga_block":0,"target_guard_count":123,"toast_msg":"<%XXX%> 开通了舰长，今天是TA陪伴主播的第*天","uid":12345,"unit":"月","user_show":true,"username":"XXX"}}
+1681128586842494{"cmd":"USER_TOAST_MSG","data":{"anchor_show":true,"color":"#00D1F1","dmscore":90, "effect_id":397,"end_time":1681128585,"face_effect_id":44,"gift_id":10003,"guard_level":3,"is_show":0,"num":1,"op_type":2,"payflow_id":"2304102009151052106735478","price":158000,  "role_name":"舰长","room_effect_id":590,"start_time":1681128585,"svga_block":0,"target_guard_count":123,"toast_msg":"<%XXX%> 开通了舰长，今天是TA陪伴主播的第*天","uid":12345,"unit":"月","user_show":true,"username":"XXX"}}
+1678201235575000{"cmd":"USER_TOAST_MSG","data":{"anchor_show":true,"color":"#00D1F1","dmscore":90, "effect_id":397,"end_time":1678201235,"face_effect_id":44,"gift_id":10003,"guard_level":3,"is_show":0,"num":1,"op_type":2,"payflow_id":"2303072300042342176961034","price":198000,  "role_name":"舰长","room_effect_id":590,"start_time":1678201235,"svga_block":0,"target_guard_count":123,"toast_msg":"<%XXX%> 开通了舰长，今天是TA陪伴主播的第*天","uid":12345,"unit":"月","user_show":true,"username":"XXX"}}
+1678201569375848{"cmd":"USER_TOAST_MSG","data":{"anchor_show":true,"color":"#E17AFF","dmscore":96, "effect_id":398,"end_time":1678201569,"face_effect_id":43,"gift_id":10002,"guard_level":2,"is_show":0,"num":1,"op_type":2,"payflow_id":"2303072305508472189992166","price":1598000, "role_name":"提督","room_effect_id":591,"start_time":1678201569,"svga_block":0,"target_guard_count":123,"toast_msg":"<%XXX%> 续费了提督，今天是TA陪伴主播的第*天","uid":12345,"unit":"月","user_show":true,"username":"XXX"}}
+1678202425381497{"cmd":"USER_TOAST_MSG","data":{"anchor_show":true,"color":"#E17AFF","dmscore":96, "effect_id":398,"end_time":1678202425,"face_effect_id":43,"gift_id":10002,"guard_level":2,"is_show":0,"num":1,"op_type":1,"payflow_id":"2303072320108582147357623","price":1998000, "role_name":"提督","room_effect_id":591,"start_time":1678202425,"svga_block":0,"target_guard_count":123,"toast_msg":"<%XXX%> 开通了提督，今天是TA陪伴主播的第*天","uid":12345,"unit":"月","user_show":true,"username":"XXX"}}
+1678276859218749{"cmd":"USER_TOAST_MSG","data":{"anchor_show":true,"color":"#FF7C28","dmscore":102,"effect_id":399,"end_time":1678276859,"face_effect_id":42,"gift_id":10001,"guard_level":1,"is_show":0,"num":1,"op_type":1,"payflow_id":"2303082000479852109045421","price":19998000,"role_name":"总督","room_effect_id":592,"start_time":1678276859,"svga_block":0,"target_guard_count":123,"toast_msg":"<%XXX%> 续费了总督，今天是TA陪伴主播的第*天","uid":12345,"unit":"月","user_show":true,"username":"XXX"}}
 ```
 
 ### NOTICE_MSG
@@ -1386,6 +1380,7 @@ SC 删除
 | 14	| num	| `lpl` |
 | 15	| num	| 7*N |7:5932 14:2130 21:3134 28:1575 35:4418 42:4236 49:6731 56:4400 63:3991 70:4223 77:18 105:9546 112:408 210:主播
 #### DANMU_MSG__info__0
+**弹幕属性**
 | array	| type		| value | desc |
 |-|-|-|-|
 | 0[0]	| num		| ？0 |
@@ -1406,6 +1401,7 @@ SC 删除
 | 0[15]	| obj 		| [`emoticons`](#DANMU_MSG__info__0__15) |
 | 0[16]	| obj 		| [抽奖](#DANMU_MSG__info__0__16) |20230119
 #### DANMU_MSG__info__2
+**用户主站信息/userInfo**
 | array	| type	| value |  |
 |-|-|-|-|
 | 2[0]	| num	| `uid` 用户uid |
@@ -1417,6 +1413,7 @@ SC 删除
 | 2[6]	| num	| `verify` bool |https://s1.hdslb.com/bfs/blive-engineer/live-web-player/room-player.min.js
 | 2[7]	| str	| `usernameColor` | 舰长:`"#00D1F1"` <br> 提督:`"#E17AFF"` <br> 总督:`"#FF7C28"`
 #### DANMU_MSG__info__3
+**粉丝牌/fansMedal**
 | array	| type	| value |
 |-|-|-|
 | 3[0]	| num	| `level` 粉丝牌 等级 |
@@ -1433,7 +1430,7 @@ SC 删除
 | 3[11]	| num	| [`isLight`](#粉丝牌信息medal_info) |
 | 3[12]	| num	| `anchorId` 主播uid |
 #### DANMU_MSG__info__4
-user_level
+**用户直播区信息/userLevel**
 | array	| type		| value | 备注 |
 |-|-|-|-|
 | 4[0]	| num		| `userLevel` 用户UL等级 |
@@ -1442,17 +1439,19 @@ user_level
 | 4[3]	| str/num	| `rank` 直播 用户排名|">50000"
 | 4[4]	| num		| ? [0,1,2,3] |
 #### DANMU_MSG__info__5
+**头衔**
 | array	| type	| value |
 |-|-|-|
 | 5[0]	| str	| identification |
 | 5[1]	| str	| identification `title` |
 #### DANMU_MSG__info__9
-validation/checkInfo
+**validation**
 | key	| type	| value |
 |-|-|-|
 | ts	| num	| TimeStamp(秒) |
 | ct	| str	| hex(64bit) |
 #### DANMU_MSG__info__0__13
+**表情包1**
 | key				| type	| value |
 |-|-|-|
 | bulge_display		| num	| 0,1 |
@@ -1463,6 +1462,7 @@ validation/checkInfo
 | url				| str	| 表情包URL |
 | width				| num	| 宽 |
 #### DANMU_MSG__info__0__14
+**voiceConfig**
 | key				| type	| value |
 |-|-|-|
 | file_duration		| num	|  |
@@ -1471,13 +1471,14 @@ validation/checkInfo
 | text				| str	|  |
 | voice_url			| str	|  |
 #### DANMU_MSG__info__0__15
-| key				| type	| value |
+**表情包2**
+| key 3				| type	| value |
 |-|-|-|
 | mode				| num	| 0 |
 | show_player_type	| num	| 0 |
 | extra				| str	| [json](#DANMU_MSG__info__0_15__extra) |
 #### DANMU_MSG__info__0__15__extra
-| key						| type		| value |  |
+| key 27					| type		| value |  |
 |-|-|-|-|
 | send_from_me				| bool		| false |
 | mode						| num		| 0 |
@@ -1504,11 +1505,10 @@ validation/checkInfo
 | space_url					| str		| "" |
 | animation					| obj		| {} |
 | emots						| obj/null	| 新的表情包 k:v{obj...} |
-| is_audited				| bool		|  | 20230217
+| is_audited				| bool		| false | 20230217
 | id_str					| str		| hex(132bit/144bit) | 20230308
 #### DANMU_MSG__info__0__15__extra__emots
-emoticonOptions
-| key				| type	| value |
+| key 8				| type	| value |
 |-|-|-|
 | emoticon_id		| num	| 表情ID |
 | emoji 			| str	|  |
@@ -1519,7 +1519,8 @@ emoticonOptions
 | emoticon_unique	| str	| 表情ID |
 | count 			| num	| 计数 |
 #### DANMU_MSG__info__0__16
-| key				| type	| value |
+**抽奖**
+| key 3				| type	| value |
 |-|-|-|
 | activity_identity	| str	| 抽奖id |
 | activity_source	| num	| 0,1,2 |
