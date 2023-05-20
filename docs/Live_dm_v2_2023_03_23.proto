@@ -1,127 +1,132 @@
 syntax = "proto3";
-message dm_V2 {
-            string id_str      =  1; // [0][15].extra.id_str 新idstr
-            uint32 mode        =  2; // [0] [1] 弹幕类型
-            uint32 fontsize    =  3; // [0] [2] 弹幕字号
-            uint32 color       =  4; // [0] [3] 弹幕颜色
-            string mid_hash    =  5; // [0] [7] 发送者midHash
-            string content     =  6; // [1]    弹幕正文
-            uint64 ctime       =  7; // [0] [4] 发送时间TimeStamp(ms)
-    repeated bytes unknown_08  =  8; // [#][##]
-             int64 dmid        =  9; // [0] [5] dmid
-    repeated bytes unknown_10  = 10; // [#][##]
-            uint32 type        = 11; // [0] [9] 
-       chat_bubble chat_bubble = 12; // [0][11] chatBubble
-            uint32 DmType      = 13; // [0][12] DmType
-    repeated emots emots       = 14; // [0][15] 表情 repeated
-    repeated bytes unknown_15  = 15; // 
-    repeated bytes unknown_16  = 16; // 
-           lottery lottery     = 17; // [0][16] 抽奖
-    repeated bytes unknown_18  = 18; // 
-        validation validation  = 19; // [9]   
-          userinfo userinfo    = 20; // [2]    用户主站信息
-     fan_medal_ext fan_medal_ext=21; // [3]    粉丝牌
-    repeated bytes unknown_22  = 22; // 
-    repeated bytes unknown_23  = 23; // 
-    repeated bytes unknown_24  = 24; // 
-    repeated bytes unknown_25  = 25; // 
-    repeated bytes unknown_26  = 26; // 
-    repeated bytes unknown_27  = 27; // 
-    repeated bytes unknown_28  = 28; // 
-    repeated bytes unknown_29  = 29; // 
-    repeated bytes unknown_30  = 30; // 
-    repeated bytes unknown_31  = 31; // 
-    repeated bytes unknown_32  = 32; // 
+package bilibiliDm.community.service.dm.live;
+message Dm {
+            string id_str      =  1;// [0][15].extra.id_str 新idstr
+             int32 mode        =  2;// [0] [1] 弹幕类型
+             int32 fontsize    =  3;// [0] [2] 弹幕字号
+            uint32 color       =  4;// [0] [3] 弹幕颜色
+            string mid_hash    =  5;// [0] [7] 发送者midHash
+            string content     =  6;// [1]     弹幕正文
+             int64 ctime       =  7;// [0] [4] 发送时间TimeStamp(ms)
+             int32 weight      =  8;// [#][##]
+             int64 rnd         =  9;// [0] [5]
+             int64 attr        = 10;// [#][##]
+          BizScene biz_scene   = 11;// [0] [9]
+            Bubble bubble      = 12;// [0][11] chatBubble
+            DmType dm_type     = 13;// [0][12] DmType
+map<string,Emoticon> emoticons = 14;// [0][15] 表情 repeated
+             Voice voice       = 15;// 
+            string animation   = 16;// 
+       Aggregation aggregation = 17;// [0][16] 抽奖
+              bool send_from_me= 18;// 
+             Check check       = 19;// [9]   
+              User user        = 20;// [2]    用户主站信息
+              Room room        = 21;// [3]    粉丝牌
 }
-message chat_bubble{//12
-    uint32 chat_bubble_type  = 1;               // [0][10]
-    string chat_bubble_color = 2;               // [0][11]
-    // repeated bytes unknown_chat_bubble_03 = 3;
-    // repeated bytes unknown_chat_bubble_04 = 4;
+enum BizScene{
+    BizSceneNone = 0;
+    BizSceneLottery = 1;
+    BizSceneSurvive = 2;
+    BizSceneVoiceConn = 3;
+    BizScenePlayBack = 4;
+    BizSceneVote = 5;
 }
-message emots{//14
-    string description = 1;                     // 
-    emots_detail detail = 2;                    // 
-    repeated bytes unknown_emots_03 =  3;
-    repeated bytes unknown_emots_04 =  4;
+enum DmType{
+    DmTypeNormal = 0;
+    DmTypeEmoticon = 1;
+    DmTypeVoice = 2;
 }
-message emots_detail{//14-2
-    string emoticon_unique = 1;                 // [0][15].extra.emots.emoticon_unique
-    string emots_url = 2;                       // [0][15].extra.emots.emots_url
-    uint32 is_dynamic = 3;                      // [0][15].extra.emots.is_dynamic
-    uint32 in_player_area = 4;                  // [0][15].extra.emots.in_player_area
-    uint32 bulge_display = 5;                   // [0][15].extra.emots.bulge_display
-    uint32 height = 6;                          // [0][15].extra.emots.height
-    uint32 width = 7;                           // [0][15].extra.emots.width
-    repeated bytes unknown_emots_detail_08 =  8;
+message Check{//19
+    //bilibiliDm.community.service.dm.live.Check
+    string token = 1;               // ct
+    int64 ts = 2;                   // ts
 }
-message lottery{//17
-    repeated bytes unknown_lottery_01 = 1;
-    uint32 activity_source = 2;                 // [0][16]
-    string activity_identity = 3;               // [0][16]
-    uint32 not_show = 4;                        // [0][16]
-    repeated bytes unknown_lottery_05 =  5;
-    repeated bytes unknown_lottery_06 =  6;
-    repeated bytes unknown_lottery_07 =  7;
-    repeated bytes unknown_lottery_08 =  8;
+message Room{//21
+    //bilibiliDm.community.service.dm.live.Room
+    int64 uid = 1;                  // [3][12] anchorId
+    string name = 2;                // [3] [2] anchorUsername
+    uint32 roomid = 3;              // 当前直播间 长/短 ID
 }
-message validation{//19
-    string ct = 1;
-    uint32 ts = 2;
-    // repeated bytes unknown_validation_03 =  3;
-    // repeated bytes unknown_validation_04 =  4;
+message Bubble{//12
+    //bilibiliDm.community.service.dm.live.Bubble
+    int64 id  = 1;                  // [0][10]
+    string color = 2;               // [0][11]
 }
-message userinfo{//20
-    uint64 uid = 1;                             // [2][0] 用户uid
-    string username = 2;                        // [2][1] 用户名
-    string username_color = 3;                  // [2][7] usernameColor
-    string face = 4;                            // 用户头像URL
-    repeated bytes unknown_userinfo_05 = 5;     // [2][3]?
-    repeated bytes unknown_userinfo_06 = 6;     // [2][4]?
-    uint32 rank = 7;                            // [2][5] 实名验证？手机号验证？
-    uint32 verify = 8;                          // [2][6]? 始终为1？
-    repeated bytes unknown_userinfo_09 = 9;     // 
-    uint32 is_admin = 10;                       // [2][2] 房管
-    fan_medal fan_medal = 11;                   // [3] 粉丝牌
-    live_user_info live_user_info = 12;         // [4] 用户直播区信息
-    title title = 13;                           // [5] 头衔
-    repeated bytes unknown_userinfo_14 = 14;    // ？string
-    repeated bytes unknown_userinfo_15 = 15;    // 
-    repeated bytes unknown_userinfo_16 = 16;    // 
+message Emoticon{//14-2
+    //bilibiliDm.community.service.dm.live.Emoticon
+    string unique = 1;              // [0][15].extra.emots.emoticon_unique
+    string url = 2;                 // [0][15].extra.emots.emots_url
+    bool is_dynamic = 3;            // [0][15].extra.emots.is_dynamic
+    int64 in_player_area = 4;       // [0][15].extra.emots.in_player_area
+    int64 bulge_display = 5;        // [0][15].extra.emots.bulge_display
+    int64 height = 6;               // [0][15].extra.emots.height
+    int64 width = 7;                // [0][15].extra.emots.width
 }
-message fan_medal{//20-11
-    uint32 medal_level = 1;                     // [3][0] 粉丝牌等级
-    string medal_name = 2;                      // [3][1] 粉丝团称号
-    repeated bytes unknown_fan_medal_03 = 3;    // 
-    uint32 medal_color = 4;                     // [3][4]or[3][7]
-    repeated bytes unknown_fan_medal_05 = 5;    // 
-    uint32 medal_color_start = 6;               // [3][8]
-    uint32 medal_color_border = 7;              // [3][4]or[3][7]
-    uint32 medal_color_end = 8;                 // [3][9]
-    uint32 anchor_guard_level = 9;              // [3][10] 粉丝牌舰长等级
-    uint32 is_lighted = 10;                     // [3][11]?
-    repeated bytes unknown_fan_medal_11 = 11;
-    repeated bytes unknown_fan_medal_12 = 12;
-    repeated bytes unknown_fan_medal_13 = 13;
-    repeated bytes unknown_fan_medal_14 = 14;
-    repeated bytes unknown_fan_medal_15 = 15;
-    repeated bytes unknown_fan_medal_16 = 16;
+message Voice{
+    //bilibiliDm.community.service.dm.live.Voice
+    string url = 1;
+    string file_format = 2;
+    string text = 3;
+    int64 file_duration =4;
+    string file_id = 5;
 }
-message live_user_info{//20-12
-    uint32 User_Level = 1;                      // [4][0]
-    uint32 UL_color = 2;                        // [4][2]
-    string live_rank = 3;                       // [4][3]
-    repeated bytes unknown_live_user_info_04 = 4;
+message Aggregation{//17
+    //bilibiliDm.community.service.dm.live.Aggregation
+    bool is_aggregation = 1;
+    int64 activity_source = 2;      // [0][16]
+    string activity_identity = 3;   // [0][16]
+    int32 not_show = 4;             // [0][16]
 }
-message title{//20-13
-    string title1 = 1;                          // [5][x]
-    string title2 = 2;                          // [5][x]
-    repeated bytes unknown_title_03 =  3;
-    repeated bytes unknown_title_04 =  4;
+message User{//20
+    //v.bilibiliDm.community.service.dm.live.User
+    int64 uid = 1;                  // [2][0] 用户uid
+    string name = 2;                // [2][1] 用户名
+    string name_color = 3;          // [2][7] usernameColor
+    string face = 4;                // 用户头像URL
+    int64 vip = 5;                  // [2][3]?
+    int64 svip = 6;                 // [2][4]?
+    int32 rank = 7;                 // [2][5] 实名验证？手机号验证？
+    int32 mobile_verify = 8;        // [2][6]? 始终为1？
+    int64 lpl_status = 9;           // 
+    int64 attr = 10;                // [2][2] 房管 isAdmin
+    Medal medal = 11;               // [3] 粉丝牌
+    UserLevel level = 12;           // [4] 用户直播区信息
+    Title title = 13;               // [5] 头衔
+    Identify identify = 14;         //
 }
-message fan_medal_ext{//21
-    uint64 anchor_id = 1;                       // [3][12] anchorId
-    string anchor_username = 2;                 // [3] [2] anchorUsername
-    uint32 roomid = 3;                          // 当前直播间 长/短 ID
-    repeated bytes unknown_fan_medal_ext_04 = 4;
+message Identify{//20-14
+    //bilibiliDm.community.service.dm.live.Identify
+    string beginning_url = 1;
+    string ending_url = 2;
+    string jump_to_url = 3;
+}
+message Medal{//20-11
+    //bilibiliDm.community.service.dm.live.Medal
+    int64 level = 1;                // [3][0] 粉丝牌等级
+    string name = 2;                // [3][1] 粉丝团称号
+    string special = 3;             // 
+    int64 color = 4;                // [3][4]or[3][7]
+    int64 icon_id = 5;              // 
+    int64 border_color = 6;         // [3][8]
+    int64 gradient_start_color = 7; // [3][4]or[3][7]
+    int64 gradient_end_color = 8;   // [3][9]
+    int64 privilege = 9;            // [3][10] 粉丝牌舰长等级
+    int64 light = 10;               // [3][11]?
+}
+message UserLevel{//20-12
+    //bilibiliDm.community.service.dm.live.UserLevel
+    int64 level = 1;                // [4][0]
+    int64 color = 2;                // [4][2]
+    string rank = 3;                // [4][3]
+    int64 online_rank = 4;
+}
+message Title{//20-13
+    //bilibiliDm.community.service.dm.live.Title
+    string title1 = 1;              // [5][x]
+    string old_title = 2;           // [5][x]
+}
+message Record{
+    //bilibiliDm.community.service.dm.live.Record
+    string dmid = 1;
+    int64 time_offset = 2;
 }
