@@ -8,10 +8,10 @@ import sys
 
 st = time.time()
 infile = sys.argv[1]
-outfile = "B:\\test.json"
+outfile = "Z:\\test.json"
 final_file = ""
 L_pos = 0
-temp_proto = live_dm.dm_V2()
+temp_proto = live_dm.Dm()
 with open(infile, "r", 1048576, encoding="utf-8") as file, open(outfile, "w", encoding="utf-8") as final_file:
 	for item in file.readlines():
 		if item.find("dm_v2") == -1:
@@ -47,30 +47,30 @@ with open(infile, "r", 1048576, encoding="utf-8") as file, open(outfile, "w", en
 			del temp_json2["midHash"]	# 5
 			del temp_json2["content"]	# 6
 			del temp_json2["ctime"]	# 7
-			try: del temp_json2["DmType"]	# 8
+			del temp_json2["bubble"]	# 12
+			try: del temp_json2["rnd"]	# 9
 			except: pass
-			try: del temp_json2["dmid"]	# 9
+			try:del temp_json2["aggregation"]	#17
+			except:pass
+			try: del temp_json2["DmType"]	# 8
 			except: pass
 			# try: del temp_json2["type"]	# 11
 			# except: pass
-			del temp_json2["chatBubble"]	# 12
-			try: del temp_json2["emots"]	# 14
+			try: del temp_json2["emoticons"]	# 14
 			except:pass
-			try:del temp_json2["lottery"]	#17
-			except:pass
-			del temp_json2["validation"]	# 19
-			del temp_json2["userinfo"]["uid"]
-			del temp_json2["userinfo"]["name"]
-			try: del temp_json2["userinfo"]["usernameColor"]
+			del temp_json2["check"]	# 19
+			del temp_json2["user"]["uid"]
+			del temp_json2["user"]["name"]
+			try: del temp_json2["user"]["usernameColor"]
 			except: pass
-			del temp_json2["userinfo"]["face"]
-			del temp_json2["userinfo"]["rank"]
-			del temp_json2["userinfo"]["fanMedal"]
-			del temp_json2["userinfo"]["liveUserInfo"]
-			del temp_json2["userinfo"]["title"]
-			del temp_json2["userinfo"]["unknownUserinfo08"]
-			del temp_json2["userinfo"]["unknownUserinfo14"]
-			del temp_json2["fanMedalExt"]	# 21
+			del temp_json2["user"]["face"]
+			del temp_json2["user"]["rank"]
+			del temp_json2["user"]["medal"]
+			del temp_json2["user"]["level"]
+			del temp_json2["user"]["title"]
+			del temp_json2["user"]["unknownUserinfo08"]
+			del temp_json2["user"]["unknownUserinfo14"]
+			del temp_json2["room"]	# 21
 		final_file.write(json.dumps(temp_json2, ensure_ascii=False, indent=None, separators=(",", ":")) + "\n")
 	file.close()
 	final_file.close()

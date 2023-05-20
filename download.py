@@ -296,7 +296,10 @@ def main_Func():
 			Temp_Binary = dm_pb2.DmSegMobileReply()
 			Temp_Binary.ParseFromString(Danmaku_Final_Binary)
 			json_process = json.loads(MessageToJson(Temp_Binary, indent=None, ensure_ascii=False, including_default_value_fields=True))
-			del json_process["state"]
+			try:
+				del json_process["state"]
+			except:
+				pass
 			del Temp_Binary
 			# ==================
 			try:
