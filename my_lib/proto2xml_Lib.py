@@ -18,4 +18,4 @@ def proto2xml(this: dm_pb2.DanmakuElem, extra_data: bool, enable_weight: bool = 
 	# action = this.action
 	# animation = this.animation
 	if extra_data: Ext_Data = f"<!-- {Danmaku_ATTR_TYPE(this.attr)}{fp('mid', this.usermid)}{fp('Likes', this.likes)}{fp('Reply', this.reply_count)} -->".replace("  ", " ")
-	return f"\t<d p=\"{format(this.progress/1000, '.5f')},{this.mode},{this.fontsize},{this.color},{this.ctime},{this.pool},{this.midHash},{this.id},{weight}\">{content}</d>{Ext_Data}\n"
+	return f"\t<d p=\"{format(this.stime/1000, '.5f')},{this.mode},{this.size},{this.color},{this.ctime},{this.pool},{this.uhash},{this.id},{weight}\">{content}</d>{Ext_Data}\n"
