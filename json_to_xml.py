@@ -13,7 +13,7 @@ Start_Time = time.time()
 input_File = sys.argv[1]
 if open(input_File, "rb").read(1) == b"\x7b": infile = open(input_File, "r", encoding="utf-8").read()
 if open(input_File, "rb").read(3) == b"\xeb\xbb\xbf": infile = open(input_File, "r", encoding="utf-8").read()
-if open(input_File, "rb").read(2) == b"\x1f\x8b": infile = gzip.open(input_File, "rb").read()
+if open(input_File, "rb").read(2) == b"\x1f\x8b": infile = str(gzip.open(input_File, "rb").read(), encoding="utf-8")
 
 outputFile = input_File.rstrip(".gz").rstrip(".json").rstrip(".bin")+".xml"
 
@@ -53,9 +53,14 @@ if Danmaku_Count == 0 and commandDms_Len ==0:
 
 if commandDms_Len != 0:
 	for this in Loaded_JSON["commandDms"]:
-		try: progress = this["progress"]
-		except KeyError: progress = 0
-		XML_Data_1st_Cache += f"\t<d p=\"{format(progress/1000, '.5f')},1,25,16777215,{int(time.mktime(time.strptime(this['ctime'], '%Y-%m-%d %H:%M:%S')))},999,{hex(binascii.crc32(str(this['mid']).encode())^0xFFFFFFFF).lstrip('0x').lstrip('0')},{this['id']},11\">{this['content']}</d><!-- SPECIAL: {this['command']}{this['extra']} -->\n"
+		if dmk_Ver in [0,1,2,3]:
+			try: stime = this["progress"]
+			except KeyError: stime = 0
+		elif dmk_Ver in [4]:
+			try: stime = this["stime"]
+			except KeyError: stime = 0
+
+		XML_Data_1st_Cache += f"\t<d p=\"{format(stime/1000, '.5f')},1,25,16777215,{int(time.mktime(time.strptime(this['ctime'], '%Y-%m-%d %H:%M:%S')))},999,{hex(binascii.crc32(str(this['mid']).encode())^0xFFFFFFFF).lstrip('0x').lstrip('0')},{this['id']},11\">{this['content']}</d><!-- SPECIAL: {this['command']}{this['extra']} -->\n"
 	del this
 for this in Loaded_JSON["elems"]:
 	XML_Data_3rd_Cache += json2xml(this=this, exdata=True, enable_weight=True)

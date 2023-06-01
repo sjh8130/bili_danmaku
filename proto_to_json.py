@@ -33,8 +33,7 @@ if __name__ == '__main__':
 			tag_LiveRecording = True
 			break
 	for that in j1["elems"]:
-		try: del that["idStr"]
-		except KeyError: pass
+		break
 		try:
 			if that["test20"] == "0": del that["test20"]
 		except KeyError: pass
@@ -49,7 +48,7 @@ if __name__ == '__main__':
 					if that["mode"] == 1: del that["mode"]
 				except KeyError: pass
 				try:
-					if that["fontsize"] == 25: del that["fontsize"]
+					if that["size"] == 25: del that["size"]
 				except KeyError: pass
 				try:
 					if that["color"] == 16777215: del that["color"]
@@ -60,14 +59,14 @@ if __name__ == '__main__':
 
 	j1["commandDms"] = []
 	j1["info"] = {}
-	j1["info"]["Ver"] = "V5_20220916"
-	j1["info"]["dmk_Ver"] = 3
+	j1["info"]["Ver"] = "V6_20230601_P2J"
+	j1["info"]["dmk_Ver"] = 4
 	j1["info"]["owner"] = {"mid":0, "name":"Fake_Username", "face":"http://[::]/a.jpg"}
 	j1["info"]["bvid"] = "Fake_BVID"
 	j1["info"]["avid"] = 0
 	j1["info"]["V_Name"] = "Fake_MainTitle"
 	j1["info"]["pubdate"] = 0
-	j1["info"]["i_ctime"] = 0
+	j1["info"]["ctime"] = 0
 	j1["info"]["P_Name"] = "Fake_P_Title"
 	j1["info"]["cid"] = 0
 	j1["info"]["duration"] = 0
@@ -78,7 +77,6 @@ if __name__ == '__main__':
 	j1["info"]["File_Create_Time"] = int(os.stat(sys.argv[1]).st_ctime)
 	j1["info"]["File_Create_Time_Start"] = int(os.stat(sys.argv[1]).st_ctime)
 	j1["info"]["is_live_record"] = tag_LiveRecording
-	j1["Ver_Var"]="Proto2Json"
 	Write_Data = json.dumps(j1, ensure_ascii=False, separators=(',', ':'))
 
 	Temp_Binary = None

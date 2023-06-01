@@ -169,7 +169,7 @@ def XML_Special_Process(Proto_data) -> str:
 	for this in Proto_data:
 		Ex_Extra_Data = ""
 		if P_flag[4]: Ex_Extra_Data = f"<!-- SPECIAL: {this.command}{this.extra} -->"
-		out1 += f"\t<d p=\"{format(this.progress/1000, '.5f')},1,25,16777215,{int(time.mktime(time.strptime(this.ctime, '%Y-%m-%d %H:%M:%S')))},999,{hex(crc32(str(this.mid).encode()) ^ 0xFFFFFFFF)[2:].lstrip('0')},{this.id},11\">{this.content}</d>{Ex_Extra_Data}\n"
+		out1 += f"\t<d p=\"{format(this.stime/1000, '.5f')},1,25,16777215,{int(time.mktime(time.strptime(this.ctime, '%Y-%m-%d %H:%M:%S')))},999,{hex(crc32(str(this.mid).encode()) ^ 0xFFFFFFFF)[2:].lstrip('0')},{this.id},11\">{this.content}</d>{Ex_Extra_Data}\n"
 	return out1
 
 
@@ -308,10 +308,9 @@ def main_Func():
 				json_process["elems"] = []
 			else:
 				for this in json_process["elems"]:
-					this["ctime"] = int(this["ctime"])
+					this["date"] = int(this["date"])
 					this["usermid"] = int(this["usermid"])
 					if not P_flag[2] and this["attr"] == 2: P_flag[2] = True
-					del this["idStr"]
 					del this["test19"]
 					del this["test23"]
 					if this["action"] == "": del this["action"]
@@ -321,7 +320,7 @@ def main_Func():
 					if this["test20"] == "0" or this["test20"] == "": del this["test20"]
 					if this["test21"] == "0" or this["test21"] == "": del this["test21"]
 					if this["mode"] == 1: del this["mode"]
-					if this["fontsize"] == 25: del this["fontsize"]
+					if this["size"] == 25: del this["size"]
 					if this["color"] == 16777215: del this["color"]
 					if this["pool"] == 0: del this["pool"]
 					if this["attr"] == 0: del this["attr"]
@@ -334,14 +333,14 @@ def main_Func():
 			try: Danmaku_Count = len(json_process["elems"])
 			except KeyError: Danmaku_Count = 0
 			json_process["info"] = {}
-			json_process["info"]["Ver"] = "V5_20220916"
-			json_process["info"]["dmk_Ver"] = 3
+			json_process["info"]["Ver"] = "V6_20230601"
+			json_process["info"]["dmk_Ver"] = 4
 			json_process["info"]["owner"] = Json_Info['owner']							# dict	get all
 			json_process["info"]["bvid"] = bvid											# str	get all
 			json_process["info"]["avid"] = avid_in										# num	get all
 			json_process["info"]["V_Name"] = Main_Title									# str	get all
 			json_process["info"]["pubdate"] = P_Date									# num	get all unix_timestamp
-			json_process["info"]["i_ctime"] = Json_Info['ctime']						# num	get all unix_timestamp
+			json_process["info"]["ctime"] = Json_Info['ctime']							# num	get all unix_timestamp
 			json_process["info"]["P_Name"] = This["part"]								# str	get part
 			json_process["info"]["cid"] = cid											# num	get part
 			json_process["info"]["duration"] = duration									# num	get part

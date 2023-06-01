@@ -44,13 +44,13 @@ def p():
 			j["elems"]=["Embedded"]
 			j["commandDms"]=[]
 			j["info"]={}
-			j["info"]["Ver"]="V4_20220911_Embedded"
+			j["info"]["Ver"]="V6_20230601_Embedded"
 			j["info"]["owner"]=b['owner']
 			j["info"]["bvid"]=b['bvid']
 			j["info"]["avid"]=b['aid']
 			j["info"]["V_Name"]=b["title"]
 			j["info"]["pubdate"]=b["pubdate"]
-			j["info"]["i_ctime"]=b['ctime']
+			j["info"]["ctime"]=b['ctime']
 			j["info"]["P_Name"]=e["part"]
 			j["info"]["duration"]=g
 			j["info"]["cid"]=f
@@ -70,8 +70,7 @@ def p():
 
 def q():
 	try:
-		a="{\"code\":0,\"data\":{\"archives\":[{\"aid\":0,\"pubdate\":1,\"bvid\":\"BV0000000000\"}]}}"
-		# a=requests.get("https://api.bilibili.com/x/series/archives?mid=xxxx&series_id=yyyy&only_normal=true&sort=desc&pn=1&ps=10",headers).content
+		a=requests.get("https://api.bilibili.com/x/series/archives?mid=508963009&series_id=91398&only_normal=true&sort=desc&pn=1&ps=10",x,timeout=20).content
 	except:
 		a="{\"code\":0,\"data\":{\"archives\":[{\"aid\":"+str(s)+",\"pubdate\":1,\"bvid\":\"BV0000000000\"}]}}"
 		print("ERR",time.time().__trunc__())
