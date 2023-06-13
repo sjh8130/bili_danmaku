@@ -32,28 +32,27 @@ if __name__ == '__main__':
 		if this.attr == 2:
 			tag_LiveRecording = True
 			break
-	for that in j1["elems"]:
-		break
+	for this in j1["elems"]:
 		try:
-			if that["test20"] == "0": del that["test20"]
+			if this["test20"] == "0": del this["test20"]
 		except KeyError: pass
 		try:
-			if that["test21"] == "0": del that["test21"]
+			if this["test21"] == "0": del this["test21"]
 		except KeyError: pass
 		try:
-			if that["attr"] == 2:
-				try: del that["likes"]
+			if this["attr"] == 2 and False:
+				try: del this["likes"]
 				except KeyError: pass
 				try:
-					if that["mode"] == 1: del that["mode"]
+					if this["mode"] == 1: del this["mode"]
 				except KeyError: pass
 				try:
-					if that["size"] == 25: del that["size"]
+					if this["size"] == 25: del this["size"]
 				except KeyError: pass
 				try:
-					if that["color"] == 16777215: del that["color"]
+					if this["color"] == 16777215: del this["color"]
 				except KeyError: pass
-				try: del that["weight"]
+				try: del this["weight"]
 				except KeyError: pass
 		except KeyError: pass
 

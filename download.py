@@ -311,6 +311,7 @@ def main_Func():
 					this["date"] = int(this["date"])
 					this["usermid"] = int(this["usermid"])
 					if not P_flag[2] and this["attr"] == 2: P_flag[2] = True
+					if this["id"] == this["dmid"]: del this["id"]
 					del this["test19"]
 					del this["test23"]
 					if this["action"] == "": del this["action"]
@@ -319,6 +320,14 @@ def main_Func():
 					if this["test17"] == "0": del this["test17"]
 					if this["test20"] == "0" or this["test20"] == "": del this["test20"]
 					if this["test21"] == "0" or this["test21"] == "": del this["test21"]
+					if this["test25"] == "": del this["test25"]
+					if this["test26"] == "": del this["test26"]
+					if this["test27"] == "": del this["test27"]
+					if this["test28"] == "": del this["test28"]
+					if this["test29"] == "": del this["test29"]
+					if this["test30"] == "": del this["test30"]
+					if this["test31"] == "": del this["test31"]
+					if this["colorful"] == "NoneType": del this["colorful"]
 					if this["mode"] == 1: del this["mode"]
 					if this["size"] == 25: del this["size"]
 					if this["color"] == 16777215: del this["color"]
@@ -351,7 +360,7 @@ def main_Func():
 			json_process["info"]["File_Create_Time_Start"] = int(Time_Start_Process)	# num	set unix_timestamp
 			json_process["info"]["File_Create_Time"] = int(Time_Process_Danmaku)		# num	set unix_timestamp
 			json_process["info"]["is_live_record"] = P_flag[2]							# bool	GET
-			Json_Write_Data = json.dumps(json_process, ensure_ascii=False, separators=(',', ':')).replace("},{\"id\"", "},\n{\"id\"")
+			Json_Write_Data = json.dumps(json_process, ensure_ascii=False, separators=(',', ':')).replace("},{\"stime\"", "},\n{\"stime\"")
 			del json_process
 			logging.debug(f"[{bvid}][File_JSON P{i_for_videos}]: 结束处理")
 		if P_flag[12]: err_sign = "ERR_"

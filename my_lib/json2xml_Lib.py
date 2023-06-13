@@ -6,19 +6,13 @@ def json2xml(this, exdata, enable_weight, dmk_Ver):
 	"""
 	Text
 	"""
-	try: id_ = str(this["id"])
-	except KeyError: id_ = "FAKE"
 	Extra_Data = ""
-	try: midHash = this["midHash"]
-	except KeyError: midHash = "ffffffff"
 	try: attr = this["attr"]
 	except KeyError: attr = 0
 	try: mode = this["mode"]
 	except KeyError: mode = "1"
 	try: color = this["color"]
-	except KeyError:
-		if attr == 2: color = "16777215"
-		else: color = "0"
+	except KeyError: color = "16777215"
 	try: pool = this["pool"]
 	except KeyError: pool = "0"
 	if enable_weight:
@@ -41,13 +35,17 @@ def json2xml(this, exdata, enable_weight, dmk_Ver):
 	except KeyError: action = ""
 	try: animation = f"ANIMATION:{this['animation']} "
 	except KeyError: animation = ""
+	try: usermid = f"mid:{this['usermid']} "
+	except KeyError: usermid = ""
 	if dmk_Ver in [1,2,3]:
+		try: id_ = str(this["id"])
+		except KeyError: id_ = "FAKE"
 		try: progress: int = this["progress"]
 		except KeyError: progress = 0
 		try: fontsize = this["fontsize"]
 		except KeyError: fontsize = "25"
-		try: usermid = f"mid:{this['usermid']} "
-		except KeyError: usermid = ""
+		try: midHash = this["midHash"]
+		except KeyError: midHash = "ffffffff"
 		try: content = this["content"]
 		except KeyError: content = ""
 		try: sendtime = this["ctime"]
@@ -61,15 +59,14 @@ def json2xml(this, exdata, enable_weight, dmk_Ver):
 		except KeyError: progress = 0
 		try: fontsize = this["size"]
 		except KeyError: fontsize = "25"
-		try: usermid = f"mid:{this['uhash']} "
-		except KeyError: usermid = ""
+		try: midHash = this["uhash"]
+		except KeyError: midHash = "ffffffff"
 		try: content = this["text"]
 		except KeyError: content = ""
 		try: sendtime = this["date"]
 		except KeyError: sendtime = "1262275200"
-		# try: dmid = this["dmid"]
-		# except KeyError: dmid = "0"
-		# if id_ != dmid: print("id dmid mismatch:", id_, dmid)
+		try: id_ = this["dmid"]
+		except KeyError: id_ = "0"
 
 	# if content == "": return ""
 	content = content.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace("\x00", " ").replace( "\x08", " ").replace("\x14", " ").replace("\x17", " ").replace("\x0a", "\\n").replace("\x0d", "\\r")
