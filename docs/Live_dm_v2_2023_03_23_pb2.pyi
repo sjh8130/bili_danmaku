@@ -109,14 +109,6 @@ class Bubble(_message.Message):
     color: str
     def __init__(self, id: _Optional[int] = ..., color: _Optional[str] = ...) -> None: ...
 
-class emoticons(_message.Message):
-    __slots__ = ["description", "detail"]
-    DESCRIPTION_FIELD_NUMBER: _ClassVar[int]
-    DETAIL_FIELD_NUMBER: _ClassVar[int]
-    description: str
-    detail: Emoticon
-    def __init__(self, description: _Optional[str] = ..., detail: _Optional[_Union[Emoticon, _Mapping]] = ...) -> None: ...
-
 class Emoticon(_message.Message):
     __slots__ = ["unique", "url", "is_dynamic", "in_player_area", "bulge_display", "height", "width"]
     UNIQUE_FIELD_NUMBER: _ClassVar[int]
@@ -162,7 +154,7 @@ class Aggregation(_message.Message):
     def __init__(self, is_aggregation: bool = ..., activity_source: _Optional[int] = ..., activity_identity: _Optional[str] = ..., not_show: _Optional[int] = ...) -> None: ...
 
 class User(_message.Message):
-    __slots__ = ["uid", "name", "name_color", "face", "vip", "svip", "rank", "mobile_verify", "lpl_status", "attr", "medal", "level", "title", "identify"]
+    __slots__ = ["uid", "name", "name_color", "face", "vip", "svip", "rank", "mobile_verify", "lpl_status", "attr", "medal", "level", "title", "identify", "wealth"]
     UID_FIELD_NUMBER: _ClassVar[int]
     NAME_FIELD_NUMBER: _ClassVar[int]
     NAME_COLOR_FIELD_NUMBER: _ClassVar[int]
@@ -177,6 +169,7 @@ class User(_message.Message):
     LEVEL_FIELD_NUMBER: _ClassVar[int]
     TITLE_FIELD_NUMBER: _ClassVar[int]
     IDENTIFY_FIELD_NUMBER: _ClassVar[int]
+    WEALTH_FIELD_NUMBER: _ClassVar[int]
     uid: int
     name: str
     name_color: str
@@ -191,7 +184,8 @@ class User(_message.Message):
     level: UserLevel
     title: Title
     identify: Identify
-    def __init__(self, uid: _Optional[int] = ..., name: _Optional[str] = ..., name_color: _Optional[str] = ..., face: _Optional[str] = ..., vip: _Optional[int] = ..., svip: _Optional[int] = ..., rank: _Optional[int] = ..., mobile_verify: _Optional[int] = ..., lpl_status: _Optional[int] = ..., attr: _Optional[int] = ..., medal: _Optional[_Union[Medal, _Mapping]] = ..., level: _Optional[_Union[UserLevel, _Mapping]] = ..., title: _Optional[_Union[Title, _Mapping]] = ..., identify: _Optional[_Union[Identify, _Mapping]] = ...) -> None: ...
+    wealth: Wealth
+    def __init__(self, uid: _Optional[int] = ..., name: _Optional[str] = ..., name_color: _Optional[str] = ..., face: _Optional[str] = ..., vip: _Optional[int] = ..., svip: _Optional[int] = ..., rank: _Optional[int] = ..., mobile_verify: _Optional[int] = ..., lpl_status: _Optional[int] = ..., attr: _Optional[int] = ..., medal: _Optional[_Union[Medal, _Mapping]] = ..., level: _Optional[_Union[UserLevel, _Mapping]] = ..., title: _Optional[_Union[Title, _Mapping]] = ..., identify: _Optional[_Union[Identify, _Mapping]] = ..., wealth: _Optional[_Union[Wealth, _Mapping]] = ...) -> None: ...
 
 class Identify(_message.Message):
     __slots__ = ["beginning_url", "ending_url", "jump_to_url"]
@@ -254,3 +248,9 @@ class Record(_message.Message):
     dmid: str
     time_offset: int
     def __init__(self, dmid: _Optional[str] = ..., time_offset: _Optional[int] = ...) -> None: ...
+
+class Wealth(_message.Message):
+    __slots__ = ["level"]
+    LEVEL_FIELD_NUMBER: _ClassVar[int]
+    level: int
+    def __init__(self, level: _Optional[int] = ...) -> None: ...

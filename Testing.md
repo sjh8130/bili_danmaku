@@ -1,8 +1,8 @@
 #
-[主站弹幕](#主站弹幕格式)
-[直播弹幕](#直播弹幕格式)
+[主站弹幕](#主站弹幕)
+[直播弹幕](#直播弹幕)
 
-## 主站弹幕格式
+## 主站弹幕
 | id	| type		| protobuf-name	| -- |
 | -:	| -:		| -				| - |
 |  ~~1~~	|  ~~int64~~	| ~~id~~			| 弹幕ID |
@@ -298,7 +298,7 @@
 | posX	|	118		|	549	|
 | posY	|	80.5	|	889	|
 
-## 直播弹幕格式
+## 直播弹幕
 ~~最低发包间隔1ms~~
 | link | name | desc |
 |-|-|-|
@@ -471,6 +471,7 @@
 "违反直播分区规范，请立即更换至游戏区"
 "禁止直播违禁游戏，请立即更换"
 "直播中涉及低俗内容"
+"直播视角不适宜"
 ```
 
 ### LIVE
@@ -1228,11 +1229,11 @@ SC 删除
 |-|-|-|
 | cmd	| str	| "SPECIAL_GIFT" |
 | data	| obj	| |
-#### SEND_GIFT__data
+#### SPECIAL_GIFT__data
 | key	| type	| value |
 |-|-|-|
 | 39	| obj	| |
-#### SEND_GIFT__data__39
+#### SPECIAL_GIFT__data__39
 | key 2,7	| type	| value |
 |-|-|-|
 | action	| str	| (start|end) |
@@ -1471,6 +1472,7 @@ SC 删除
 | 13	| null	| ？null |
 | 14	| num	| `lpl` |
 | 15	| num	| 7*N |7:5932 14:2130 21:3134 28:1575 35:4418 42:4236 49:6731 56:4400 63:3991 70:4223 77:18 105:9546 112:408 210:主播
+| 16	| array	| Wealth |
 #### DANMU_MSG__info__0
 **弹幕属性**
 | array	| type		| value | desc |
@@ -1542,6 +1544,17 @@ SC 删除
 |-|-|-|
 | ts	| num	| TimeStamp(秒) |
 | ct	| str	| hex(64bit) |
+#### DANMU_MSG__info__16
+**Wealth**
+| array	| type	| value |
+|-|-|-|
+| 16[0]	| num	| level |
+| 16[?]	| num	| uid |
+| 16[?]	| num	| level_total_score |
+| 16[?]	| num	| cur_score |
+| 16[?]	| num	| upgrade_need_score |
+| 16[?]	| num	| status |
+| 16[?]	| str	| dm_icon_key |
 #### DANMU_MSG__info__0__13
 **表情包1**
 | key				| type	| value |

@@ -6,16 +6,28 @@ import sys
 """
 修视频？
 """
-
+err_c = 0
 argv = ["XXXX", "", "", ""]
 if len(sys.argv) < 3:
-	argv[1] = input("file 1 : ").lstrip("\"").rstrip("\"")
-	argv[2] = input("file 2 : ").lstrip("\"").rstrip("\"")
-	argv[3] = input("suffix : ")
-else:
+	if len(sys.argv) == 2:
+		argv[1] = sys.argv[1]
+		argv[2] = sys.argv[2]
+		if argv[-4:] == ".aac": argv[3] = "A"
+		elif argv[-4:] == ".264": argv[3] = "V"
+		# elif argv[-4:] == ".265": argv[3] = "V"
+		else:
+			print("Error")
+			err_c=100
+	else:
+		argv[1] = input("file 1 : ").lstrip("\"").rstrip("\"")
+		argv[2] = input("file 2 : ").lstrip("\"").rstrip("\"")
+		argv[3] = input("suffix : ")
+elif len(sys.argv) == 3:
 	argv[1] = sys.argv[1]
 	argv[2] = sys.argv[2]
 	argv[3] = sys.argv[3]
+else:
+	print(sys.argv)
 if argv[3].__eq__("A"):
 	SUFFIX = ".aac"
 elif argv[3].__eq__("V"):
@@ -29,7 +41,7 @@ OUT__FILE = "NUL"
 OUT__FILE = IN_FILE_1.rsplit(".")[-2]+"_OUT."+IN_FILE_1.rsplit(".")[-1]
 
 with open(IN_INFO_1, "r") as HASH_1, \
-	open(IN_INFO_2, "r") as HASH_2, \
+	 open(IN_INFO_2, "r") as HASH_2, \
 	io.open(IN_FILE_1, "rb") as FILE_1, \
 	io.open(IN_FILE_2, "rb") as FILE_2, \
 	io.open(OUT__FILE, "wb") as OUT_FI:
@@ -50,8 +62,7 @@ with open(IN_INFO_1, "r") as HASH_1, \
 	j = 0
 	k = "A"
 	s = 0
-	err_c = 0
-	print(f"XXXXXXXXXXXXXXXX\tOutput\tSkip\tPOS_L\tPOS_R", end="")
+	print(f"XXXXXXXXXXXXXXXX\tOutput\tSkip\tPOS_L\tPOS_R\tSize", end="")
 	while True:
 		if i == LEN_P1 and j == LEN_P2:
 			print("\n__END__")
@@ -59,6 +70,10 @@ with open(IN_INFO_1, "r") as HASH_1, \
 		a = PKT_1[i]
 		if j < LEN_P2:
 			b = PKT_2[j]
+
+		if err_c == 100:
+			print("too many Error")
+			break
 
 		if a["data_hash"] == b["data_hash"] and i != LEN_P1-1:
 			FILE_1.seek(int(a["pos"]))
@@ -70,12 +85,12 @@ with open(IN_INFO_1, "r") as HASH_1, \
 			k = "A"
 			i += 1
 			j += 1
-			print(f"{OUT_A}\t{output_frames}\t{s}\t{i+1}\t{j+1}", end="\r")
+			print(f"{OUT_A}\t{output_frames}\t{s}\t{i+1}\t{j+1}\t{output_F_size}", end="\r")
 		else:
 			if (k.__contains__("L") and i <= LEN_P1-1) or (i < LEN_P1 and j == LEN_P2):
 				if k.__contains__("S"):
 					s += 1
-					print(f"{OUT_S}\t{output_frames}\t{s}\t{i+1}\t{j+1}", end="\r")
+					print(f"{OUT_S}\t{output_frames}\t{s}\t{i+1}\t{j+1}\t{output_F_size}", end="\r")
 				else:
 					FILE_1.seek(int(a["pos"]))
 					OUT_FI.write(FILE_1.read(int(a["size"])))
@@ -83,12 +98,12 @@ with open(IN_INFO_1, "r") as HASH_1, \
 					print_control = 0
 					output_frames += 1
 					output_F_size += int(a["size"])
-					print(f"{OUT_L}\t{output_frames}\t{s}\t{i+1}\t{j+1}", end="\r")
+					print(f"{OUT_L}\t{output_frames}\t{s}\t{i+1}\t{j+1}\t{output_F_size}", end="\r")
 				i += 1
 			elif k.__contains__("R"):
 				if k.__contains__("S"):
 					s += 1
-					print(f"{OUT_S}\t{output_frames}\t{s}\t{i+1}\t{j+1}", end="\r")
+					print(f"{OUT_S}\t{output_frames}\t{s}\t{i+1}\t{j+1}\t{output_F_size}", end="\r")
 				else:
 					FILE_2.seek(int(b["pos"]))
 					OUT_FI.write(FILE_2.read(int(b["size"])))
@@ -96,16 +111,13 @@ with open(IN_INFO_1, "r") as HASH_1, \
 					output_frames += 1
 					output_F_size += int(b["size"])
 					if print_control != 2: print()
-					print(f"{OUT_R}\t{output_frames}\t{s}\t{i+1}\t{j+1}", end="\r")
+					print(f"{OUT_R}\t{output_frames}\t{s}\t{i+1}\t{j+1}\t{output_F_size}", end="\r")
 				j += 1
 			elif k == "A": k = input("\nNext:")
 			elif i == LEN_P1 and j == LEN_P2:
 				break
 			elif s > LEN_P1+LEN_P2:
 				print("too many skip")
-				break
-			elif err_c == 100:
-				print("100_Error")
 				break
 			else:
 				err_c += 1
