@@ -1583,7 +1583,7 @@ SC 删除
 | show_player_type	| num	| 0 |
 | extra				| str	| [json](#DANMU_MSG__info__0_15__extra) |
 #### DANMU_MSG__info__0__15__extra
-| key 27					| type		| value |  |
+| key 28					| type		| value |  |
 |-|-|-|-|
 | send_from_me				| bool		| false |
 | mode						| num		| 0 |
@@ -1612,6 +1612,7 @@ SC 删除
 | emots						| obj/null	| 新的表情包 k:v{obj...} |
 | is_audited				| bool		| false | 20230217
 | id_str					| str		| hex(132bit/144bit) | 20230308
+| icon						| obj/null	| url | 2023-06-30 10:58:27
 #### DANMU_MSG__info__0__15__extra__emots
 | key 8				| type	| value |
 |-|-|-|
@@ -1623,6 +1624,11 @@ SC 删除
 | height 			| num	| 高 |
 | emoticon_unique	| str	| 表情ID |
 | count 			| num	| 计数 |
+#### DANMU_MSG__info__0__15__extra__emots
+| key 2				| type	| value |
+|-|-|-|
+| type				| num	|  |
+| resource			| str	|  |
 #### DANMU_MSG__info__0__16
 **抽奖**
 | key 3				| type	| value |

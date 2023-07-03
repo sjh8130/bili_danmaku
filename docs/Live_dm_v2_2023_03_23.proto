@@ -23,6 +23,17 @@ message Dm {
     Check                   check           = 19;   // [9]   
     User                    user            = 20;   // [2]    用户主站信息
     Room                    room            = 21;   // [3]    粉丝牌
+    Icon                    icon            = 22;   
+    bytes                   unknown23       = 23;
+    bytes                   unknown24       = 24;
+    bytes                   unknown25       = 25;
+    bytes                   unknown26       = 26;
+    bytes                   unknown27       = 27;
+    bytes                   unknown28       = 28;
+    bytes                   unknown29       = 29;
+    bytes                   unknown30       = 30;
+    bytes                   unknown31       = 31;
+    bytes                   unknown32       = 32;
 }
 enum BizScene{                                      //11
     BizSceneNone                            = 0;
@@ -135,4 +146,13 @@ message Record{
 message Wealth{                                     //20-15
     //bilibiliDm.community.service.dm.live.Wealth
     int64       level                       = 1;
+}
+message Icon{                                       //22
+    // bilibiliDm.community.service.dm.live.Icon
+    Prefix      prefix                      = 1;
+}
+message Prefix{
+    // bilibiliDm.community.service.dm.live.Prefix
+    int32       type                        = 1;
+    string      resource                    = 2;
 }
