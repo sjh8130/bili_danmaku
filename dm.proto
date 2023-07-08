@@ -202,7 +202,7 @@ message DanmakuElem {
     int32 size = 4;
     // 弹幕颜色
     uint32 color = 5;
-    // 发送着mid hash
+    // 发送者mid hash
     string uhash = 6;
     // 弹幕正文
     string text = 7;
@@ -218,18 +218,18 @@ message DanmakuElem {
     string dmid = 12;
     // 弹幕属性位(bin求AND)
     int32 attr = 13;
-    // 发送着mid
-    uint64 usermid = 14;
+    // 发送者mid
+    // uint64 usermid = 14;
     // 点赞数量
     uint32 likes = 15;
-    // 弹幕回复目标 弹幕dmid
+    // 弹幕回复 目标弹幕dmid
     uint64 test16 = 16;
     uint64 test17 = 17;
     // 弹幕回复 被回复数量
     uint32 reply_count = 18;
     // 19 : 未知
     bytes test19 = 19;
-    // 弹幕回复目标 弹幕dmid(string)
+    // 弹幕回复 目标弹幕dmid(string)
     string test20 = 20;
     string test21 = 21;
     // 动画？
@@ -892,4 +892,8 @@ message VideoSubtitle {
     string lanDoc = 2;
     // 视频字幕列表
     repeated SubtitleItem subtitles = 3;
+}
+enum DmColorfulType{
+	NoneType = 0;
+	VipGradualColor = 60001;
 }
