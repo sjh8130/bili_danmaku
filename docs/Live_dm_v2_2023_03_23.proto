@@ -1,4 +1,5 @@
 //https://s1.hdslb.com/bfs/static/blive/blfe-live-room/static/js/app.****.js
+// dm_v2
 syntax = "proto3";
 package bilibiliDm.community.service.dm.live;
 message Dm {

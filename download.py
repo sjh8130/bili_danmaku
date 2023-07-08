@@ -309,7 +309,8 @@ def main_Func():
 			else:
 				for this in json_process["elems"]:
 					this["date"] = int(this["date"])
-					this["usermid"] = int(this["usermid"])
+					if this["usermid"] == "": del this["usermid"]
+					else: this["usermid"] = int(this["usermid"])
 					if not P_flag[2] and this["attr"] == 2: P_flag[2] = True
 					if this["id"] == this["dmid"]: del this["id"]
 					del this["test19"]
@@ -342,24 +343,24 @@ def main_Func():
 			try: Danmaku_Count = len(json_process["elems"])
 			except KeyError: Danmaku_Count = 0
 			json_process["info"] = {}
-			json_process["info"]["Ver"] = "V6_20230601"
-			json_process["info"]["dmk_Ver"] = 4
-			json_process["info"]["owner"] = Json_Info['owner']							# dict	get all
-			json_process["info"]["bvid"] = bvid											# str	get all
-			json_process["info"]["avid"] = avid_in										# num	get all
-			json_process["info"]["V_Name"] = Main_Title									# str	get all
-			json_process["info"]["pubdate"] = P_Date									# num	get all unix_timestamp
-			json_process["info"]["ctime"] = Json_Info['ctime']							# num	get all unix_timestamp
-			json_process["info"]["P_Name"] = This["part"]								# str	get part
-			json_process["info"]["cid"] = cid											# num	get part
-			json_process["info"]["duration"] = duration									# num	get part
-			json_process["info"]["segment_count"] = Segment_Count						# num	set
-			json_process["info"]["danmaku_count"] = Danmaku_Count						# num	set
-			json_process["info"]["danmaku_web_reported"] = Json_Info['stat']['danmaku']	# num	get
-			json_process["info"]["danmaku_proto_reported"] = ExInfo_Proto.count			# num	get
-			json_process["info"]["File_Create_Time_Start"] = int(Time_Start_Process)	# num	set unix_timestamp
-			json_process["info"]["File_Create_Time"] = int(Time_Process_Danmaku)		# num	set unix_timestamp
-			json_process["info"]["is_live_record"] = P_flag[2]							# bool	GET
+			json_process["info"]["Ver"] = "V7_20230708"
+			json_process["info"]["dmk_Ver"] = 5
+			json_process["info"]["owner"] = Json_Info['owner']
+			json_process["info"]["bvid"] = bvid
+			json_process["info"]["avid"] = avid_in
+			json_process["info"]["V_Name"] = Main_Title
+			json_process["info"]["pubdate"] = P_Date
+			json_process["info"]["ctime"] = Json_Info['ctime']
+			json_process["info"]["P_Name"] = This["part"]
+			json_process["info"]["cid"] = cid
+			json_process["info"]["duration"] = duration
+			json_process["info"]["segment_count"] = Segment_Count
+			json_process["info"]["danmaku_count"] = Danmaku_Count
+			json_process["info"]["danmaku_web_reported"] = Json_Info['stat']['danmaku']
+			json_process["info"]["danmaku_proto_reported"] = ExInfo_Proto.count
+			json_process["info"]["File_Create_Time_Start"] = int(Time_Start_Process)
+			json_process["info"]["File_Create_Time"] = int(Time_Process_Danmaku)
+			json_process["info"]["is_live_record"] = P_flag[2]
 			Json_Write_Data = json.dumps(json_process, ensure_ascii=False, separators=(',', ':')).replace("},{\"stime\"", "},\n{\"stime\"")
 			del json_process
 			logging.debug(f"[{bvid}][File_JSON P{i_for_videos}]: 结束处理")
@@ -379,6 +380,11 @@ def main_Func():
 	timeE = time.time()
 	logging.debug(f"{bvid}|{avid} Time: {round(timeE-timeA, 3)} Net: {NET_count[1]} Wait: {round(NET_count[1]*SLEEP_TIME, 2)} SLEEP: {SLEEP_TIME}")
 
+"""
+
+v6->v7
+dmver 4->5 optional:usermid
+"""
 
 if __name__ == '__main__':
 	timeA = time.time()
