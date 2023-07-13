@@ -15,9 +15,11 @@ from my_lib.proto2xml_Lib import proto2xml
 from my_lib.bvav import BV_to_AV, AV_to_BV
 from my_lib.file_writer import writeER
 from my_lib.debug import flag_debug
+from my_lib.gen_wib import gen_w_rid
 
 ssl._create_default_https_context = ssl._create_unverified_context
 requests.packages.urllib3.disable_warnings()
+# logging.basicConfig(format='%(asctime)s [%(levelname)s] %(message)s', level=logging.DEBUG)
 logging.basicConfig(format='%(asctime)s [%(levelname)s] %(message)s', level=logging.INFO)
 USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36 Edg/109.0.1518.52"
 headers = {
@@ -26,7 +28,7 @@ headers = {
 	'referer': "https://www.bilibili.com",
 	"Connection": "keep-alive"
 }
-SLEEP_TIME = 0.2
+SLEEP_TIME = 2
 NET_count = [0, 0]
 err_sign = ""
 P_flag = []
@@ -87,7 +89,7 @@ def Downloader(url_DL: str, filename: str, headers: dict = headers) -> bytes:
 			try:
 				DL_Data = session.request(method='GET', url=url_DL, headers=headers, verify=False, timeout=10)
 			except TimeoutError:
-				logging.warning("[Downloader] TimeoutError " + url_DL)
+				logging.warning("[Downloader] Timeout " + url_DL)
 				continue
 			except requests.exceptions.ReadTimeout:
 				logging.warning("[Downloader] requests.exceptions.ReadTimeout " + url_DL)
@@ -190,22 +192,28 @@ def main_Func():
 	"""
 	# ================================ 视频信息（全部）
 	logging.debug(f"{bvid} Video info 1")
-	video_info = json.loads(Downloader(url_info_1, f"[{bvid}]_[0]_[Video]_[INFO].json"))
-	try: video_info["data"]["ugc_season"]["sections"] = []
+	video_info_1 = json.loads(Downloader(url_info_1, f"[{bvid}]_[0]_[Video]_[INFO].json"))
+	try: video_info_1["data"]["ugc_season"]["sections"] = []
 	except: pass
-	dump_Data(f"[{bvid}]_[0]_[Video]_[INFO].json", bytes(json.dumps(video_info, ensure_ascii=False, separators=(",", ":"), indent="\t"), encoding="utf-8"))
+	dump_Data(f"[{bvid}]_[0]_[Video]_[INFO].json", bytes(json.dumps(video_info_1, ensure_ascii=False, separators=(",", ":"), indent="\t"), encoding="utf-8"))
 	# ================================ 视频信息?
 	logging.debug(f"{bvid} Video info 2")
-	if P_flag[8]: video_info_detail = '{"data":{"Related":[],"Reply":{"replies":[]}}}'
-	else: video_info_detail = Downloader(url_info_2, f"[{bvid}]_[0]_[Video]_[INFO_Detail].json")
-	Vid_detail_json = json.loads(video_info_detail)
-	Vid_detail_json["data"]["Related"] = []
-	Vid_detail_json["data"]["Reply"]["replies"] = []
-	try: Vid_detail_json["data"]["View"]["ugc_season"]["sections"] = []
+	if P_flag[8]: video_info_2 = '{"data":{"Related":[],"Reply":{"replies":[]}}}'
+	else: video_info_2 = Downloader(url_info_2, f"[{bvid}]_[0]_[Video]_[INFO_2].json")
+	video_info_2_json = json.loads(video_info_2)
+	video_info_2_json["data"]["Related"] = []
+	video_info_2_json["data"]["Reply"]["replies"] = []
+	try: video_info_2_json["data"]["View"]["ugc_season"]["sections"] = []
 	except: pass
-	dump_Data(f"[{bvid}]_[0]_[Video]_[INFO_Detail].json", bytes(json.dumps(Vid_detail_json, ensure_ascii=False, separators=(',', ':'), indent="\t"), encoding="utf-8"))
+	dump_Data(f"[{bvid}]_[0]_[Video]_[INFO_2].json", bytes(json.dumps(video_info_2_json, ensure_ascii=False, separators=(',', ':'), indent="\t"), encoding="utf-8"))
+	# ================================ 视频信息 NEW
+	logging.debug(f"{bvid} Video info V2 + wib")
+	if P_flag[8]: video_info_3 = '{"data":{"Related":[],"Reply":{"replies":[]}}}'
+	else: video_info_3 = Downloader(f"{url_info_3}?{gen_w_rid({'aid':avid_in})}", f"[{bvid}]_[0]_[Video]_[INFO_3].json")
+	video_info_3_json = json.loads(video_info_3)
+	dump_Data(f"[{bvid}]_[0]_[Video]_[INFO_3].json", bytes(json.dumps(video_info_3_json, ensure_ascii=False, separators=(',', ':'), indent="\t"), encoding="utf-8"))
 	# ================================ 加载
-	Json_Info = video_info["data"]
+	Json_Info = video_info_1["data"]
 	Main_Title = Json_Info["title"]
 	P_Date = int(Json_Info["pubdate"])
 	Num_of_Videos = int(len(Json_Info["pages"]))
@@ -213,11 +221,13 @@ def main_Func():
 	if Json_Info["bvid"] != bvid: logging.error(f"[bvid]: bvid mismatch {Json_Info['bvid']}|{bvid}")
 	if Json_Info["aid"] != avid_in: logging.error(f"[avid]: avid mismatch av{Json_Info['aid']}|{avid}")
 	if P_flag[14]: return
+	# sys.exit()
 	# ================================ 字幕
-	for subs in Json_Info["subtitle"]["list"]:
-		dump_Data(f"[{bvid}]_[Subtitle]_[{subs['id']}]_[{subs['lan']}].bcc", Downloader(subs["subtitle_url"], f"[{bvid}]_[Subtitle]_[{subs['id']}]_[{subs['lan']}].bcc"), Always_Write=True)
-		logging.debug(f"[{bvid}]: 字幕")
-	if P_flag[15]: return
+	if Json_Info["subtitle"] != None:
+		for subs in Json_Info["subtitle"]["list"]:
+			dump_Data(f"[{bvid}]_[Subtitle]_[{subs['id']}]_[{subs['lan']}].bcc", Downloader(subs["subtitle_url"], f"[{bvid}]_[Subtitle]_[{subs['id']}]_[{subs['lan']}].bcc"), Always_Write=True)
+			logging.debug(f"[{bvid}]: 字幕")
+		if P_flag[15]: return
 	# ================================ 分集处理
 	i_for_videos = 0
 	try:
@@ -444,6 +454,7 @@ if __name__ == '__main__':
 			bvid = AV_to_BV(avid_in)
 			url_info_1 = f"https://api.bilibili.com/x/web-interface/view?aid={avid_in}"
 			url_info_2 = f"https://api.bilibili.com/x/web-interface/view/detail?aid={avid_in}"
+		url_info_3="https://api.bilibili.com/x/web-interface/wbi/view"
 		flag_debug(pflag=P_flag)
 		logging.info(f"{bvid}|{avid}")
 

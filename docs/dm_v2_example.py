@@ -1,3 +1,4 @@
+import io
 import json
 import time
 from google.protobuf.json_format import MessageToJson
@@ -12,7 +13,7 @@ outfile = "Z:\\test.json"
 final_file = ""
 L_pos = 0
 temp_proto = live_dm.Dm()
-with open(infile, "r", 1048576, encoding="utf-8") as file, open(outfile, "w", encoding="utf-8") as final_file:
+with open(infile, "r", 1048576, encoding="utf-8") as file, io.open(outfile, "w", encoding="utf-8") as final_file:
 	for item in file.readlines():
 		if item.find("dm_v2") == -1:
 			continue
@@ -26,13 +27,7 @@ with open(infile, "r", 1048576, encoding="utf-8") as file, open(outfile, "w", en
 				continue
 			else:
 				break
-		# if temp_json["cmd"] != "DANMU_MSG":
-		# 	continue
 		decoded_B64 = b64decode(temp_json["dm_v2"])
-		# try:
-		# 	decoded_B64 = b64decode(temp_json["dm_v2"])
-		# except KeyError:
-		# 	continue
 		temp_proto.ParseFromString(decoded_B64)
 		temp_json2 = json.loads(MessageToJson(temp_proto, indent=0, including_default_value_fields=False))
 		if temp_json["info"][0][12] == 1 and 0:
