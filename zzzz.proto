@@ -103,7 +103,7 @@ message CommandDm {// 互动弹幕条目信息
 	// 互动弹幕指令
 	string command = 4;
 	// 互动弹幕正文
-	string content = 5;
+	string text = 5;
 	// 出现时间
 	int32 stime = 6;
 	// 创建时间
@@ -209,6 +209,7 @@ message TextInputV2 {
 	repeated string landscape_placeholder = 2;
 	RenderType render_type = 3;
 	bool placeholder_post = 4;
+	repeated Avatar avatar = 5;
 	int32 text_input_limit = 6;
 }
 message Avatar {
@@ -265,7 +266,7 @@ message ToastButtonV2{
 }
 message Button {
 	string text = 1;
-	int32 action = 2;
+	ToastFunctionType action = 2;
 }
 message AnyBody{
 	typeAnyBody body = 1;
