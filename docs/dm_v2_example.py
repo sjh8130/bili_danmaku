@@ -8,26 +8,31 @@ import Live_dm_v2_2023_03_23_pb2 as live_dm
 import sys
 from filters import FILTER_WORDS
 
+"""
+11th Intel Core : 9MB/s/1GHz
+"""
+
 st = time.time()
 in_path = sys.argv[1]
 outPath = "Z:\\test.json"
-L_pos = 0
+left_pos_cache = 0
+right_pos_cache = 0
 dm_proto = live_dm.Dm()
 with open(in_path, "r", 1048576, encoding="utf-8") as F_in, io.open(outPath, "w", encoding="utf-8") as F_out:
 	for item in F_in.readlines():
 		if item.find("dm_v2") == -1:
 			continue
-		R_pos = len(item)
-		for L_pos in range(len(item)):
+		right_pos_cache = len(item)
+		for left_pos_cache in range(len(item)):
 			try:
-				dm_proto.ParseFromString(b64decode(json.loads(item[L_pos:R_pos])["dm_v2"]))
+				dm_proto.ParseFromString(b64decode(json.loads(item[left_pos_cache:right_pos_cache])["dm_v2"]))
 			except json.decoder.JSONDecodeError as err:
-				if err.msg == "Extra data": L_pos = err.pos
-				if err.msg == "Expecting value": R_pos -= 1
+				if err.msg == "Extra data": left_pos_cache = err.pos
+				if err.msg == "Expecting value": right_pos_cache -= 1
 				continue
 			else:
 				break
-		if dm_proto.text.lstrip(" ").rstrip(" ").lstrip("　").rstrip("　") in FILTER_WORDS or dm_proto.text.find("【")>0 or dm_proto.text.find("】")>0:
+		if dm_proto.text.lstrip(" ").rstrip(" ").lstrip("　").rstrip("　").lower() in FILTER_WORDS or dm_proto.text.find("【")>0 or dm_proto.text.find("】")>0 or dm_proto.dm_type!=live_dm.DmTypeNormal:
 			continue
 		temp_json2 = json.loads(MessageToJson(dm_proto, indent=0, including_default_value_fields=False))
 		temp_json2["text"] = temp_json2["text"].lstrip(" ").rstrip(" ").lstrip("　").rstrip("　")
@@ -38,7 +43,8 @@ with open(in_path, "r", 1048576, encoding="utf-8") as F_in, io.open(outPath, "w"
 			del temp_json2["color"]	# 4
 			del temp_json2["uhash"]	# 5
 			del temp_json2["date"]	# 6
-			del temp_json2["ctime"]	# 7
+			try: del temp_json2["ctime"]	# 7
+			except: pass
 
 			try: del temp_json2["dmType"]	# 8
 			except: pass

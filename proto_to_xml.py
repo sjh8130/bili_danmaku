@@ -6,8 +6,8 @@ import time
 try: import zzzz as dm_pb2
 except ModuleNotFoundError: import dm_pb2
 
-from my_lib.proto2xml_Lib import proto2xml
-from my_lib.file_writer import writeER
+from my_lib.proto2xml_Lib import Proto2XML
+from my_lib.file_writer import FileWriter
 
 Start_Time = time.time()
 Last_Modified_Time = os.stat(sys.argv[1]).st_mtime
@@ -29,7 +29,7 @@ if Danmaku_Count == 0:
 	print("No Data")
 	sys.exit()
 for this in itm.elems:
-	XML_Data_3rd_Cache += proto2xml(this, extra_data=True, enable_weight=True)
+	XML_Data_3rd_Cache += Proto2XML(this, extra_data=True, enable_weight=True)
 	i += 1
 	if i % SPLIT_3RD_SIZE == 0:
 		XML_Data_1st_Cache += XML_Data_2nd_Cache
@@ -40,6 +40,6 @@ for this in itm.elems:
 		print(f"\rProgress: {i}/{Danmaku_Count}, Time: {round(time.time()-Start_Time,3)}", end="")
 print(f"\rProgress: {i}/{Danmaku_Count}, Time: {round(time.time()-Start_Time,3)}")
 
-writeER(f"{sys.argv[1]}.XML", XML_Data_1st_Cache+XML_Data_2nd_Cache+XML_Data_3rd_Cache+f"</i>\n<!-- Create Time: {int(Last_Modified_Time)} -->")
+FileWriter(f"{sys.argv[1]}.XML", XML_Data_1st_Cache+XML_Data_2nd_Cache+XML_Data_3rd_Cache+f"</i>\n<!-- Create Time: {int(Last_Modified_Time)} -->")
 End_Time = time.time()
 print(f"\r{Danmaku_Count}, 总计用时：{round(End_Time-Start_Time, 4)}                     ")

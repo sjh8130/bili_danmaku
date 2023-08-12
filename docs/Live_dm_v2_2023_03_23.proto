@@ -13,10 +13,10 @@
 //[0][10]   chatBubbleType                      root\\12\\1
 //[0][11]   chatBubbleColor                     root\\12\\2
 //[0][12]   dm_type                             root\\13
-//[0][13]   emoticonOptions                     
+//[0][13]   emoticonOptions                     root\\14!
 //[0][14]   voice                               root\\15
-//[0][15]   emoticons/modeInfo                  root\\14
-//[0][16]   Aggregation/danmakuAggregation      
+//[0][15]   emoticons/modeInfo                  root\\14!
+//[0][16]   Aggregation/danmakuAggregation      root\\17
 //[0][17]   chatBubbleId                        root\\12\\3
 //[1]       text/content                        root\\6
 //[2][0]    userInfo->  uid                     root\\20\\1
@@ -32,8 +32,8 @@
 //[3][2]    fansMedal-> anchorUsername          root\\21\\2
 //[3][3]    fansMedal-> RoomID                  
 //[3][4]    fansMedal-> medalColor              root\\20\\11\\4
-//[3][5]    fansMedal-> special                 
-//[3][6]    fansMedal-> iconId                  
+//[3][5]    fansMedal-> special                 root\\20\\11\\3
+//[3][6]    fansMedal-> iconId                  root\\20\\11\\5
 //[3][7]    fansMedal-> medalColorBorder        root\\20\\11\\6
 //[3][8]    fansMedal-> medalColorStart         root\\20\\11\\7
 //[3][9]    fansMedal-> medalColorEnd           root\\20\\11\\8
@@ -72,21 +72,22 @@ message Dm {
     string                  uhash           = 5;    // [0] [7] 发送者midHash
     string                  text            = 6;    // [1]     弹幕正文
     int64                   date            = 7;    // [0] [4] 发送时间TimeStamp(ms)
-    int32                   weight          = 8;    // [#][##]
+    int32                   weight          = 8;    // 
     int64                   rnd             = 9;    // [0] [5]
-    int64                   attr            = 10;   // [#][##]
-    BizScene                biz_scene       = 11;   // [#][##]
+    int64                   attr            = 10;   // 
+    BizScene                biz_scene       = 11;   // 
     Bubble                  bubble          = 12;   // [0][11] chatBubble
     DmType                  dm_type         = 13;   // [0][12] DmType
-    map<string,Emoticon>    emoticons       = 14;   // [0][15] 表情 repeated
+    // map<string,Emoticon>    emoticons       = 14;   // [0][15] 表情 repeated
+    repeated emots          emoticons       = 14;   // [0][15] 表情 repeated
     Voice                   voice           = 15;   // [0][14]
     string                  animation       = 16;   // 
     Aggregation             aggregation     = 17;   // [0][16] 抽奖
-    bool                    send_from_me    = 18;   // 
+    bool                    send_from_me    = 18;   // [0][15].extra
     Check                   check           = 19;   // [9]   
     User                    user            = 20;   // [2]    用户主站信息
-    Room                    room            = 21;   // [3]    粉丝牌
-    Icon                    icon            = 22;   //
+    Room                    room            = 21;   // [3]    粉丝勋章
+    Icon                    icon            = 22;   // [0][15].extra
     bytes                   unknown23       = 23;   //
     bytes                   unknown24       = 24;   //
     bytes                   unknown25       = 25;   //
@@ -99,12 +100,12 @@ message Dm {
     bytes                   unknown32       = 32;   //
 }
 enum BizScene{                                      //11
-    BizSceneNone                            = 0;
-    BizSceneLottery                         = 1;
-    BizSceneSurvive                         = 2;
-    BizSceneVoiceConn                       = 3;
-    BizScenePlayBack                        = 4;
-    BizSceneVote                            = 5;
+    BizSceneNone                            = 0;    
+    BizSceneLottery                         = 1;    
+    BizSceneSurvive                         = 2;    //抽奖
+    BizSceneVoiceConn                       = 3;    
+    BizScenePlayBack                        = 4;    
+    BizSceneVote                            = 5;    
 }
 enum DmType{                                        //13
     DmTypeNormal                            = 0;
@@ -128,6 +129,10 @@ message Bubble{                                     //12
     string      color                       = 2;    // [0][11]
     int64       id_v2                       = 3;    // [0][17]
 }
+message emots{                                      //14-1
+    string      key                         = 1;    // [0][15].extra.emots
+    Emoticon    value                       = 2;    // [0][15].extra.emots
+}
 message Emoticon{                                   //14-2
     //bilibiliDm.community.service.dm.live.Emoticon
     string      unique                      = 1;    // [0][15].extra.emots.emoticon_unique
@@ -140,11 +145,11 @@ message Emoticon{                                   //14-2
 }
 message Voice{                                      //15
     //bilibiliDm.community.service.dm.live.Voice
-    string      url                         = 1;
-    string      file_format                 = 2;
-    string      text                        = 3;
-    int64       file_duration               = 4;
-    string      file_id                     = 5;
+    string      url                         = 1;    // [0][14]
+    string      file_format                 = 2;    // [0][14]
+    string      text                        = 3;    // [0][14]
+    int64       file_duration               = 4;    // [0][14]
+    string      file_id                     = 5;    // [0][14]
 }
 message Aggregation{                                //17
     //bilibiliDm.community.service.dm.live.Aggregation
@@ -154,7 +159,7 @@ message Aggregation{                                //17
     int32       not_show                    = 4;    // [0][16]
 }
 message User{                                       //20
-    //v.bilibiliDm.community.service.dm.live.User
+    //bilibiliDm.community.service.dm.live.User
     int64       uid                         = 1;    // [2][0] 用户uid
     string      name                        = 2;    // [2][1] 昵称
     string      name_color                  = 3;    // [2][7] usernameColor
@@ -163,9 +168,9 @@ message User{                                       //20
     int64       svip                        = 6;    // [2][4]
     int32       rank                        = 7;    // [2][5]
     int32       mobile_verify               = 8;    // [2][6] 手机号验证
-    int64       lpl_status                  = 9;    // 
+    int64       lpl_status                  = 9;    // [14]?
     int64       attr                        = 10;   // [2][2] 房管 isAdmin
-    Medal       medal                       = 11;   // [3] 粉丝牌
+    Medal       medal                       = 11;   // [3] 粉丝勋章
     UserLevel   level                       = 12;   // [4] 用户直播区信息
     Title       title                       = 13;   // [5] 头衔
     Identify    identify                    = 14;   //
@@ -179,28 +184,28 @@ message Identify{                                   //20-14
 }
 message Medal{                                      //20-11
     //bilibiliDm.community.service.dm.live.Medal
-    int64       level                       = 1;    // [3][0] 粉丝牌等级
-    string      name                        = 2;    // [3][1] 粉丝团称号
-    string      special                     = 3;    // 
+    int64       level                       = 1;    // [3][0] 粉丝勋章等级
+    string      name                        = 2;    // [3][1] 粉丝勋章称号
+    string      special                     = 3;    // [3][5]
     int64       color                       = 4;    // [3][4]
-    int64       icon_id                     = 5;    // 
+    int64       icon_id                     = 5;    // [3][6]
     int64       border_color                = 6;    // [3][8]
     int64       gradient_start_color        = 7;    // [3][7]
     int64       gradient_end_color          = 8;    // [3][9]
-    int64       privilege                   = 9;    // [3][10] 粉丝牌舰长等级
-    int64       light                       = 10;   // [3][11]?
+    int64       privilege                   = 9;    // [3][10] 粉丝勋章 舰长等级
+    int64       light                       = 10;   // [3][11]
 }
 message UserLevel{                                  //20-12
     //bilibiliDm.community.service.dm.live.UserLevel
     int64       level                       = 1;    // [4][0]
     int64       color                       = 2;    // [4][2]
     string      rank                        = 3;    // [4][3]
-    int64       online_rank                 = 4;    // [4][4]高能榜实时排名(仅前三)
+    int64       online_rank                 = 4;    // [4][4] 高能榜实时排名(仅前三)
 }
 message Title{                                      //20-13
     //bilibiliDm.community.service.dm.live.Title
-    string      title1                      = 1;    // [5][x]
-    string      old_title                   = 2;    // [5][x]
+    string      title1                      = 1;    // [5]
+    string      old_title                   = 2;    // [5]
 }
 message Record{
     //bilibiliDm.community.service.dm.live.Record
@@ -209,11 +214,11 @@ message Record{
 }
 message Wealth{                                     //20-15
     //bilibiliDm.community.service.dm.live.Wealth
-    int64       level                       = 1;
+    int64       level                       = 1;    // [16][0]
 }
 message Icon{                                       //22
     // bilibiliDm.community.service.dm.live.Icon
-    Prefix      prefix                      = 1;
+    Prefix      prefix                      = 1;    //[0][15].extra.icon
 }
 message Prefix{
     // bilibiliDm.community.service.dm.live.Prefix

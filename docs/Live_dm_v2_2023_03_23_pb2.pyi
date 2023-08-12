@@ -2,7 +2,7 @@ from google.protobuf.internal import containers as _containers
 from google.protobuf.internal import enum_type_wrapper as _enum_type_wrapper
 from google.protobuf import descriptor as _descriptor
 from google.protobuf import message as _message
-from typing import ClassVar as _ClassVar, Mapping as _Mapping, Optional as _Optional, Union as _Union
+from typing import ClassVar as _ClassVar, Iterable as _Iterable, Mapping as _Mapping, Optional as _Optional, Union as _Union
 
 DESCRIPTOR: _descriptor.FileDescriptor
 
@@ -32,13 +32,6 @@ DmTypeVoice: DmType
 
 class Dm(_message.Message):
     __slots__ = ["dmid", "mode", "size", "color", "uhash", "text", "date", "weight", "rnd", "attr", "biz_scene", "bubble", "dm_type", "emoticons", "voice", "animation", "aggregation", "send_from_me", "check", "user", "room", "icon", "unknown23", "unknown24", "unknown25", "unknown26", "unknown27", "unknown28", "unknown29", "unknown30", "unknown31", "unknown32"]
-    class EmoticonsEntry(_message.Message):
-        __slots__ = ["key", "value"]
-        KEY_FIELD_NUMBER: _ClassVar[int]
-        VALUE_FIELD_NUMBER: _ClassVar[int]
-        key: str
-        value: Emoticon
-        def __init__(self, key: _Optional[str] = ..., value: _Optional[_Union[Emoticon, _Mapping]] = ...) -> None: ...
     DMID_FIELD_NUMBER: _ClassVar[int]
     MODE_FIELD_NUMBER: _ClassVar[int]
     SIZE_FIELD_NUMBER: _ClassVar[int]
@@ -84,7 +77,7 @@ class Dm(_message.Message):
     biz_scene: BizScene
     bubble: Bubble
     dm_type: DmType
-    emoticons: _containers.MessageMap[str, Emoticon]
+    emoticons: _containers.RepeatedCompositeFieldContainer[emots]
     voice: Voice
     animation: str
     aggregation: Aggregation
@@ -103,7 +96,7 @@ class Dm(_message.Message):
     unknown30: bytes
     unknown31: bytes
     unknown32: bytes
-    def __init__(self, dmid: _Optional[str] = ..., mode: _Optional[int] = ..., size: _Optional[int] = ..., color: _Optional[int] = ..., uhash: _Optional[str] = ..., text: _Optional[str] = ..., date: _Optional[int] = ..., weight: _Optional[int] = ..., rnd: _Optional[int] = ..., attr: _Optional[int] = ..., biz_scene: _Optional[_Union[BizScene, str]] = ..., bubble: _Optional[_Union[Bubble, _Mapping]] = ..., dm_type: _Optional[_Union[DmType, str]] = ..., emoticons: _Optional[_Mapping[str, Emoticon]] = ..., voice: _Optional[_Union[Voice, _Mapping]] = ..., animation: _Optional[str] = ..., aggregation: _Optional[_Union[Aggregation, _Mapping]] = ..., send_from_me: bool = ..., check: _Optional[_Union[Check, _Mapping]] = ..., user: _Optional[_Union[User, _Mapping]] = ..., room: _Optional[_Union[Room, _Mapping]] = ..., icon: _Optional[_Union[Icon, _Mapping]] = ..., unknown23: _Optional[bytes] = ..., unknown24: _Optional[bytes] = ..., unknown25: _Optional[bytes] = ..., unknown26: _Optional[bytes] = ..., unknown27: _Optional[bytes] = ..., unknown28: _Optional[bytes] = ..., unknown29: _Optional[bytes] = ..., unknown30: _Optional[bytes] = ..., unknown31: _Optional[bytes] = ..., unknown32: _Optional[bytes] = ...) -> None: ...
+    def __init__(self, dmid: _Optional[str] = ..., mode: _Optional[int] = ..., size: _Optional[int] = ..., color: _Optional[int] = ..., uhash: _Optional[str] = ..., text: _Optional[str] = ..., date: _Optional[int] = ..., weight: _Optional[int] = ..., rnd: _Optional[int] = ..., attr: _Optional[int] = ..., biz_scene: _Optional[_Union[BizScene, str]] = ..., bubble: _Optional[_Union[Bubble, _Mapping]] = ..., dm_type: _Optional[_Union[DmType, str]] = ..., emoticons: _Optional[_Iterable[_Union[emots, _Mapping]]] = ..., voice: _Optional[_Union[Voice, _Mapping]] = ..., animation: _Optional[str] = ..., aggregation: _Optional[_Union[Aggregation, _Mapping]] = ..., send_from_me: bool = ..., check: _Optional[_Union[Check, _Mapping]] = ..., user: _Optional[_Union[User, _Mapping]] = ..., room: _Optional[_Union[Room, _Mapping]] = ..., icon: _Optional[_Union[Icon, _Mapping]] = ..., unknown23: _Optional[bytes] = ..., unknown24: _Optional[bytes] = ..., unknown25: _Optional[bytes] = ..., unknown26: _Optional[bytes] = ..., unknown27: _Optional[bytes] = ..., unknown28: _Optional[bytes] = ..., unknown29: _Optional[bytes] = ..., unknown30: _Optional[bytes] = ..., unknown31: _Optional[bytes] = ..., unknown32: _Optional[bytes] = ...) -> None: ...
 
 class Check(_message.Message):
     __slots__ = ["token", "ts"]
@@ -132,6 +125,14 @@ class Bubble(_message.Message):
     color: str
     id_v2: int
     def __init__(self, id: _Optional[int] = ..., color: _Optional[str] = ..., id_v2: _Optional[int] = ...) -> None: ...
+
+class emots(_message.Message):
+    __slots__ = ["key", "value"]
+    KEY_FIELD_NUMBER: _ClassVar[int]
+    VALUE_FIELD_NUMBER: _ClassVar[int]
+    key: str
+    value: Emoticon
+    def __init__(self, key: _Optional[str] = ..., value: _Optional[_Union[Emoticon, _Mapping]] = ...) -> None: ...
 
 class Emoticon(_message.Message):
     __slots__ = ["unique", "url", "is_dynamic", "in_player_area", "bulge_display", "height", "width"]

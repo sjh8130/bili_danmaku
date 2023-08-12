@@ -6,7 +6,7 @@ import sys
 import io
 
 
-def writeER(filename: str, data, gz: bool = False, binary_: bool = False):
+def FileWriter(filename: str, data, gz: bool = False, binary_: bool = False):
 	"""
 	Text
 	"""

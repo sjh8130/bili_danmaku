@@ -1,5 +1,5 @@
 #!/dev/null
-def Danmaku_ATTR_TYPE(attr: int):
+def DanmakuAttrType(attr: int):
 	"""
 	Text
 	"""

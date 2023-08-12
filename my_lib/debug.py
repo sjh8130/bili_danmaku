@@ -37,8 +37,8 @@ a = [
 "Undefined",
 "Undefined"
 ]
-def flag_debug(pflag):
+def SettingsDebug(settings):
 	return
-	for i in range(len(pflag)):
-		print(f"[Debug_Flag] {a[i]}\t{pflag[i]}")
+	for i in range(len(settings)):
+		print(f"[Debug_Flag] {a[i]}\t{settings[i]}")
 	return

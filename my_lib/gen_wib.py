@@ -19,6 +19,7 @@ def getMixinKey(orig: str):
     '对 imgKey 和 subKey 进行字符顺序打乱编码'
     return reduce(lambda s, i: s + orig[i], mixinKeyEncTab, '')[:32]
 # 2023 07 14 eff8fb5b467723ee33a907cfcd224a4a
+# 2023 08 10 ea1db124af3c7062474693fa704f4ff8
 
 def encWbi(params: dict, img_key: str, sub_key: str):
     '为请求参数进行 wbi 签名'

@@ -5,7 +5,7 @@ for BV_AV_base58_i in range(58): BV_AV_base58_dic[BV_AV_table[BV_AV_base58_i]] =
 s = [11, 10, 3, 8, 4, 6]
 BV_AV_xor = 177451812
 BV_AV_add = 8728348608
-def BV_to_AV(input_BV: str):
+def BV2AV(input_BV: str):
 	"""
 	Text
 	"""
@@ -16,7 +16,7 @@ def BV_to_AV(input_BV: str):
 	return out
 
 
-def AV_to_BV(input_AV: int):
+def AV2BV(input_AV: int):
 	"""
 	Text
 	"""

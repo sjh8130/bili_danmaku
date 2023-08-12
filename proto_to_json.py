@@ -9,18 +9,18 @@ import time
 try: import zzzz as dm_pb2
 except ModuleNotFoundError: import dm_pb2
 
-from my_lib.file_writer import writeER
+from my_lib.file_writer import FileWriter
 
 if __name__ == '__main__':
-	tag_LiveRecording = False
+	is_live_recording = False
 	time1 = time.time()
 	print("read")
-	Danmaku_Binary = open(sys.argv[1], "rb").read()
+	danmaku_binary = open(sys.argv[1], "rb").read()
 
 	time2 = time.time()
 	print("proto")
 	Temp_Binary = dm_pb2.DmSegMobileReply()
-	Temp_Binary.ParseFromString(Danmaku_Binary)
+	Temp_Binary.ParseFromString(danmaku_binary)
 
 	if len(Temp_Binary.elems) == 0:
 		print("No Data")
@@ -30,7 +30,7 @@ if __name__ == '__main__':
 	j1 = json.loads(MessageToJson(Temp_Binary, indent=0))
 	for this in Temp_Binary.elems:
 		if this.attr == 2:
-			tag_LiveRecording = True
+			is_live_recording = True
 			break
 	for this in j1["elems"]:
 		try:
@@ -75,13 +75,13 @@ if __name__ == '__main__':
 	j1["info"]["danmaku_proto_reported"] = 0
 	j1["info"]["File_Create_Time"] = int(os.stat(sys.argv[1]).st_ctime)
 	j1["info"]["File_Create_Time_Start"] = int(os.stat(sys.argv[1]).st_ctime)
-	j1["info"]["is_live_record"] = tag_LiveRecording
+	j1["info"]["is_live_record"] = is_live_recording
 	Write_Data = json.dumps(j1, ensure_ascii=False, separators=(',', ':'))
 
 	Temp_Binary = None
 	time4 = time.time()
 	print("write")
-	writeER(f"{sys.argv[1]}.json", Write_Data.replace("},{\"id\"", "},\x0a{\"id\"").replace(", \"test20\": \"0\", \"test21\": \"0\"", ""))
+	FileWriter(f"{sys.argv[1]}.json", Write_Data.replace("},{\"id\"", "},\x0a{\"id\"").replace(", \"test20\": \"0\", \"test21\": \"0\"", ""))
 	# writeER(f"{sys.argv[1]}.json", Write_Data.replace("}, {\"id\"", "},\x0a{\"id\"").replace(", \"test20\": \"0\", \"test21\": \"0\"", ""), True)
 	time5 = time.time()
 
