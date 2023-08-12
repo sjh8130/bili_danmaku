@@ -68,7 +68,7 @@ message Button {
     //
     string text = 1;
     //
-    int32 action = 2;
+    ToastFunctionType action = 2;
 }
 
 //
@@ -109,7 +109,7 @@ message CheckBox {
 enum CheckboxType {
     CheckboxTypeNone      = 0; //
     CheckboxTypeEncourage = 1; //
-    CheckboxTypeColorDM   = 2; //
+    CheckboxTypeColorDM   = 2; //?
 }
 
 //
@@ -117,7 +117,7 @@ message CheckBoxV2 {
     //
     string text = 1;
     //
-    int32 type = 2;
+    CheckboxType type = 2;
     //
     bool default_value = 3;
 }
@@ -151,18 +151,18 @@ message ClickButtonV2 {
     //
     repeated string landscape_text_focus = 4;
     //
-    int32 render_type = 5;
+    RenderType render_type = 5;
     //
     bool text_input_post = 6;
     //
     bool exposure_once = 7;
     //
-    int32 exposure_type = 8;
+    ExposureType exposure_type = 8;
 }
 
 // 互动弹幕条目信息
 message CommandDm {
-    // 弹幕id
+    // 弹幕id   Deleted
     int64 id = 1;
     // 对象视频cid
     int64 oid = 2;
@@ -171,9 +171,9 @@ message CommandDm {
     // 互动弹幕指令
     string command = 4;
     // 互动弹幕正文
-    string content = 5;
+    string text = 5;
     // 出现时间
-    int32 progress = 6;
+    int32 stime = 6;
     // 创建时间
     string ctime = 7;
     // 发布时间
@@ -181,7 +181,7 @@ message CommandDm {
     // 扩展json数据
     string extra = 9;
     // 弹幕id str类型
-    string idStr = 10;
+    string dmid = 10;
 }
 
 // 弹幕ai云屏蔽列表
@@ -236,6 +236,7 @@ message DanmakuElem {
     string animation = 22;
     // TBD
     bytes test23 = 23;
+    //
     DmColorfulType colorful = 24;
 }
 
@@ -335,18 +336,18 @@ message DanmuWebPlayerConfig {
     bool dm_switch                    = 1;  // 是否开启弹幕
     bool ai_switch                    = 2;  // 是否开启智能云屏蔽
     int32 ai_level                    = 3;  // 智能云屏蔽等级
-    bool blocktop                     = 4;  // 是否屏蔽顶端弹幕
-    bool blockscroll                  = 5;  // 是否屏蔽滚动弹幕
-    bool blockbottom                  = 6;  // 是否屏蔽底端弹幕
-    bool blockcolor                   = 7;  // 是否屏蔽彩色弹幕
-    bool blockspecial                 = 8;  // 是否屏蔽重复弹幕
+    bool type_top                     = 4;  // 是否屏蔽顶端弹幕
+    bool type_scroll                  = 5;  // 是否屏蔽滚动弹幕
+    bool type_bottom                  = 6;  // 是否屏蔽底端弹幕
+    bool type_color                   = 7;  // 是否屏蔽彩色弹幕
+    bool type_special                 = 8;  // 是否屏蔽重复弹幕
     bool preventshade                 = 9;  // 
     bool dmask                        = 10; // 
     float opacity                     = 11; // 
     int32 dmarea                      = 12; // 
     float speedplus                   = 13; // 
     float fontsize                    = 14; // 弹幕字号
-    bool screensync                   = 15; // 
+    bool fullscreensync               = 15; // 
     bool speedsync                    = 16; // 
     string fontfamily                 = 17; // 
     bool bold                         = 18; // 是否使用加粗
@@ -420,6 +421,8 @@ message DmSegMobileReply {
     DanmakuAIFlag ai_flag = 3;
     // 当前文件的结束时间(毫秒)
     int32 time = 4;
+    // 
+    repeated DmColorful colorful_src = 5;
 }
 
 // 获取弹幕-请求
@@ -579,6 +582,8 @@ message DmWebViewReply {
     repeated PostPanel post_panel = 13;
     //
     repeated string activity_meta = 14;
+    //
+    repeated PostPanelV2 postPanelV2 = 15;
 }
 
 //
@@ -632,7 +637,7 @@ message LabelV2 {
     //
     bool exposure_once = 3;
     //
-    int32 exposure_type = 4;
+    ExposureType exposure_type = 4;
 }
 
 //
@@ -689,9 +694,9 @@ enum PostPanelBizType {
     PostPanelBizTypeNone      = 0; //
     PostPanelBizTypeEncourage = 1; //
     PostPanelBizTypeColorDM   = 2; //
-    PostPanelBizTypeNFTDM     = 3; //
+    PostPanelBizTypeNFTDM     = 3; //?
     PostPanelBizTypeFragClose = 4; //
-    PostPanelBizTypeRecommend = 5; //
+    PostPanelBizTypeRecommend = 5; //?
 }
 
 //
@@ -715,7 +720,7 @@ message PostPanelV2 {
     //
     LabelV2 label = 9;
     //
-    int32 post_status = 10;
+    PostStatus post_status = 10;
 }
 
 //
@@ -834,7 +839,7 @@ message ToastButtonV2 {
     //
     string text = 1;
     //
-    int32 action = 2;
+    ToastFunctionType action = 2;
 }
 
 //
@@ -894,6 +899,17 @@ message VideoSubtitle {
     repeated SubtitleItem subtitles = 3;
 }
 enum DmColorfulType{
-	NoneType = 0;
-	VipGradualColor = 60001;
+    NoneType = 0;
+    VipGradualColor = 60001;
+}
+enum ToastBizType{
+    ToastBizTypeNone = 0;
+    ToastBizTypeEncourage = 1;
+}
+message DmColorful{
+    DmColorfulType type = 1;
+    string src = 2;
+}
+message AnyBody{
+    google.protobuf.Any body = 1;
 }

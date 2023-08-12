@@ -1,8 +1,8 @@
 #!/dev/null
-from my_lib.attr import Danmaku_ATTR_TYPE
+from my_lib.attr import DanmakuAttrType
 
 
-def json2xml(this, exdata, enable_weight, dmk_Ver):
+def Json2XML(this, exdata, enable_weight, dmk_Ver):
 	"""
 	Text
 	"""
@@ -70,7 +70,7 @@ def json2xml(this, exdata, enable_weight, dmk_Ver):
 
 	# if content == "": return ""
 	content = content.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace("\x00", " ").replace( "\x08", " ").replace("\x14", " ").replace("\x17", " ").replace("\x0a", "\\n").replace("\x0d", "\\r")
-	if exdata: Extra_Data = f"<!-- {Danmaku_ATTR_TYPE(attr)}{usermid}{likes}{replyCount}{proc_4(t16,t17,t20,t21)}{action}{animation}-->".replace("  ", " ")
+	if exdata: Extra_Data = f"<!-- {DanmakuAttrType(attr)}{usermid}{likes}{replyCount}{proc_4(t16,t17,t20,t21)}{action}{animation}-->".replace("  ", " ")
 	return f"\t<d p=\"{format(progress/1000, '.5f')},{mode},{fontsize},{color},{sendtime},{pool},{midHash},{id_},{weight}\">{content}</d>{Extra_Data}\n"
 
 def proc_4(a,b,c,d):

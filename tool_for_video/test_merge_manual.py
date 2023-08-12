@@ -6,7 +6,7 @@ import sys
 """
 修视频？
 """
-err_c = 0
+err_count = 0
 argv = ["XXXX", "", "", ""]
 if len(sys.argv) < 3:
 	if len(sys.argv) == 2:
@@ -17,7 +17,7 @@ if len(sys.argv) < 3:
 		# elif argv[-4:] == ".265": argv[3] = "V"
 		else:
 			print("Error")
-			err_c=100
+			err_count+=100
 	else:
 		argv[1] = input("file 1 : ").lstrip("\"").rstrip("\"")
 		argv[2] = input("file 2 : ").lstrip("\"").rstrip("\"")
@@ -47,7 +47,7 @@ with open(IN_INFO_1, "r") as HASH_1, \
 	io.open(OUT__FILE, "wb") as OUT_FI:
 	print_control = 0
 	output_frames = 0
-	output_F_size = 0
+	output_file_size = 0
 	PKT_1 = json.load(HASH_1)["packets"]
 	PKT_2 = json.load(HASH_2)["packets"]
 	HASH_1.close()
@@ -71,7 +71,7 @@ with open(IN_INFO_1, "r") as HASH_1, \
 		if j < LEN_P2:
 			pkt2 = PKT_2[j]
 
-		if err_c >= 100:
+		if err_count >= 100:
 			print("too many Error")
 			break
 
@@ -81,37 +81,37 @@ with open(IN_INFO_1, "r") as HASH_1, \
 			if print_control != 1: print()
 			print_control = 1
 			output_frames += 1
-			output_F_size += int(pkt1["size"])
+			output_file_size += int(pkt1["size"])
 			k = "A"
 			i += 1
 			j += 1
-			print(f"{OUT_A}\t{output_frames}\t{skip_count}\t{i+1}\t{j+1}\t{output_F_size}", end="\r")
+			print(f"{OUT_A}\t{output_frames}\t{skip_count}\t{i+1}\t{j+1}\t{output_file_size}", end="\r")
 		else:
 			if (k.__contains__("L") and i <= LEN_P1-1) or (i < LEN_P1 and j == LEN_P2):
 				if k.__contains__("S"):
 					skip_count += 1
-					print(f"{OUT_S}\t{output_frames}\t{skip_count}\t{i+1}\t{j+1}\t{output_F_size}", end="\r")
+					print(f"{OUT_S}\t{output_frames}\t{skip_count}\t{i+1}\t{j+1}\t{output_file_size}", end="\r")
 				else:
 					FILE_1.seek(int(pkt1["pos"]))
 					OUT_FI.write(FILE_1.read(int(pkt1["size"])))
 					if print_control != 0: print()
 					print_control = 0
 					output_frames += 1
-					output_F_size += int(pkt1["size"])
-					print(f"{OUT_L}\t{output_frames}\t{skip_count}\t{i+1}\t{j+1}\t{output_F_size}", end="\r")
+					output_file_size += int(pkt1["size"])
+					print(f"{OUT_L}\t{output_frames}\t{skip_count}\t{i+1}\t{j+1}\t{output_file_size}", end="\r")
 				i += 1
 			elif k.__contains__("R"):
 				if k.__contains__("S"):
 					skip_count += 1
-					print(f"{OUT_S}\t{output_frames}\t{skip_count}\t{i+1}\t{j+1}\t{output_F_size}", end="\r")
+					print(f"{OUT_S}\t{output_frames}\t{skip_count}\t{i+1}\t{j+1}\t{output_file_size}", end="\r")
 				else:
 					FILE_2.seek(int(pkt2["pos"]))
 					OUT_FI.write(FILE_2.read(int(pkt2["size"])))
 					print_control = 2
 					output_frames += 1
-					output_F_size += int(pkt2["size"])
+					output_file_size += int(pkt2["size"])
 					if print_control != 2: print()
-					print(f"{OUT_R}\t{output_frames}\t{skip_count}\t{i+1}\t{j+1}\t{output_F_size}", end="\r")
+					print(f"{OUT_R}\t{output_frames}\t{skip_count}\t{i+1}\t{j+1}\t{output_file_size}", end="\r")
 				j += 1
 			elif k == "A": k = input("\nNext:")
 			elif i == LEN_P1 and j == LEN_P2:
@@ -120,7 +120,7 @@ with open(IN_INFO_1, "r") as HASH_1, \
 				print("too many skip")
 				break
 			else:
-				err_c += 1
+				err_count += 1
 				print("Error")
 	OUT_FI.close()
 	print()
@@ -128,4 +128,4 @@ with open(IN_INFO_1, "r") as HASH_1, \
 	print(f"A\t{LEN_P1}\t\t{os.stat(IN_FILE_1).st_size}")
 	print(f"B\t{LEN_P2}\t\t{os.stat(IN_FILE_2).st_size}")
 	print(f"Sum\t{LEN_P1+LEN_P2}\t\t{os.stat(IN_FILE_1).st_size+os.stat(IN_FILE_2).st_size}")
-	print(f"F\t{output_frames}\t\t{output_F_size}")
+	print(f"F\t{output_frames}\t\t{output_file_size}")

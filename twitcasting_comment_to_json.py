@@ -32,17 +32,17 @@ headers = {
 session = requests.Session()
 
 
-def downloader(page, retries=0):
+def Downloader(page, retries=0):
 	url = f"https://{TWITCASTING_URL}/{user}/moviecomment/{movie_id}-{page}"
 	print(url, "Retries:", retries)
 	try:
-		time.sleep(0.5)
+		time.sleep(1.5)
 		content = session.request(method='GET', url=url, headers=headers, verify=False, timeout=30).content
 	except KeyboardInterrupt:
 		print("BREAK")
 		return "BREAK"
 	except:
-		content = downloader(page, retries+1)
+		content = Downloader(page, retries+1)
 	return content
 
 
@@ -50,7 +50,7 @@ out = {"comment": [], "info": {"user": user, "movie_id": int(movie_id), "title":
 page_num = 0
 while (page_num <= int(page_count)):
 	# a = open(f"twitcasting_{user}_{movie_id}_{page}.html", encoding="utf-8").read()
-	page = downloader(page_num)
+	page = Downloader(page_num)
 	if page == "BREAK":
 		break
 	comments = list(bs4.BeautifulSoup(page, "lxml").select(".tw-comment-history-item", limit=999))
