@@ -2,7 +2,7 @@
 from google.protobuf.json_format import MessageToJson
 import ssl
 import requests
-from binascii import crc32
+# from binascii import crc32
 import time
 import json
 import sys

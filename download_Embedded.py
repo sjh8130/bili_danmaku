@@ -84,7 +84,7 @@ if __name__=='__main__':
 		p()
 		sys.exit()
 	except IndexError:pass
-	s=t=u=0
+	s,t,u=0
 	while True:
 		t=json.loads(q())["data"]["archives"][0]
 		if s!=t["aid"]:
