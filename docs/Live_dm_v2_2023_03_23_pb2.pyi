@@ -31,7 +31,7 @@ DmTypeEmoticon: DmType
 DmTypeVoice: DmType
 
 class Dm(_message.Message):
-    __slots__ = ["dmid", "mode", "size", "color", "uhash", "text", "date", "weight", "rnd", "attr", "biz_scene", "bubble", "dm_type", "emoticons", "voice", "animation", "aggregation", "send_from_me", "check", "user", "room", "icon", "unknown23", "unknown24", "unknown25", "unknown26", "unknown27", "unknown28", "unknown29", "unknown30", "unknown31", "unknown32"]
+    __slots__ = ["dmid", "mode", "size", "color", "uhash", "text", "date", "weight", "rnd", "attr", "biz_scene", "bubble", "dm_type", "emoticons", "voice", "animation", "aggregation", "send_from_me", "check", "user", "room", "icon", "reply", "unknown24", "unknown25", "unknown26", "unknown27", "unknown28", "unknown29", "unknown30", "unknown31", "unknown32"]
     DMID_FIELD_NUMBER: _ClassVar[int]
     MODE_FIELD_NUMBER: _ClassVar[int]
     SIZE_FIELD_NUMBER: _ClassVar[int]
@@ -54,7 +54,7 @@ class Dm(_message.Message):
     USER_FIELD_NUMBER: _ClassVar[int]
     ROOM_FIELD_NUMBER: _ClassVar[int]
     ICON_FIELD_NUMBER: _ClassVar[int]
-    UNKNOWN23_FIELD_NUMBER: _ClassVar[int]
+    REPLY_FIELD_NUMBER: _ClassVar[int]
     UNKNOWN24_FIELD_NUMBER: _ClassVar[int]
     UNKNOWN25_FIELD_NUMBER: _ClassVar[int]
     UNKNOWN26_FIELD_NUMBER: _ClassVar[int]
@@ -86,7 +86,7 @@ class Dm(_message.Message):
     user: User
     room: Room
     icon: Icon
-    unknown23: bytes
+    reply: Reply
     unknown24: bytes
     unknown25: bytes
     unknown26: bytes
@@ -96,7 +96,7 @@ class Dm(_message.Message):
     unknown30: bytes
     unknown31: bytes
     unknown32: bytes
-    def __init__(self, dmid: _Optional[str] = ..., mode: _Optional[int] = ..., size: _Optional[int] = ..., color: _Optional[int] = ..., uhash: _Optional[str] = ..., text: _Optional[str] = ..., date: _Optional[int] = ..., weight: _Optional[int] = ..., rnd: _Optional[int] = ..., attr: _Optional[int] = ..., biz_scene: _Optional[_Union[BizScene, str]] = ..., bubble: _Optional[_Union[Bubble, _Mapping]] = ..., dm_type: _Optional[_Union[DmType, str]] = ..., emoticons: _Optional[_Iterable[_Union[emots, _Mapping]]] = ..., voice: _Optional[_Union[Voice, _Mapping]] = ..., animation: _Optional[str] = ..., aggregation: _Optional[_Union[Aggregation, _Mapping]] = ..., send_from_me: bool = ..., check: _Optional[_Union[Check, _Mapping]] = ..., user: _Optional[_Union[User, _Mapping]] = ..., room: _Optional[_Union[Room, _Mapping]] = ..., icon: _Optional[_Union[Icon, _Mapping]] = ..., unknown23: _Optional[bytes] = ..., unknown24: _Optional[bytes] = ..., unknown25: _Optional[bytes] = ..., unknown26: _Optional[bytes] = ..., unknown27: _Optional[bytes] = ..., unknown28: _Optional[bytes] = ..., unknown29: _Optional[bytes] = ..., unknown30: _Optional[bytes] = ..., unknown31: _Optional[bytes] = ..., unknown32: _Optional[bytes] = ...) -> None: ...
+    def __init__(self, dmid: _Optional[str] = ..., mode: _Optional[int] = ..., size: _Optional[int] = ..., color: _Optional[int] = ..., uhash: _Optional[str] = ..., text: _Optional[str] = ..., date: _Optional[int] = ..., weight: _Optional[int] = ..., rnd: _Optional[int] = ..., attr: _Optional[int] = ..., biz_scene: _Optional[_Union[BizScene, str]] = ..., bubble: _Optional[_Union[Bubble, _Mapping]] = ..., dm_type: _Optional[_Union[DmType, str]] = ..., emoticons: _Optional[_Iterable[_Union[emots, _Mapping]]] = ..., voice: _Optional[_Union[Voice, _Mapping]] = ..., animation: _Optional[str] = ..., aggregation: _Optional[_Union[Aggregation, _Mapping]] = ..., send_from_me: bool = ..., check: _Optional[_Union[Check, _Mapping]] = ..., user: _Optional[_Union[User, _Mapping]] = ..., room: _Optional[_Union[Room, _Mapping]] = ..., icon: _Optional[_Union[Icon, _Mapping]] = ..., reply: _Optional[_Union[Reply, _Mapping]] = ..., unknown24: _Optional[bytes] = ..., unknown25: _Optional[bytes] = ..., unknown26: _Optional[bytes] = ..., unknown27: _Optional[bytes] = ..., unknown28: _Optional[bytes] = ..., unknown29: _Optional[bytes] = ..., unknown30: _Optional[bytes] = ..., unknown31: _Optional[bytes] = ..., unknown32: _Optional[bytes] = ...) -> None: ...
 
 class Check(_message.Message):
     __slots__ = ["token", "ts"]
@@ -293,3 +293,15 @@ class Prefix(_message.Message):
     type: int
     resource: str
     def __init__(self, type: _Optional[int] = ..., resource: _Optional[str] = ...) -> None: ...
+
+class Reply(_message.Message):
+    __slots__ = ["show_reply", "reply_mid", "reply_uname", "reply_uname_color"]
+    SHOW_REPLY_FIELD_NUMBER: _ClassVar[int]
+    REPLY_MID_FIELD_NUMBER: _ClassVar[int]
+    REPLY_UNAME_FIELD_NUMBER: _ClassVar[int]
+    REPLY_UNAME_COLOR_FIELD_NUMBER: _ClassVar[int]
+    show_reply: bool
+    reply_mid: int
+    reply_uname: str
+    reply_uname_color: str
+    def __init__(self, show_reply: bool = ..., reply_mid: _Optional[int] = ..., reply_uname: _Optional[str] = ..., reply_uname_color: _Optional[str] = ...) -> None: ...

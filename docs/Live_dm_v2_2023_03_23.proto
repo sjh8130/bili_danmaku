@@ -62,6 +62,7 @@
 //[16][??]                                      
 //[16][??]                                      
 //[16][??]                                      
+// DANMU_MSG dm_v2
 syntax = "proto3";
 package bilibiliDm.community.service.dm.live;
 message Dm {
@@ -88,7 +89,7 @@ message Dm {
     User                    user            = 20;   // [2]    用户主站信息
     Room                    room            = 21;   // [3]    粉丝勋章
     Icon                    icon            = 22;   // [0][15].extra
-    bytes                   unknown23       = 23;   //
+    Reply                   reply           = 23;   //
     bytes                   unknown24       = 24;   //
     bytes                   unknown25       = 25;   //
     bytes                   unknown26       = 26;   //
@@ -224,4 +225,10 @@ message Prefix{
     // bilibiliDm.community.service.dm.live.Prefix
     int32       type                        = 1;
     string      resource                    = 2;
+}
+message Reply{                                      //23
+    bool        show_reply                  = 1;    //[0][15].extra
+    int64       reply_mid                   = 2;    //[0][15].extra
+    string      reply_uname                 = 3;    //[0][15].extra
+    string      reply_uname_color           = 4;    //[0][15].extra
 }
