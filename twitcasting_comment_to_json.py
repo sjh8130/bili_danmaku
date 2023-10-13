@@ -61,12 +61,15 @@ while (page_num <= int(page_count)):
 		print(page_count)
 	for comment in comments:
 		out["comment"].append({
+			"type":"comment",
 			"id": int(comment.attrs['data-comment-id']),
-			"time": int(time.mktime(time.strptime(comment.select(".tw-comment-history-item__info__date")[0].attrs['datetime'], '%a, %d %b %Y %H:%M:%S %z'))),
-			"content": str(comment.select(".tw-comment-history-item__content__text")[0].contents[0]).lstrip("\n").lstrip("\t").lstrip(" ").rstrip(" "),
-			"user_id": comment.select(".tw-comment-history-item__details__user-link")[0].attrs['href'][1:],
-			"username": str(comment.select(".tw-comment-history-item__details__user-link")[0].contents[0]).lstrip("\n").lstrip("\t").lstrip(" ").rstrip(" "),
-			"user_img": ("https:"+comment.select(".tw-comment-history-item__user__icon")[0].attrs['src']).replace("https:https://", "https://")
+			"message": str(comment.select(".tw-comment-history-item__content__text")[0].contents[0]).lstrip("\n").lstrip("\t").lstrip(" ").rstrip(" "),
+			"createdAt": int(time.mktime(time.strptime(comment.select(".tw-comment-history-item__info__date")[0].attrs['datetime'], '%a, %d %b %Y %H:%M:%S %z'))),
+			"author":{
+				"id": comment.select(".tw-comment-history-item__details__user-link")[0].attrs['href'][1:],
+				"name": str(comment.select(".tw-comment-history-item__details__user-link")[0].contents[0]).lstrip("\n").lstrip("\t").lstrip(" ").rstrip(" "),
+				"profileImage": ("https:"+comment.select(".tw-comment-history-item__user__icon")[0].attrs['src']).replace("https:https://", "https://")
+			}
 		})
 	page_num += 1
 session.close()

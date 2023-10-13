@@ -67,21 +67,21 @@ with open(IN_INFO_1, "r") as HASH_1, \
 		if i == LEN_P1 and j == LEN_P2:
 			print("\n__END__")
 			break
-		pkt1 = PKT_1[i]
+		pktL = PKT_1[i]
 		if j < LEN_P2:
-			pkt2 = PKT_2[j]
+			pktR = PKT_2[j]
 
 		if err_count >= 100:
 			print("too many Error")
 			break
 
-		if pkt1["data_hash"] == pkt2["data_hash"] and i != LEN_P1-1:
-			FILE_1.seek(int(pkt1["pos"]))
-			OUT_FI.write(FILE_1.read(int(pkt1["size"])))
+		if pktL["data_hash"] == pktR["data_hash"] and i != LEN_P1-1:
+			FILE_1.seek(int(pktL["pos"]))
+			OUT_FI.write(FILE_1.read(int(pktL["size"])))
 			if print_control != 1: print()
 			print_control = 1
 			output_frames += 1
-			output_file_size += int(pkt1["size"])
+			output_file_size += int(pktL["size"])
 			k = "A"
 			i += 1
 			j += 1
@@ -92,12 +92,12 @@ with open(IN_INFO_1, "r") as HASH_1, \
 					skip_count += 1
 					print(f"{OUT_S}\t{output_frames}\t{skip_count}\t{i+1}\t{j+1}\t{output_file_size}", end="\r")
 				else:
-					FILE_1.seek(int(pkt1["pos"]))
-					OUT_FI.write(FILE_1.read(int(pkt1["size"])))
+					FILE_1.seek(int(pktL["pos"]))
+					OUT_FI.write(FILE_1.read(int(pktL["size"])))
 					if print_control != 0: print()
 					print_control = 0
 					output_frames += 1
-					output_file_size += int(pkt1["size"])
+					output_file_size += int(pktL["size"])
 					print(f"{OUT_L}\t{output_frames}\t{skip_count}\t{i+1}\t{j+1}\t{output_file_size}", end="\r")
 				i += 1
 			elif k.__contains__("R"):
@@ -105,11 +105,11 @@ with open(IN_INFO_1, "r") as HASH_1, \
 					skip_count += 1
 					print(f"{OUT_S}\t{output_frames}\t{skip_count}\t{i+1}\t{j+1}\t{output_file_size}", end="\r")
 				else:
-					FILE_2.seek(int(pkt2["pos"]))
-					OUT_FI.write(FILE_2.read(int(pkt2["size"])))
+					FILE_2.seek(int(pktR["pos"]))
+					OUT_FI.write(FILE_2.read(int(pktR["size"])))
 					print_control = 2
 					output_frames += 1
-					output_file_size += int(pkt2["size"])
+					output_file_size += int(pktR["size"])
 					if print_control != 2: print()
 					print(f"{OUT_R}\t{output_frames}\t{skip_count}\t{i+1}\t{j+1}\t{output_file_size}", end="\r")
 				j += 1
