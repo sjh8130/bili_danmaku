@@ -28,7 +28,7 @@ headers = {
 	'referer': "https://www.bilibili.com",
 	"Connection": "keep-alive"
 }
-SLEEP_TIME = 2
+SLEEP_TIME = 0.5
 network_request_count = [0, 0]
 err_sign = ""
 settings = []

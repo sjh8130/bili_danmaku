@@ -110,6 +110,9 @@ with open(in_path, "r", 1048576, encoding="utf-8") as F_in, io.open(outPath, "w"
 			try: del temp_json2["user"]["wealth"]
 			except: pass
 			del temp_json2["user"]
+
+			try: del temp_json2["reply"]
+			except: pass
 		F_out.write(json.dumps(temp_json2, ensure_ascii=False, indent=None, separators=(",", ":")) + "\n")
 	F_in.close()
 	F_out.close()

@@ -41,9 +41,9 @@ input_File = open(input_File, "r", encoding="utf-8").read()
 Loaded_JSON = json.loads(input_File)
 del input_File
 srt_index = 0
-if Loaded_JSON["version"] != "v1.3.1":
-	logging.warning("not supported")
-	time.sleep(5)
+# if Loaded_JSON["version"] != "v1.3.1":
+# 	logging.warning("not supported")
+# 	time.sleep(5)
 
 Final_SRT_Content = ""
 Final_LRC_Content = ""
