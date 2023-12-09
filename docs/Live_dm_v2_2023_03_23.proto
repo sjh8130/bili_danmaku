@@ -113,7 +113,7 @@ message User{                                       //20
     Title       title                       = 13;   // [5] 头衔
     Identify    identify                    = 14;   //
     Wealth      wealth                      = 15;   // 20230601~20230620
-    GroupMedal  group_medal                 = 16;   // 20230601~20230620
+    GroupMedal  group_medal                 = 16;   //
 }
 message Identify{                                   //20-14
     //bilibiliDm.community.service.dm.live.Identify
