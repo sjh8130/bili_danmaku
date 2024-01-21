@@ -16,8 +16,8 @@ message SendGiftBroadcast {
 	bool	switch = 11;
 	// bytes	unknown12 = 12;
 	WealthInfo	wealth_info = 13;
-	// bytes	unknown14 = 14;
-	// bytes	unknown15 = 15;
+	GroupMedalBrief	group_medal = 14;
+	UserInfo	sender_uinfo = 15;
 	// bytes	unknown16 = 16;
 	// bytes	unknown17 = 17;
 	// bytes	unknown18 = 18;
@@ -68,6 +68,7 @@ message GiftItem{
 	ReceiveUserInfo	receive_user_info = 29;
 	bool	is_join_receiver = 30;
 	BagGiftInfo	bag_gift = 31;
+	UserInfo receiver_uinfo = 33;
 }
 message ReceiveUserInfo{
 	string	uname = 1;
@@ -106,4 +107,35 @@ message MedalInfo{
 }
 message WealthInfo{
 	int64	level = 1;
+}
+message Base{
+	string	name = 1;
+	string	face = 2;
+	bool	is_mystery = 3;
+	int32	level = 4;
+}
+message UserInfo{
+	int64	uid = 1;
+	Base	base = 2;
+	UserInfoRCI risk_ctrl_info = 5;
+	UserInfoOGI origin_info = 6;
+	UserInfoOFI official_info = 7;
+}
+message GroupMedalBrief{
+	int64	medal_id = 1;
+	string	name = 2;
+	int64	is_lighted = 3;
+}
+message UserInfoRCI{
+	string	name = 1;
+	string	face = 2;
+}
+message UserInfoOGI{
+	string	name = 1;
+	string	face = 2;
+}
+message UserInfoOFI{
+	int32 role = 1;
+	string title = 2;
+	int32 type = 4;
 }
