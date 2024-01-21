@@ -16,6 +16,8 @@ right_pos_cache = -1
 danmaku:str
 with open(in_path, "r", 1048576, encoding="utf-8") as F_in, io.open(outPath, "w", encoding="utf-8") as F_out:
 	for this_line in F_in.readlines():
+		if this_line.find("DANMU_MSG") == -1: continue
+		if this_line.find("DANMU_MSG:3:7:1:1:1:1") == 1: continue
 		# line+=1;print(f"\r{line=}# ",end="") #-30%
 		for left_pos_cache in range(len(this_line)):
 			try:
@@ -31,8 +33,7 @@ with open(in_path, "r", 1048576, encoding="utf-8") as F_in, io.open(outPath, "w"
 				continue
 			else:
 				break
-		if danmaku['cmd'] != 'DANMU_MSG':
-			continue
+		# if danmaku['cmd'] != 'DANMU_MSG': continue
 		if danmaku['info'][0][9] != 0: continue#1:节奏风暴 2:天选时刻 9:弹幕互动游戏
 		if danmaku['info'][0][12] != 0: continue#0:文本 1:表情包 2:语音
 		dm_text = danmaku['info'][1]
