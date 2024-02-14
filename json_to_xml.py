@@ -13,7 +13,7 @@ Start_Time = time.time()
 input_File = sys.argv[1]
 if open(input_File, "rb").read(1) == b"\x7b": infile = open(input_File, "r", encoding="utf-8").read()
 if open(input_File, "rb").read(3) == b"\xeb\xbb\xbf": infile = open(input_File, "r", encoding="utf-8").read()
-if open(input_File, "rb").read(2) == b"\x1f\x8b": infile = str(gzip.open(input_File, "rb").read(), encoding="utf-8")
+if open(input_File, "rb").read(3) == b"\x1f\x8b\x08": infile = str(gzip.open(input_File, "rb").read(), encoding="utf-8")
 
 outputFile = input_File.rstrip(".gz").rstrip(".json").rstrip(".bin")+".xml"
 
@@ -43,7 +43,7 @@ except KeyError: commandDms_Len = 0
 try: Danmaku_Count = len(Loaded_JSON["elems"])
 except KeyError: Danmaku_Count = 0
 
-if Danmaku_Count == 0 and commandDms_Len ==0:
+if Danmaku_Count == 0 and commandDms_Len == 0:
 	# XML_Data_2nd_Cache = '<d p="0.00000,1,25,16776960,1660114514,9,ffffffff,99999999,9">_MARK_FOR_SEARCH_</d>\n'
 	print("No Data")
 	sys.exit()
@@ -53,7 +53,7 @@ if Danmaku_Count == 0 and commandDms_Len ==0:
 
 if commandDms_Len != 0:
 	for this in Loaded_JSON["commandDms"]:
-		if dmk_Ver in [0,1,2,3]:
+		if dmk_Ver in [0, 1, 2, 3]:
 			try: stime = this["progress"]
 			except KeyError: stime = 0
 		elif dmk_Ver in [4]:
@@ -71,9 +71,9 @@ for this in Loaded_JSON["elems"]:
 	if i % SPLIT_2ND_SIZE == 0:
 		XML_Data_2nd_Cache += XML_Data_3rd_Cache
 		XML_Data_3rd_Cache = ""
-		print(f"\rProgress: {i}/{Danmaku_Count}, Time: {round(time.time()-Start_Time,3)}",end="")
+		print(f"\rProgress: {i}/{Danmaku_Count}, Time: {round(time.time()-Start_Time,3)}", end="")
 	del this
 
-FileWriter(outputFile, XML_Data_1st_Cache+XML_Data_2nd_Cache+XML_Data_3rd_Cache+f"</i>\n<!-- Create Time: {Last_Modified_Time} -->")
+FileWriter(outputFile, XML_Data_1st_Cache+XML_Data_2nd_Cache + XML_Data_3rd_Cache+f"</i>\n<!-- Create Time: {Last_Modified_Time} -->")
 End_Time = time.time()
 print(f"\r{Danmaku_Count}, 总计用时：{round(End_Time-Start_Time, 4)}                     ")
