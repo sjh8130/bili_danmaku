@@ -1,12 +1,13 @@
 import io
 import json
 import time
+from zlib import crc32
 from google.protobuf.json_format import MessageToJson
 from base64 import b64decode
 # import Live_dm_v2_pb2 as live_dm
 import Live_dm_v2_2023_03_23_pb2 as live_dm
 import sys
-from filters import FILTER_WORDS
+from filters import HASHED_LIST
 
 """
 11th Intel Core : 9MB/s/1GHz
@@ -19,20 +20,21 @@ left_pos_cache = 0
 right_pos_cache = 0
 dm_proto = live_dm.Dm()
 with open(in_path, "r", 1048576, encoding="utf-8") as F_in, io.open(outPath, "w", encoding="utf-8") as F_out:
-	for item in F_in.readlines():
-		if item.find("dm_v2") == -1:
+	for this_line in F_in.readlines():
+		if this_line.find("dm_v2") == -1:
 			continue
-		right_pos_cache = len(item)
-		for left_pos_cache in range(len(item)):
+		right_pos_cache = len(this_line)
+		for left_pos_cache in range(len(this_line)):
 			try:
-				dm_proto.ParseFromString(b64decode(json.loads(item[left_pos_cache:right_pos_cache])["dm_v2"]))
+				dm_proto.ParseFromString(b64decode(json.loads(this_line[left_pos_cache:right_pos_cache])["dm_v2"]))
 			except json.decoder.JSONDecodeError as err:
 				if err.msg == "Extra data": left_pos_cache = err.pos
 				if err.msg == "Expecting value": right_pos_cache -= 1
 				continue
 			else:
 				break
-		if dm_proto.text.lstrip(" ").rstrip(" ").lstrip("　").rstrip("　").lower() in FILTER_WORDS or dm_proto.text.find("【")>0 or dm_proto.text.find("】")>0 or dm_proto.dm_type!=live_dm.DmTypeNormal:
+		# if dm_proto.text.lstrip(" ").rstrip(" ").lstrip("　").rstrip("　").lower() in FILTER_WORDS or dm_proto.text.find("【")>0 or dm_proto.text.find("】")>0 or dm_proto.dm_type!=live_dm.DmTypeNormal:
+		if crc32(bytes(dm_proto.text.lstrip(" ").rstrip(" ").lstrip("　").rstrip("　").lower(),encoding="utf-8")) in HASHED_LIST or dm_proto.text.find("【")>0 or dm_proto.text.find("】")>0 or dm_proto.dm_type!=live_dm.DmTypeNormal:
 			continue
 		temp_json2 = json.loads(MessageToJson(dm_proto, indent=0, including_default_value_fields=False))
 		temp_json2["text"] = temp_json2["text"].lstrip(" ").rstrip(" ").lstrip("　").rstrip("　")

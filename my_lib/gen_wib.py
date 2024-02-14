@@ -1,8 +1,11 @@
 from functools import reduce
 from hashlib import md5
+import ssl
 import urllib.parse
 import time
 import requests
+ssl._create_default_https_context = ssl._create_unverified_context
+requests.packages.urllib3.disable_warnings()
 
 mixinKeyEncTab = [
     46, 47, 18,  2, 53,  8, 23, 32,
@@ -41,7 +44,7 @@ def encWbi(params: dict, img_key: str, sub_key: str):
 
 def getWbiKeys() -> tuple[str, str]:
     '获取最新的 img_key 和 sub_key'
-    resp = requests.get('https://api.bilibili.com/x/web-interface/nav')
+    resp = requests.get('https://api.bilibili.com/x/web-interface/nav', verify=False)
     resp.raise_for_status()
     json_content = resp.json()
     img_url: str = json_content['data']['wbi_img']['img_url']

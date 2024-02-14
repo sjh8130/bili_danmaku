@@ -6,20 +6,20 @@ import logging
 
 logging.basicConfig(format='%(asctime)s [%(levelname)s] %(message)s', level=logging.INFO)
 
-def convert_srt_time(t):return f"{(t//3600000):02d}:{(t//60000%60):02d}:{(t//1000%60):02d},{(t%1000):03d}"
-def convert_lrc_time(t):return f"[{(t//60000):02d}:{(t//1000%60):02d}.{(t%1000//10):02d}]"
+def convert_srt_time(t): return f"{(t//3600000):02d}:{(t//60000%60):02d}:{(t//1000%60):02d},{(t%1000):03d}"
+def convert_lrc_time(t): return f"[{(t//60000):02d}:{(t//1000%60):02d}.{(t%1000//10):02d}]"
 def proc_ASS(item):
 	fi___itm = ""
 	fi_k_itm = ""
-	start_time= item['start_time']
-	end_time=   item['end_time']
-	def convert_ass_time(time):return f"{(time//3600000):01d}:{(time//60000%60):02d}:{(time//1000%60):02d}.{(time%1000):03d}"[0:-1]
+	start_time = item['start_time']
+	end_time = item['end_time']
+	def convert_ass_time(time): return f"{(time//3600000):01d}:{(time//60000%60):02d}:{(time//1000%60):02d}.{(time%1000):03d}"[0:-1]
 	def proc_karaoke(karaoke_item):
 		karaoke_word = f"\x7b\\K{int((karaoke_item[0]['end_time']-karaoke_item[0]['start_time'])/10)}\x7d{karaoke_item[0]['label']}"
 		if karaoke_item[0]['label'].isascii(): karaoke_word += " "
 		for timed_chars in range(len(karaoke_item)):
-			if timed_chars == 0:continue
-			karaoke_word+=f"\x7b\\K{int((karaoke_item[timed_chars]['end_time']-karaoke_item[timed_chars-1]['end_time'])/10)}\x7d{karaoke_item[timed_chars]['label']}"
+			if timed_chars == 0: continue
+			karaoke_word += f"\x7b\\K{int((karaoke_item[timed_chars]['end_time']-karaoke_item[timed_chars-1]['end_time'])/10)}\x7d{karaoke_item[timed_chars]['label']}"
 			if karaoke_item[timed_chars]['label'].isascii() and timed_chars != len(karaoke_item): karaoke_word += " "
 		return karaoke_word
 	fi___itm = f"Dialogue: 0,{convert_ass_time(start_time)},{convert_ass_time(end_time)},A,,0,0,0,,{item['transcript']}\n"
@@ -28,7 +28,8 @@ def proc_ASS(item):
 		# fi_k_itm = f"Dialogue: 1,{convert_ass_time(start_time)},{convert_ass_time(end_time)},B,,0,0,0,,{proc_karaoke(item['words'])}\n".replace("{\k0}","")
 	except KeyError:
 		pass
-	return fi___itm+fi_k_itm.replace(" \n","\n").replace("  "," ").replace(",,0,0,0,, ",",,0,0,0,,")
+	return fi___itm+fi_k_itm.replace(" \n", "\n").replace("  ", " ").replace(",,0,0,0,, ", ",,0,0,0,,")
+
 
 input_File = sys.argv[1]
 
@@ -70,8 +71,8 @@ for line in Loaded_JSON["utterances"]:
 	Final_LRC_Content += f"{convert_lrc_time(line['start_time'])}{line['transcript']}\n"
 	Final_TXT_Content += f"{line['transcript']}\n"
 	Final_ASS_Content += proc_ASS(line)
-	if line["start_time"]>36000000 or line["end_time"]>36000000: aegisub_time_overflow = True
-	if line["start_time"]>3600000: lrc_time_overflow = True
+	if line["start_time"] > 36000000 or line["end_time"] > 36000000: aegisub_time_overflow = True
+	if line["start_time"] > 3600000: lrc_time_overflow = True
 if lrc_time_overflow:
 	Final_LRC_Content += "[59:59.99]LRC时间溢出\n"
 	logging.warning("ASS 时间溢出")
