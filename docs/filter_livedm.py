@@ -13,6 +13,13 @@ right_pos_cache = -1
 dm_text: str
 danmaku: dict
 extra: dict
+counter_dict={}
+try:
+	...
+except:
+	...
+
+
 with open(in_path, "r", 1048576, encoding="utf-8") as F_in, io.open(outPath, "a", encoding="utf-8") as F_out:
 	for this_line in F_in.readlines():
 		if this_line.find("DANMU_MSG") == -1: continue
@@ -34,12 +41,15 @@ with open(in_path, "r", 1048576, encoding="utf-8") as F_in, io.open(outPath, "a"
 				break
 		# if danmaku['cmd'] != 'DANMU_MSG': continue
 		if danmaku['info'][0][9] != 0: continue  # 1:节奏风暴 2:天选时刻 9:弹幕互动游戏
-		if danmaku['info'][0][12] != 0: continue  # 0:文本 1:表情包 2:语音
+		if danmaku['info'][0][12] != 1: continue  # 0:文本 1:表情包 2:语音
 		dm_text = danmaku['info'][1]
 		dm_text = dm_text.lstrip(" ").rstrip(" ").lstrip("　").rstrip("　")
 		if dm_text in FILTER_WORDS or dm_text.lower() in FILTER_WORDS or dm_text.find("【") > 0 or dm_text.find("】") > 0: continue
-		extra = json.loads(danmaku['info'][0][15]['extra'])
-		if extra['hit_combo'] == 1: continue
+		try:
+			extra = json.loads(danmaku['info'][0][15]['extra'])
+			if extra['hit_combo'] == 1: continue
+		except KeyError:
+			pass
 		# print(dm_text)
 		# F_out.write(json.dumps({"len":len(dm_text),'text':dm_text}, ensure_ascii=False, indent=None, separators=(",", ":")) + "\n")
 		# F_out.write(json.dumps({'text':dm_text}, ensure_ascii=False, indent=None, separators=(",", ":")) + "\n")

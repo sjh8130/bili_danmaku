@@ -137,5 +137,6 @@ message UserInfoOGI{
 message UserInfoOFI{
 	int32 role = 1;
 	string title = 2;
+	bytes unknown03 = 3;
 	int32 type = 4;
 }
