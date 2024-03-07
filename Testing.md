@@ -534,9 +534,9 @@
 {
 	"cmd":"LOG_IN_NOTICE",
 	"data":{
-		"notice_msg":"为保护用户隐私，未注册登陆用户将无法查看他人昵称",// 包括头像和uid
+		"notice_msg":"为保护用户隐私，未登录无法查看他人昵称",// 包括头像和uid
 		"image_web":"http://i0.hdslb.com/bfs/dm/75e7c16b99208df259fe0a93354fd3440cbab412.png",
-		"image_app":""
+		"image_app":"http://i0.hdslb.com/bfs/dm/b632f7dcd3acf47deffb5f9ccc9546ae97a3415b.png"
 	}
 }
 ```
@@ -1171,8 +1171,9 @@ Link = 6
 ----
 ### STOP_LIVE_ROOM_LIST
 [TOP](#直播弹幕)  
-每30秒发送一次~~(`HH:mm:29`,`HH:mm:59`)~~  
-广播 未压缩
+每30秒发送一次(`HH:mm:29`,`HH:mm:59`)  
+广播 未压缩  
+文档更新：2024-02-23  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "STOP_LIVE_ROOM_LIST" |
@@ -1982,7 +1983,7 @@ SC 删除
 //抽奖弹幕
 {"cmd":"DANMU_MSG","info":[[0,1,25,...,...,         0,0,"...",0,2,0,"",0,"{}","{}",...,{"activity_identity":"5475890","activity_source":1,"not_show":1},0],"蔷薇与铳枪",...,...,...,...,0,0,null,...,0,0,null,null,0,7,[.],null]}
 
-
+//hit_combo(+1)
 1705563540106664{"cmd":"DANMU_MSG","info":[[0,1,25,xxx,1705563539903,3745805152027139263,0,"xxx",0,0,0,"",0,"{}","{}",{"mode":0,"show_player_type":0,"extra":"{\"send_from_me\":false,\"mode\":0,\"color\":16777215,\"dm_type\":0,\"font_size\":25,\"player_mode\":1,\"show_player_type\":0,\"content\":\"太卡了x14\",\"user_hash\":\"xxx\",\"emoticon_unique\":\"\",\"bulge_display\":0,\"recommend_score\":4,\"main_state_dm_color\":\"\",\"objective_state_dm_color\":\"\",\"direction\":0,\"pk_direction\":0,\"quartet_direction\":0,\"anniversary_crowd\":0,\"yeah_space_type\":\"\",\"yeah_space_url\":\"\",\"jump_to_url\":\"\",\"space_type\":\"\",\"space_url\":\"\",\"animation\":{},\"emots\":null,\"is_audited\":false,\"id_str\":\"03653126fb8b16e475d6fbee9765a8d563\",\"icon\":null,\"show_reply\":true,\"reply_mid\":0,\"reply_uname\":\"\",\"reply_uname_color\":\"\",\"reply_is_mystery\":false,\"hit_combo\":1}","user":{"uid":0,"base":{"name":"江***","face":"https://i0.hdslb.com/bfs/face/xxxx.jpg","is_mystery":false,"name_color":0},"medal":null,"wealth":{"level":0}}},{"activity_identity":"","activity_source":0,"not_show":0},0],"太卡了x14",[0,"江***",0,0,0,10000,1,""],[],[5,0,9868950,">50000",0],["",""],0,0,null,{"ts":1705563539,"ct":"ABA7B5C8"},0,0,null,null,0,7,[0],null],"dm_v2":""}
 //
 17055636102871506{"cmd":"DANMU_MSG","dm_v2":"","info":[[0,1,25,16777215,1705563611817,1705563582,0,"xxx",0,0,0,"",0,"{}","{}",{"extra":"{\"send_from_me\":false,\"mode\":0,\"color\":16777215,\"dm_type\":0,\"font_size\":25,\"player_mode\":1,\"show_player_type\":0,\"content\":\"1秒1卡\",\"user_hash\":\"xxx\",\"emoticon_unique\":\"\",\"bulge_display\":0,\"recommend_score\":2,\"main_state_dm_color\":\"\",\"objective_state_dm_color\":\"\",\"direction\":0,\"pk_direction\":0,\"quartet_direction\":0,\"anniversary_crowd\":0,\"yeah_space_type\":\"\",\"yeah_space_url\":\"\",\"jump_to_url\":\"\",\"space_type\":\"\",\"space_url\":\"\",\"animation\":{},\"emots\":null,\"is_audited\":false,\"id_str\":\"54538fc76948f961201ef8e84265a8d542\",\"icon\":null,\"show_reply\":true,\"reply_mid\":0,\"reply_uname\":\"\",\"reply_uname_color\":\"\",\"reply_is_mystery\":false,\"hit_combo\":0}","mode":0,"show_player_type":0,"user":{"base":{"face":"https://i1.hdslb.com/bfs/face/xxxx.jpg","is_mystery":false,"name":"xxx","name_color":0},"medal":null,"uid":0,"wealth":{"level":11}}},{"activity_identity":"","activity_source":0,"not_show":0},0],"1秒1卡",[0,"xxx",0,0,0,10000,1,""],[22,"xxxx","xxxx",xxxx,1725515,"",0,1725515,1725515,5414290,0,1,xxxx],[16,0,6406234,">50000",0],["",""],0,0,null,{"ct":"E7F6BE4E","ts":1705563611},0,0,null,null,0,56,[11],null],
@@ -3004,6 +3005,12 @@ match _type:
 | uid		| num	| |
 ```json
 {"cmd":"RANK_REM","data":{"name":"online_gold","room_id":12345,"ruid":12345,"time":1672502400,"uid":123}}
+//name
+guard	online_gold	online_rank	daily_rank	weekly_rank	monthly_rank
+//cmd
+RANK_REM_GUARD
+RANK_REM_RANK
+RANK_REM_RANK_NEW
 ```
 ----
 ### GUARD_ACHIEVEMENT_ROOM
@@ -4450,6 +4457,7 @@ face:http(s)?://[is][0-3].hdslb.com/bfs/((face|baselabs)/[0-9a-f]{40}.(jpg|png|g
 for i in range(1,len(a)):print(str(a[i]-a[i-1])[0:4])
 (\d{10}\.\d{1,3}|\d{16,17})?\{"cmd":[ ]{0,1}"XXXXXXXXXX",.{1,}\n
 (\d{16,})?\{("business_id":".{0,11}",)?"cmd":"XXXXXXXXXX",.{1,}\n
+(\d{16,})?\{"cmd":"(SEND_GIFT|ONLINE_RANK_TOP3|INTERACT_WORD|POPULAR_RANK_CHANGED|ROOM_REAL_TIME_MESSAGE_UPDATE|AREA_RANK_CHANGED|COMMON_NOTICE_DANMAKU|ENTRY_EFFECT|LIKE_INFO_V3_UPDATE|LIKE_INFO_V3_CLICK|COMBO_SEND|DM_INTERACTION|GUARD_HONOR_THOUSAND|GIFT_STAR_PROCESS|WIDGET_GIFT_STAR_PROCESS|HOT_ROOM_NOTIFY|NOTICE_MSG|DANMU_AGGREGATION|SHOPPING_CART_SHOW|RECOMMEND_CARD|GOTO_BUY_FLOW)",.{1,}\r\n
 ```
 
 ### 粉丝勋章medal_info
