@@ -1142,9 +1142,9 @@ Link = 6
 | mock_effect				| num		| |
 | face						| str		| 头像URL |
 | privilege_type			| num		| [privilege_type](#others) |
-| copy_writing				| str		| `f"欢迎(舰长\|提督\|总督) <%XXX%> 进入直播间"` |限长7字符，省略号为`...`
-| copy_color				| str		| #rrggbb |
-| highlight_color			| str		| #RRGGBB |
+| copy_writing				| str		| `r"(欢迎(舰长\|提督\|总督) )?<%XXX%> 进入直播间"` |限长7字符，省略号为`...`
+| copy_color				| str		| #RGB24 |
+| highlight_color			| str		| #RGB24 |
 | priority					| num		| |
 | basemap_url				| str		| basemap_url=web_basemap_url |
 | show_avatar				| num		| 1 |
@@ -1154,7 +1154,7 @@ Link = 6
 | web_effect_close			| num		| |
 | web_close_time			| num		| |
 | business					| num		| |
-| copy_writing_v2			| str		| `f"欢迎(提督\|舰长\|总督) <%XXX%> 进入直播间"`|限长6字符，省略号为`…`
+| copy_writing_v2			| str		| `r"(欢迎(提督\|舰长\|总督) )?<%XXX%> 进入直播间"`|限长6字符，省略号为`…`
 | icon_list					| []num		| |
 | max_delay_time			| num		| 7 |
 | trigger_time				| num		| ？TimeStamp |
