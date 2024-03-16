@@ -12,7 +12,7 @@ from my_lib.file_writer import FileWriter
 Start_Time = time.time()
 input_File = sys.argv[1]
 if open(input_File, "rb").read(1) == b"\x7b": infile = open(input_File, "r", encoding="utf-8").read()
-if open(input_File, "rb").read(3) == b"\xeb\xbb\xbf": infile = open(input_File, "r", encoding="utf-8").read()
+if open(input_File, "rb").read(3) == b"\xeb\xbb\xbf": infile = open(input_File, "r", encoding="utf-8-sig").read()
 if open(input_File, "rb").read(3) == b"\x1f\x8b\x08": infile = str(gzip.open(input_File, "rb").read(), encoding="utf-8")
 
 outputFile = input_File.rstrip(".gz").rstrip(".json").rstrip(".bin")+".xml"
