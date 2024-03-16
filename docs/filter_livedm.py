@@ -5,57 +5,33 @@ import sys
 from filters import FILTER_WORDS
 
 line = 0
-st = time.time()
+start_time = time.time()
+# in_path = ""
 in_path = sys.argv[1]
-outPath = "Z:\\test.json"
-left_pos_cache = 0
-right_pos_cache = -1
+out_path = "Z:\\test.json"
+left_pos = 0
 dm_text: str
 danmaku: dict
 extra: dict
-counter_dict={}
-try:
-	...
-except:
-	...
+with open(in_path, "r", encoding="utf-8") as file_in, io.open(out_path, "a", encoding="utf-8") as file_out:
+	for line in file_in:
+		if "DANMU_MSG" not in line: continue
+		if line.find("DANMU_MSG:3:7:1:1:1:1") == 1: continue
+		left_pos = line.find('{')
+		danmaku = json.loads(line[left_pos:-1])
 
-
-with open(in_path, "r", 1048576, encoding="utf-8") as F_in, io.open(outPath, "a", encoding="utf-8") as F_out:
-	for this_line in F_in.readlines():
-		if this_line.find("DANMU_MSG") == -1: continue
-		if this_line.find("DANMU_MSG:3:7:1:1:1:1") == 1: continue
-		# line+=1;print(f"\r{line=}# ",end="") #-30%
-		for left_pos_cache in range(len(this_line)):
-			try:
-				# print(this_line[left_pos_cache:right_pos_cache][0:20])
-				danmaku = json.loads(this_line[left_pos_cache:right_pos_cache])
-			except json.decoder.JSONDecodeError as err:
-				# # print(err)
-				if err.msg == "Extra data": left_pos_cache = err.pos
-				if err.msg == "Expecting value":
-					if this_line[left_pos_cache] == ".": left_pos_cache += 1
-					# else:right_pos_cache -= 1
-				# time.sleep(0.1)
-				continue
-			else:
-				break
-		# if danmaku['cmd'] != 'DANMU_MSG': continue
 		if danmaku['info'][0][9] != 0: continue  # 1:节奏风暴 2:天选时刻 9:弹幕互动游戏
 		if danmaku['info'][0][12] != 1: continue  # 0:文本 1:表情包 2:语音
 		dm_text = danmaku['info'][1]
-		dm_text = dm_text.lstrip(" ").rstrip(" ").lstrip("　").rstrip("　")
-		if dm_text in FILTER_WORDS or dm_text.lower() in FILTER_WORDS or dm_text.find("【") > 0 or dm_text.find("】") > 0: continue
+		dm_text = dm_text.strip().lstrip("　").rstrip("　")
+		if dm_text in FILTER_WORDS or dm_text.lower() in FILTER_WORDS or "【" in dm_text or "】" in dm_text: continue
 		try:
-			extra = json.loads(danmaku['info'][0][15]['extra'])
-			if extra['hit_combo'] == 1: continue
+			if json.loads(danmaku['info'][0][15]['extra'])['hit_combo'] == 1: continue
 		except KeyError:
 			pass
-		# print(dm_text)
 		# F_out.write(json.dumps({"len":len(dm_text),'text':dm_text}, ensure_ascii=False, indent=None, separators=(",", ":")) + "\n")
 		# F_out.write(json.dumps({'text':dm_text}, ensure_ascii=False, indent=None, separators=(",", ":")) + "\n")
-		F_out.write(dm_text + "\n")
-	F_in.close()
-	F_out.close()
-et = time.time()
-print(f"\n{et-st}")
-time.sleep(5)
+		file_out.write(dm_text + "\n")
+total_time = time.time() - start_time
+print(f"处理完成，耗时：{total_time:.3f}秒")
+#AI optimized

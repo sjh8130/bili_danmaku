@@ -530,6 +530,7 @@
 ----
 ### LOG_IN_NOTICE
 [TOP](#直播弹幕)  
+文档更新：2024-02-17  
 ```json
 {
 	"cmd":"LOG_IN_NOTICE",
@@ -677,7 +678,7 @@
 | gift_tag				| array		| |
 | gold					| num		| 0 |
 | group_medal			| null/?	| |
-| guard_level			| num		| 大航海等级 |
+| guard_level			| num		| [大航海等级](#others) |
 | is_first				| bool		| |
 | is_join_receiver		| bool		| false |
 | is_naming				| bool		| |
@@ -845,7 +846,7 @@
 | score			| str | 贡献值 |
 | uname			| str | 昵称 |
 | rank			| num | 排名(1-7) |
-| guard_level	| num | 大航海等级 |
+| guard_level	| num | [大航海等级](#others) |
 ```json
 {"cmd":"ONLINE_RANK_V2","data":{"list":[
 	{"face":"$avatar_url","guard_level":2,"rank":1,"score":"8","uid":1,"uname":"xxx"},
@@ -862,7 +863,7 @@
 ### ONLINE_RANK_TOP3
 [TOP](#直播弹幕)  
 高能用户前三(左)  
-文档更新：2024-01-28  
+文档更新：2024-03-16  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "ONLINE_RANK_TOP3" |
@@ -879,9 +880,12 @@
 | msg			| str	| `f"恭喜 <%XXX%> 成为高能用户"` |
 | rank			| num	| 排名(1-3) |
 ```json
-{"cmd":"ONLINE_RANK_TOP3","data":{"dmscore":112,"list":[{"is_mystery":false,"msg":"恭喜 <%XXX%> 成为高能用户","rank":1}]}}
-{"cmd":"ONLINE_RANK_TOP3","data":{"dmscore":112,"list":[{"is_mystery":false,"msg":"恭喜 <%XXX%> 成为高能用户","rank":2}]}}
-{"cmd":"ONLINE_RANK_TOP3","data":{"dmscore":112,"list":[{"is_mystery":false,"msg":"恭喜 <%XXX%> 成为高能用户","rank":3}]}}
+{"cmd":"ONLINE_RANK_TOP3","data":{"dmscore":784,"list":[{"is_mystery":false,"msg":"恭喜 <%XXX%> 成为高能用户","rank":1}]}}
+{"cmd":"ONLINE_RANK_TOP3","data":{"dmscore":784,"list":[{"is_mystery":false,"msg":"恭喜 <%XXX%> 成为高能用户","rank":2}]}}
+{"cmd":"ONLINE_RANK_TOP3","data":{"dmscore":784,"list":[{"is_mystery":false,"msg":"恭喜 <%XXX%> 成为高能用户","rank":3}]}}
+dms: ~20240218: 112
+	20240218:196
+	20240221~ :784
 ```
 ----
 ### ONLINE_RANK_COUNT
@@ -917,9 +921,9 @@
 | contribution			| obj		| |
 | contribution.grade	| num		| |
 | contribution_v2		| obj		| |
-| contribution_v2.grade	| num		| |
+| contribution_v2.grade		| num		| |
 | contribution_v2.rank_type	| str		| |
-| contribution_v2.text	| str		| |
+| contribution_v2.text		| str		| |
 | core_user_type		| num		| ？大部分为0[0-5] |
 | dmscore				| num		| | 1 2 3 4 5 6 7 8 9 10 12 14 15 16 18 20 22 26 28 30 32 34 35 40 45 50 60 75
 | fans_medal			| null/obj	| [粉丝勋章](#粉丝勋章medal_info) |
@@ -1143,8 +1147,8 @@ Link = 6
 | face						| str		| 头像URL |
 | privilege_type			| num		| [privilege_type](#others) |
 | copy_writing				| str		| `r"(欢迎(舰长\|提督\|总督) )?<%XXX%> 进入直播间"` |限长7字符，省略号为`...`
-| copy_color				| str		| #RGB24 |
-| highlight_color			| str		| #RGB24 |
+| copy_color				| str		| #rrggbb |
+| highlight_color			| str		| #RRGGBB |
 | priority					| num		| |
 | basemap_url				| str		| basemap_url=web_basemap_url |
 | show_avatar				| num		| 1 |
@@ -1618,7 +1622,7 @@ SC 删除
 | max_time			| num		| 开奖时间(60,300,600,900)秒 |
 | require_text		| str		| "抽奖条件: 关注主播" / "至少成为主播的舰长/提督/总督" |
 | require_type		| num		| 抽奖条件 1:礼物抽奖 2:粉丝勋章 3:大航海 ~~4:UL？~~ |
-| require_value		| num		| [0,1]关注状态/[1,20]粉丝勋章等级/[1,3]大航海等级 |
+| require_value		| num		| [0,1] 关注状态/[1,20] 粉丝勋章等级/[1,3] [大航海等级](#others) |
 | room_id			| num		| 长直播间ID |
 | send_gift_ensure	| num		| 0 |
 | show_panel		| num		| 1 |
@@ -1841,7 +1845,7 @@ SC 删除
 | 3[7]	| num	| [`medalColorBorder`](#medal_color) |
 | 3[8]	| num	| [`medalColorStart`](#medal_color) |
 | 3[9]	| num	| [`medalColorEnd`](#medal_color) |
-| 3[10]	| num	| [`guardLevel`](#others) 大航海等级 |
+| 3[10]	| num	| [`guardLevel`](#others) [大航海等级](#others) |
 | 3[11]	| num	| [`isLight`](#粉丝勋章medal_info) |
 | 3[12]	| num	| `anchorId` 主播uid |
 #### DANMU_MSG__info__4
@@ -2519,7 +2523,7 @@ fail = -1
 | paid				| bool	| |
 | msg				| str	| 弹幕内容/xxx |
 | fans_medal_level	| num	| 粉丝勋章等级 |
-| guard_level		| num	| 大航海等级 |
+| guard_level		| num	| [大航海等级](#others) |
 | timestamp			| num	| TimeStamp(秒) |
 | anchor_lottery	| null	| |
 | pk_info			| null	| |
@@ -4174,7 +4178,7 @@ role 0 1 2
 | pb		| base64(proto)	| |
 | switch	| xxx	| |
 ```json
-{"key":"value"}
+{"cmd":"SEND_GIFT_V2","data":{"pb":"...."}}
 ```
 ---
 ### ROOM_LOCK
@@ -4468,7 +4472,7 @@ for i in range(1,len(a)):print(str(a[i]-a[i-1])[0:4])
 | guard_level			| num		| [大航海等级](#others) |
 | icon_id				| num		| 0！ |
 | is_lighted			| num		| 0: <br> 1: 七天内在直播间有互动 |
-| medal_color			| num/str	| int(RGB24) / #RGB24 |
+| medal_color			| num/str	| int(RGB24) / #RRGGBB |
 | medal_color_border	| num		| int(RGB24) |
 | medal_color_end		| num		| int(RGB24) |
 | medal_color_start		| num		| int(RGB24) |
@@ -4484,7 +4488,7 @@ for i in range(1,len(a)):print(str(a[i]-a[i-1])[0:4])
 |-|-|-|-|
 | base						| obj		| |
 | uid						| str		| uid |
-| medal						| null/		| |
+| medal						| null/obj	| |
 | wealth					| null/obj	| |
 | title						| null/obj	| 活动头衔 |
 | guard						| null/obj	| |
@@ -4504,7 +4508,7 @@ for i in range(1,len(a)):print(str(a[i]-a[i-1])[0:4])
 | key						| type		| value	|
 |-|-|-|-|
 | expired_str				| str		| 过期时间 |
-| level						| num		| 大航海等级 |
+| level						| num		| [大航海等级](#others) |
 #### PUBLIC_uinfo__guard_leader
 | key						| type		| value	|
 |-|-|-|-|
@@ -4533,20 +4537,21 @@ for i in range(1,len(a)):print(str(a[i]-a[i-1])[0:4])
 | is_mystery				| bool		| |
 | name						| str		| 昵称 |
 | name_color				| num		| |
+| name_color_str			| str		| #RRGGBB |
 | risk_ctrl_info			| null/obj	| |
 | origin_info				| obj		| |
 | official_info				| obj		| 主站：认证信息 |
-#### PUBLIC_uinfo__base__origin_info
+##### PUBLIC_uinfo__base__origin_info
 | key						| type		| value	|
 |-|-|-|-|
 | face						| obj		| 头像(URL) |
 | name						| str		| 昵称 |
-#### PUBLIC_uinfo__base__risk_ctrl_info
+##### PUBLIC_uinfo__base__risk_ctrl_info
 | key						| type		| value	|
 |-|-|-|-|
 | face						| obj		| 头像(URL) |
 | name						| str		| 昵称 |
-#### PUBLIC_uinfo__base__official_info
+##### PUBLIC_uinfo__base__official_info
 | key						| type		| value	|
 |-|-|-|-|
 | role						| num		| 0:无 7:个人认证 3:机构认证 |
@@ -4580,14 +4585,14 @@ for i in range(1,len(a)):print(str(a[i]-a[i-1])[0:4])
 		"guard_icon":"https://i0.hdslb.com/bfs/live/98a201c14a64e860a758f089144dcf3f42e7038c.png",
 		"honor_icon":""
 	},
-	"wealth":{"level":xxx},
+	"wealth":{"dm_icon_key":"","level":xxx},
 	"title":{"old_title_css_id":"","title_css_id":""},
 	"guard":{"level":xxx,"expired_str":"2024-xx-xx23:59:59"},
 	"uhead_frame":null,
 	"guard_leader":{"is_guard_leader":false}
 }
 ```
-### medal__score
+#### medal__score
 | score	| medal_level |
 |-|-|
 | 201	| 1 |
