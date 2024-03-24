@@ -3286,7 +3286,12 @@ STICKER_PACK=[
 	"恰米恰米","前方高能","敲桌子","切了","柔宝可爱","柔光灯ON","入梦","润了","三四","闪避技能","生气","生气气","生态环保","石粒","是呀是呀","睡觉","说完了吗","酸了","塔塔开！","塔西卡尼","太草了","太弟弟了","太好听啦","太赞了","泰裤辣",
 	"探头","天才！","天才","舔屏","土","土味情话","吐血","汪汪汪","王牛奶","王酸奶","委屈屈","为什么哟","稳住能赢","问号","我不好说","我尺","我打你啊","我哭了","我来了","芜湖起飞","嘻嘻","嬉皮笑脸","喜欢","嫌弃","小笨蛋","小男友","小柔超棒",
 	"小柔小柔","笑","笑笑笑","星星向龙","雪绘傻","牙白白","要闹了","要我一直","耶","一拍即合","疑惑","疑问","饮茶啦先","荧光棒","永远爱你","有龙则灵","晕","宰了","赞美","赞美太阳","早安","早上好鸭","这段要了","这个好耶","真男人","震惊",
-	"植物","只准看我","指地","助人为乐","啄出去","走神儿","坐牢","biubiu","debiiro","Hcup","kimomo","lyyh","nice","NONONO","OKdayo","rp客","suki","SwitchON","U脑过载","upup","uruge","wink","wwds",
+	"植物","只准看我","指地","助人为乐","啄出去","走神儿","坐牢","ahhh","amzing","AWSL","BAD","ban","BBQ","biu","biubiu","Blink","bye","BYE","cake","call","cloud","cloudy","come","cool","COOL","CPDD","cpu爆炸","cpu烧了","CPU我",
+	"dd","DD斩首","debiiro","debu","Do","DOGE","emm","emmm","emo","EMO","emo了","Fa","fighting","fine","G2笔记","G2哥拜托了","gachi了","get","giegie","GJ","GNK48","GO","gogo","GOOD","haha","Hcup","hello","hetui！","Hi!","hi",
+	"Hi","HI","Hi~","high起来","hihi","hihihi","hot","IP所属","joker","KDL","kimo","kimomo","kiss","Kiss","KISS","kisskiss","kswl","La","Lightning","love","love了","loveU","lyyh","marryme","mc","Mi","miss","mua","MUA","mua~",
+	"mua一下","nice","night","no！","no","No","NO","nono","NONONO","O掰","OAO","ohhh","ok","OK","ok啦","ok捏","OKdayo","okk","OKK","OMG","OxO","p2","Payman","pickme","pien","power","ppt女工","prpr","prprpr","QAQ","rain",
+	"rainbow","Re","remake","rich","RICH","RIP","rp客","Rua!","rua","sad","SC免费了","SC汪汪","shift","so","sorry","SOS","SSW","suki","sun","Suo","SwitchON","Ti","ttk","TTK","TUI","U","U脑过载","upup","uruge","V20","v50",
+	"V50","V87","v我50","V我50","VIP","VMEN","what？","whats","Wiki","win！","wink","Wink","WINK","wish","wow","WOW","wwds","www","xx","XxX","XY","yeah~","yep","yes","YES","yue","yue了","YYDS","zzZ","ZZZ",
 ]
 # ================================  日常 daily
 COMMON_WORDS=[
