@@ -1,6 +1,8 @@
 import csv
 import os
+import sys
 import requests
+import ipaddress
 
 PATHBASE = "Z:\\"
 FILEPATH = (
@@ -101,7 +103,7 @@ def process_cidr(filepath: str):
 
 def query_ip(ip):
 	for item in ips:
-		if ip_in_range(ip, item[0]):
+		if ip == item[0] or ip_in_range(ip, item[0]):
 			print(f"{item[0]}\t{item[1]}\t{item[2]}\t{item[3]}")
 
 
@@ -126,7 +128,6 @@ def ip_in_range(ip, cidr):
 	"""
 	检查IP地址是否在CIDR范围内。
 	"""
-	import ipaddress
 	try:
 		ip_network = ipaddress.ip_network(cidr, strict=False)
 		ip_address = ipaddress.ip_address(ip)
@@ -148,6 +149,11 @@ if __name__ == "__main__":
 				break
 			elif ip.lower() == 'all':
 				query_all()
+			elif ip.lower() == ["clear", 'cls']:
+				if sys.platform == 'win32':
+					os.system("cls")
+				else:
+					os.system("clear")
 			elif len(ip) == 2 and ip.upper() in ISO3166_1 or ip.upper() in ["ZZ"]:
 				query_region(ip.upper())
 			elif ip.lower() in ["allocated", "assigned", "reserved", "available"]:
