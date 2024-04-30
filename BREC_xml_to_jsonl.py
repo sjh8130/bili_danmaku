@@ -4,7 +4,7 @@ import sys
 from lxml import etree
 file_path = sys.argv[1]
 # file_path = "Z:\\1.xml"
-preload = open(file_path, "rb").read(50)
+preload = open(file_path, "rb").read(512)
 
 if preload.find(b"encoding="):
 	file = open(file_path, "rb").read()

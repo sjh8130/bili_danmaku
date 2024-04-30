@@ -5,11 +5,11 @@ package bilibiliDm.community.service.dm.live;
 message Dm {
     string                  id_str          = 1;    // [0][15].extra.id_str 新idstr
     int32                   mode            = 2;    // [0] [1] 弹幕类型
-    int32                   fontsize        = 3;    // [0] [2] 弹幕字号
+    int32                   size            = 3;    // [0] [2] 弹幕字号
     uint32                  color           = 4;    // [0] [3] 弹幕颜色
-    string                  mid_hash        = 5;    // [0] [7] 发送者midHash
-    string                  content         = 6;    // [1]     弹幕正文
-    int64                   ctime           = 7;    // [0] [4] 发送时间TimeStamp(ms)
+    string                  uhash           = 5;    // [0] [7] 发送者midHash
+    string                  text            = 6;    // [1]     弹幕正文
+    int64                   date            = 7;    // [0] [4] 发送时间TimeStamp(ms)
     int32                   weight          = 8;    // 
     int64                   rnd             = 9;    // [0] [5]
     int64                   attr            = 10;   // 
@@ -17,7 +17,7 @@ message Dm {
     Bubble                  bubble          = 12;   // [0][11] chatBubble
     DmType                  dm_type         = 13;   // [0][12] DmType
     // map<string,Emoticon>    emoticons       = 14;   // [0][15] 表情 repeated
-    repeated emots          emoticons       = 14;   // [0][15] 表情 repeated
+    repeated emots_temp     emoticons       = 14;   // [0][15] 表情 repeated
     Voice                   voice           = 15;   // [0][14]
     string                  animation       = 16;   // 
     Aggregation             aggregation     = 17;   // [0][16] 抽奖
@@ -67,7 +67,7 @@ message Bubble{                                     //12
     string      color                       = 2;    // [0][11]
     int64       id_v2                       = 3;    // [0][17]
 }
-message emots{                                      //14-1
+message emots_temp{                                      //14-1
     string      key                         = 1;    // [0][15].extra.emots
     Emoticon    value                       = 2;    // [0][15].extra.emots
 }
