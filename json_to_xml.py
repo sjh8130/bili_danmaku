@@ -7,13 +7,18 @@ import os
 import binascii
 
 from my_lib.json2xml_Lib import Json2XML
-from my_lib.file_writer import FileWriter
 
 Start_Time = time.time()
 input_File = sys.argv[1]
-if open(input_File, "rb").read(1) == b"\x7b": infile = open(input_File, "r", encoding="utf-8").read()
-if open(input_File, "rb").read(3) == b"\xeb\xbb\xbf": infile = open(input_File, "r", encoding="utf-8-sig").read()
-if open(input_File, "rb").read(3) == b"\x1f\x8b\x08": infile = str(gzip.open(input_File, "rb").read(), encoding="utf-8")
+
+with open(input_File, "rb")as file_in:
+	preload = file_in.read(3)
+	if preload[0] == b"\x7b":
+		Loaded_JSON = json.load(file_in)
+	if preload == b"\xeb\xbb\xbf":
+		Loaded_JSON = json.load(file_in)
+	if preload == b"\x1f\x8b\x08":
+		infile = str(gzip.open(input_File, "rb").read(), encoding="utf-8")
 
 outputFile = input_File.rstrip(".gz").rstrip(".json").rstrip(".bin")+".xml"
 
@@ -23,6 +28,7 @@ SPLIT_3RD_SIZE = 40000
 Loaded_JSON = json.loads(infile)
 del infile
 i = 1
+
 try: cid = Loaded_JSON["info"]["cid"]
 except KeyError: cid = 0
 try: dmk_Ver = Loaded_JSON["info"]["dmk_Ver"]
@@ -34,7 +40,7 @@ except KeyError: Max_Limit = 6000
 XML_Data_1st_Cache = f"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<i>\n\t<chatserver>chat.bilibili.com</chatserver>\n\t<chatid>{cid}</chatid>\n\t<mission>0</mission>\n\t<maxlimit>{Max_Limit}</maxlimit>\n\t<state>0</state>\n\t<real_name>0</real_name>\n\t<source>k-v</source>\n"
 XML_Data_2nd_Cache = XML_Data_3rd_Cache = ""
 
-try: Last_Modified_Time = int(Loaded_JSON['info']['File_Create_Time'])
+try: Last_Modified_Time = int(Loaded_JSON["info"]["File_Create_Time"])
 except KeyError: Last_Modified_Time = int(os.stat(input_File).st_ctime)
 
 try: commandDms_Len = len(Loaded_JSON["commandDms"])
@@ -72,8 +78,9 @@ for this in Loaded_JSON["elems"]:
 		XML_Data_2nd_Cache += XML_Data_3rd_Cache
 		XML_Data_3rd_Cache = ""
 		print(f"\rProgress: {i}/{Danmaku_Count}, Time: {round(time.time()-Start_Time,3)}", end="")
-	del this
 
-FileWriter(outputFile, XML_Data_1st_Cache+XML_Data_2nd_Cache + XML_Data_3rd_Cache+f"</i>\n<!-- Create Time: {Last_Modified_Time} -->")
+with open(outputFile, "r", encoding="utf-8")as file_out:
+	file_out.write(XML_Data_1st_Cache + XML_Data_2nd_Cache + XML_Data_3rd_Cache + f"</i>\n<!-- Create Time: {Last_Modified_Time} -->")
+
 End_Time = time.time()
 print(f"\r{Danmaku_Count}, 总计用时：{round(End_Time-Start_Time, 4)}                     ")

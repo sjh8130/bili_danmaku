@@ -23,7 +23,7 @@ message DanmakuElem {
 	int32 pool                        = 11;// 弹幕池
 	string dmid                       = 12;// 弹幕dmid
 	int32 attr                        = 13;// 弹幕属性位(bin求AND)
-	// uint64 usermid                    = 14;// 发送者mid
+	uint64 mid                        = 14;// 发送者mid
 	uint32 likes                      = 15;// 点赞数量
 	uint64 test16                     = 16;// 弹幕回复 目标弹幕dmid
 	uint64 test17                     = 17;// 弹幕回复 目标弹幕dmid
@@ -34,8 +34,8 @@ message DanmakuElem {
 	string animation                  = 22;// 动画
 	bytes test23                      = 23;
 	DmColorfulType colorful           = 24;
-	bytes test25                      = 25;
-	bytes test26                      = 26;
+	int64 test25                      = 25;//bool/int
+	int64 oid                         = 26;//cid oid
 	bytes test27                      = 27;
 	bytes test28                      = 28;
 	bytes test29                      = 29;
@@ -73,13 +73,18 @@ message DmWebViewReply {
 	// 互动弹幕
 	repeated CommandDm commandDms     = 9;
 	// 用户弹幕配置
-	DanmuWebPlayerConfig player_config = 10;
+	DanmuWebPlayerConfig dm_setting = 10;
 	// 用户举报弹幕 cid维度屏蔽
-	repeated string report_filter_content = 11;
+	repeated string report_filter = 11;
 	repeated Expressions expressions  = 12;
 	repeated PostPanel post_panel     = 13;
-	repeated string activity_meta     = 14;
+	repeated string activity_metas     = 14;
 	repeated PostPanelV2 post_panel_v2 = 15;
+	repeated DmSubView sub_Views = 16;
+	QoeInfo qoe = 17;
+}
+message QoeInfo {
+	string info                   = 1;
 }
 message DmSegConfig {
 	int64 page_size                   = 1;
@@ -283,7 +288,7 @@ enum PostPanelBizType {
 	PostPanelBizTypeNone      = 0;
 	PostPanelBizTypeEncourage = 1;
 	PostPanelBizTypeColorDM   = 2;
-	PostPanelBizTypeNFTDM     = 3;
+	PostPanelBizTypeNFTDM     = 3;//!
 	PostPanelBizTypeFragClose = 4;
 	PostPanelBizTypeRecommend = 5;
 }
@@ -325,4 +330,10 @@ enum ExposureType{
 enum DmColorfulType{
 	NoneType = 0;
 	VipGradualColor = 60001;
+}
+message DmSubView{
+	int32 type = 1;
+	int64 oid = 2;
+	int64 pid = 3;
+	repeated PostPanelV2 post_panel_2 = 4;
 }

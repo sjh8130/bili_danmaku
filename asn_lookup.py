@@ -13,9 +13,7 @@ def init():
 		f"{PATHBASE}delegated-lacnic-latest",#拉丁美洲及加勒比地区互联网地址注册管理机构#~20000
 		f"{PATHBASE}delegated-afrinic-latest",#非洲网络信息中心#~9000
 	)
-	URL_BASE1 = "https://ftp.apnic.net/stats"
-	URL_BASE2 = "https://ftp.arin.net/pub/stats"
-	URL_BASE = URL_BASE1
+	URL_BASE = "https://ftp.apnic.net/stats"
 	URL = (
 		f"{URL_BASE}/iana/delegated-iana-latest",
 		f"{URL_BASE}/apnic/delegated-apnic-latest",
@@ -102,11 +100,11 @@ def download_file(url: str, filepath: str):
 		import requests
 		print(f"文件 {filepath} 不存在，正在下载...")
 		# 发送HTTP GET请求到url
-		response = requests.get(url, stream=True)
+		response = requests.get(url, stream=True, headers={"Accept-Encoding": "gzip, deflate, br, zstd"})
 		# 检查请求是否成功(状态码为200)
 		if response.status_code == 200:
 			# 打开一个文件以二进制写模式
-			with open(filepath, 'wb') as file:
+			with open(filepath, "wb") as file:
 				# 使用迭代器逐块写入文件
 				for chunk in response.iter_content(1024):
 					file.write(chunk)
@@ -136,7 +134,7 @@ def process_cidr(filepath: str):
 	import csv
 	# import math
 	with open(filepath, "r") as file:
-		reader = csv.reader(file, delimiter='|')
+		reader = csv.reader(file, delimiter="|")
 		for line in reader:
 			if line[0].startswith("#"):
 				continue
@@ -148,13 +146,13 @@ def process_cidr(filepath: str):
 				continue
 			if line[3] in ["", "\t"]:
 				continue
-			if line[2] == 'ipv4':
+			if line[2] == "ipv4":
 				if line[4] not in cidr_calc:
 					cidr = f"{line[3]}+{line[4]}"
 				else:
 					cidr = f"{line[3]}/{cidr_calc[line[4]]}"
 				# cidr_block = str(32 - int(math.log2(int(line[4]))))
-			elif line[2] == 'ipv6':
+			elif line[2] == "ipv6":
 				cidr = f"{line[3]}/{line[4]}"
 			if line[1] == "":
 				region = "XX"
@@ -174,10 +172,10 @@ def query_ip(ip: str):
 	for item in ips:
 		if ip == item[0]:
 			print(f"{item[0]}\t{item[1]}\t{item[2]}\t{item[3]}")
-		elif '/' in item[0]:
+		elif "/" in item[0]:
 			if ip_in_range(ip, item[0]):
 				print(f"{item[0]}\t{item[1]}\t{item[2]}\t{item[3]}")
-		elif '+' in item[0]:
+		elif "+" in item[0]:
 			if ip_in_custom_range(ip, item[0]):
 				print(f"{item[0]}\t{item[1]}\t{item[2]}\t{item[3]}")
 
@@ -217,7 +215,7 @@ def ip_in_custom_range(ip: str, ip_range: str) -> bool:
 	if "/" in ip:
 		return False
 	# 解析自定义IP范围字符串
-	start_ip_str, count_str = ip_range.split('+')
+	start_ip_str, count_str = ip_range.split("+")
 	start_ip = int(ipaddress.IPv4Address(start_ip_str))
 	count = int(count_str)
 	end_ip = start_ip + count - 1
@@ -234,18 +232,18 @@ if __name__ == "__main__":
 	try:
 		while True:
 			ip = input("请输入IPv4或IPv6地址（输入'exit'退出）: ").strip()
-			if ip == '':
+			if ip == "":
 				continue
-			elif ip == 'exit':
+			elif ip == "exit":
 				break
-			elif ip.lower() == 'all':
+			elif ip.lower() == "all":
 				query_all()
-			elif ip.lower() in ["clear", 'cls']:
-				if sys.platform == 'win32':
+			elif ip.lower() in ["clear", "cls"]:
+				if sys.platform == "win32":
 					os.system("cls")
 				else:
 					os.system("clear")
-			elif ip.lower() == 'dump':
+			elif ip.lower() == "dump":
 				import json
 				open("Z:\\dump.json", "w", encoding="utf-8").write(json.dumps(ips, ensure_ascii=False, separators=(",", ":")))
 			elif len(ip) == 2 and ip.upper() in ISO3166_1 or ip.upper() in ["XX", "ZZ"]:
