@@ -11,7 +11,7 @@ except ModuleNotFoundError: import dm_pb2
 
 from my_lib.file_writer import FileWriter
 
-if __name__ == '__main__':
+if __name__ == "__main__":
 	is_live_recording = False
 	time1 = time.time()
 	print("read")
@@ -76,7 +76,7 @@ if __name__ == '__main__':
 	j1["info"]["File_Create_Time"] = int(os.stat(sys.argv[1]).st_ctime)
 	j1["info"]["File_Create_Time_Start"] = int(os.stat(sys.argv[1]).st_ctime)
 	j1["info"]["is_live_record"] = is_live_recording
-	Write_Data = json.dumps(j1, ensure_ascii=False, separators=(',', ':'))
+	Write_Data = json.dumps(j1, ensure_ascii=False, separators=(",", ":"))
 
 	Temp_Binary = None
 	time4 = time.time()

@@ -1,10 +1,12 @@
 import sys
 import time
-import bs4
-import lxml
 import json
 import ssl
+
+import bs4
+import lxml
 import requests
+
 ssl._create_default_https_context = ssl._create_unverified_context
 requests.packages.urllib3.disable_warnings()
 
@@ -24,25 +26,28 @@ TWITCASTING_URL_EN = "en.twitcasting.tv"
 TWITCASTING_URL_GL = "twitcasting.tv"
 TWITCASTING_URL = TWITCASTING_URL_EN
 headers = {
-	'Host': TWITCASTING_URL,
-	'Connection': 'keep-alive',
-	'User-Agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36 Edg/109.0.1518.52"
+	"Accept-Encoding": "gzip, deflate, br, zstd",
+	"Connection": "keep-alive",
+	"Host": TWITCASTING_URL,
+	"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36 Edg/109.0.1518.52",
 }
 
 session = requests.Session()
 
 
-def Downloader(page, retries=0):
+def Downloader(page:int|str):
+	retry_count=0
 	url = f"https://{TWITCASTING_URL}/{user}/moviecomment/{movie_id}-{page}"
-	print(url, "Retries:", retries)
-	try:
-		time.sleep(1.5)
-		content = session.request(method='GET', url=url, headers=headers, verify=False, timeout=30).content
-	except KeyboardInterrupt:
-		print("BREAK")
-		return "BREAK"
-	except:
-		content = Downloader(page, retries+1)
+	while retry_count < 5:
+		try:
+			content = session.get(url, headers=headers, verify=False, timeout=30).content
+		except KeyboardInterrupt:
+			print("BREAK")
+			return b"BREAK"
+		except Exception as e:
+			retry_count += 1
+			print(f"Error fetching {url}: {e}, {retry_count}")
+			time.sleep(1)
 	return content
 
 
@@ -51,7 +56,7 @@ page_num = 0
 while (page_num <= int(page_count)):
 	# a = open(f"twitcasting_{user}_{movie_id}_{page}.html", encoding="utf-8").read()
 	page = Downloader(page_num)
-	if page == "BREAK":
+	if page == b"BREAK":
 		break
 	comments = list(bs4.BeautifulSoup(page, "lxml").select(".tw-comment-history-item", limit=999))
 	# out["info"]["title"] = str(bs4.BeautifulSoup(a, "lxml").title.contents[0]).replace(" Comment - TwitCasting", "").replace(" コメント - ツイキャス", "")
@@ -61,14 +66,14 @@ while (page_num <= int(page_count)):
 		print(page_count)
 	for comment in comments:
 		out["comment"].append({
-			"type":"comment",
-			"id": int(comment.attrs['data-comment-id']),
+			"type": "comment",
+			"id": int(comment.attrs["data-comment-id"]),
 			"message": str(comment.select(".tw-comment-history-item__content__text")[0].contents[0]).lstrip("\n").lstrip("\t").lstrip(" ").rstrip(" "),
-			"createdAt": int(time.mktime(time.strptime(comment.select(".tw-comment-history-item__info__date")[0].attrs['datetime'], '%a, %d %b %Y %H:%M:%S %z'))),
-			"author":{
-				"id": comment.select(".tw-comment-history-item__details__user-link")[0].attrs['href'][1:],
-				"name": str(comment.select(".tw-comment-history-item__details__user-link")[0].contents[0]).lstrip("\n").lstrip("\t").lstrip(" ").rstrip(" "),
-				"profileImage": ("https:"+comment.select(".tw-comment-history-item__user__icon")[0].attrs['src']).replace("https:https://", "https://")
+			"createdAt": int(time.mktime(time.strptime(comment.select(".tw-comment-history-item__info__date")[0].attrs["datetime"], "%a, %d %b %Y %H:%M:%S %z"))),
+			"author": {
+					"id": comment.select(".tw-comment-history-item__details__user-link")[0].attrs["href"][1:],
+					"name": str(comment.select(".tw-comment-history-item__details__user-link")[0].contents[0]).lstrip("\n").lstrip("\t").lstrip(" ").rstrip(" "),
+				"profileImage": ("https:"+comment.select(".tw-comment-history-item__user__icon")[0].attrs["src"]).replace("https:https://", "https://")
 			}
 		})
 	page_num += 1

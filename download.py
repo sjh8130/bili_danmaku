@@ -19,14 +19,14 @@ from my_lib.gen_wib import gen_w_rid
 
 ssl._create_default_https_context = ssl._create_unverified_context
 requests.packages.urllib3.disable_warnings()
-# logging.basicConfig(format='%(asctime)s [%(levelname)s] %(message)s', level=logging.DEBUG)
-logging.basicConfig(format='%(asctime)s [%(levelname)s] %(message)s', level=logging.INFO)
+logging.basicConfig(format="%(asctime)s [%(levelname)s] %(message)s", level=logging.INFO)
 USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 Edg/120.0.0.0"
 headers = {
-	'User-Agent': USER_AGENT,
-	'origin': "https://www.bilibili.com",
-	'referer': "https://www.bilibili.com",
-	"Connection": "keep-alive"
+	"Accept-Encoding": "gzip, deflate, br, zstd",
+	"Origin": "https://www.bilibili.com",
+	"Referer": "https://www.bilibili.com",
+	"User-Agent": USER_AGENT,
+	"Connection": "keep-alive",
 }
 SLEEP_TIME = 0.5
 network_request_count = [0, 0]
@@ -45,7 +45,7 @@ def Program_FLAG(flag: str) -> None:
 	if flag == "-1": return
 	if flag.find("0b") == 0: flag = "0"+flag
 	else: flag = bin(int(flag))
-	flag = "00000000000000000000000000000000" + flag.lstrip("0b")
+	flag = "00000000000000000000000000000000" + flag[2:]
 	global settings
 	for xx in range(-1, -len(flag), -1):
 		if flag[xx] == "1": settings[-xx - 1] = True
@@ -87,7 +87,7 @@ def Downloader(url_DL: str, filename: str, headers: dict = headers) -> bytes:
 		time.sleep(SLEEP_TIME)
 		while True:
 			try:
-				DL_Data = session.request(method='GET', url=url_DL, headers=headers, verify=False, timeout=10)
+				DL_Data = session.request(method="GET", url=url_DL, headers=headers, verify=False, timeout=10)
 			except TimeoutError:
 				logging.warning("[Downloader] Timeout " + url_DL)
 				continue
@@ -119,13 +119,13 @@ def GetDanmaku(cid: str, segment_index: str, retries: str = "") -> bytes:
 	# else:temp_string = ""
 
 	headers = {
-		'Host': "api.bilibili.com",
+		"Accept-Encoding": "gzip, deflate, br, zstd",
+		"Accept": "application/json, text/plain, */*",
 		"Connection": "keep-alive",
-		'Accept': "application/json, text/plain, */*",
-		'User-Agent': USER_AGENT,
-		'origin': "https://www.bilibili.com",
-		'referer': f"https://www.bilibili.com/video/{bvid}/",
-		'Accept-Encoding': "gzip, deflate, br",
+		"Host": "api.bilibili.com",
+		"Origin": "https://www.bilibili.com",
+		"Referer": f"https://www.bilibili.com/video/{bvid}/",
+		"User-Agent": USER_AGENT,
 	}
 	file_content = Downloader(f"https://api.bilibili.com/x/v2/dm/web/seg.so?type=1&oid={cid}&pid={avid_in}&segment_index={segment_index}{temp_string}", f"[{bvid}]_[{cid}]_[Danmaku]_[{segment_index+retries}].bin", headers=headers)
 	if settings[12] and settings[1]: return b""
@@ -171,7 +171,7 @@ def GetSpecialDanmaku(input: dm_pb2.DmWebViewReply) -> bytes:
 # 	for this in Proto_data:
 # 		Ex_Extra_Data = ""
 # 		if settings[4]: Ex_Extra_Data = f"<!-- SPECIAL: {this.command}{this.extra} -->"
-# 		out1 += f"\t<d p=\"{format(this.stime/1000, '.5f')},1,25,16777215,{int(time.mktime(time.strptime(this.ctime, '%Y-%m-%d %H:%M:%S')))},999,{hex(crc32(str(this.mid).encode()) ^ 0xFFFFFFFF)[2:].lstrip('0')},{this.id},11\">{this.content}</d>{Ex_Extra_Data}\n"
+# 		out1 += f"\t<d p=\"{format(this.stime/1000, ".5f")},1,25,16777215,{int(time.mktime(time.strptime(this.ctime, "%Y-%m-%d %H:%M:%S")))},999,{hex(crc32(str(this.mid).encode()) ^ 0xFFFFFFFF)[2:].lstrip("0")},{this.id},11\">{this.content}</d>{Ex_Extra_Data}\n"
 # 	return out1
 
 
@@ -205,27 +205,27 @@ def MainFunc():
 	video_info_2_load["data"]["Reply"]["replies"] = []
 	try: video_info_2_load["data"]["View"]["ugc_season"]["sections"] = []
 	except: pass
-	DumpData(f"[{bvid}]_[0]_[Video]_[INFO_2].json", bytes(json.dumps(video_info_2_load, ensure_ascii=False, separators=(',', ':'), indent="\t"), encoding="utf-8"))
+	DumpData(f"[{bvid}]_[0]_[Video]_[INFO_2].json", bytes(json.dumps(video_info_2_load, ensure_ascii=False, separators=(",", ":"), indent="\t"), encoding="utf-8"))
 	# ================================ 视频信息3
-	logging.debug(f"{bvid} Video info V2 + wib")
-	if settings[8]: video_info_3 = '{"data":{"Related":[],"Reply":{"replies":[]}}}'
-	else: video_info_3 = Downloader(f"{url_info_3}?{gen_w_rid({'aid':avid_in})}", f"[{bvid}]_[0]_[Video]_[INFO_3].json")
-	video_info_3_load = json.loads(video_info_3)
-	DumpData(f"[{bvid}]_[0]_[Video]_[INFO_3].json", bytes(json.dumps(video_info_3_load, ensure_ascii=False, separators=(',', ':'), indent="\t"), encoding="utf-8"))
+	# logging.debug(f"{bvid} Video info V2 + wib")
+	# if settings[8]: video_info_3 = '{"data":{"Related":[],"Reply":{"replies":[]}}}'
+	# else: video_info_3 = Downloader(f"{url_info_3}?{gen_w_rid({"aid":avid_in})}", f"[{bvid}]_[0]_[Video]_[INFO_3].json")
+	# video_info_3_load = json.loads(video_info_3)
+	# DumpData(f"[{bvid}]_[0]_[Video]_[INFO_3].json", bytes(json.dumps(video_info_3_load, ensure_ascii=False, separators=(",", ":"), indent="\t"), encoding="utf-8"))
 	# ================================ 加载
 	json_info = video_info_1["data"]
 	main_title:str = json_info["title"]
 	pub_date = int(json_info["pubdate"])
 	part_count = int(len(json_info["pages"]))
 	# ================================ bvid aid 检查
-	if json_info["bvid"] != bvid: logging.error(f"[bvid]: bvid mismatch {json_info['bvid']}|{bvid}")
-	if json_info["aid"] != avid_in: logging.error(f"[avid]: avid mismatch av{json_info['aid']}|{avid}")
+	if json_info["bvid"] != bvid: logging.error(f"[bvid]: bvid mismatch {json_info["bvid"]}|{bvid}")
+	if json_info["aid"] != avid_in: logging.error(f"[avid]: avid mismatch av{json_info["aid"]}|{avid}")
 	if settings[14]: return
 	# sys.exit()
 	# ================================ 字幕
 	if json_info["subtitle"] != None:
 		for subs in json_info["subtitle"]["list"]:
-			DumpData(f"[{bvid}]_[Subtitle]_[{subs['id']}]_[{subs['lan']}].bcc", Downloader(subs["subtitle_url"], f"[{bvid}]_[Subtitle]_[{subs['id']}]_[{subs['lan']}].bcc"), Always_Write=True)
+			DumpData(f"[{bvid}]_[Subtitle]_[{subs["id"]}]_[{subs["lan"]}].bcc", Downloader(subs["subtitle_url"], f"[{bvid}]_[Subtitle]_[{subs["id"]}]_[{subs["lan"]}].bcc"), Always_Write=True)
 			logging.debug(f"[{bvid}]: 字幕")
 		if settings[15]: return
 	# ================================ 分集处理
@@ -247,7 +247,7 @@ def MainFunc():
 		duration = int(This["duration"])
 		segment_count = (duration/360).__ceil__()
 		logging.debug(f"[{bvid}][Special_Danmaku]: P{iv}")
-		extra_info_proto_binary = Downloader(f'https://api.bilibili.com/x/v2/dm/web/view?type=1&oid={cid}', f"[{bvid}]_[{cid}]_[BAS]_[INFO].bin")
+		extra_info_proto_binary = Downloader(f"https://api.bilibili.com/x/v2/dm/web/view?type=1&oid={cid}", f"[{bvid}]_[{cid}]_[BAS]_[INFO].bin")
 		if settings[16]: continue
 		extra_info_proto = dm_pb2.DmWebViewReply()
 		extra_info_proto.ParseFromString(extra_info_proto_binary)
@@ -266,7 +266,7 @@ def MainFunc():
 		if part_title == "": part_title = f"P{iv}"
 		logging.info(f"{pub_date}|{bvid}|{avid}|P{iv}/{part_count}|{cid}|{duration}|{segment_count}|{main_title}|{part_title}")
 		if part_title == main_title: part_title = ""
-		file_name = f"[{pub_date}][{bvid}][{avid}][P{iv}][{cid}]{main_title.replace('_', '＿')}_{part_title.replace('_', '＿')}".replace("\\", "＼").replace("/", "／").replace(":", "：").replace("*", "＊").replace("?", "？").replace("<", "＜").replace(">", "＞").replace("|", "｜").replace("\"", "＂").replace("\r", "").replace("\n", "").rstrip("_")	# \/:*?"<>|
+		file_name = f"[{pub_date}][{bvid}][{avid}][P{iv}][{cid}]{main_title.replace("_", "＿")}_{part_title.replace("_", "＿")}".replace("\\", "＼").replace("/", "／").replace(":", "：").replace("*", "＊").replace("?", "？").replace("<", "＜").replace(">", "＞").replace("|", "｜").replace("\"", "＂").replace("\r", "").replace("\n", "").rstrip("_")	# \/:*?"<>|
 		# [1656432000][BV*********][av*********][P**][cid]MainTitle_P-Title
 		# if (not settings[6]) and settings[11]: xml_final += xmlSpecialDanmakuProcess(extra_info_proto.commandDms)
 		if settings[9]:
@@ -354,23 +354,23 @@ def MainFunc():
 			json_process["info"] = {}
 			json_process["info"]["Ver"] = "V7_20230708"
 			json_process["info"]["dmk_Ver"] = 5
-			json_process["info"]["owner"] = json_info['owner']
+			json_process["info"]["owner"] = json_info["owner"]
 			json_process["info"]["bvid"] = bvid
 			json_process["info"]["avid"] = avid_in
 			json_process["info"]["V_Name"] = main_title
 			json_process["info"]["pubdate"] = pub_date
-			json_process["info"]["ctime"] = json_info['ctime']
+			json_process["info"]["ctime"] = json_info["ctime"]
 			json_process["info"]["P_Name"] = This["part"]
 			json_process["info"]["cid"] = cid
 			json_process["info"]["duration"] = duration
 			json_process["info"]["segment_count"] = segment_count
 			json_process["info"]["danmaku_count"] = danmaku_count
-			json_process["info"]["danmaku_web_reported"] = json_info['stat']['danmaku']
+			json_process["info"]["danmaku_web_reported"] = json_info["stat"]["danmaku"]
 			json_process["info"]["danmaku_proto_reported"] = extra_info_proto.count
 			json_process["info"]["File_Create_Time_Start"] = int(time_start_process)
 			json_process["info"]["File_Create_Time"] = int(time_process_danmaku)
 			json_process["info"]["is_live_record"] = settings[2]
-			Json_Write_Data = json.dumps(json_process, ensure_ascii=False, separators=(',', ':')).replace("},{\"stime\"", "},\n{\"stime\"")
+			Json_Write_Data = json.dumps(json_process, ensure_ascii=False, separators=(",", ":")).replace("},{\"stime\"", "},\n{\"stime\"")
 			del json_process
 			logging.debug(f"[{bvid}][File_JSON P{iv}]: 结束处理")
 		if settings[12]: err_sign = "ERR_"
@@ -390,7 +390,7 @@ def MainFunc():
 	logging.debug(f"{bvid}|{avid} Time: {round(time_video_end-time_process_start, 3)} Net: {network_request_count[1]} Wait: {round(network_request_count[1]*SLEEP_TIME, 2)} SLEEP: {SLEEP_TIME}")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
 	time_process_start = time.time()
 	# logging.debug(sys.argv)
 	# ================================ 程序设置
