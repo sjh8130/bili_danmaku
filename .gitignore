@@ -14,3 +14,4 @@ x2.py
 *.tar
 /.vscode
 *.jsonl
+*.db

@@ -36,6 +36,8 @@ for item in data["entries"]:
 		jmp = 0
 		continue
 	print(item["request"]["method"], item["request"]["url"], )
+	if item["request"]["url"].startswith("https://baselabs.bilibili.com/"):
+		print(item["response"]["content"])
 	if item["response"]["status"] == 101:
 		print(json.dumps(item, ensure_ascii=False))
 	# print(bytes(item["response"],"utf-"))
