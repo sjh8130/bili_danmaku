@@ -33,6 +33,7 @@ class HostHeaderSSLAdapter(requests.adapters.HTTPAdapter):
 
 
 def resolve_dns(domain):
+	print("resolving"+domain)
 	try:
 		ip_addresses = socket.getaddrinfo(domain, None)
 		return [addr[4][0] for addr in ip_addresses]
@@ -44,18 +45,17 @@ def resolve_dns(domain):
 def scrape_urls(start, end, ip_address, base, trd):
 	session = requests.Session()
 	session.mount("https://", HostHeaderSSLAdapter(ip_address))
-	with open(f"{trd}", "w", -1, "utf-8")as file:
-		for i in range(start, end):
-			url = f"{base}{i}.ts"
-			try:
-				with session.head(url, timeout=30) as a:
-					file.write(f"{i}{a.headers}\n")
-					print(f"{i}{a.headers.get("Etag")}")
-			except requests.RequestException as e:
-				print(f"Error accessing {url}: {e}")
+	for i in range(start, end):
+		url = f"{base}{i}.ts"
+		try:
+			with open(f"{i}.ts", "wb", 8192)as file, session.get(url, timeout=30) as a:
+				file.write(a.content)
+				print(f"{i}{a.headers.get('Etag')}")
+		except requests.RequestException as e:
+			print(f"Error accessing {url}: {e}")
 
 
-def main(base, target):
+def main(base_url, target):
 	domain = "dqrpb9wgowsf5.cloudfront.net"
 	ip_addresses = resolve_dns(domain)
 
@@ -70,7 +70,7 @@ def main(base, target):
 		futures = []
 		for xx in range(num_threads):
 			futures.append(executor.submit(
-				scrape_urls, chunks[xx][0], chunks[xx][1], ip_addresses[xx], base, xx))
+				scrape_urls, chunks[xx][0], chunks[xx][1], ip_addresses[xx], base_url, xx))
 
 		# Wait for all futures to complete
 		for future in concurrent.futures.as_completed(futures):

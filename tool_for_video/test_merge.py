@@ -30,18 +30,18 @@ IN_FILE_2 = sys.argv[2].rsplit(".", 1)[-2]+SUFFIX
 OUT__FILE = "NUL"
 OUT__FILE = IN_FILE_1.rsplit(".")[-2]+"_OUT."+IN_FILE_1.rsplit(".")[-1]
 
-with open(IN_INFO_1, "r") as HASHL, \
-	open(IN_INFO_2, "r") as HASHR, \
+with open(IN_INFO_1, "r") as HASH_L, \
+	open(IN_INFO_2, "r") as HASH_R, \
 	io.open(IN_FILE_1, "rb", buffering=256*1024*1024) as FILE_1, \
 	io.open(IN_FILE_2, "rb", buffering=256*1024*1024) as FILE_2, \
 	io.open(OUT__FILE, "wb", buffering=256*1024*1024) as OUT_FI:
 	print_control = 0
 	output_frames = 0
 	output_F_size = 0
-	PKT_L = json.load(HASHL)["packets"]
-	PKT_R = json.load(HASHR)["packets"]
-	HASHL.close()
-	HASHR.close()
+	PKT_L = json.load(HASH_L)["packets"]
+	PKT_R = json.load(HASH_R)["packets"]
+	HASH_L.close()
+	HASH_R.close()
 	OUT_L = "========        "	# 输出文件1
 	OUT_R = "        ========"	# 输出文件2
 	OUT_A = "================"	# 文件1和文件2的帧内容相同，输出

@@ -5,17 +5,16 @@ import sys
 from filters import FILTER_WORDS,FILTER_USER,FILTER_USER_CRC
 
 line: str
-start_time = time.time()
-# in_path = ""
 in_path = sys.argv[1]
 out_path = "Z:\\test.json"
 left_pos = 0
 dm_text: str
 danmaku: dict
 extra: dict
+start_time = time.time()
 try:
-	with open(out_path, "r", encoding="utf-8") as file_out:
-		final_write = json.load(file_out)
+	with open(out_path, "r", encoding="utf-8") as file_io:
+		final_write = json.load(file_io)
 except FileNotFoundError:
 	final_write = {}
 with open(in_path, "r", encoding="utf-8") as file_in:
@@ -48,7 +47,9 @@ with open(in_path, "r", encoding="utf-8") as file_in:
 				final_write[dm_text] += 1
 			except KeyError:
 				final_write[dm_text] = 1
-with open(out_path, "w", encoding="utf-8") as file_out:
-	json.dump(final_write,file_out, ensure_ascii=False, indent="\t")
+
+with open(out_path, "w", encoding="utf-8") as file_io:
+	json.dump(final_write,file_io, ensure_ascii=False, indent="\t")
+
 total_time = time.time() - start_time
 print(f"处理完成，耗时：{total_time:.3f}秒")

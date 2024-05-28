@@ -885,6 +885,7 @@ SPAM_WORDS=[
 	"(=・ω・=)(=・ω・=)(=・ω・=)(=・ω・=)",
 	"(=・ω・=)（自动）",
 	"(=・ω・=)+123",
+	"(=・ω・=)1",
 	"(=・ω・=)啊",
 	"(=・ω・=)啦",
 	"(=・ω.・=)",
@@ -2613,6 +2614,7 @@ SPAM_WORDS=[
 	"没问题",
 	"没有",
 	"没有手机",
+	"每日 [dog]",
 	"每日打卡",
 	"每日打卡+100亲密.",
 	"每日签到",
@@ -2740,6 +2742,7 @@ SPAM_WORDS=[
 	"晚上好，（#-_-)┯━┯",
 	"晚上好啦",
 	"晚上好猫猫",
+	"晚上好喵~",
 	"晚上好giaogiao",
 	"万流始原之海",
 	"万流原始之海",
@@ -3145,9 +3148,6 @@ SINGLE_ASCII=[
 	"P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "[", "\\", "]", "^", "_",
 	"`", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o",
 	"p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "{", "|", "}", "~", "",
-]
-SINGLE_UNICODE=[
-	"\u200B","\u202D","\u202E",
 ]
 # ================================  官方表情 official emoji
 OFFICIAL_EMOJI=[
@@ -4682,8 +4682,11 @@ FILTER_WORDS = [
 
 # 屏蔽用户
 FILTER_USER = [11953357,3546646270970114,3546650729515089,3546652352710755,3546638813498287,3546652361099328,3546637756533267,]
+#string
 FILTER_USER_S = [str(_) for _ in FILTER_USER]
+
 FILTER_USER_CRC = ["b6da28c0","ed7e94c1","555cc48b","c7c66d83","2498c998","14361d12","8cbfafa0","fd54a4d6",]
+FILTER_USER_CRCH = [_.upper() for _ in FILTER_USER_CRC]
 FILTER_USER_CRCD = [int(_, 16) for _ in FILTER_USER_CRC]
 FILTER_USER_CRCDS = [str(int(_, 16)) for _ in FILTER_USER_CRC]
 if __name__ == "__main__":
@@ -4693,6 +4696,7 @@ if __name__ == "__main__":
 	print(FILTER_USER)
 	print(FILTER_USER_S)
 	print(FILTER_USER_CRC)
+	print(FILTER_USER_CRCH)
 	print(FILTER_USER_CRCD)
 	print(FILTER_USER_CRCDS)
 	sleep(10)

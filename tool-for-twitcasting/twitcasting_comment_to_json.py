@@ -35,12 +35,14 @@ headers = {
 session = requests.Session()
 
 
-def Downloader(page:int|str):
-	retry_count=0
+def Downloader(page: int | str):
+	retry_count = 0
 	url = f"https://{TWITCASTING_URL}/{user}/moviecomment/{movie_id}-{page}"
 	while retry_count < 5:
 		try:
-			content = session.get(url, headers=headers, verify=False, timeout=30).content
+			response = session.get(url, headers=headers, verify=False, timeout=30)
+			response.raise_for_status()
+			return response.content
 		except KeyboardInterrupt:
 			print("BREAK")
 			return b"BREAK"
@@ -48,19 +50,27 @@ def Downloader(page:int|str):
 			retry_count += 1
 			print(f"Error fetching {url}: {e}, {retry_count}")
 			time.sleep(1)
-	return content
 
 
-out = {"comment": [], "info": {"user": user, "movie_id": int(movie_id), "title": "", "url": f"https://{TWITCASTING_URL}/{user}/movie/{movie_id}"}}
-page_num = 0
-while (page_num <= int(page_count)):
+out = {
+	"comment": [],
+	"info": {
+		"user": user,
+		"movie_id": int(movie_id),
+		"title": "",
+		"url": f"https://{TWITCASTING_URL}/{user}/movie/{movie_id}"
+	}
+}
+current_page = 0
+end = False
+while (not end):
 	# a = open(f"twitcasting_{user}_{movie_id}_{page}.html", encoding="utf-8").read()
-	page = Downloader(page_num)
+	page = Downloader(current_page)
 	if page == b"BREAK":
 		break
 	comments = list(bs4.BeautifulSoup(page, "lxml").select(".tw-comment-history-item", limit=999))
 	# out["info"]["title"] = str(bs4.BeautifulSoup(a, "lxml").title.contents[0]).replace(" Comment - TwitCasting", "").replace(" コメント - ツイキャス", "")
-	if page_num == 0:
+	if current_page == 0:
 		out["info"]["title"] = str(bs4.BeautifulSoup(page, "lxml").select(".tw-basic-page-header-path", limit=1)[0].contents[3].contents[1].contents[0]).rstrip(" ")
 		page_count = int(bs4.BeautifulSoup(page, "lxml").select(".tw-pager", limit=1)[0].contents[-1].contents[0])
 		print(page_count)
@@ -73,9 +83,13 @@ while (page_num <= int(page_count)):
 			"author": {
 					"id": comment.select(".tw-comment-history-item__details__user-link")[0].attrs["href"][1:],
 					"name": str(comment.select(".tw-comment-history-item__details__user-link")[0].contents[0]).lstrip("\n").lstrip("\t").lstrip(" ").rstrip(" "),
-				"profileImage": ("https:"+comment.select(".tw-comment-history-item__user__icon")[0].attrs["src"]).replace("https:https://", "https://")
+					"profileImage": ("https:"+comment.select(".tw-comment-history-item__user__icon")[0].attrs["src"]).replace("https:https://", "https://")
 			}
 		})
-	page_num += 1
+	current_page += 1
+	if page_count >= current_page:
+		end = True
 session.close()
-open(f"twitcasting_{user}_{movie_id}.json", "w", encoding="utf-8").write(json.dumps(out, ensure_ascii=False, separators=(",", ":"), indent="\t").replace("\n\t\t\t", "").replace("\n\t\t}", "}"))
+out_data = json.dumps(out, ensure_ascii=False, separators=(",", ":"), indent="\t").replace("\n\t\t\t\t", "").replace("\n\t\t\t", "").replace("\n\t\t}", "}")
+with open(f"twitcasting_{user}_{movie_id}.json", "w", encoding="utf-8") as fo:
+	fo.write(out_data)
