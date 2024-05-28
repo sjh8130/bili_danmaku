@@ -12,6 +12,6 @@ x2.py
 *.xz
 *.gz
 *.tar
-/.vscode
+.vscode
 *.jsonl
 *.db

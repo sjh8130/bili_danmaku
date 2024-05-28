@@ -55,8 +55,8 @@ def scrape_urls(start, end, ip_address, base, trd):
 			print(f"Error accessing {url}: {e}")
 
 
-def main(base_url, target):
-	domain = "dqrpb9wgowsf5.cloudfront.net"
+def main(base_url:str, target):
+	domain = base_url.split("/")[1]
 	ip_addresses = resolve_dns(domain)
 
 	num_ips = len(ip_addresses)
@@ -81,5 +81,5 @@ def main(base_url, target):
 
 
 if __name__ == "__main__":
-	base = "https://dqrpb9wgowsf5.cloudfront.net/28ac040aeefa738494ac_sweetily_42555921422_1713243633/chunked/"
-	main(base, 17278)
+	base = "xxx"
+	main(base, 0)
