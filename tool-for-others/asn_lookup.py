@@ -4,14 +4,14 @@ import ipaddress
 
 
 def init():
-	PATHBASE = "Z:\\"
+	PATH_BASE = "Z:\\"
 	FILEPATH = (
-		f"{PATHBASE}delegated-iana-latest",#互联网号码分配局#~1500
-		f"{PATHBASE}delegated-apnic-latest",#亚太互联网络信息中心#~160,000
-		f"{PATHBASE}delegated-arin-latest",#美洲互联网号码注册管理机构#~70000
-		f"{PATHBASE}delegated-ripencc-latest",#欧洲IP网络资源协调中心#~120,000
-		f"{PATHBASE}delegated-lacnic-latest",#拉丁美洲及加勒比地区互联网地址注册管理机构#~20000
-		f"{PATHBASE}delegated-afrinic-latest",#非洲网络信息中心#~9000
+		f"{PATH_BASE}delegated-iana-latest",#互联网号码分配局#~1500
+		f"{PATH_BASE}delegated-apnic-latest",#亚太互联网络信息中心#~160,000
+		f"{PATH_BASE}delegated-arin-latest",#美洲互联网号码注册管理机构#~70000
+		f"{PATH_BASE}delegated-ripencc-latest",#欧洲IP网络资源协调中心#~120,000
+		f"{PATH_BASE}delegated-lacnic-latest",#拉丁美洲及加勒比地区互联网地址注册管理机构#~20000
+		f"{PATH_BASE}delegated-afrinic-latest",#非洲网络信息中心#~9000
 	)
 	URL_BASE = "https://ftp.apnic.net/stats"
 	URL = (
