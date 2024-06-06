@@ -36,7 +36,7 @@ def p():
 			g=int(e["duration"])
 			h=(g/360).__ceil__()
 			o(b=f"https://api.bilibili.com/x/v2/dm/web/view?type=1&oid={f}",c=f"[{r}]_[{f}]_[BAS]_[INFO].bin",x=y)
-			print(f"{b["pubdate"]}|{r}|av00000000|PXX/{len(b["pages"])}|{f}|{g}|{h}|title|ptitle")
+			print(f"{b["pubdate"]}|{r}|av00000000|PXX/{len(b["pages"])}|{f}|{g}|{h}|title|p_title")
 			for i in range(h):
 				o(f"https://api.bilibili.com/x/v2/dm/web/seg.so?type=1&oid={f}&segment_index={str(i+1)}",c=f"[{r}]_[{f}]_[Danmaku]_[{i+1}].bin",x=y)
 				o(f"https://api.bilibili.com/x/v2/dm/web/seg.so?type=1&oid={f}&segment_index={str(i+1)}",c=f"[{r}]_[{f}]_[Danmaku]_[{i+1}]_B1.bin",x=y)

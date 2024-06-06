@@ -6,7 +6,7 @@ import gzip
 import os
 import binascii
 
-from my_lib.json2xml_Lib import Json2XML
+from my_lib.json2xml_Lib import json2XML
 
 Start_Time = time.time()
 input_File = sys.argv[1]
@@ -69,7 +69,7 @@ if commandDms_Len != 0:
 		XML_Data_1st_Cache += f"\t<d p=\"{format(stime/1000, '.5f')},1,25,16777215,{int(time.mktime(time.strptime(this['ctime'], '%Y-%m-%d %H:%M:%S')))},999,{hex(binascii.crc32(str(this['mid']).encode())^0xFFFFFFFF).lstrip('0x').lstrip('0')},{this['id']},11\">{this['content']}</d><!-- SPECIAL: {this['command']}{this['extra']} -->\n"
 	del this
 for this in Loaded_JSON["elems"]:
-	XML_Data_3rd_Cache += Json2XML(this=this, exdata=True, enable_weight=True, dmk_Ver=dmk_Ver)
+	XML_Data_3rd_Cache += json2XML(this=this, exdata=True, enable_weight=True, dmk_Ver=dmk_Ver)
 	i += 1
 	if i % SPLIT_3RD_SIZE == 0:
 		XML_Data_1st_Cache += XML_Data_2nd_Cache

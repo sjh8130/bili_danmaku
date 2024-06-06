@@ -135,6 +135,7 @@ def download_file(url: str, filepath: str):
 	# 检查文件是否存在
 	if not os.path.isfile(filepath):
 		import requests
+		# file {} not exist, downloading...
 		print(f"文件 {filepath} 不存在，正在下载...")
 		# 发送HTTP GET请求到url
 		response = requests.get(url, stream=True, headers={"Accept-Encoding": "gzip, deflate, br, zstd"})
@@ -247,10 +248,8 @@ def ip_in_range(ip: str, cidr: str) -> bool:
 
 
 def ip_in_custom_range(ip: str, ip_range: str) -> bool:
-	if ":" in ip:
-		return False
-	if "/" in ip:
-		return False
+	if ":" in ip or "/" in ip:
+		return ip_in_range(ip, ip_range)
 	# 解析自定义IP范围字符串
 	start_ip_str, count_str = ip_range.split("+")
 	start_ip = int(ipaddress.IPv4Address(start_ip_str))
@@ -268,30 +267,31 @@ if __name__ == "__main__":
 	init()
 	try:
 		while True:
-			ip = input("请输入IPv4或IPv6地址（输入'exit'退出）: ").strip()
-			if ip == "":
+			# input ipv4 or ipv6 , 'exit' to exit
+			query_string = input("请输入IPv4或IPv6地址（输入'exit'退出）: ").strip().lower()
+			if query_string == "":
 				continue
-			elif ip == "exit":
+			elif query_string == "exit":
 				break
-			elif ip.lower() == "all":
+			elif query_string == "all":
 				query_all()
-			elif ip.lower() in ["clear", "cls"]:
+			elif query_string in ["clear", "cls"]:
 				if sys.platform == "win32":
 					os.system("cls")
 				else:
 					os.system("clear")
-			elif ip.lower() == "dump":
+			elif query_string == "dump":
 				import json
 				open("Z:\\dump.json", "w", encoding="utf-8").write(json.dumps(ips, ensure_ascii=False, separators=(",", ":")))
-			elif len(ip) == 2 and ip.upper() in ISO3166_1 or ip.upper() in ["XX", "ZZ"]:
-				query_region(ip.upper())
-			elif ip.lower() in ["allocated", "assigned", "reserved", "available"]:
-				query_status(ip.lower())
-			elif ip.lower() in ["afrinic", "apnic", "arin", "iana", "lacnic", "ripe-ncc", "ripencc"]:
-				query_status(ip.lower())
+			elif len(query_string) == 2 and query_string.upper() in ISO3166_1 or query_string.upper() in ["XX", "ZZ"]:
+				query_region(query_string.upper())
+			elif query_string in ["allocated", "assigned", "reserved", "available"]:
+				query_status(query_string)
+			elif query_string in ["afrinic", "apnic", "arin", "iana", "lacnic", "ripe-ncc", "ripencc"]:
+				query_status(query_string)
 			else:
 				try:
-					query_ip(ip)
+					query_ip(query_string)
 				except Exception as e:
 					print(e)
 					continue

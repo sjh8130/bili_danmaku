@@ -23,7 +23,7 @@ def split_file_by_day(input_file_path: str):
 	lines_by_day = {}
 
 	# 获取文件名（不包括扩展名）和扩展名
-	base_name, ext = os.path.splitext(os.path.basename(input_file_path))
+	base_name, ext = os.path.splitext(os.path.basename(b_name))
 	directory = os.path.dirname(input_file_path)
 
 	# 读取文件内容
@@ -53,6 +53,7 @@ def split_file_by_day(input_file_path: str):
 
 # 调用函数，按日分割文件
 item = sys.argv[1:]
+b_name = item[0]
 for i in item: split_file_by_day(i)
 # split_file_by_day("Z://11.jsonl")
 #AI

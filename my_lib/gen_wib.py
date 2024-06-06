@@ -1,4 +1,4 @@
-from functools import reduce
+from functools import lru_cache, reduce
 from hashlib import md5
 import ssl
 import urllib.parse
@@ -18,11 +18,13 @@ mixinKeyEncTab = [
     57, 62, 11, 36, 20, 34, 44, 52
 ]
 
+
 def getMixinKey(orig: str):
     '对 imgKey 和 subKey 进行字符顺序打乱编码'
     return reduce(lambda s, i: s + orig[i], mixinKeyEncTab, '')[:32]
 # 2023 07 14 eff8fb5b467723ee33a907cfcd224a4a
 # 2023 08 10 ea1db124af3c7062474693fa704f4ff8
+
 
 def encWbi(params: dict, img_key: str, sub_key: str):
     '为请求参数进行 wbi 签名'
@@ -33,8 +35,8 @@ def encWbi(params: dict, img_key: str, sub_key: str):
     params = dict(sorted(params.items()))                       # 按照 key 重排参数
     # 过滤 value 中的 "!'()*" 字符
     params = {
-        k : ''.join(filter(lambda chr: chr not in "!'()*", str(v)))
-        for k, v 
+        k: ''.join(filter(lambda chr: chr not in "!'()*", str(v)))
+        for k, v
         in params.items()
     }
     query = urllib.parse.urlencode(params)                      # 序列化参数
@@ -42,9 +44,14 @@ def encWbi(params: dict, img_key: str, sub_key: str):
     params['w_rid'] = wbi_sign
     return params
 
+
+@lru_cache
 def getWbiKeys() -> tuple[str, str]:
     '获取最新的 img_key 和 sub_key'
-    resp = requests.get('https://api.bilibili.com/x/web-interface/nav', verify=False)
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36"
+    }
+    resp = requests.get('https://api.bilibili.com/x/web-interface/nav', headers=headers, verify=False)
     resp.raise_for_status()
     json_content = resp.json()
     img_url: str = json_content['data']['wbi_img']['img_url']
@@ -54,18 +61,19 @@ def getWbiKeys() -> tuple[str, str]:
     return img_key, sub_key
 
 
-def gen_w_rid(query):
+def gen_w_rid(query: dict):
     img_key, sub_key = getWbiKeys()
     signed_params = encWbi(
         params=query,
         img_key=img_key,
         sub_key=sub_key
     )
-    query = urllib.parse.urlencode(signed_params)
+    ret = urllib.parse.urlencode(signed_params)
     if __name__ == "__main__":
         print(signed_params)
-        print(query)
-    return query
+        print(ret)
+    return ret
+
 
 if __name__ == "__main__":
-    gen_w_rid({'foo': '114','bar': '514','baz': 1919810})
+    gen_w_rid({'foo': '114', 'bar': '514', 'baz': 1919810})

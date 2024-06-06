@@ -5,7 +5,7 @@
 ## 主站弹幕
 | id	| type		| protobuf-name	| - |
 |-:|-:|-|-|
-| ~~1~~	|  ~~int64~~	| ~~id~~			| 弹幕ID |
+| 1		|  int64	| id			| 弹幕ID |
 | 2		|  int32	| stime			| 弹幕出现时间（毫秒） |
 | 3		|  int32	| mode			| 弹幕类型 |
 | 4		|  int32	| size			| 弹幕字号 |
@@ -14,21 +14,23 @@
 | 7		| string	| text			| 弹幕内容 |
 | 8		|  int64	| date			| 发送时间 |
 | 9		|  int32	| weight		| 屏蔽等级 |
-| 10	| string	| action		| `airborne:[time]`<br>`picture:图像url`(图片弹幕) |
+| 10	| string	| action		| `airborne:[time_ms]` 跳转<br>`picture:图像url` 图片弹幕 |
 | 11	|  int32	| pool			| 弹幕池 |
 | 12	| string	| dmid			| 弹幕ID |
 | 13	|  int32	| attr			| 弹幕属性位 |
-| ~~14~~	| ~~?int64~~	| ~~usermid~~		| ~~发送者mid~~ |
+| 14	| ?int64	| ~~usermid~~		| ~~发送者mid~~ |
 | 15	| ?int??	| *likes*		| 点赞数量 |
-| 16	| ?int??	| ~~test16~~	| 弹幕回复，默认为 0 |
-| 17	| ?int??	| ~~test17~~	| 弹幕回复，默认为 0 |
+| 16	| ?int??	| *test16*		| 弹幕回复，默认为 0 |
+| 17	| ?int??	| *test17*		| 弹幕回复，默认为 0 |
 | 18	| ?int??	| *reply_count*	| 弹幕回复数量 |
-| 19	| ?			| ~~test19~~	| ? |
-| ~~20~~	| ~~string~~	| ~~test20~~	| 弹幕回复，默认为str:"0" |
-| ~~21~~	| ~~string~~	| ~~test21~~	| 弹幕回复，默认为str:"0" |
+| 19	| ?			| *test19*		| ? |
+| 20	| string	| *test20*		| 弹幕回复，默认为str:"0" |
+| 21	| string	| *test21*		| 弹幕回复，默认为str:"0" |
 | 22	| string	| animation		| json |
-| 23	| ?			| ~~test23~~	| ? |
+| 23	| ?			| *test23*		| ? |
 | 24	| uint64	| colorful		| 彩色弹幕 |
+| 25	|  int??	| *test25*		| ? |
+| 26	|  int64	| *oid*			| 视频cid / oid |
 
 ### Danmaku__animation
 | key				| type	| value		| |
@@ -45,31 +47,33 @@
 // 图片弹幕
 {
 	"text":"[ohh]",
-	"weight":10,	// 10
+	"weight":10,
 	"action":"picture:i0.hdslb.com/bfs/feed-admin/d831cbae67aee1a8fe1cc463fb23c9110ee46807.png?scale=1.00",
 	"attr":256,
-	"animation":"{\"id\":20004,\"cid\":0,\"advanced_block\":0,\"mime\":\"image\",\"resource\":\"i0.hdslb.com/bfs/feed-admin/d831cbae67aee1a8fe1cc463fb23c9110ee46807.png\",\"scale\":1}"
+	"animation":"{\"id\":20004,\"cid\":0,\"advanced_block\":0,\"animation_attr\":0,\"mime\":\"image\",\"resource\":\"i0.hdslb.com/bfs/feed-admin/d831cbae67aee1a8fe1cc463fb23c9110ee46807.png\",\"scale\":1}"
 },
 {
 	"text":"[前方高能]",
-	"weight":10,	// 10
+	"weight":10,
 	"action":"picture:i0.hdslb.com/bfs/feed-admin/bd90726bb0c982c161eab7ad67e8460258a8959c.png?scale=1.00",
 	"attr":256,
-	"animation":"{\"id\":20004,\"cid\":0,\"advanced_block\":0,\"mime\":\"image\",\"resource\":\"i0.hdslb.com/bfs/feed-admin/bd90726bb0c982c161eab7ad67e8460258a8959c.png\",\"scale\":1}"},
+	"animation":"{\"id\":20004,\"cid\":0,\"advanced_block\":0,\"animation_attr\":0,\"mime\":\"image\",\"resource\":\"i0.hdslb.com/bfs/feed-admin/bd90726bb0c982c161eab7ad67e8460258a8959c.png\",\"scale\":1}"
+},
+// airborne
+{
+	"text":"跳楼02:51",
+	"action":"airborne:171000"
+},
+
 
 // NFT弹幕（仅移动端）
 {
-	"id":"113xxxxxxxxxxxxx240",
-	"content":"好耶！",
-	"ctime":"1661xxxxxx",
 	"attr":2048,
-	"animation":"{\"id\":20018,\"cid\":0,\"advanced_block\":0,\"mime\":\"image\",\"resource\":\"i0.hdslb.com/bfs/baselabs/xxxxxxxx.png\"}"
+	"animation":"{\"id\":20018,\"cid\":0,\"advanced_block\":0,\"mime\":\"image\",\"resource\":\"i0.hdslb.com/bfs/baselabs/xxx.png\"}"
 },
 {
-	"id":"114xxxxxxxxxxxxx240",
-	"ctime":"1663xxxxxx",
 	"attr":2048,
-	"animation":"{\"id\":20018,\"cid\":0,\"advanced_block\":0,\"animation_attr\":0,\"mime\":\"image\",\"resource\":\"i0.hdslb.com/bfs/baselabs/xxxxxxxx.png\"}"
+	"animation":"{\"id\":20018,\"cid\":0,\"advanced_block\":0,\"animation_attr\":0,\"mime\":\"image\",\"resource\":\"i0.hdslb.com/bfs/baselabs/xxx.png\"}",
 },
 ```
 ### DmColorful
@@ -110,7 +114,7 @@
 | #VOTE#			| "投票弹幕" |
 
 #### ACTORFOLLOW__合作up主
-| key					| type	| value	| 备注	|
+| key 9					| type	| value	| 备注	|
 |-|-|-|-|
 | duration				| num	| |
 | posX					| float	| |
@@ -123,7 +127,7 @@
 | face					| str	| **合作up主 头像 URL** |
 
 #### ATTENTION__关注
-| key					| type		| value	| 备注 |
+| key 15				| type		| value	| 备注 |
 |-|-|-|-|
 | duration				| num		| |
 | posX					| float		| |
@@ -137,7 +141,7 @@
 | upower_state			| num		| true: <br> false: |
 | upower_icon			| str		| true: https://i0.hdslb.com/bfs/garb/item/33e2e72d9a0c855f036b4cb55448f44af67a0635.png <br> false: "" |
 | upower_icon_web		| str		| true: https://i0.hdslb.com/bfs/garb/item/05131ff2c23baa321bc8105b529170bf08b770cb.png <br> false: "" |
-| upower_jump_url		| str		| true: f"https://www.XXXX.com/h5/upower/detail?mid={uid}u0026navhide=1u0026prePage=danmu" <br> false: "" |?`\\u0026` `\u0026`
+| upower_jump_url		| str		| true: f"https://www.xxx.com/h5/upower/detail?mid={uid}u0026navhide=1u0026prePage=danmu" <br> false: "" |?`\\u0026` `\u0026`
 | upower_button_map		| obj/null	| false: null |
 | upower_guide			| str		| |
 ##### ATTENTION__upower_button_map
@@ -152,10 +156,10 @@
 |-|-|-|
 | title					| str	| -1,0,2: "充电" <br> 1: "充电中" |
 | icon					| obj	| |
-| jump_url				| str	| -1,0,2: --> `upower_jump_url` <br> 1: f"https://www.XXXX.com/h5/upower/detail?mid={uid}u0026navhide=1u0026prePage=danmu" |
+| jump_url				| str	| -1,0,2: --> `upower_jump_url` <br> 1: f"https://www.xxx.com/h5/upower/detail?mid={uid}u0026navhide=1u0026prePage=danmu" |
 ##### ATTENTION__upower_button_map__[×××]__icon
 | key					| type	| value	|
-| -						| -		| -		|
+|-|-|-|
 | 10					| str	| --> `upower_icon` |
 | 20					| str	| --> `upower_icon` |
 | 30					| str	| --> `upower_icon` |
@@ -163,14 +167,14 @@
 | 50					| str	| --> `upower_icon` |
 
 #### GRADE__评分
-| key					| type	| value	| 备注	|
+| key 19				| type	| value	| 备注	|
 |-|-|-|-|
 | msg					| str	| 评分问题 |
-| skin					| num	| 1<br>2 |
-| posX	*				| float	| |
-| posY	*				| float	| |
-| posX_2	*			| num	| |
-| posY_2	*			| num	| |
+| skin					| num	| 1 / 2 |
+| ? posX				| float	| |
+| ? posY				| float	| |
+| ? posX_2				| num	| |
+| ? posY_2				| num	| |
 | grade_id				| num	| id |
 | duration				| num	| 5000 |
 | icon					| str	| [url][url_03] |
@@ -186,7 +190,7 @@
 | show_status			| num	| 0 |
 
 #### GRADESUMMARY__查看总分
-| key					| type	| value	| 备注	|
+| key 12				| type	| value	| 备注	|
 |-|-|-|-|
 | msg					| str	| **自定义内容** |
 | posX					| float	| |
@@ -201,7 +205,7 @@
 | shrink_title			| str	| "推荐" |
 | show_status			| num	| 0 |
 ##### GRADESUMMARY__grades
-| key					| type	| value	| 备注	|
+| key 7					| type	| value	| 备注	|
 |-|-|-|-|
 | dmid					| num	| |
 | dmid_str				| str	| |
@@ -212,7 +216,7 @@
 | avg_score				| float	| |
 
 #### LINK__链接
-| key					| type	| value	| 备注	|
+| key 16				| type	| value	| 备注	|
 |-|-|-|-|
 | aid					| num	| **目标视频avid** |
 | title					| str	| **目标视频标题** |
@@ -232,14 +236,14 @@
 | jump_url				| str	| "" |
 
 #### RESERVE__预约
-| key					| type	| value	| 备注	|
+| key 28/31				| type	| value	| 备注	|
 |-|-|-|-|
 | msg					| str	| "预告: **自定义内容**"<br>"直播预约: **自定义内容**" |
 | reserve_type			| num	| 1: 视频<br>2: 直播 |
 | reserve_id			| num	| id |
-| live_stime			| num	| TimeStamp(秒) | `reserve_type=2` |
-| arc_stime				| num	| TimeStamp(秒) | `reserve_type=2` |
-| stime					| num	| TimeStamp(秒) | `reserve_type=2` |
+| ? live_stime			| num	| TimeStamp(秒) |reserve_type:2
+| ? arc_stime			| num	| TimeStamp(秒) |reserve_type:2
+| ? stime				| num	| TimeStamp(秒) |reserve_type:2
 | posX					| float	| |
 | posY					| float	| |
 | posX_2				| num	| |
@@ -247,7 +251,7 @@
 | duration				| num	| 5000 |
 | icon					| str	| [url][url_11] |
 | reserve_count			| num	| **预约人数** |
-| reserve_state			| num	| 0/1 |
+| reserve_state			| num	| 0 / 1 |
 | user_state			| bool 	| **预约状态** | 需要登录 |
 | live_state			| num	| 0: <br> 1:直播中 <br> 2:直播结束 |
 | premiere_state		| num	| 0 |
@@ -259,7 +263,7 @@
 | mid					| num	| **目标视频 UP主mid** |
 | live_stime_format		| str	| 视频: ""<br>直播: "`(yyyy-)?MM-dd HH:mm`" / "`今天HH:mm`" |
 | arc_stime_format		| str	| 视频: ""<br>直播: "`(yyyy-)?MM-dd HH:mm`" / "`今天HH:mm`" |
-| stime_format			| str	| 视频: ""<br>直播: "`(yyyy-)?MM-dd HH:mm`" / "`今天HH:mm`" |
+| stime_format			| str	| 视频: ""<br>直播: "`MM-dd HH:mm`" / "`今天HH:mm`" |
 | live_lottery			| bool 	| `true` |
 | desc					| str	| "" |
 | shrink_icon			| str	| [url][url_12] |
@@ -275,7 +279,7 @@
 | icon					| str	| **UP主头像URL** |
 
 #### VOTE__投票
-| key					| type	| value	| 备注	|
+| key 15				| type	| value	| 备注	|
 |-|-|-|-|
 | vote_id				| num	| id |
 | question				| str	| **投票问题** |
@@ -454,6 +458,7 @@
 | [❌](#PLAY_TOGETHER)							| PLAY_TOGETHER							| |
 | [✅](#POPULAR_RANK_CHANGED)					| POPULAR_RANK_CHANGED					| 排行榜 |
 | [✅](#POPULAR_RANK_GUIDE_CARD)					| POPULAR_RANK_GUIDE_CARD				| 排行榜 |
+| [✅](#POPULARITY_RANK_TAB_CHG)					| POPULARITY_RED_POCKET_NEW				| 人气xxx |
 | [✅](#POPULARITY_RED_POCKET_NEW)				| POPULARITY_RED_POCKET_NEW				| 人气红包 new(抽奖) |
 | [✅](#POPULARITY_RED_POCKET_NEW)				| POPULARITY_RED_POCKET_V2_NEW			| 人气红包 new(抽奖) |
 | [✅](#POPULARITY_RED_POCKET_START)				| POPULARITY_RED_POCKET_START			| 人气红包 抽奖开始 |
@@ -474,7 +479,7 @@
 | [❌](#Revenue_PayLimit)						| Revenue_PayLimit						| |
 | [✅](#ROOM_ADMINS)								| ROOM_ADMINS							| |
 | [✅](#ROOM_ADMIN_REVOKE)						| ROOM_ADMIN_REVOKE						| |
-| [✅](#WIDGET_BANNER)							| ROOM_BANNER							| |
+| [❌](#ROOM_BANNER)								| ROOM_BANNER							| |
 | [❌](#ROOM_BLOCK_INTO)							| ROOM_BLOCK_INTO						| |
 | [✅](#ROOM_BLOCK_MSG)							| ROOM_BLOCK_MSG						| 用户封禁 |
 | [✅](#ROOM_CHANGE)								| ROOM_CHANGE							| 直播信息更改 |
@@ -562,7 +567,7 @@
 | roomid	| str	| 直播间id |
 #### WARNING__msg
 ```json
-{"cmd":"WARNING","roomid":xxx,"msg":"..."}
+{"cmd":"WARNING","roomid":12345,"msg":"xxx"}
 "****涉及引战"
 "分区错误，直播该游戏请移至我的世界分区直播"
 "分区错误，直播该游戏请移至APEX英雄分区直播"
@@ -596,42 +601,33 @@
 | roomid			| num	| 长直播间ID |
 | ? live_time		| num	| 开播时间TimeStamp(秒) |
 ```json
-// live_mng
+// example
 {"cmd":"LIVE","live_key":"111111111111111111","voice_background":"","sub_session_key":"111111111111111111sub_time:1710000000","live_platform":"live_mng","live_model":0,"roomid":12345,"live_time":1710000000}
 {"cmd":"LIVE","live_key":"111111111111111111","voice_background":"","sub_session_key":"111111111111111111sub_time:1710000000","live_platform":"live_mng","live_model":0,"roomid":12345}
+// live_mng
+{"cmd":"LIVE","live_platform":"live_mng","live_model":0}
 // events_broadcast
-{"cmd":"LIVE","live_key":"111111111111111111","voice_background":"","sub_session_key":"111111111111111111sub_time:1710000000","live_platform":"events_broadcast","live_model":0,"live_time":1710000000,"roomid":12345}
-{"cmd":"LIVE","live_key":"111111111111111111","voice_background":"","sub_session_key":"111111111111111111sub_time:1710000000","live_platform":"events_broadcast","live_model":0,"roomid":12345,"live_time":1710000000}
-{"cmd":"LIVE","live_key":"111111111111111111","voice_background":"","sub_session_key":"111111111111111111sub_time:1710000000","live_platform":"events_broadcast","live_model":0,"roomid":12345}
+{"cmd":"LIVE","live_platform":"events_broadcast","live_model":0}
 // pc 开播≠推流
-{"cmd":"LIVE","live_key":"111111111111111111","voice_background":"","sub_session_key":"111111111111111111sub_time:1710000000","live_platform":"pc","live_model":0,"roomid":12345,"live_time":1710000000}
-{"cmd":"LIVE","live_key":"111111111111111111","voice_background":"","sub_session_key":"111111111111111111sub_time:1710000000","live_platform":"pc","live_model":0,"roomid":12345}
+{"cmd":"LIVE","live_platform":"pc","live_model":0}
 // pc link
-{"cmd":"LIVE","live_key":"111111111111111111","voice_background":"","sub_session_key":"111111111111111111sub_time:1710000000","live_platform":"pc_link","live_model":0,"roomid":12345,"live_time":1710000000}
-{"cmd":"LIVE","live_key":"111111111111111111","voice_background":"","sub_session_key":"111111111111111111sub_time:1710000000","live_platform":"pc_link","live_model":0,"roomid":12345}
+{"cmd":"LIVE","live_platform":"pc_link","live_model":0}
 // ios
-{"cmd":"LIVE","live_key":"111111111111111111","voice_background":"https://i0.hdslb.com/bfs/live/xxx.png","sub_session_key":"111111111111111111sub_time:1710000000","live_platform":"ios","live_model":x,"roomid":12345,"live_time":1710000000}
-{"cmd":"LIVE","live_key":"111111111111111111","voice_background":"","sub_session_key":"111111111111111111sub_time:1710000000","live_platform":"ios","live_model":4,"roomid":12345,"live_time":1710000000}
-{"cmd":"LIVE","live_key":"111111111111111111","voice_background":"","sub_session_key":"111111111111111111sub_time:1710000000","live_platform":"ios","live_model":4,"roomid":12345}
+{"cmd":"LIVE","voice_background":"https://i0.hdslb.com/bfs/live/xxx.png","live_platform":"ios","live_model":?}
+{"cmd":"LIVE","voice_background":"","live_platform":"ios","live_model":4}
 // ios link
-{"cmd":"LIVE","live_key":"111111111111111111","voice_background":"https://i0.hdslb.com/bfs/live/xxx.png","sub_session_key":"111111111111111111sub_time:1710000000","live_platform":"ios_link","live_model":x,"live_time":1710000000,"roomid":12345}
-{"cmd":"LIVE","live_key":"111111111111111111","voice_background":"https://i0.hdslb.com/bfs/live/xxx.png","sub_session_key":"111111111111111111sub_time:1710000000","live_platform":"ios_link","live_model":x,"roomid":12345}
-{"cmd":"LIVE","live_key":"111111111111111111","voice_background":"","sub_session_key":"111111111111111111sub_time:1710000000","live_platform":"ios_link","live_model":x,"live_time":1710000000,"roomid":12345}
-{"cmd":"LIVE","live_key":"111111111111111111","voice_background":"","sub_session_key":"111111111111111111sub_time:1710000000","live_platform":"ios_link","live_model":x,"roomid":12345}
+{"cmd":"LIVE","voice_background":"https://i0.hdslb.com/bfs/live/xxx.png","live_platform":"ios_link","live_model":?}
+{"cmd":"LIVE","voice_background":"","live_platform":"ios_link","live_model":?}
 // android
-{"cmd":"LIVE","live_key":"111111111111111111","voice_background":"https://i0.hdslb.com/bfs/live/xxx.jpg","sub_session_key":"111111111111111111sub_time:1710000000","live_platform":"android","live_model":3,"roomid":12345,"live_time":1710000000}
-{"cmd":"LIVE","live_key":"111111111111111111","voice_background":"https://i0.hdslb.com/bfs/live/xxx.jpg","sub_session_key":"111111111111111111sub_time:1710000000","live_platform":"android","live_model":3,"roomid":12345}
-{"cmd":"LIVE","live_key":"111111111111111111","voice_background":"","sub_session_key":"111111111111111111sub_time:1710000000","live_platform":"android","live_model":1,"roomid":12345,"live_time":1710000000}
-{"cmd":"LIVE","live_key":"111111111111111111","voice_background":"","sub_session_key":"111111111111111111sub_time:1710000000","live_platform":"android","live_model":1,"roomid":12345}
+{"cmd":"LIVE","voice_background":"https://i0.hdslb.com/bfs/live/xxx.jpg","live_platform":"android","live_model":3}
+{"cmd":"LIVE","voice_background":"","live_platform":"android","live_model":1}
 // android link
-{"cmd":"LIVE","live_key":"111111111111111111","voice_background":"","sub_session_key":"111111111111111111sub_time:1710000000","live_platform":"android_link","live_model":1,"roomid":12345,"live_time":1710000000}
-{"cmd":"LIVE","live_key":"111111111111111111","voice_background":"","sub_session_key":"111111111111111111sub_time:1710000000","live_platform":"android_link","live_model":1,"roomid":12345}
-{"cmd":"LIVE","live_key":"111111111111111111","voice_background":"","sub_session_key":"111111111111111111sub_time:1710000000","live_platform":"android_link","live_model":2,"roomid":12345,"live_time":1710000000}
-{"cmd":"LIVE","live_key":"111111111111111111","voice_background":"","sub_session_key":"111111111111111111sub_time:1710000000","live_platform":"android_link","live_model":2,"roomid":12345}
+{"cmd":"LIVE","live_platform":"android_link","live_model":1}
+{"cmd":"LIVE","live_platform":"android_link","live_model":2}
 // Harmony?
-{"cmd":"LIVE",....}
+{"cmd":"LIVE","live_platform":"????"}
 // ?
-{"cmd":"LIVE","live_key":"0",                 "voice_background":"","sub_session_key":"111111111111111111sub_time:1710000000","live_platform":"","live_model":0,"roomid":12345}
+{"cmd":"LIVE","live_key":"0","voice_background":"","sub_session_key":"111111111111111111sub_time:1710000000","live_platform":"","live_model":0,"roomid":12345}
 ```
 #### live_platform
 | live_platform		| desc	| |
@@ -644,8 +640,8 @@
 | android			| Android APP |
 | android_link		| Android 直播姬 |
 | events_broadcast	| |
-| harmony?			| xxx |
-| xxxxxxxxxxxxxxx	| xxx |
+| harmony?			| TODO |
+| harmony_link?		| TODO |
 | xxxxxxxxxxxxxxx	| xxx |
 | xxxxxxxxxxxxxxx	| xxx |
 ----
@@ -666,7 +662,7 @@
 |-|-|-|
 | action				| str		| "投喂" |
 | bag_gift				| null/obj	| |
-| batch_combo_id		| str		| `f"batch:gift:combo_id:{uid}:{主播uid}:{giftId}:{时间TimeStamp.4f}"` / 盲盒:UUID |
+| batch_combo_id		| str		| `f"batch:gift:combo_id:{uid}:{主播uid}:{giftId}:{TimeStamp:.4f}"` / `UUID` |
 | batch_combo_send		| null/obj	| |
 | beatId				| str		| "" / "0" |
 | biz_source			| str		| "Live" / "live" |
@@ -767,17 +763,17 @@
 	"data":{
 		"action":"投喂",
 		"bag_gift":null,
-		"batch_combo_id":...,
+		"batch_combo_id":"xxx",
 		"batch_combo_send":{
 			"action":"投喂",
-			"batch_combo_id":...,
+			"batch_combo_id":"xxx",
 			"batch_combo_num":1,
 			"blind_gift":null,
 			"gift_id":31164,
 			"gift_name":"粉丝团灯牌",
 			"gift_num":1,
 			"send_master":null,
-			"uid":xxx,
+			"uid":12345,
 			"uname":"xxx"
 		},
 		"beatId":"0",
@@ -796,7 +792,7 @@
 		"draw":0,
 		"effect":0,
 		"effect_block":1,
-		"face":"https://i0.hdslb.com/bfs/baselabs/***.png",
+		"face":"xxx",
 		"face_effect_id":0,
 		"face_effect_type":0,
 		"float_sc_resource_id":0,
@@ -832,12 +828,12 @@
 		"original_gift_name":"",
 		"price":100,
 		"rcost":1656082,
-		"receive_user_info":{"uid":xxx,"uname":"xxx"},
-		"receiver_uinfo":...,
+		"receive_user_info":{"uid":12345,"uname":"xxx"},
+		"receiver_uinfo":{"key":"value"},
 		"remain":0,
 		"rnd":"4462435941977491968",
 		"send_master":null,
-		"sender_uinfo":...,
+		"sender_uinfo":{"key":"value"},
 		"silver":0,
 		"super":0,
 		"super_batch_gift_num":0,
@@ -849,15 +845,15 @@
 		"timestamp":1704872067,
 		"top_list":null,
 		"total_coin":200,
-		"uid":xxx,
+		"uid":12345,
 		"uname":"xxx",
-		"wealth_level":xxx
+		"wealth_level":1
 	},
 	"msg_id":"xxx:1:1000",
 	"msg_id":"xxx:1000:1000",
 	"p_is_ack":true,
 	"p_msg_type":1,
-	"send_time":xxx_13
+	"send_time":1234567890123
 }
 "batch_combo_id":"batch:gift:combo_id:AAAA:BBBB:CCCC:DDDD.dddd",
 ```
@@ -935,9 +931,9 @@ date2: 添加 `uinfo`
 | rank			| num	| 排名(1-3) |
 | uid			| num	| |
 ```json
-{"cmd":"ONLINE_RANK_TOP3","data":{"dmscore":784,"list":[{"is_mystery":false,"msg":"恭喜 <%XXX%> 成为高能用户","rank":1,"uid":1}]}}
-{"cmd":"ONLINE_RANK_TOP3","data":{"dmscore":784,"list":[{"is_mystery":false,"msg":"恭喜 <%XXX%> 成为高能用户","rank":2,"uid":2}]}}
-{"cmd":"ONLINE_RANK_TOP3","data":{"dmscore":784,"list":[{"is_mystery":false,"msg":"恭喜 <%XXX%> 成为高能用户","rank":3,"uid":3}]}}
+{"cmd":"ONLINE_RANK_TOP3","data":{"dmscore":784,"list":[{"is_mystery":false,"msg":"恭喜 <%xxx%> 成为高能用户","rank":1,"uid":12345}]}}
+{"cmd":"ONLINE_RANK_TOP3","data":{"dmscore":784,"list":[{"is_mystery":false,"msg":"恭喜 <%xxx%> 成为高能用户","rank":2,"uid":12345}]}}
+{"cmd":"ONLINE_RANK_TOP3","data":{"dmscore":784,"list":[{"is_mystery":false,"msg":"恭喜 <%xxx%> 成为高能用户","rank":3,"uid":12345}]}}
 ```
 ----
 ### ONLINE_RANK_COUNT
@@ -983,8 +979,8 @@ date5: 添加`privilege_type`
 date6: 添加`tail_text`  
 date7: 添加`uinfo`  
 #### INTERACT_WORD__data
-| key 23			| type		| value	| |
-|-|-|-|-|
+| key 23			| type		| value	|
+|-|-|-|
 | contribution		| obj		| |
 | contribution_v2	| obj		| |
 | core_user_type	| num		| ？大部分为0 \[0-5\] |
@@ -1034,15 +1030,19 @@ Link = 6
 		"contribution":{"grade":0},
 		"contribution_v2":{"grade":0,"rank_type":"","text":""},
 		"core_user_type":0,
-		"dmscore":2,
-		"fans_medal":{"anchor_roomid":0,"guard_level":0,"icon_id":0,"is_lighted":0,"medal_color":0,"medal_color_border":0,"medal_color_end":0,"medal_color_start":0,"medal_level":0,"medal_name":"","score":0,"special":"","target_id":0},
+		"dmscore":12345,
+		"fans_medal":{
+			"anchor_roomid":0,"guard_level":0,"icon_id":0,"is_lighted":0,"medal_color":0,
+			"medal_color_border":0,"medal_color_end":0,"medal_color_start":0,"medal_level":0,
+			"medal_name":"","score":0,"special":"","target_id":0
+		},
 		"group_medal":null,
 		"identities":[1],
 		"is_mystery":false,
 		"is_spread":0,
 		"msg_type":1,
 		"privilege_type":0,
-		"roomid":31399498,
+		"roomid":12345,
 		"score":1704872049684,
 		"spread_desc":"",
 		"spread_info":"",
@@ -1050,9 +1050,9 @@ Link = 6
 		"tail_text":"",
 		"timestamp":1704872049,
 		"trigger_time":1704872048586738400,
-		"uid":13545537,
+		"uid":12345,
 		"uinfo":{"key":"value"},
-		"uname":"SJH8130",
+		"uname":"xxx",
 		"uname_color":""
 	}
 }
@@ -1079,9 +1079,9 @@ Link = 6
 | text_small	| str	| "num" / "x.y万" |
 | text_large	| str	| "num人看过" / "x.y万人看过" |
 ```json
-{"cmd":"WATCHED_CHANGE","data":{"num":0,	"text_small":"0",		"text_large":"0人看过"}}
-{"cmd":"WATCHED_CHANGE","data":{"num":9999,	"text_small":"9999",	"text_large":"9999人看过"}}
-{"cmd":"WATCHED_CHANGE","data":{"num":10001,"text_small":"1.0万",	"text_large":"1.0万人看过"}}
+{"cmd":"WATCHED_CHANGE","data":{"num":0,    "text_small":"0",    "text_large":"0人看过"}}
+{"cmd":"WATCHED_CHANGE","data":{"num":9999, "text_small":"9999", "text_large":"9999人看过"}}
+{"cmd":"WATCHED_CHANGE","data":{"num":10001,"text_small":"1.0万","text_large":"1.0万人看过"}}
 ```
 ----
 ### ROOM_REAL_TIME_MESSAGE_UPDATE
@@ -1100,7 +1100,7 @@ Link = 6
 | red_notice	| num	| -1 |
 | fans_club		| num	| 粉丝团成员(点亮粉丝牌人数) |
 ```json
-{"cmd":"ROOM_REAL_TIME_MESSAGE_UPDATE","data":{"roomid":9999,"fans":9999,"red_notice":-1,"fans_club":9999}}
+{"cmd":"ROOM_REAL_TIME_MESSAGE_UPDATE","data":{"roomid":12345,"fans":9999,"red_notice":-1,"fans_club":9999}}
 ```
 ----
 ### LIKE_INFO_V3_CLICK
@@ -1141,7 +1141,7 @@ Link = 6
 		"like_text":"为主播点赞了",
 		"msg_type":6,
 		"show_area":0,
-		"uid":9999,
+		"uid":12345,
 		"uinfo":{"key":"value"},
 		"uname":"xxx",
 		"uname_color":""
@@ -1234,12 +1234,12 @@ Link = 6
 {
 	"cmd":"ENTRY_EFFECT",
 	"data":{
-		"id": xxx,
-		"uid": xxx,
-		"target_id": xxx,
-		"mock_effect": xxx,
-		"face": ...,
-		"privilege_type": xxx,
+		"id": 12345,
+		"uid": 12345,
+		"target_id": 12345,
+		"mock_effect": 12345,
+		"face":"xxx",
+		"privilege_type": 0,
 		"copy_writing":"欢迎 <%xxx%> 进入直播间",
 		"copy_color":"#000000",
 		"highlight_color":"#FFF100",
@@ -1253,9 +1253,9 @@ Link = 6
 		"web_close_time":900,
 		"business":3,
 		"copy_writing_v2":"欢迎 <^icon^> <%xxx%> 进入直播间",
-		"icon_list":[x],
+		"icon_list":[12345],
 		"max_delay_time":7,
-		"trigger_time": ...,
+		"trigger_time": 12345,
 		"identities":22,
 		"effect_silent_time":0,
 		"effective_time_new":0,
@@ -1265,7 +1265,7 @@ Link = 6
 		"wealthy_info": null,
 		"new_style":0,
 		"is_mystery":false,
-		"uinfo": ...
+		"uinfo": {}
 	}
 }
 ```
@@ -1322,16 +1322,16 @@ f"欢迎 <^icon^> {anchor_name} <%{USERNAME}%> 进入直播间"
 | username		| str	| 昵称 |
 | guard_level	| num	| [guard_level](#others) |
 | num			| num	| 购买数量 |
-| price			| num	| 舰长:198000	/	提督:1998000	/	总督:19998000 |
-| gift_id		| num	| 舰长:10003	/	提督:10002		/	总督:10001 |
+| price			| num	| 舰长:198000 / 提督:1998000 / 总督:19998000 |
+| gift_id		| num	| 舰长:10003 /  提督:10002 /   总督:10001 |
 | gift_name		| str	| |
 | start_time	| num	| 购买时间 TimeStamp(秒) |
 | end_time		| num	| 购买时间 TimeStamp(秒) |
 ```json
-{"cmd":"GUARD_BUY","data":{"uid":12345,"username":"xxx","guard_level":1,"num":1,"price":19998000,	"gift_id":10001,"gift_name":"总督","start_time":1704038400,"end_time":1704038400}}
-{"cmd":"GUARD_BUY","data":{"uid":12345,"username":"xxx","guard_level":2,"num":1,"price":1998000,	"gift_id":10002,"gift_name":"提督","start_time":1704038400,"end_time":1704038400}}
-{"cmd":"GUARD_BUY","data":{"uid":12345,"username":"xxx","guard_level":3,"num":1,"price":198000,		"gift_id":10003,"gift_name":"舰长","start_time":1704038400,"end_time":1704038400}}
-{"cmd":"GUARD_BUY","data":{"uid":12345,"username":"xxx","guard_level":3,"num":6,"price":198000,		"gift_id":10003,"gift_name":"舰长","start_time":1704038400,"end_time":1704038400}}
+{"cmd":"GUARD_BUY","data":{"uid":12345,"username":"xxx","guard_level":1,"num":1,"price":19998000,"gift_id":10001,"gift_name":"总督","start_time":1704038400,"end_time":1704038400}}
+{"cmd":"GUARD_BUY","data":{"uid":12345,"username":"xxx","guard_level":2,"num":1,"price":1998000, "gift_id":10002,"gift_name":"提督","start_time":1704038400,"end_time":1704038400}}
+{"cmd":"GUARD_BUY","data":{"uid":12345,"username":"xxx","guard_level":3,"num":1,"price":198000,  "gift_id":10003,"gift_name":"舰长","start_time":1704038400,"end_time":1704038400}}
+{"cmd":"GUARD_BUY","data":{"uid":12345,"username":"xxx","guard_level":3,"num":6,"price":198000,  "gift_id":10003,"gift_name":"舰长","start_time":1704038400,"end_time":1704038400}}
 ```
 ----
 ### USER_TOAST_MSG
@@ -1351,7 +1351,7 @@ f"欢迎 <^icon^> {anchor_name} <%{USERNAME}%> 进入直播间"
 |-|-|-|
 | anchor_show			| bool	| true |
 | color					| str	| 舰长:"#00D1F1" / 提督:"#E17AFF" / 总督:"#FF7C28" |
-| dmscore				| num	| 舰长=90,提督=96,总督=102 <br>OR<br> $舰长=102,提督=108,总督=c+n×30,主播舰长=p+n×30, DMS=x×舰长+y×提督+z×总督$ $max([3])$ |
+| dmscore				| num	| 舰长=90,提督=96,总督=102 <br>OR<br> 舰长=102,提督=108,总督=c+n×30,主播舰长=p+n×30, DMS=x×舰长+y×提督+z×总督 |
 | effect_id				| num	| |
 | end_time				| num	| TimeStamp(秒) |
 | face_effect_id		| num	| |
@@ -1373,31 +1373,33 @@ f"欢迎 <^icon^> {anchor_name} <%{USERNAME}%> 进入直播间"
 | start_time			| num	| 购买时间 TimeStamp(秒) |
 | svga_block			| num	| 0 |
 | target_guard_count	| num	| 主播当前大航海成员数 |
-| toast_msg				| str	|`f"<%XXX%> 在主播YYY的直播间(开通\|续费)了(\d+个月)?(舰长\|提督\|总督)，今天是TA陪伴主播的第{num}天"` |
+| toast_msg				| str	|`f"<%xxx%> 在主播YYY的直播间(开通\|续费)了(\d+个月)?(舰长\|提督\|总督)，今天是TA陪伴主播的第{num}天"` |
 | uid					| num	| uid |
 | unit					| str	| "月" / "天" |
 | user_show				| bool	| true |
 | username				| str	| 昵称 |
 ```json
-{"cmd":"USER_TOAST_MSG","data":{"anchor_show":true,"color":"#00D1F1","dmscore":90, "effect_id":397,"end_time":1704038400,"face_effect_id":44,"gift_id":10003,"group_name":"","group_op_type":0,"group_role_name":"","guard_level":3,"is_group":0,"is_show":0,"num":1,"op_type":1,"payflow_id":"240101000000xxxxxxxxxxxxx","price":138000,"role_name":"舰长","room_effect_id":590,"room_group_effect_id":1337,"start_time":1704038400,"svga_block":0,"target_guard_count":123,"toast_msg":"<%XXX%> 在主播YYY的直播间开通了舰长，今天是TA陪伴主播的第xx天","uid":12345,"unit":"月","user_show":true,"username":"xxx"}}
-{"cmd":"USER_TOAST_MSG","data":{"anchor_show":true,"color":"#00D1F1","dmscore":96, "effect_id":397,"end_time":1704038400,"face_effect_id":44,"gift_id":10003,"group_name":"","group_op_type":0,"group_role_name":"","guard_level":3,"is_group":0,"is_show":0,"num":1,"op_type":1,"payflow_id":"240101000000xxxxxxxxxxxxx","price":138000,"role_name":"舰长","room_effect_id":590,"room_group_effect_id":1337,"start_time":1704038400,"svga_block":0,"target_guard_count":123,"toast_msg":"<%XXX%> 在主播YYY的直播间续费了舰长，今天是TA陪伴主播的第xx天","uid":12345,"unit":"月","user_show":true,"username":"xxx"}}
-{"cmd":"USER_TOAST_MSG","data":{"anchor_show":true,"color":"#00D1F1","dmscore":90, "effect_id":397,"end_time":1704038400,"face_effect_id":44,"gift_id":10003,"group_name":"","group_op_type":0,"group_role_name":"","guard_level":3,"is_group":0,"is_show":0,"num":1,"op_type":2,"payflow_id":"240101000000xxxxxxxxxxxxx","price":138000,"role_name":"舰长","room_effect_id":590,"room_group_effect_id":1337,"start_time":1704038400,"svga_block":0,"target_guard_count":123,"toast_msg":"<%XXX%> 在主播YYY的直播间开通了舰长，今天是TA陪伴主播的第xx天","uid":12345,"unit":"月","user_show":true,"username":"xxx"}}
-{"cmd":"USER_TOAST_MSG","data":{"anchor_show":true,"color":"#00D1F1","dmscore":90, "effect_id":397,"end_time":1704038400,"face_effect_id":44,"gift_id":10003,"group_name":"","group_op_type":0,"group_role_name":"","guard_level":3,"is_group":0,"is_show":0,"num":1,"op_type":2,"payflow_id":"240101000000xxxxxxxxxxxxx","price":138000,"role_name":"舰长","room_effect_id":590,"room_group_effect_id":1337,"start_time":1704038400,"svga_block":0,"target_guard_count":123,"toast_msg":"<%XXX%> 在主播YYY的直播间续费了舰长，今天是TA陪伴主播的第xx天","uid":12345,"unit":"月","user_show":true,"username":"xxx"}}
-{"cmd":"USER_TOAST_MSG","data":{"anchor_show":true,"color":"#00D1F1","dmscore":90, "effect_id":397,"end_time":1704038400,"face_effect_id":44,"gift_id":10003,"group_name":"","group_op_type":0,"group_role_name":"","guard_level":3,"is_group":0,"is_show":0,"num":1,"op_type":2,"payflow_id":"240101000000xxxxxxxxxxxxx","price":158000,"role_name":"舰长","room_effect_id":590,"room_group_effect_id":1337,"start_time":1704038400,"svga_block":0,"target_guard_count":123,"toast_msg":"<%XXX%> 在主播YYY的直播间续费了舰长，今天是TA陪伴主播的第xx天","uid":12345,"unit":"月","user_show":true,"username":"xxx"}}
-{"cmd":"USER_TOAST_MSG","data":{"anchor_show":true,"color":"#00D1F1","dmscore":90, "effect_id":397,"end_time":1704038400,"face_effect_id":44,"gift_id":10003,"group_name":"","group_op_type":0,"group_role_name":"","guard_level":3,"is_group":0,"is_show":0,"num":1,"op_type":1,"payflow_id":"240101000000xxxxxxxxxxxxx","price":198000,"role_name":"舰长","room_effect_id":590,"room_group_effect_id":1337,"start_time":1704038400,"svga_block":0,"target_guard_count":123,"toast_msg":"<%XXX%> 在主播YYY的直播间开通了舰长，今天是TA陪伴主播的第xx天","uid":12345,"unit":"月","user_show":true,"username":"xxx"}}
-{"cmd":"USER_TOAST_MSG","data":{"anchor_show":true,"color":"#00D1F1","dmscore":90, "effect_id":397,"end_time":1704038400,"face_effect_id":44,"gift_id":10003,"group_name":"","group_op_type":0,"group_role_name":"","guard_level":3,"is_group":0,"is_show":0,"num":3,"op_type":2,"payflow_id":"240101000000xxxxxxxxxxxxx","price":514000,"role_name":"舰长","room_effect_id":590,"room_group_effect_id":1337,"start_time":1704038400,"svga_block":0,"target_guard_count":123,"toast_msg":"<%XXX%> 在主播YYY的直播间开通了3个月舰长，今天是TA陪伴主播的第xx天","uid":12345,"unit":"月","user_show":true,"username":"xxx"}}
-{"cmd":"USER_TOAST_MSG","data":{"anchor_show":true,"color":"#00D1F1","dmscore":90, "effect_id":397,"end_time":1704038400,"face_effect_id":44,"gift_id":10003,"group_name":"","group_op_type":0,"group_role_name":"","guard_level":3,"is_group":0,"is_show":0,"num":6,"op_type":2,"payflow_id":"240101000000xxxxxxxxxxxxx","price":948000,"role_name":"舰长","room_effect_id":590,"room_group_effect_id":1337,"start_time":1704038400,"svga_block":0,"target_guard_count":123,"toast_msg":"<%XXX%> 在主播YYY的直播间续费了6个月舰长，今天是TA陪伴主播的第xx天","uid":12345,"unit":"月","user_show":true,"username":"xxx"}}
-{"cmd":"USER_TOAST_MSG","data":{"anchor_show":true,"color":"#00D1F1","dmscore":648,"effect_id":0,  "end_time":1716210850,"face_effect_id":44,"gift_id":10003,"group_name":"","group_op_type":0,"group_role_name":"","guard_level":3,"is_group":0,"is_show":0,"num":1,"op_type":2,"payflow_id":"240520211410xxxxxxxxxxxxx","price":50000, "role_name":"舰长","room_effect_id":0,"room_gift_effect_id":0,"room_group_effect_id":0,"source":2,"start_time":1704038400,"svga_block":0,"target_guard_count":123,"toast_msg":"<%XXX%>续费了舰长1*5天","uid":54321,"unit":"*5天","user_show":true,"username":"xxx"},"msg_id":"?:?:?","p_is_ack":true,"p_msg_type":1,"send_time":xxx}
+{"cmd":"USER_TOAST_MSG","data":{"anchor_show":true,"color":"#00D1F1","dmscore":90, "effect_id":397,"end_time":1704038400,"face_effect_id":44,"gift_id":10003,"group_name":"","group_op_type":0,"group_role_name":"","guard_level":3,"is_group":0,"is_show":0,"num":1,"op_type":1,"payflow_id":"240101000000xxxxxxxxxxxxx","price":138000,"role_name":"舰长","room_effect_id":590,"room_group_effect_id":1337,"start_time":1704038400,"svga_block":0,"target_guard_count":123,"toast_msg":"<%xxx%> 在主播YYY的直播间开通了舰长，今天是TA陪伴主播的第xx天","uid":12345,"unit":"月","user_show":true,"username":"xxx"}}
+{"cmd":"USER_TOAST_MSG","data":{"anchor_show":true,"color":"#00D1F1","dmscore":96, "effect_id":397,"end_time":1704038400,"face_effect_id":44,"gift_id":10003,"group_name":"","group_op_type":0,"group_role_name":"","guard_level":3,"is_group":0,"is_show":0,"num":1,"op_type":1,"payflow_id":"240101000000xxxxxxxxxxxxx","price":138000,"role_name":"舰长","room_effect_id":590,"room_group_effect_id":1337,"start_time":1704038400,"svga_block":0,"target_guard_count":123,"toast_msg":"<%xxx%> 在主播YYY的直播间续费了舰长，今天是TA陪伴主播的第xx天","uid":12345,"unit":"月","user_show":true,"username":"xxx"}}
+{"cmd":"USER_TOAST_MSG","data":{"anchor_show":true,"color":"#00D1F1","dmscore":90, "effect_id":397,"end_time":1704038400,"face_effect_id":44,"gift_id":10003,"group_name":"","group_op_type":0,"group_role_name":"","guard_level":3,"is_group":0,"is_show":0,"num":1,"op_type":2,"payflow_id":"240101000000xxxxxxxxxxxxx","price":138000,"role_name":"舰长","room_effect_id":590,"room_group_effect_id":1337,"start_time":1704038400,"svga_block":0,"target_guard_count":123,"toast_msg":"<%xxx%> 在主播YYY的直播间开通了舰长，今天是TA陪伴主播的第xx天","uid":12345,"unit":"月","user_show":true,"username":"xxx"}}
+{"cmd":"USER_TOAST_MSG","data":{"anchor_show":true,"color":"#00D1F1","dmscore":90, "effect_id":397,"end_time":1704038400,"face_effect_id":44,"gift_id":10003,"group_name":"","group_op_type":0,"group_role_name":"","guard_level":3,"is_group":0,"is_show":0,"num":1,"op_type":2,"payflow_id":"240101000000xxxxxxxxxxxxx","price":138000,"role_name":"舰长","room_effect_id":590,"room_group_effect_id":1337,"start_time":1704038400,"svga_block":0,"target_guard_count":123,"toast_msg":"<%xxx%> 在主播YYY的直播间续费了舰长，今天是TA陪伴主播的第xx天","uid":12345,"unit":"月","user_show":true,"username":"xxx"}}
+{"cmd":"USER_TOAST_MSG","data":{"anchor_show":true,"color":"#00D1F1","dmscore":90, "effect_id":397,"end_time":1704038400,"face_effect_id":44,"gift_id":10003,"group_name":"","group_op_type":0,"group_role_name":"","guard_level":3,"is_group":0,"is_show":0,"num":1,"op_type":2,"payflow_id":"240101000000xxxxxxxxxxxxx","price":158000,"role_name":"舰长","room_effect_id":590,"room_group_effect_id":1337,"start_time":1704038400,"svga_block":0,"target_guard_count":123,"toast_msg":"<%xxx%> 在主播YYY的直播间续费了舰长，今天是TA陪伴主播的第xx天","uid":12345,"unit":"月","user_show":true,"username":"xxx"}}
+{"cmd":"USER_TOAST_MSG","data":{"anchor_show":true,"color":"#00D1F1","dmscore":90, "effect_id":397,"end_time":1704038400,"face_effect_id":44,"gift_id":10003,"group_name":"","group_op_type":0,"group_role_name":"","guard_level":3,"is_group":0,"is_show":0,"num":1,"op_type":1,"payflow_id":"240101000000xxxxxxxxxxxxx","price":198000,"role_name":"舰长","room_effect_id":590,"room_group_effect_id":1337,"start_time":1704038400,"svga_block":0,"target_guard_count":123,"toast_msg":"<%xxx%> 在主播YYY的直播间开通了舰长，今天是TA陪伴主播的第xx天","uid":12345,"unit":"月","user_show":true,"username":"xxx"}}
+{"cmd":"USER_TOAST_MSG","data":{"anchor_show":true,"color":"#00D1F1","dmscore":90, "effect_id":397,"end_time":1704038400,"face_effect_id":44,"gift_id":10003,"group_name":"","group_op_type":0,"group_role_name":"","guard_level":3,"is_group":0,"is_show":0,"num":3,"op_type":2,"payflow_id":"240101000000xxxxxxxxxxxxx","price":514000,"role_name":"舰长","room_effect_id":590,"room_group_effect_id":1337,"start_time":1704038400,"svga_block":0,"target_guard_count":123,"toast_msg":"<%xxx%> 在主播YYY的直播间开通了3个月舰长，今天是TA陪伴主播的第xx天","uid":12345,"unit":"月","user_show":true,"username":"xxx"}}
+{"cmd":"USER_TOAST_MSG","data":{"anchor_show":true,"color":"#00D1F1","dmscore":90, "effect_id":397,"end_time":1704038400,"face_effect_id":44,"gift_id":10003,"group_name":"","group_op_type":0,"group_role_name":"","guard_level":3,"is_group":0,"is_show":0,"num":6,"op_type":2,"payflow_id":"240101000000xxxxxxxxxxxxx","price":948000,"role_name":"舰长","room_effect_id":590,"room_group_effect_id":1337,"start_time":1704038400,"svga_block":0,"target_guard_count":123,"toast_msg":"<%xxx%> 在主播YYY的直播间续费了6个月舰长，今天是TA陪伴主播的第xx天","uid":12345,"unit":"月","user_show":true,"username":"xxx"}}
+{"cmd":"USER_TOAST_MSG","data":{"anchor_show":true,"color":"#00D1F1","dmscore":999,"effect_id":0,  "end_time":1717000000,"face_effect_id":44,"gift_id":10003,"group_name":"","group_op_type":0,"group_role_name":"","guard_level":3,"is_group":0,"is_show":0,"num":1,"op_type":2,"payflow_id":"2405xxxxxxxxxxxxxxxxxxxxx","price":50000, "role_name":"舰长","room_effect_id":0,  "room_gift_effect_id":0,   "room_group_effect_id":0,   "source":2,"start_time":1717000000,"svga_block":0,"target_guard_count":123,"toast_msg":"<%xxx%>续费了舰长1*5天","uid":12345,"unit":"*5天","user_show":true,"username":"xxx"},"msg_id":"xxx:1000:1000","p_is_ack":true,"p_msg_type":1,"send_time":000}
+{"cmd":"USER_TOAST_MSG","data":{"anchor_show":true,"color":"#00D1F1","dmscore":999,"effect_id":0,  "end_time":1717000000,"face_effect_id":44,"gift_id":10003,"group_name":"","group_op_type":0,"group_role_name":"","guard_level":3,"is_group":0,"is_show":0,"num":1,"op_type":2,"payflow_id":"2405xxxxxxxxxxxxxxxxxxxxx","price":50000, "role_name":"舰长","room_effect_id":0,  "room_gift_effect_id":0,   "room_group_effect_id":0,   "source":2,"start_time":1717000000,"svga_block":0,"target_guard_count":123,"toast_msg":"<%xxx%>续费了舰长1*8天","uid":12345,"unit":"*8天","user_show":true,"username":"xxx"},"msg_id":"xxx:1000:1000","p_is_ack":true,"p_msg_type":1,"send_time":000}
+{"cmd":"USER_TOAST_MSG","data":{"anchor_show":true,"color":"#00D1F1","dmscore":999,"effect_id":397,"end_time":1717000000,"face_effect_id":44,"gift_id":10003,"group_name":"","group_op_type":0,"group_role_name":"","guard_level":3,"is_group":0,"is_show":0,"num":1,"op_type":1,"payflow_id":"240602xxxxxxxxxxxxxxxxxxx","price":198000,"role_name":"舰长","room_effect_id":590,"room_gift_effect_id":1485,"room_group_effect_id":1337,"source":1,"start_time":1717000000,"svga_block":0,"target_guard_count":123,"toast_msg":"<%xxx%> 在主播YYY的直播间开通了舰长，今天是TA陪伴主播的第xx天","uid":12345,"unit":"月","user_show":true,"username":"xxx"},"msg_id":"xxx:1000:1000","p_is_ack":true,"p_msg_type":1,"send_time":000}
 
-{"cmd":"USER_TOAST_MSG","data":{"anchor_show":true,"color":"#E17AFF","dmscore":96, "effect_id":398,"end_time":1704038400,"face_effect_id":43,"gift_id":10002,"group_name":"","group_op_type":0,"group_role_name":"","guard_level":2,"is_group":0,"is_show":0,"num":1,"op_type":2,"payflow_id":"240101000000xxxxxxxxxxxxx","price":1598000,"role_name":"提督","room_effect_id":591,"room_group_effect_id":398,"start_time":1704038400,"svga_block":0,"target_guard_count":123,"toast_msg":"<%XXX%> 在主播YYY的直播间续费了提督，今天是TA陪伴主播的第xx天","uid":12345,"unit":"月","user_show":true,"username":"xxx"}}
-{"cmd":"USER_TOAST_MSG","data":{"anchor_show":true,"color":"#E17AFF","dmscore":96, "effect_id":398,"end_time":1704038400,"face_effect_id":43,"gift_id":10002,"group_name":"","group_op_type":0,"group_role_name":"","guard_level":2,"is_group":0,"is_show":0,"num":1,"op_type":1,"payflow_id":"240101000000xxxxxxxxxxxxx","price":1998000,"role_name":"提督","room_effect_id":591,"room_group_effect_id":398,"start_time":1704038400,"svga_block":0,"target_guard_count":123,"toast_msg":"<%XXX%> 在主播YYY的直播间续费了提督，今天是TA陪伴主播的第xx天","uid":12345,"unit":"月","user_show":true,"username":"xxx"}}
-{"cmd":"USER_TOAST_MSG","data":{"anchor_show":true,"color":"#E17AFF","dmscore":102,"effect_id":398,"end_time":1704038400,"face_effect_id":43,"gift_id":10002,"group_name":"","group_op_type":0,"group_role_name":"","guard_level":2,"is_group":0,"is_show":0,"num":1,"op_type":1,"payflow_id":"240101000000xxxxxxxxxxxxx","price":1998000,"role_name":"提督","room_effect_id":591,"room_group_effect_id":398,"start_time":1704038400,"svga_block":0,"target_guard_count":123,"toast_msg":"<%XXX%> 在主播YYY的直播间续费了提督，今天是TA陪伴主播的第xx天","uid":12345,"unit":"月","user_show":true,"username":"xxx"}}
-{"cmd":"USER_TOAST_MSG","data":{"anchor_show":true,"color":"#E17AFF","dmscore":648,"effect_id":398,"end_time":1711975545,"face_effect_id":43,"gift_id":10002,"group_name":"","group_op_type":0,"group_role_name":"","guard_level":2,"is_group":0,"is_show":0,"num":12,"op_type":2,"payflow_id":"24040120454xxxxxxxxxxxxxx","price":19176000,"role_name":"提督","room_effect_id":591,"room_group_effect_id":398,"start_time":1711975545,"svga_block":0,"target_guard_count":123,"toast_msg":"<%XXX%> 在主播TTTT的直播间续费了12个月提督，今天是TA陪伴主播的第xx天","uid":12345,"unit":"月","user_show":true,"username":"xxx"}}
+{"cmd":"USER_TOAST_MSG","data":{"anchor_show":true,"color":"#E17AFF","dmscore":96, "effect_id":398,"end_time":1704038400,"face_effect_id":43,"gift_id":10002,"group_name":"","group_op_type":0,"group_role_name":"","guard_level":2,"is_group":0,"is_show":0,"num":1, "op_type":2,"payflow_id":"240101000000xxxxxxxxxxxxx","price":1598000, "role_name":"提督","room_effect_id":591,"room_group_effect_id":398,"start_time":1704038400,"svga_block":0,"target_guard_count":123,"toast_msg":"<%xxx%> 在主播YYY的直播间续费了提督，今天是TA陪伴主播的第xx天","uid":12345,"unit":"月","user_show":true,"username":"xxx"}}
+{"cmd":"USER_TOAST_MSG","data":{"anchor_show":true,"color":"#E17AFF","dmscore":96, "effect_id":398,"end_time":1704038400,"face_effect_id":43,"gift_id":10002,"group_name":"","group_op_type":0,"group_role_name":"","guard_level":2,"is_group":0,"is_show":0,"num":1, "op_type":1,"payflow_id":"240101000000xxxxxxxxxxxxx","price":1998000, "role_name":"提督","room_effect_id":591,"room_group_effect_id":398,"start_time":1704038400,"svga_block":0,"target_guard_count":123,"toast_msg":"<%xxx%> 在主播YYY的直播间续费了提督，今天是TA陪伴主播的第xx天","uid":12345,"unit":"月","user_show":true,"username":"xxx"}}
+{"cmd":"USER_TOAST_MSG","data":{"anchor_show":true,"color":"#E17AFF","dmscore":102,"effect_id":398,"end_time":1704038400,"face_effect_id":43,"gift_id":10002,"group_name":"","group_op_type":0,"group_role_name":"","guard_level":2,"is_group":0,"is_show":0,"num":1, "op_type":1,"payflow_id":"240101000000xxxxxxxxxxxxx","price":1998000, "role_name":"提督","room_effect_id":591,"room_group_effect_id":398,"start_time":1704038400,"svga_block":0,"target_guard_count":123,"toast_msg":"<%xxx%> 在主播YYY的直播间续费了提督，今天是TA陪伴主播的第xx天","uid":12345,"unit":"月","user_show":true,"username":"xxx"}}
+{"cmd":"USER_TOAST_MSG","data":{"anchor_show":true,"color":"#E17AFF","dmscore":648,"effect_id":398,"end_time":1704038400,"face_effect_id":43,"gift_id":10002,"group_name":"","group_op_type":0,"group_role_name":"","guard_level":2,"is_group":0,"is_show":0,"num":12,"op_type":2,"payflow_id":"24040120454xxxxxxxxxxxxxx","price":19176000,"role_name":"提督","room_effect_id":591,"room_group_effect_id":398,"start_time":1704038400,"svga_block":0,"target_guard_count":123,"toast_msg":"<%xxx%> 在主播YYY的直播间续费了12个月提督，今天是TA陪伴主播的第xx天","uid":12345,"unit":"月","user_show":true,"username":"xxx"}}
 
-{"cmd":"USER_TOAST_MSG","data":{"anchor_show":true,"color":"#FF7C28","dmscore":102,"effect_id":399,"end_time":1704038400,"face_effect_id":42,"gift_id":10001,"guard_level":1,"is_show":0,"num":1,"op_type":1,"payflow_id":"230101000000xxxxxxxxxxxxx","price":19998000,"role_name":"总督","room_effect_id":592,"start_time":1704038400,"svga_block":0,"target_guard_count":123,"toast_msg":"<%XXX%> 在主播YYY的直播间开通了总督，今天是TA陪伴主播的第××天","uid":12345,"unit":"月","user_show":true,"username":"XXX"}}
-{"cmd":"USER_TOAST_MSG","data":{"anchor_show":true,"color":"#FF7C28","dmscore":102,"effect_id":399,"end_time":1704038400,"face_effect_id":42,"gift_id":10001,"guard_level":1,"is_show":0,"num":1,"op_type":2,"payflow_id":"230101000000xxxxxxxxxxxxx","price":15998000,"role_name":"总督","room_effect_id":592,"start_time":1704038400,"svga_block":0,"target_guard_count":123,"toast_msg":"<%XXX%> 在主播YYY的直播间续费了总督，今天是TA陪伴主播的第××天","uid":12345,"unit":"月","user_show":true,"username":"XXX"}}
-{"cmd":"USER_TOAST_MSG","data":{"anchor_show":true,"color":"#FF7C28","dmscore":102,"effect_id":399,"end_time":1704038400,"face_effect_id":42,"gift_id":10001,"guard_level":1,"is_show":0,"num":1,"op_type":1,"payflow_id":"230101000000xxxxxxxxxxxxx","price":19998000,"role_name":"总督","room_effect_id":592,"start_time":1704038400,"svga_block":0,"target_guard_count":123,"toast_msg":"<%XXX%> 续费了总督，今天是TA陪伴主播的第××天","uid":12345,"unit":"月","user_show":true,"username":"XXX"}}
-{"cmd":"USER_TOAST_MSG","data":{"anchor_show":true,"color":"#FF7C28","dmscore":102,"effect_id":399,"end_time":1704038400,"face_effect_id":42,"gift_id":10001,"guard_level":1,"is_show":0,"num":1,"op_type":2,"payflow_id":"230101000000xxxxxxxxxxxxx","price":15998000,"role_name":"总督","room_effect_id":592,"start_time":1704038400,"svga_block":0,"target_guard_count":123,"toast_msg":"<%XXX%> 续费了总督，今天是TA陪伴主播的第××天","uid":12345,"unit":"月","user_show":true,"username":"XXX"}}
+{"cmd":"USER_TOAST_MSG","data":{"anchor_show":true,"color":"#FF7C28","dmscore":102,"effect_id":399,"end_time":1704038400,"face_effect_id":42,"gift_id":10001,"guard_level":1,"is_show":0,"num":1,"op_type":1,"payflow_id":"230101000000xxxxxxxxxxxxx","price":19998000,"role_name":"总督","room_effect_id":592,"start_time":1704038400,"svga_block":0,"target_guard_count":123,"toast_msg":"<%xxx%> 在主播YYY的直播间开通了总督，今天是TA陪伴主播的第××天","uid":12345,"unit":"月","user_show":true,"username":"xxx"}}
+{"cmd":"USER_TOAST_MSG","data":{"anchor_show":true,"color":"#FF7C28","dmscore":102,"effect_id":399,"end_time":1704038400,"face_effect_id":42,"gift_id":10001,"guard_level":1,"is_show":0,"num":1,"op_type":2,"payflow_id":"230101000000xxxxxxxxxxxxx","price":15998000,"role_name":"总督","room_effect_id":592,"start_time":1704038400,"svga_block":0,"target_guard_count":123,"toast_msg":"<%xxx%> 在主播YYY的直播间续费了总督，今天是TA陪伴主播的第××天","uid":12345,"unit":"月","user_show":true,"username":"xxx"}}
+{"cmd":"USER_TOAST_MSG","data":{"anchor_show":true,"color":"#FF7C28","dmscore":102,"effect_id":399,"end_time":1704038400,"face_effect_id":42,"gift_id":10001,"guard_level":1,"is_show":0,"num":1,"op_type":1,"payflow_id":"230101000000xxxxxxxxxxxxx","price":19998000,"role_name":"总督","room_effect_id":592,"start_time":1704038400,"svga_block":0,"target_guard_count":123,"toast_msg":"<%xxx%> 续费了总督，今天是TA陪伴主播的第××天","uid":12345,"unit":"月","user_show":true,"username":"xxx"}}
+{"cmd":"USER_TOAST_MSG","data":{"anchor_show":true,"color":"#FF7C28","dmscore":102,"effect_id":399,"end_time":1704038400,"face_effect_id":42,"gift_id":10001,"guard_level":1,"is_show":0,"num":1,"op_type":2,"payflow_id":"230101000000xxxxxxxxxxxxx","price":15998000,"role_name":"总督","room_effect_id":592,"start_time":1704038400,"svga_block":0,"target_guard_count":123,"toast_msg":"<%xxx%> 续费了总督，今天是TA陪伴主播的第××天","uid":12345,"unit":"月","user_show":true,"username":"xxx"}}
 ```
 ----
 ### NOTICE_MSG
@@ -1459,7 +1461,18 @@ f"欢迎 <^icon^> {anchor_name} <%{USERNAME}%> 进入直播间"
 | min	| num	| 0 |
 | max	| num	| 0 |
 ```json
-{"cmd":"NOTICE_MSG","id":968,"name":"舰长1个月","full":{"head_icon":"https://i0.hdslb.com/bfs/live/82665c9d263c8673f3f934e23d09c1d0f6bc8f50.png","tail_icon":"","head_icon_fa":"https://i0.hdslb.com/bfs/live/82665c9d263c8673f3f934e23d09c1d0f6bc8f50.png","tail_icon_fa":"","head_icon_fan":1,"tail_icon_fan":0,"background":"#FFE2B2","color":"#B87436","highlight":"#E37921","time":10},"half":{"head_icon":"","tail_icon":"","background":"","color":"","highlight":"","time":0},"side":{"head_icon":"https://i0.hdslb.com/bfs/live/82665c9d263c8673f3f934e23d09c1d0f6bc8f50.png","background":"#FFE9C8FF","color":"#EF903AFF","highlight":"#D54900FF","border":"#FFCFA4FF"},"roomid":9999,"real_roomid":9999,"msg_common":"","msg_self":"<%xxx%> 在主播 <%xxx%>的直播间续费了舰长，感谢上船陪伴","link_url":"","msg_type":4,"shield_uid":-1,"business_id":"xuser-guard","scatter":{"min":0,"max":0},"marquee_id":"","notice_type":0}
+{
+	"cmd":"NOTICE_MSG",
+	"id":968,"name":"舰长1个月",
+	"full":{"head_icon":"https://i0.hdslb.com/bfs/live/82665c9d263c8673f3f934e23d09c1d0f6bc8f50.png","tail_icon":"","head_icon_fa":"https://i0.hdslb.com/bfs/live/82665c9d263c8673f3f934e23d09c1d0f6bc8f50.png","tail_icon_fa":"","head_icon_fan":1,"tail_icon_fan":0,"background":"#FFE2B2","color":"#B87436","highlight":"#E37921","time":10},
+	"half":{"head_icon":"","tail_icon":"","background":"","color":"","highlight":"","time":0},
+	"side":{"head_icon":"https://i0.hdslb.com/bfs/live/82665c9d263c8673f3f934e23d09c1d0f6bc8f50.png","background":"#FFE9C8FF","color":"#EF903AFF","highlight":"#D54900FF","border":"#FFCFA4FF"},
+	"roomid":12345,"real_roomid":12345,
+	"msg_common":"","msg_self":"<%xxx%> 在主播 <%xxx%>的直播间续费了舰长，感谢上船陪伴",
+	"link_url":"",
+	"msg_type":4,"shield_uid":-1,"business_id":"xuser-guard",
+	"scatter":{"min":0,"max":0},"marquee_id":"","notice_type":0
+}
 ```
 ----
 ### SUPER_CHAT_MESSAGE
@@ -1485,7 +1498,7 @@ f"欢迎 <^icon^> {anchor_name} <%{USERNAME}%> 进入直播间"
 | background_image			| str		| URL / "" |
 | background_price_color	| str		| [table](#SC价格颜色表) |
 | color_point				| float		| 0.7 / 0.9 |
-| dmscore					| num		| ~2020-x-x: `[16,24,48,56,64,72,80,112,120,128]`<br>2024-x-x~: dms/0.7=a*b*c+x+y+z
+| dmscore					| num		| \~2020-x-x: `[16,24,48,56,64,72,80,112,120,128]` <br> 2024-x-x\~: dms/0.7=a\*b\*c+x+y+z
 | end_time					| num		| TimeStamp(秒) |
 | gift						| obj		| |
 | group_medal				| obj		| |
@@ -1571,20 +1584,18 @@ f"欢迎 <^icon^> {anchor_name} <%{USERNAME}%> 进入直播间"
 		"user_info":{"key":"value"}
 	},
 	"is_report":true,
-	"msg_id":"XXX:???:1000",
+	"msg_id":"xxx:???:1000",
 	"p_is_ack":true,
 	"p_msg_type":1,
 	"send_time":9999
 }
-{"cmd":"SUPER_CHAT_MESSAGE","data":{"background_bottom_color":"#2A60B2","background_color":"#EDF5FF","background_color_end":"#405D85","background_color_start":"#3171D2","background_icon":"","background_image":"","background_price_color":"#7497CD","color_point":0.7,"dmscore":9999,"end_time":9999,"gift":{"gift_id":12000,"gift_name":"醒目留言","num":1},"group_medal":{"is_lighted":0,"medal_id":0,"name":""},"id":9999,"is_mystery":false,"is_ranked":0,"is_send_audit":1,"medal_info":{"key":"value"},"message":"XXX","message_font_color":"#A3F6FF","message_trans":"","price":30,"rate":1000,"start_time":9999,"time":60,"token":"FFFFFFFF","trans_mark":0,"ts":9999,"uid":9999,"uinfo":{"key":"value"},"user_info":{"key":"value"}},"is_report":true,"msg_id":"XXX:10:1000","p_is_ack":true,"p_msg_type":1,"send_time":9999}
-{"cmd":"SUPER_CHAT_MESSAGE","data":{"background_bottom_color":"#2A60B2","background_color":"#EDF5FF","background_color_end":"#405D85","background_color_start":"#3171D2","background_icon":"","background_image":"","background_price_color":"#7497CD","color_point":0.7,"dmscore":9999,"end_time":9999,"gift":{"gift_id":12000,"gift_name":"醒目留言","num":1},"group_medal":{"is_lighted":0,"medal_id":0,"name":""},"id":9999,"is_mystery":false,"is_ranked":0,"is_send_audit":1,"medal_info":{"key":"value"},"message":"XXX","message_font_color":"#A3F6FF","message_trans":"","price":30,"rate":1000,"start_time":9999,"time":60,"token":"FFFFFFFF","trans_mark":0,"ts":9999,"uid":9999,"uinfo":{"key":"value"},"user_info":{"key":"value"}},"is_report":true,"msg_id":"XXX:100:1000","p_is_ack":true,"p_msg_type":1,"send_time":9999}
-{"cmd":"SUPER_CHAT_MESSAGE","data":{"background_bottom_color":"#427D9E","background_color":"#DBFFFD","background_color_end":"#29718B","background_color_start":"#4EA4C5","background_icon":"","background_image":"","background_price_color":"#7DA4BD","color_point":0.7,"dmscore":9999,"end_time":9999,"gift":{"gift_id":12000,"gift_name":"醒目留言","num":1},"group_medal":{"is_lighted":0,"medal_id":0,"name":""},"id":9999,"is_mystery":false,"is_ranked":0,"is_send_audit":1,"medal_info":{"key":"value"},"message":"XXX","message_font_color":"#A3F6FF","message_trans":"","price":50,"rate":1000,"start_time":9999,"time":120,"token":"FFFFFFFF","trans_mark":0,"ts":9999,"uid":9999,"uinfo":{"key":"value"},"user_info":{"key":"value"}},"is_report":true,"msg_id":"XXX:10:1000","p_is_ack":true,"p_msg_type":1,"send_time":9999}
-{"cmd":"SUPER_CHAT_MESSAGE","data":{"background_bottom_color":"#427D9E","background_color":"#DBFFFD","background_color_end":"#29718B","background_color_start":"#4EA4C5","background_icon":"","background_image":"","background_price_color":"#7DA4BD","color_point":0.7,"dmscore":9999,"end_time":9999,"gift":{"gift_id":12000,"gift_name":"醒目留言","num":1},"group_medal":{"is_lighted":0,"medal_id":0,"name":""},"id":9999,"is_mystery":false,"is_ranked":0,"is_send_audit":1,"medal_info":{"key":"value"},"message":"XXX","message_font_color":"#A3F6FF","message_trans":"","price":50,"rate":1000,"start_time":9999,"time":120,"token":"FFFFFFFF","trans_mark":0,"ts":9999,"uid":9999,"uinfo":{"key":"value"},"user_info":{"key":"value"}},"is_report":true,"msg_id":"XXX:100:1000","p_is_ack":true,"p_msg_type":1,"send_time":9999}
-{"cmd":"SUPER_CHAT_MESSAGE","data":{"background_bottom_color":"#E2B52B","background_color":"#FFF1C5","background_color_end":"#EEBE5C","background_color_start":"#EAB400","background_icon":"","background_image":"","background_price_color":"#ECCF75","color_point":0.7,"dmscore":9999,"end_time":9999,"gift":{"gift_id":12000,"gift_name":"醒目留言","num":1},"group_medal":{"is_lighted":0,"medal_id":0,"name":""},"id":9999,"is_mystery":false,"is_ranked":0,"is_send_audit":1,"medal_info":{"key":"value"},"message":"XXX","message_font_color":"#72110E","message_trans":"","price":100,"rate":1000,"start_time":9999,"time":300,"token":"FFFFFFFF","trans_mark":0,"ts":9999,"uid":9999,"uinfo":{"key":"value"},"user_info":{"key":"value"}},"is_report":true,"msg_id":"XXX:10:1000","p_is_ack":true,"p_msg_type":1,"send_time":9999}
-{"cmd":"SUPER_CHAT_MESSAGE","data":{"background_bottom_color":"#E09443","background_color":"#FFEAD2","background_color_end":"#DB9039","background_color_start":"#FFA850","background_icon":"https://i0.hdslb.com/bfs/live/e12e931ed8d9e5189ab6d1a3a1da35af4f8a55af.png","background_image":"","background_price_color":"#E8AF79","color_point":0.7,"dmscore":9999,"end_time":9999,"gift":{"gift_id":12000,"gift_name":"醒目留言","num":1},"group_medal":{"is_lighted":0,"medal_id":0,"name":""},"id":9999,"is_mystery":false,"is_ranked":0,"is_send_audit":1,"medal_info":{"key":"value"},"message":"XXX","message_font_color":"#72110E","message_trans":"","price":500,"rate":1000,"start_time":9999,"time":1800,"token":"FFFFFFFF","trans_mark":0,"ts":9999,"uid":9999,"uinfo":{"key":"value"},"user_info":{"key":"value"}},"is_report":true,"msg_id":"XXX:10:1000","p_is_ack":true,"p_msg_type":1,"send_time":9999}
-{"cmd":"SUPER_CHAT_MESSAGE","data":{"background_bottom_color":"#E54D4D","background_color":"#FFE7E4","background_color_end":"#BD666A","background_color_start":"#F63C45","background_icon":"https://i0.hdslb.com/bfs/live/0cf7b5fdc7084c9ae05f7a371ea2438118529d66.png","background_image":"","background_price_color":"#EE8B8B","color_point":0.7,"dmscore":9999,"end_time":9999,"gift":{"gift_id":12000,"gift_name":"醒目留言","num":1},"group_medal":{"is_lighted":0,"medal_id":0,"name":""},"id":9999,"is_mystery":false,"is_ranked":0,"is_send_audit":1,"medal_info":{"key":"value"},"message":"XXX","message_font_color":"#FFE163","message_trans":"","price":1000,"rate":1000,"start_time":9999,"time":3600,"token":"FFFFFFFF","trans_mark":0,"ts":9999,"uid":9999,"uinfo":{"key":"value"},"user_info":{"key":"value"}},"is_report":true,"msg_id":"XXX:10:1000","p_is_ack":true,"p_msg_type":1,"send_time":9999}
-{"cmd":"SUPER_CHAT_MESSAGE","data":{"background_bottom_color":"#E54D4D","background_color":"#FFE7E4","background_color_end":"#BD666A","background_color_start":"#F63C45","background_icon":"https://i0.hdslb.com/bfs/live/0cf7b5fdc7084c9ae05f7a371ea2438118529d66.png","background_image":"https://i0.hdslb.com/bfs/live/34ced2e8be7de1a32f1dc0cd4903ab9f1e115749.png","background_price_color":"#EE8B8B","color_point":0.7,"dmscore":9999,"end_time":9999,"gift":{"gift_id":12000,"gift_name":"醒目留言","num":1},"group_medal":{"is_lighted":0,"medal_id":0,"name":""},"id":9999,"is_mystery":false,"is_ranked":0,"is_send_audit":1,"medal_info":{"key":"value"},"message":"XXX","message_font_color":"#FFE163","message_trans":"","price":1000,"rate":1000,"start_time":9999,"time":3600,"token":"FFFFFFFF","trans_mark":0,"ts":9999,"uid":9999,"uinfo":{"key":"value"},"user_info":{"key":"value"}},"is_report":true,"msg_id":"XXX:10:1000","p_is_ack":true,"p_msg_type":1,"send_time":9999}
-{"cmd":"SUPER_CHAT_MESSAGE","data":{"background_bottom_color":"#AB1A32","background_color":"#FFD8D8","background_color_end":"#8B0F3D","background_color_start":"#600012","background_icon":"https://i0.hdslb.com/bfs/live/0d9cbbdbad7d3371266cd5b568065415415316ae.png","background_image":"","background_price_color":"#C86A7A","color_point":0.7,"dmscore":9999,"end_time":9999,"gift":{"gift_id":12000,"gift_name":"醒目留言","num":1},"group_medal":{"is_lighted":0,"medal_id":0,"name":""},"id":9999,"is_mystery":false,"is_ranked":0,"is_send_audit":1,"medal_info":{"key":"value"},"message":"XXX","message_font_color":"#FFE163","message_trans":"","price":2000,"rate":1000,"start_time":9999,"time":7200,"token":"FFFFFFFF","trans_mark":0,"ts":9999,"uid":9999,"uinfo":{"key":"value"},"user_info":{"key":"value"}},"is_report":true,"msg_id":"XXX:10:1000","p_is_ack":true,"p_msg_type":1,"send_time":9999}
+{"cmd":"SUPER_CHAT_MESSAGE","data":{"background_bottom_color":"#2A60B2","background_color":"#EDF5FF","background_color_end":"#405D85","background_color_start":"#3171D2","background_icon":"","background_image":"","background_price_color":"#7497CD","color_point":0.7,"dmscore":9999,"end_time":9999,"gift":{"gift_id":12000,"gift_name":"醒目留言","num":1},"group_medal":{"is_lighted":0,"medal_id":0,"name":""},"id":9999,"is_mystery":false,"is_ranked":0,"is_send_audit":1,"medal_info":{"key":"value"},"message":"xxx","message_font_color":"#A3F6FF","message_trans":"","price":30,"rate":1000,"start_time":9999,"time":60,"token":"FFFFFFFF","trans_mark":0,"ts":9999,"uid":9999,"uinfo":{"key":"value"},"user_info":{"key":"value"}},"is_report":true,"msg_id":"xxx:xxx:xxx","p_is_ack":true,"p_msg_type":1,"send_time":9999}
+{"cmd":"SUPER_CHAT_MESSAGE","data":{"background_bottom_color":"#427D9E","background_color":"#DBFFFD","background_color_end":"#29718B","background_color_start":"#4EA4C5","background_icon":"","background_image":"","background_price_color":"#7DA4BD","color_point":0.7,"dmscore":9999,"end_time":9999,"gift":{"gift_id":12000,"gift_name":"醒目留言","num":1},"group_medal":{"is_lighted":0,"medal_id":0,"name":""},"id":9999,"is_mystery":false,"is_ranked":0,"is_send_audit":1,"medal_info":{"key":"value"},"message":"xxx","message_font_color":"#A3F6FF","message_trans":"","price":50,"rate":1000,"start_time":9999,"time":120,"token":"FFFFFFFF","trans_mark":0,"ts":9999,"uid":9999,"uinfo":{"key":"value"},"user_info":{"key":"value"}},"is_report":true,"msg_id":"xxx:xxx:xxx","p_is_ack":true,"p_msg_type":1,"send_time":9999}
+{"cmd":"SUPER_CHAT_MESSAGE","data":{"background_bottom_color":"#E2B52B","background_color":"#FFF1C5","background_color_end":"#EEBE5C","background_color_start":"#EAB400","background_icon":"","background_image":"","background_price_color":"#ECCF75","color_point":0.7,"dmscore":9999,"end_time":9999,"gift":{"gift_id":12000,"gift_name":"醒目留言","num":1},"group_medal":{"is_lighted":0,"medal_id":0,"name":""},"id":9999,"is_mystery":false,"is_ranked":0,"is_send_audit":1,"medal_info":{"key":"value"},"message":"xxx","message_font_color":"#72110E","message_trans":"","price":100,"rate":1000,"start_time":9999,"time":300,"token":"FFFFFFFF","trans_mark":0,"ts":9999,"uid":9999,"uinfo":{"key":"value"},"user_info":{"key":"value"}},"is_report":true,"msg_id":"xxx:xxx:xxx","p_is_ack":true,"p_msg_type":1,"send_time":9999}
+{"cmd":"SUPER_CHAT_MESSAGE","data":{"background_bottom_color":"#E09443","background_color":"#FFEAD2","background_color_end":"#DB9039","background_color_start":"#FFA850","background_icon":"https://i0.hdslb.com/bfs/live/e12e931ed8d9e5189ab6d1a3a1da35af4f8a55af.png","background_image":"","background_price_color":"#E8AF79","color_point":0.7,"dmscore":9999,"end_time":9999,"gift":{"gift_id":12000,"gift_name":"醒目留言","num":1},"group_medal":{"is_lighted":0,"medal_id":0,"name":""},"id":9999,"is_mystery":false,"is_ranked":0,"is_send_audit":1,"medal_info":{"key":"value"},"message":"xxx","message_font_color":"#72110E","message_trans":"","price":500,"rate":1000,"start_time":9999,"time":1800,"token":"FFFFFFFF","trans_mark":0,"ts":9999,"uid":9999,"uinfo":{"key":"value"},"user_info":{"key":"value"}},"is_report":true,"msg_id":"xxx:xxx:1000","p_is_ack":true,"p_msg_type":1,"send_time":9999}
+{"cmd":"SUPER_CHAT_MESSAGE","data":{"background_bottom_color":"#E54D4D","background_color":"#FFE7E4","background_color_end":"#BD666A","background_color_start":"#F63C45","background_icon":"https://i0.hdslb.com/bfs/live/0cf7b5fdc7084c9ae05f7a371ea2438118529d66.png","background_image":"","background_price_color":"#EE8B8B","color_point":0.7,"dmscore":9999,"end_time":9999,"gift":{"gift_id":12000,"gift_name":"醒目留言","num":1},"group_medal":{"is_lighted":0,"medal_id":0,"name":""},"id":9999,"is_mystery":false,"is_ranked":0,"is_send_audit":1,"medal_info":{"key":"value"},"message":"xxx","message_font_color":"#FFE163","message_trans":"","price":1000,"rate":1000,"start_time":9999,"time":3600,"token":"FFFFFFFF","trans_mark":0,"ts":9999,"uid":9999,"uinfo":{"key":"value"},"user_info":{"key":"value"}},"is_report":true,"msg_id":"xxx:xxx:1000","p_is_ack":true,"p_msg_type":1,"send_time":9999}
+{"cmd":"SUPER_CHAT_MESSAGE","data":{"background_bottom_color":"#E54D4D","background_color":"#FFE7E4","background_color_end":"#BD666A","background_color_start":"#F63C45","background_icon":"https://i0.hdslb.com/bfs/live/0cf7b5fdc7084c9ae05f7a371ea2438118529d66.png","background_image":"https://i0.hdslb.com/bfs/live/34ced2e8be7de1a32f1dc0cd4903ab9f1e115749.png","background_price_color":"#EE8B8B","color_point":0.7,"dmscore":9999,"end_time":9999,"gift":{"gift_id":12000,"gift_name":"醒目留言","num":1},"group_medal":{"is_lighted":0,"medal_id":0,"name":""},"id":9999,"is_mystery":false,"is_ranked":0,"is_send_audit":1,"medal_info":{"key":"value"},"message":"xxx","message_font_color":"#FFE163","message_trans":"","price":1000,"rate":1000,"start_time":9999,"time":3600,"token":"FFFFFFFF","trans_mark":0,"ts":9999,"uid":9999,"uinfo":{"key":"value"},"user_info":{"key":"value"}},"is_report":true,"msg_id":"xxx:xxx:1000","p_is_ack":true,"p_msg_type":1,"send_time":9999}
+{"cmd":"SUPER_CHAT_MESSAGE","data":{"background_bottom_color":"#AB1A32","background_color":"#FFD8D8","background_color_end":"#8B0F3D","background_color_start":"#600012","background_icon":"https://i0.hdslb.com/bfs/live/0d9cbbdbad7d3371266cd5b568065415415316ae.png","background_image":"","background_price_color":"#C86A7A","color_point":0.7,"dmscore":9999,"end_time":9999,"gift":{"gift_id":12000,"gift_name":"醒目留言","num":1},"group_medal":{"is_lighted":0,"medal_id":0,"name":""},"id":9999,"is_mystery":false,"is_ranked":0,"is_send_audit":1,"medal_info":{"key":"value"},"message":"xxx","message_font_color":"#FFE163","message_trans":"","price":2000,"rate":1000,"start_time":9999,"time":7200,"token":"FFFFFFFF","trans_mark":0,"ts":9999,"uid":9999,"uinfo":{"key":"value"},"user_info":{"key":"value"}},"is_report":true,"msg_id":"xxx:xxx:1000","p_is_ack":true,"p_msg_type":1,"send_time":9999}
 ```
 ### SC价格颜色表
 | price | background_bottom_color	| background_color	| background_color_end	| background_color_start	| background_price_color	| message_font_color	|
@@ -1629,7 +1640,7 @@ SuperChat 日本語 Japanese
 | end_time					| num	| TimeStamp(秒) |
 | gift						| obj	| |
 ```json
-{"cmd":"SUPER_CHAT_MESSAGE_JPN","data":{"id":"12345","uid":"23456","price":50,"rate":1000,"message":"123","message_jpn":"123","is_ranked":1,"background_image":"https://i0.hdslb.com/bfs/live/a712efa5c6ebc67bafbe8352d3e74b820a00c13e.png","background_color":"#DBFFFD","background_icon":"","background_price_color":"#7DA4BD","background_bottom_color":"#427D9E","ts":1704038400,"token":"50316B2E","medal_info":null,"user_info":{"key":"value"},"time":120,"start_time":1704038400,"end_time":1704038400,"gift":{"num":1,"gift_id":12000,"gift_name":"醒目留言"}},"roomid":"12345"}
+{"cmd":"SUPER_CHAT_MESSAGE_JPN","data":{"id":"12345","uid":"12345","price":50,"rate":1000,"message":"123","message_jpn":"123","is_ranked":1,"background_image":"https://i0.hdslb.com/bfs/live/a712efa5c6ebc67bafbe8352d3e74b820a00c13e.png","background_color":"#DBFFFD","background_icon":"","background_price_color":"#7DA4BD","background_bottom_color":"#427D9E","ts":1704038400,"token":"FFFFFFFF","medal_info":null,"user_info":{"key":"value"},"time":120,"start_time":1704038400,"end_time":1704038400,"gift":{"num":1,"gift_id":12000,"gift_name":"醒目留言"}},"roomid":"12345"}
 ```
 ----
 ### SUPER_CHAT_MESSAGE_DELETE
@@ -1790,7 +1801,7 @@ SC 删除
 | status			| num		| 1 |
 | time				| num		| 剩余时间(秒) |
 | url				| str		| URL |
-| web_url			| str		| https://live.XXXX.com/p/html/live-lottery/anchor-join.html |
+| web_url			| str		| URL |
 #### ANCHOR_LOT_START__data__danmu_new
 | key 3			| type	| value	|
 |-|-|-|
@@ -1798,7 +1809,22 @@ SC 删除
 | danmu_view	| str	| |
 | reject		| bool	| |
 ```json
-{"cmd":"ANCHOR_LOT_START","data":{"asset_icon":"https://i0.hdslb.com/bfs/live/627ee2d9e71c682810e7dc4400d5ae2713442c02.png","asset_icon_webp":"https://i0.hdslb.com/bfs/live/b47453a0d42f30673b6d030159a96d07905d677a.webp","award_image":"","award_name":"PS5轻薄版1台","award_num":1,"award_type":0,"break_up_time":0,"cur_gift_num":0,"current_time":1705662414,"danmu":"2023游戏区年 度盘点冲冲冲！","danmu_new":[{"danmu":"2023游戏区年度盘点冲冲冲！","danmu_view":"","reject":false}],"danmu_type":0,"gift_id":0,"gift_name":"","gift_num":1,"gift_price":0,"goaway_time":180,"goods_id":-99998,"id":5708694,"is_broadcast":1,"join_type":0,"lot_status":0,"max_time":300,"require_text":"关注主播","require_type":1,"require_value":0,"room_id":5440,"send_gift_ensure":0,"show_panel":1,"start_dont_popup":0,"status":1,"time":299,"url":"https://live.bilibili.com/p/html/live-lottery/anchor-join.html?is_live_half_webview=1&hybrid_biz=live-lottery-anchor&hybrid_half_ui=1,5,100p,100p,000000,0,30,0,0,1;2,5,100p,100p,000000,0,30,0,0,1;3,5,100p,100p,000000,0,30,0,0,1;4,5,100p,100p,000000,0,30,0,0,1;5,5,100p,100p,000000,0,30,0,0,1;6,5,100p,100p,000000,0,30,0,0,1;7,5,100p,100p,000000,0,30,0,0,1;8,5,100p,100p,000000,0,30,0,0,1","web_url":"https://live.bilibili.com/p/html/live-lottery/anchor-join.html"}}
+{
+	"cmd":"ANCHOR_LOT_START",
+	"data":{
+		"asset_icon":"https://i0.hdslb.com/bfs/live/627ee2d9e71c682810e7dc4400d5ae2713442c02.png",
+		"asset_icon_webp":"https://i0.hdslb.com/bfs/live/b47453a0d42f30673b6d030159a96d07905d677a.webp",
+		"award_image":"","award_name":"PS5轻薄版1台","award_num":1,"award_type":0,
+		"break_up_time":0,"cur_gift_num":0,"current_time":1705662414,
+		"danmu":"2023游戏区年 度盘点冲冲冲！","danmu_new":[{"danmu":"2023游戏区年度盘点冲冲冲！","danmu_view":"","reject":false}],"danmu_type":0,
+		"gift_id":0,"gift_name":"","gift_num":1,"gift_price":0,
+		"goaway_time":180,"goods_id":-99998,"id":5708694,"is_broadcast":1,"join_type":0,"lot_status":0,"max_time":300,
+		"require_text":"关注主播","require_type":1,"require_value":0,
+		"room_id":5440,"send_gift_ensure":0,"show_panel":1,"start_dont_popup":0,"status":1,"time":299,
+		"url":"xxx",
+		"web_url":"xxx"
+	}
+}
 ```
 ----
 ### ANCHOR_LOT_END
@@ -1838,8 +1864,8 @@ SC 删除
 | id				| num				| 抽奖id |
 | ?ruid				| num				| uid |
 | lot_status		| num				| [lot_status](#others) 2 |
-| url				| str				| ...... |
-| web_url			| str				| "https://live.XXXX.com/p/html/live-lottery/anchor-join.html" |
+| url				| str				| URL |
+| web_url			| str				| URL |
 #### ANCHOR_LOT_AWARD__data__award_users
 | key 6	| type	| value	|
 |-|-|-|
@@ -1861,14 +1887,14 @@ SC 删除
 		"award_num":1,
 		"award_type":0,
 		"award_users":[
-			{"uid":1,"uname":"A","face":"http:","level":9999,"color":9999,"num":1,"is_mystery":false,"uinfo":{"key":"value"}},
-			{"key":"value"}
-			{"uid":2,"uname":"Z","face":"https:","level":9999,"color":9999,"num":1,"is_mystery":false,"uinfo":{"key":"value"}}
+			{"uid":12345,"uname":"xxx","face":"xxx","level":9999,"color":9999,"num":1,"is_mystery":false,"uinfo":{"key":"value"}},
+			{"key":"value"},
+			{"uid":12345,"uname":"xxx","face":"xxx","level":9999,"color":9999,"num":1,"is_mystery":false,"uinfo":{"key":"value"}}
 		],
 		"id":12345,
 		"lot_status":2,
-		"url":"https://live.XXXX.com/p/html/live-lottery/anchor-join.html?is_live_half_webview=1&hybrid_biz=live-lottery-anchor&hybrid_half_ui=1,5,100p,100p,000000,0,30,0,0,1;2,5,100p,100p,000000,0,30,0,0,1;3,5,100p,100p,000000,0,30,0,0,1;4,5,100p,100p,000000,0,30,0,0,1;5,5,100p,100p,000000,0,30,0,0,1;6,5,100p,100p,000000,0,30,0,0,1;7,5,100p,100p,000000,0,30,0,0,1;8,5,100p,100p,000000,0,30,0,0,1",
-		"web_url":"https://live.XXXX.com/p/html/live-lottery/anchor-join.html"
+		"url":"xxx",
+		"web_url":"https://live.xxx.com/p/html/live-lottery/anchor-join.html"
 	}
 }
 ////////////////
@@ -1881,12 +1907,13 @@ SC 删除
 		"award_num":1,
 		"award_price_text":"价值52电池",
 		"award_type":1,
-		"award_users":[{"bag_id":9999,"color":9999,"face":"...","gift_id":31250,"level":9999,"num":1,"uid":9999,"uname":"XXX"}],
+		"award_users":[{"bag_id":9999,"color":9999,"face":"xxx","gift_id":31250,"level":9999,"num":1,"uid":9999,"uname":"xxx"}],
 		"id":12345,
 		"lot_status":2,
 		"ruid":9999,
-		"url":"https://live.XXXX.com/p/html/live-lottery/anchor-join.html?is_live_half_webview=1&hybrid_biz=live-lottery-anchor&hybrid_half_ui=1,5,100p,100p,000000,0,30,0,0,1;2,5,100p,100p,000000,0,30,0,0,1;3,5,100p,100p,000000,0,30,0,0,1;4,5,100p,100p,000000,0,30,0,0,1;5,5,100p,100p,000000,0,30,0,0,1;6,5,100p,100p,000000,0,30,0,0,1;7,5,100p,100p,000000,0,30,0,0,1;8,5,100p,100p,000000,0,30,0,0,1",
-		"web_url":"https://live.XXXX.com/p/html/live-lottery/anchor-join.html"}
+		"url":"https://live.xxx.com/p/html/live-lottery/anchor-join.html?is_live_half_webview=1&hybrid_biz=live-lottery-anchor&hybrid_half_ui=1,5,100p,100p,000000,0,30,0,0,1;2,5,100p,100p,000000,0,30,0,0,1;3,5,100p,100p,000000,0,30,0,0,1;4,5,100p,100p,000000,0,30,0,0,1;5,5,100p,100p,000000,0,30,0,0,1;6,5,100p,100p,000000,0,30,0,0,1;7,5,100p,100p,000000,0,30,0,0,1;8,5,100p,100p,000000,0,30,0,0,1",
+		"web_url":"https://live.xxx.com/p/html/live-lottery/anchor-join.html"
+	}
 }
 ```
 ----
@@ -1918,9 +1945,9 @@ SC 删除
 | roomid	| str	| 长_短直播间ID |
 | ?scatter	| obj	| |
 ```json
-{"cmd":"PREPARING","roomid":"123"}
-{"cmd":"PREPARING","round":1,"roomid":"12345"}
-{"cmd":"PREPARING","roomid":"12345","round":1,"scatter":{"max":30,"min":10}}
+{"roomid":"12345","round":1,"cmd":"PREPARING"}
+{"roomid":"12345","cmd":"PREPARING"}
+//{"cmd":"PREPARING","roomid":"12345","round":1,"scatter":{"max":30,"min":10}}
 ```
 ----
 ### DANMU_MSG
@@ -1941,7 +1968,7 @@ SC 删除
 | array	| type		| value	| 备注	|
 |-|-|-|-|
 | 0		| array		| [弹幕属性](#DANMU_MSG__info__0) |
-| 1		| str		| `text/content` <br> 弹幕内容/表情包名称 | 371111:大家都在说：XXX
+| 1		| str		| `text/content` <br> 弹幕内容/表情包名称 | 371111:大家都在说
 | 2		| array		| `userInfo`用户主站信息 |
 | 3		| array		| `fansMedal`[粉丝勋章](#DANMU_MSG__info__3) | 
 | 4		| array		| `user_level`[用户直播区信息](#DANMU_MSG__info__4) |
@@ -1973,7 +2000,7 @@ SC 删除
 | 0[8]	| num		| 0 |
 | 0[9]	| num		| `type/danmakuType` | \[0,1,2,7,9\] 1:节奏风暴 / 2:天选时刻 / 9:弹幕互动游戏
 | 0[10]	| num		| `chatBubbleType` | 0 / 1 / 2 / 5
-| 0[11]	| str		| `chatBubbleColor` | 5:`"#1453BAFF,#4C2263A2,#3353BAFF"` <br> 2:`"#1453BAFF,#4C2263A2,#3353BAFF"` 1:`"#33FFE99E,#40DCA731,#33FFE99E"`
+| 0[11]	| str		| `chatBubbleColor` | 5:`"#1453BAFF,#4C2263A2,#3353BAFF"` <br> 2:`"#1453BAFF,#4C2263A2,#3353BAFF"` <br> 1:`"#33FFE99E,#40DCA731,#33FFE99E"`
 | 0[12]	| num		| `dm_type/dmType/danmakuSpecialType` | 0:文本 <br> 1:表情包 <br> 2:语音
 | 0[13]	| obj/str	| 表情包:[`emoticonOptions`](#DANMU_MSG__info__0__13) <br> `"{}"` |
 | 0[14]	| obj/str	| 语音:[`voiceConfig`/`voiceInfo`](#DANMU_MSG__info__0__14) <br> `"{}"` |
@@ -2143,45 +2170,44 @@ SC 删除
 #### DANMU_MSG__example
 ```json
 //2022
-0000000000{"cmd":"DANMU_MSG:4:0:2:2:2:0",	"info":[[0,1,25,	16777215,1654351446978,xxx					,0,"xxx"		,0,0,0,"",0,"{}","{}",{"mode":0,"show_player_type":0,"extra":"{\"send_from_me\":false,\"mode\":0,\"color\":16777215,\"dm_type\":0,\"font_size\":25,\"player_mode\":1,\"show_player_type\":0,\"content\":\"！\",\"user_hash\":\"xxxxxx\",\"emoticon_unique\":\"\",\"bulge_display\":0,\"recommend_score\":10,\"main_state_dm_color\":\"\",\"objective_state_dm_color\":\"\",\"direction\":0,\"pk_direction\":0,\"quartet_direction\":0,\"yeah_space_type\":\"\",\"yeah_space_url\":\"\",\"jump_to_url\":\"\",\"space_type\":\"\",\"space_url\":\"\"}"}],"！",[xxx,"xxx",0,0,0,10000,1,""],[],[0,0,xxx,">50000",0],["",""],0,0,null,{"ts":1654351446,"ct":"81945534"},0,0,null,null,0,7]}
+{"cmd":"DANMU_MSG:4:0:2:2:2:0","info":[[0,1,25, 16777215,1654351446978,0000000000,0,"ffffffff",0,0,0,"",0,"{}","{}",{"mode":0,"show_player_type":0,"extra":"{\"send_from_me\":false,\"mode\":0,\"color\":16777215,\"dm_type\":0,\"font_size\":25,\"player_mode\":1,\"show_player_type\":0,\"content\":\"！\",\"user_hash\":\"xxxxxx\",\"emoticon_unique\":\"\",\"bulge_display\":0,\"recommend_score\":10,\"main_state_dm_color\":\"\",\"objective_state_dm_color\":\"\",\"direction\":0,\"pk_direction\":0,\"quartet_direction\":0,\"yeah_space_type\":\"\",\"yeah_space_url\":\"\",\"jump_to_url\":\"\",\"space_type\":\"\",\"space_url\":\"\"}"}],"！",[0,"***",1,0,0,10000,1,""],[],[0,0,0,">50000",0],["",""],0,0,null,{"ts":1654351446,"ct":"81945534"},0,0,null,null,0,7]}
 //DANMU_MSG:3:7:1:1:1:1
-1701778709{"cmd":"DANMU_MSG:3:7:1:1:1:1",	"info":[[0,7,100,	16777215,1701778709186,0					,0,"f4dbdf21"	,0,null,null,null,0,"{}","{}",{"mode":0,"show_player_type":0,"extra":"{\"mode\":0,\"send_from_me\":false,\"color\":16777215,\"dm_type\":0,\"font_size\":100,\"player_mode\":7,\"content\":\"[1.0,0.0,\\\"0.8-0.5\\\",10.0,\\\"哈哈哈哈\\\",0.0,0.0,0.0,0.0,10000,0,true,\\\"黑体\\\",1]\"}"},null,null],"[1.0,0.0,\"0.8-0.5\",10.0,\"哈哈哈哈\",0.0,0.0,0.0,0.0,10000,0,true,\"黑体\",1]",[0,"***",1,0,0,10000,1,""],null,[],[],0,0,null,{"ts":1701778709,"ct":"82145D85"},0,0,null,null,0,0,[0]],"dm_v2":""}
+{"cmd":"DANMU_MSG:3:7:1:1:1:1","info":[[0,7,100,16777215,1701778709186,0000000000,0,"f4dbdf21",0,null,null,null,0,"{}","{}",{"mode":0,"show_player_type":0,"extra":"{\"mode\":0,\"send_from_me\":false,\"color\":16777215,\"dm_type\":0,\"font_size\":100,\"player_mode\":7,\"content\":\"[1.0,0.0,\\\"0.8-0.5\\\",10.0,\\\"哈哈哈哈\\\",0.0,0.0,0.0,0.0,10000,0,true,\\\"黑体\\\",1]\"}"},null,null],"[1.0,0.0,\"0.8-0.5\",10.0,\"哈哈哈哈\",0.0,0.0,0.0,0.0,10000,0,true,\"黑体\",1]",[0,"***",1,0,0,10000,1,""],null,[],[],0,0,null,{"ts":1701778709,"ct":"82145D85"},0,0,null,null,0,0,[0]],"dm_v2":""}
 //假·抽奖弹幕
-0000000000{"cmd":"DANMU_MSG",				"info":[[0,1,25,	16777215,xxxxxxxxxxxxx,1702037197			,0,"..."		,0,0,0,"",0,"{}","{}",...,{"activity_identity":"",			"activity_source":0,"not_show":0},0],"蔷薇与铳枪",...,...,...,...,0,0,null,...,0,0,null,null,0,49,[.],null]}
+{"cmd":"DANMU_MSG",            "info":[[0,1,25, 16777215,1111111111111,1702037197,0,"ffffffff",0,0,0,"",0,"{}","{}",{"key":"value"},{"activity_identity":"",       "activity_source":0,"not_show":0},0],"蔷薇与铳枪",[0,"***",1,0,0,10000,1,""],[],[0,0,0,">50000",0],["",""],0,0,null,{"ts":1111111111,"ct":"FFFFFFFF"},0,0,null,null,0,49,[0],null]}
 //抽奖弹幕
-0000000000{"cmd":"DANMU_MSG",				"info":[[0,1,25,	16777215,xxxxxxxxxxxxx,0					,0,"..."		,0,2,0,"",0,"{}","{}",...,{"activity_identity":"5475890",	"activity_source":1,"not_show":1},0],"蔷薇与铳枪",...,...,...,...,0,0,null,...,0,0,null,null,0,7,[.],null]}
+{"cmd":"DANMU_MSG",            "info":[[0,1,25, 16777215,1111111111111,0000000000,0,"ffffffff",0,2,0,"",0,"{}","{}",{"key":"value"},{"activity_identity":"5475890","activity_source":1,"not_show":1},0],"蔷薇与铳枪",[0,"***",1,0,0,10000,1,""],[],[0,0,0,">50000",0],["",""],0,0,null,{"ts":1111111111,"ct":"FFFFFFFF"},0,0,null,null,0,7,[0],null]}
 
 //hit_combo(+1)
-1705563540{"cmd":"DANMU_MSG",				"info":[[0,1,25,	16777215,1705563539903,3745805152027139263	,0,"xxx"		,0,0,0,"",0,"{}","{}",{"mode":0,"show_player_type":0,"extra":"{\"send_from_me\":false,\"mode\":0,\"color\":16777215,\"dm_type\":0,\"font_size\":25,\"player_mode\":1,\"show_player_type\":0,\"content\":\"太卡了x14\",\"user_hash\":\"xxx\",\"emoticon_unique\":\"\",\"bulge_display\":0,\"recommend_score\":4,\"main_state_dm_color\":\"\",\"objective_state_dm_color\":\"\",\"direction\":0,\"pk_direction\":0,\"quartet_direction\":0,\"anniversary_crowd\":0,\"yeah_space_type\":\"\",\"yeah_space_url\":\"\",\"jump_to_url\":\"\",\"space_type\":\"\",\"space_url\":\"\",\"animation\":{},\"emots\":null,\"is_audited\":false,\"id_str\":\"03653126fb8b16e475d6fbee9765a8d563\",\"icon\":null,\"show_reply\":true,\"reply_mid\":0,\"reply_uname\":\"\",\"reply_uname_color\":\"\",\"reply_is_mystery\":false,\"hit_combo\":1}","user":{"uid":0,"base":{"name":"江***","face":"https://i0.hdslb.com/bfs/face/xxxx.jpg","is_mystery":false,"name_color":0},"medal":null,"wealth":{"level":0}}},{"activity_identity":"","activity_source":0,"not_show":0},0],"太卡了x14",[0,"江***",0,0,0,10000,1,""],[],[5,0,9868950,">50000",0],["",""],0,0,null,{"ts":1705563539,"ct":"ABA7B5C8"},0,0,null,null,0,7,[0],null],"dm_v2":""}
+{"cmd":"DANMU_MSG",            "info":[[0,1,25, 16777215,1705563539903,3745805152027139263,0,"ffffffff",0,0,0,"",0,"{}","{}",{"mode":0,"show_player_type":0,"extra":"{\"send_from_me\":false,\"mode\":0,\"color\":16777215,\"dm_type\":0,\"font_size\":25,\"player_mode\":1,\"show_player_type\":0,\"content\":\"太卡了x14\",\"user_hash\":\"xxx\",\"emoticon_unique\":\"\",\"bulge_display\":0,\"recommend_score\":4,\"main_state_dm_color\":\"\",\"objective_state_dm_color\":\"\",\"direction\":0,\"pk_direction\":0,\"quartet_direction\":0,\"anniversary_crowd\":0,\"yeah_space_type\":\"\",\"yeah_space_url\":\"\",\"jump_to_url\":\"\",\"space_type\":\"\",\"space_url\":\"\",\"animation\":{},\"emots\":null,\"is_audited\":false,\"id_str\":\"03653126fb8b16e475d6fbee9765a8d563\",\"icon\":null,\"show_reply\":true,\"reply_mid\":0,\"reply_uname\":\"\",\"reply_uname_color\":\"\",\"reply_is_mystery\":false,\"hit_combo\":1}","user":{"uid":0,"base":{"name":"江***","face":"xxx","is_mystery":false,"name_color":0},"medal":null,"wealth":{"level":0}}},{"activity_identity":"","activity_source":0,"not_show":0},0],"太卡了x14",[0,"江***",0,0,0,10000,1,""],[],[5,0,9868950,">50000",0],["",""],0,0,null,{"ts":1705563539,"ct":"ABA7B5C8"},0,0,null,null,0,7,[0],null],"dm_v2":""}
 //
-1705563610{"cmd":"DANMU_MSG", "dm_v2":"",	"info":[[0,1,25,	16777215,1705563611817,1705563582			,0,"xxx"		,0,0,0,"",0,"{}","{}",{"extra":"{\"send_from_me\":false,\"mode\":0,\"color\":16777215,\"dm_type\":0,\"font_size\":25,\"player_mode\":1,\"show_player_type\":0,\"content\":\"1秒1卡\",\"user_hash\":\"xxx\",\"emoticon_unique\":\"\",\"bulge_display\":0,\"recommend_score\":2,\"main_state_dm_color\":\"\",\"objective_state_dm_color\":\"\",\"direction\":0,\"pk_direction\":0,\"quartet_direction\":0,\"anniversary_crowd\":0,\"yeah_space_type\":\"\",\"yeah_space_url\":\"\",\"jump_to_url\":\"\",\"space_type\":\"\",\"space_url\":\"\",\"animation\":{},\"emots\":null,\"is_audited\":false,\"id_str\":\"54538fc76948f961201ef8e84265a8d542\",\"icon\":null,\"show_reply\":true,\"reply_mid\":0,\"reply_uname\":\"\",\"reply_uname_color\":\"\",\"reply_is_mystery\":false,\"hit_combo\":0}","mode":0,"show_player_type":0,"user":{"base":{"face":"https://i1.hdslb.com/bfs/face/xxxx.jpg","is_mystery":false,"name":"xxx","name_color":0},"medal":null,"uid":0,"wealth":{"level":11}}},{"activity_identity":"","activity_source":0,"not_show":0},0],"1秒1卡",[0,"xxx",0,0,0,10000,1,""],[22,"xxxx","xxxx",xxxx,1725515,"",0,1725515,1725515,5414290,0,1,xxxx],[16,0,6406234,">50000",0],["",""],0,0,null,{"ct":"E7F6BE4E","ts":1705563611},0,0,null,null,0,56,[11],null],"msg_id":"8917998270159360:10:1000","p_is_ack":true,"p_msg_type":1,"send_time":1705563611808}
-1706740160{"cmd":"DANMU_MSG",				"info":[[0,1,25,	16777215,1706740160512,1447299731			,0,"xxx"		,0,0,0,"",1,{"bulge_display":0,"emoticon_unique":"official_147","height":60,"in_player_area":1,"is_dynamic":0,"url":"http://i0.hdslb.com/bfs/live/bbd9045570d0c022a984c637e406cb0e1f208aa9.png","width":150},"{}",{"mode":0,"show_player_type":0,"extra":"{\"send_from_me\":false,\"mode\":0,\"color\":5816798,\"dm_type\":1,\"font_size\":25,\"player_mode\":1,\"show_player_type\":0,\"content\":\"赞\",\"user_hash\":\"xxx\",\"emoticon_unique\":\"official_147\",\"bulge_display\":0,\"recommend_score\":0,\"main_state_dm_color\":\"\",\"objective_state_dm_color\":\"\",\"direction\":0,\"pk_direction\":0,\"quartet_direction\":0,\"anniversary_crowd\":0,\"yeah_space_type\":\"\",\"yeah_space_url\":\"\",\"jump_to_url\":\"\",\"space_type\":\"\",\"space_url\":\"\",\"animation\":{},\"emots\":null,\"is_audited\":false,\"id_str\":\"4f5977cb13cdf9a336640bb95065bac976\",\"icon\":null,\"show_reply\":true,\"reply_mid\":0,\"reply_uname\":\"\",\"reply_uname_color\":\"\",\"reply_is_mystery\":false,\"hit_combo\":0}","user":{"uid":xxx,"base":{"name":"xxx","face":"https://i2.hdslb.com/bfs/face/xxx.jpg","name_color":0,"is_mystery":false,"risk_ctrl_info":null,"origin_info":{"name":"xxx","face":"https://i2.hdslb.com/bfs/face/xxx.jpg"},"official_info":{"role":0,"title":"","desc":"","type":-1}},"medal":null,"wealth":null,"title":{"old_title_css_id":"","title_css_id":""},"guard":null,"uhead_frame":null,"guard_leader":{"is_guard_leader":false}}},{"activity_identity":"","activity_source":0,"not_show":0},0],"赞",[xxx,"xxx",0,0,0,10000,1,""],[],[5,0,9868950,">50000",0],["",""],0,0,null,{"ts":1706740160,"ct":"5EFA768D"},0,0,null,null,0,7,[8],null],"dm_v2":""}
+{"cmd":"DANMU_MSG","dm_v2":"", "info":[[0,1,25, 16777215,1705563611817,1705563582,0,"ffffffff",0,0,0,"",0,"{}","{}",{"extra":"{\"send_from_me\":false,\"mode\":0,\"color\":16777215,\"dm_type\":0,\"font_size\":25,\"player_mode\":1,\"show_player_type\":0,\"content\":\"1秒1卡\",\"user_hash\":\"xxx\",\"emoticon_unique\":\"\",\"bulge_display\":0,\"recommend_score\":2,\"main_state_dm_color\":\"\",\"objective_state_dm_color\":\"\",\"direction\":0,\"pk_direction\":0,\"quartet_direction\":0,\"anniversary_crowd\":0,\"yeah_space_type\":\"\",\"yeah_space_url\":\"\",\"jump_to_url\":\"\",\"space_type\":\"\",\"space_url\":\"\",\"animation\":{},\"emots\":null,\"is_audited\":false,\"id_str\":\"54538fc76948f961201ef8e84265a8d542\",\"icon\":null,\"show_reply\":true,\"reply_mid\":0,\"reply_uname\":\"\",\"reply_uname_color\":\"\",\"reply_is_mystery\":false,\"hit_combo\":0}","mode":0,"show_player_type":0,"user":{"base":{"face":"xxx","is_mystery":false,"name":"xxx","name_color":0},"medal":null,"uid":0,"wealth":{"level":11}}},{"activity_identity":"","activity_source":0,"not_show":0},0],"1秒1卡",[0,"xxx",0,0,0,10000,1,""],[],[16,0,6406234,">50000",0],["",""],0,0,null,{"ct":"E7F6BE4E","ts":1705563611},0,0,null,null,0,56,[11],null],"msg_id":"xxx:10:1000","p_is_ack":true,"p_msg_type":1,"send_time":1705563611808}
+{"cmd":"DANMU_MSG",            "info":[[0,1,25, 16777215,1706740160512,1447299731,0,"ffffffff",0,0,0,"",1,{"bulge_display":0,"emoticon_unique":"official_147","height":60,"in_player_area":1,"is_dynamic":0,"url":"http://i0.hdslb.com/bfs/live/bbd9045570d0c022a984c637e406cb0e1f208aa9.png","width":150},"{}",{"mode":0,"show_player_type":0,"extra":"{\"send_from_me\":false,\"mode\":0,\"color\":5816798,\"dm_type\":1,\"font_size\":25,\"player_mode\":1,\"show_player_type\":0,\"content\":\"赞\",\"user_hash\":\"xxx\",\"emoticon_unique\":\"official_147\",\"bulge_display\":0,\"recommend_score\":0,\"main_state_dm_color\":\"\",\"objective_state_dm_color\":\"\",\"direction\":0,\"pk_direction\":0,\"quartet_direction\":0,\"anniversary_crowd\":0,\"yeah_space_type\":\"\",\"yeah_space_url\":\"\",\"jump_to_url\":\"\",\"space_type\":\"\",\"space_url\":\"\",\"animation\":{},\"emots\":null,\"is_audited\":false,\"id_str\":\"4f5977cb13cdf9a336640bb95065bac976\",\"icon\":null,\"show_reply\":true,\"reply_mid\":0,\"reply_uname\":\"\",\"reply_uname_color\":\"\",\"reply_is_mystery\":false,\"hit_combo\":0}","user":{"uid":xxx,"base":{"name":"xxx","face":"xxx","name_color":0,"is_mystery":false,"risk_ctrl_info":null,"origin_info":{"name":"xxx","face":"xxx"},"official_info":{"role":0,"title":"","desc":"","type":-1}},"medal":null,"wealth":null,"title":{"old_title_css_id":"","title_css_id":""},"guard":null,"uhead_frame":null,"guard_leader":{"is_guard_leader":false}}},{"activity_identity":"","activity_source":0,"not_show":0},0],"赞",[0,"***",1,0,0,10000,1,""],[],[0,0,0,">50000",0],["",""],0,0,null,{"ts":1706740160,"ct":"5EFA768D"},0,0,null,null,0,7,[8],null],"dm_v2":""}
 // dm-v2 为什么在前面
-1716723225497{"cmd":"DANMU_MSG",           "info":[[0,1,25,5816798,1716723225541,1716723227,0,"ab6a6547",0,0,0,"",0,"{}","{}",{"mode":0,"show_player_type":0,"extra":"{\"send_from_me\":false,\"mode\":0,\"color\":5816798,\"dm_type\":0,\"font_size\":25,\"player_mode\":1,\"show_player_type\":0,\"content\":\"(･∀･)\",\"user_hash\":\"2875876679\",\"emoticon_unique\":\"\",\"bulge_display\":0,\"recommend_score\":8,\"main_state_dm_color\":\"\",\"objective_state_dm_color\":\"\",\"direction\":0,\"pk_direction\":0,\"quartet_direction\":0,\"anniversary_crowd\":0,\"yeah_space_type\":\"\",\"yeah_space_url\":\"\",\"jump_to_url\":\"\",\"space_type\":\"\",\"space_url\":\"\",\"animation\":{},\"emots\":null,\"is_audited\":false,\"id_str\":\"41a6e7e9892e3c9277087f84e766531e59\",\"icon\":null,\"show_reply\":true,\"reply_mid\":0,\"reply_uname\":\"\",\"reply_uname_color\":\"\",\"reply_is_mystery\":false,\"hit_combo\":0}","user":{"uid":282887857,"base":{"name":"来自平凡real","face":"https://i1.hdslb.com/bfs/face/9dc23fe909fbc58adf649bc6df1a25abf647a66e.jpg","name_color":0,"is_mystery":false,"risk_ctrl_info":null,"origin_info":{"name":"来自平凡real","face":"https://i1.hdslb.com/bfs/face/9dc23fe909fbc58adf649bc6df1a25abf647a66e.jpg"},"official_info":{"role":0,"title":"","desc":"","type":-1},"name_color_str":""},"medal":null,"wealth":null,"title":{"old_title_css_id":"","title_css_id":""},"guard":null,"uhead_frame":null,"guard_leader":{"is_guard_leader":false}}},{"activity_identity":"","activity_source":0,"not_show":0},0],"(･∀･)",[282887857,"来自平凡real",0,0,0,10000,1,""],[20,"带扇人","扇宝",22673512,13081892,"",0,13081892,13081892,13081892,0,1,698438232],[20,0,6406234,">50000",0],["",""],0,0,null,{"ts":1716723225,"ct":"4EC17CA"},0,0,null,null,0,117,[10],null],"dm_v2":""}
-1716895047066{"cmd":"DANMU_MSG","dm_v2":"","info":[[0,1,25,5816798,1716895045784,1716895045,0,"ab6a6547",0,0,0,"",0,"{}","{}",{"extra":"{\"send_from_me\":false,\"mode\":0,\"color\":5816798,\"dm_type\":0,\"font_size\":25,\"player_mode\":1,\"show_player_type\":0,\"content\":\"(･∀･)\",\"user_hash\":\"2875876679\",\"emoticon_unique\":\"\",\"bulge_display\":0,\"recommend_score\":7,\"main_state_dm_color\":\"\",\"objective_state_dm_color\":\"\",\"direction\":0,\"pk_direction\":0,\"quartet_direction\":0,\"anniversary_crowd\":0,\"yeah_space_type\":\"\",\"yeah_space_url\":\"\",\"jump_to_url\":\"\",\"space_type\":\"\",\"space_url\":\"\",\"animation\":{},\"emots\":null,\"is_audited\":false,\"id_str\":\"13a1ede2f84397e808def858d66655bd59\",\"icon\":null,\"show_reply\":true,\"reply_mid\":0,\"reply_uname\":\"\",\"reply_uname_color\":\"\",\"reply_is_mystery\":false,\"hit_combo\":0}","mode":0,"show_player_type":0,"user":{"base":{"face":"https://i1.hdslb.com/bfs/face/9dc23fe909fbc58adf649bc6df1a25abf647a66e.jpg","is_mystery":false,"name":"来自平凡real","name_color":0,"name_color_str":"","official_info":{"desc":"","role":0,"title":"","type":-1},"origin_info":{"face":"https://i1.hdslb.com/bfs/face/9dc23fe909fbc58adf649bc6df1a25abf647a66e.jpg","name":"来自平凡real"},"risk_ctrl_info":null},"guard":null,"guard_leader":{"is_guard_leader":false},"medal":null,"title":{"old_title_css_id":"","title_css_id":""},"uhead_frame":null,"uid":282887857,"wealth":null}},{"activity_identity":"","activity_source":0,"not_show":0},0],"(･∀･)",[282887857,"来自平凡real",0,0,0,10000,1,""],[20,"带扇人","扇宝",22673512,13081892,"",0,13081892,13081892,13081892,0,1,698438232],[20,0,6406234,">50000",0],["",""],0,0,null,{"ct":"173FB83E","ts":1716895045},0,0,null,null,0,117,[10],null]}
-
-//弹幕颜色
-[
-	{"name":"白色",		"color":"16777215",	"color_hex":"ffffff",	"weight":-9999,"color_id":-9999,"origin":0},	//普通
-	{"name":"紫色",		"color":"14893055",	"color_hex":"e33fff",	"weight":0,"color_id":6,"origin":1},			//需要成为该主播的船员方可使用哦!
-	{"name":"松石绿",	"color":"5566168",	"color_hex":"54eed8",	"weight":99,"color_id":66,"origin":2},			//需粉丝勋章达5级才能使用哦！
-	{"name":"雨后蓝",	"color":"5816798",	"color_hex":"58c1de",	"weight":98,"color_id":67,"origin":2},			//需粉丝勋章达15级才能使用哦！
-	{"name":"星空蓝",	"color":"4546550",	"color_hex":"455ff6",	"weight":97,"color_id":68,"origin":2},			//需粉丝勋章达22级才能使用哦！
-	{"name":"紫罗兰",	"color":"9920249",	"color_hex":"975ef9",	"weight":96,"color_id":69,"origin":2},			//需粉丝勋章达26级才能使用哦！
-	{"name":"梦境红",	"color":"12802438",	"color_hex":"c35986",	"weight":95,"color_id":70,"origin":2},			//需粉丝勋章达30级才能使用哦！
-	{"name":"热力橙",	"color":"16747553",	"color_hex":"ff8c21",	"weight":94,"color_id":71,"origin":2},			//需粉丝勋章达34级才能使用哦！
-	{"name":"香槟金",	"color":"16774434",	"color_hex":"fff522",	"weight":93,"color_id":72,"origin":2},			//需粉丝勋章达38级才能使用哦！
-	{"name":"红色",		"color":"16738408",	"color_hex":"ff6868",	"weight":0,"color_id":8,"origin":3},			//成为老爷即可使用哦！
-	{"name":"蓝色",		"color":"6737151",	"color_hex":"66ccff",	"weight":0,"color_id":7,"origin":3},			//成为年费老爷即可使用哦!
-	{"name":"盛典金",	"color":"16766720",	"color_hex":"ffd700",	"weight":100,"color_id":44,"origin":4},			//在特定活动中才可以获得哦！
-	{"name":"升腾蓝",	"color":"4286945",	"color_hex":"4169e1",	"weight":100,"color_id":43,"origin":4},			//在特定活动中才可以获得哦！
-	{"name":"青色",		"color":"65532",	"color_hex":"00fffc",	"weight":0,"color_id":5,"origin":4},			//需要完成【度年如日】成就才能使用哦!
-	{"name":"绿色",		"color":"8322816",	"color_hex":"7eff00",	"weight":0,"color_id":4,"origin":4},			//需要完成【如雷贯耳】成就才能使用哦!
-	{"name":"黄色弹幕",	"color":"16772431",	"color_hex":"ffed4f",	"weight":0,"color_id":3,"origin":4},			//需要完成【腰缠万贯】成就才能使用哦!
-	{"name":"橙色",		"color":"16750592",	"color_hex":"ff9800",	"weight":0,"color_id":2,"origin":4},			//需要完成【追云逐月】成就才能使用哦!
-	{"name":"粉色",		"color":"16741274",	"color_hex":"ff739a",	"weight":0,"color_id":1,"origin":4}				//拥有“五魁首”头衔时才可使用哟！
-]
+{"cmd":"DANMU_MSG",            "info":[[0,1,25, 5816798, 1716723225541,1716723227,0,"ffffffff",0,0,0,"",0,"{}","{}",{"mode":0,"show_player_type":0,"extra":"{\"send_from_me\":false,\"mode\":0,\"color\":5816798,\"dm_type\":0,\"font_size\":25,\"player_mode\":1,\"show_player_type\":0,\"content\":\"(･∀･)\",\"user_hash\":\"123123123\",\"emoticon_unique\":\"\",\"bulge_display\":0,\"recommend_score\":8,\"main_state_dm_color\":\"\",\"objective_state_dm_color\":\"\",\"direction\":0,\"pk_direction\":0,\"quartet_direction\":0,\"anniversary_crowd\":0,\"yeah_space_type\":\"\",\"yeah_space_url\":\"\",\"jump_to_url\":\"\",\"space_type\":\"\",\"space_url\":\"\",\"animation\":{},\"emots\":null,\"is_audited\":false,\"id_str\":\"41a6e7e9892e3c9277087f84e766531e59\",\"icon\":null,\"show_reply\":true,\"reply_mid\":0,\"reply_uname\":\"\",\"reply_uname_color\":\"\",\"reply_is_mystery\":false,\"hit_combo\":0}","user":{"uid":12345,"base":{"name":"xxx","face":"xxx","name_color":0,"is_mystery":false,"risk_ctrl_info":null,"origin_info":{"name":"xxx","face":"xxx"},"official_info":{"role":0,"title":"","desc":"","type":-1},"name_color_str":""},"medal":null,"wealth":null,"title":{"old_title_css_id":"","title_css_id":""},"guard":null,"uhead_frame":null,"guard_leader":{"is_guard_leader":false}}},{"activity_identity":"","activity_source":0,"not_show":0},0],"(･∀･)",[0,"***",1,0,0,10000,1,""],[],[],["",""],0,0,null,{"ts":1716723225,"ct":"4EC17CA"},0,0,null,null,0,117,[10],null],"dm_v2":""}
+{"cmd":"DANMU_MSG","dm_v2":"", "info":[[0,1,25, 5816798, 1716895045784,1716895045,0,"ffffffff",0,0,0,"",0,"{}","{}",{"extra":"{\"send_from_me\":false,\"mode\":0,\"color\":5816798,\"dm_type\":0,\"font_size\":25,\"player_mode\":1,\"show_player_type\":0,\"content\":\"(･∀･)\",\"user_hash\":\"123123123\",\"emoticon_unique\":\"\",\"bulge_display\":0,\"recommend_score\":7,\"main_state_dm_color\":\"\",\"objective_state_dm_color\":\"\",\"direction\":0,\"pk_direction\":0,\"quartet_direction\":0,\"anniversary_crowd\":0,\"yeah_space_type\":\"\",\"yeah_space_url\":\"\",\"jump_to_url\":\"\",\"space_type\":\"\",\"space_url\":\"\",\"animation\":{},\"emots\":null,\"is_audited\":false,\"id_str\":\"13a1ede2f84397e808def858d66655bd59\",\"icon\":null,\"show_reply\":true,\"reply_mid\":0,\"reply_uname\":\"\",\"reply_uname_color\":\"\",\"reply_is_mystery\":false,\"hit_combo\":0}","mode":0,"show_player_type":0,"user":{"base":{"face":"xxx","is_mystery":false,"name":"xxx","name_color":0,"name_color_str":"","official_info":{"desc":"","role":0,"title":"","type":-1},"origin_info":{"face":"xxx","name":"xxx"},"risk_ctrl_info":null},"guard":null,"guard_leader":{"is_guard_leader":false},"medal":null,"title":{"old_title_css_id":"","title_css_id":""},"uhead_frame":null,"uid":12345,"wealth":null}},{"activity_identity":"","activity_source":0,"not_show":0},0],"(･∀･)",[0,"***",1,0,0,10000,1,""],[],[],["",""],0,0,null,{"ct":"173FB83E","ts":1716895045},0,0,null,null,0,117,[10],null]}
 ```
+#### 弹幕颜色
+|name|color|color_hex|weight|color_id|origin|_desc_|
+|-|-|-|-|-|-|-|
+|白色|16777215|ffffff|-9999|-9999|0|普通|
+|紫色|14893055|e33fff|0|6|1|需要成为该主播的船员方可使用哦!|
+|松石绿|5566168|54eed8|99|66|2|需粉丝勋章达5级才能使用哦！|
+|雨后蓝|5816798|58c1de|98|67|2|需粉丝勋章达15级才能使用哦！|
+|星空蓝|4546550|455ff6|97|68|2|需粉丝勋章达22级才能使用哦！|
+|紫罗兰|9920249|975ef9|96|69|2|需粉丝勋章达26级才能使用哦！|
+|梦境红|12802438|c35986|95|70|2|需粉丝勋章达30级才能使用哦！|
+|热力橙|16747553|ff8c21|94|71|2|需粉丝勋章达34级才能使用哦！|
+|香槟金|16774434|fff522|93|72|2|需粉丝勋章达38级才能使用哦！|
+|红色|16738408|ff6868|0|8|3|成为老爷即可使用哦！|
+|蓝色|6737151|66ccff|0|7|3|成为年费老爷即可使用哦!|
+|盛典金|16766720|ffd700|100|44|4|在特定活动中才可以获得哦！|
+|升腾蓝|4286945|4169e1|100|43|4|在特定活动中才可以获得哦！|
+|青色|65532|00fffc|0|5|4|需要完成【度年如日】成就才能使用哦!|
+|绿色|8322816|7eff00|0|4|4|需要完成【如雷贯耳】成就才能使用哦!|
+|黄色弹幕|16772431|ffed4f|0|3|4|需要完成【腰缠万贯】成就才能使用哦!|
+|橙色|16750592|ff9800|0|2|4|需要完成【追云逐月】成就才能使用哦!|
+|粉色|16741274|ff739a|0|1|4|拥有“五魁首”头衔时才可使用哟！|
 ----
 ### CUT_OFF
 [TOP](#直播弹幕)  
@@ -2192,7 +2218,7 @@ SC 删除
 | msg		| str	| |
 | room_id	| num	| 直播间id |
 ```json
-{"cmd":"CUT_OFF","msg":"...","msg_id":"XXX:1000:1000","p_is_ack":true,"room_id":9999,"send_time":9999}
+{"cmd":"CUT_OFF","msg":"xxx","msg_id":"xxx:1000:1000","p_is_ack":true,"room_id":9999,"send_time":9999}
 "版权相关"
 "分区错误，直播该游戏请到THE FINALS分区"
 "分区错误，直播该游戏请移至虚拟APEX分区直播"
@@ -2270,10 +2296,9 @@ SC 删除
 |-|-|-|
 | text		| str	| |
 ```json
-{"cmd":"GOTO_BUY_FLOW","data":{"text":"X**正在去买"}}
-{"cmd":"GOTO_BUY_FLOW","data":{"text":"X**等2人正在去买"}}
-{"cmd":"GOTO_BUY_FLOW","data":{"text":"X**等3人正在去买"}}
-{"cmd":"GOTO_BUY_FLOW","data":{"text":"X**等32人正在去买"}}
+{"cmd":"GOTO_BUY_FLOW","data":{"text":"x**正在去买"}}
+{"cmd":"GOTO_BUY_FLOW","data":{"text":"x**等x人正在去买"}}
+{"cmd":"GOTO_BUY_FLOW","data":{"text":"x**等xx人正在去买"}}
 ```
 ----
 ### RECOMMEND_CARD
@@ -2409,9 +2434,9 @@ SC 删除
 ```python
 recommend_list > shopping_card_detail > h5_url
 # 主播装扮
-"https://www.bilibili.com/h5/mall/suit/detail?id={suit_id}&navhide=1                                               &rebate=2019116459&from_id={uid}&s_video=0&f_source=zhibo&is_live_half_webview=1&hybrid_rotate_d=0&hybrid_half_ui={xxx}&web_type=1&source=5&goods_id={goods_id}#/virdress",
+"https://www.xxx.com/h5/mall/suit/detail?id={suit_id}&navhide=1                                               &rebate=2019116459&from_id={uid}&s_video=0&f_source=zhibo&is_live_half_webview=1&hybrid_rotate_d=0&hybrid_half_ui={xxx}&web_type=1&source=5&goods_id={goods_id}#/virdress",
 # 主播收藏集
-"https://www.bilibili.com/h5/mall/digital-card/home?-Abrowser=live&act_id={act_id}&hybrid_set_header=2&lottery_id=0&rebate=2019116459&from_id={uid}&s_video=0&f_source=zhibo&is_live_half_webview=1&hybrid_rotate_d=0&hybrid_half_ui={xxx}&web_type=1&source=5&goods_id={goods_id}#/virdress",
+"https://www.xxx.com/h5/mall/digital-card/home?-Abrowser=live&act_id={act_id}&hybrid_set_header=2&lottery_id=0&rebate=2019116459&from_id={uid}&s_video=0&f_source=zhibo&is_live_half_webview=1&hybrid_rotate_d=0&hybrid_half_ui={xxx}&web_type=1&source=5&goods_id={goods_id}#/virdress",
 # 带货
 "TODO"
 recommend_list > shopping_card_detail > price_info
@@ -2469,7 +2494,7 @@ recommend_list > shopping_card_detail > goods_icon
 | type							| num			| |
 | ?uri							| num			| |
 ```json
-{"cmd":"COMMON_NOTICE_DANMAKU","data":{"content_segments":[{"background_color":null,"background_color_dark":null,"font_bold":false,"font_color":"#xxxxxx","font_color_dark":"","highlight_font_color":"","highlight_font_color_dark":"","img_height":0,"img_url":"","img_width":0,"text":"...","type":1}],"danmaku_style":{"background_color":null,"background_color_dark":null},"dmscore":xxx,"terminals":[1,2,3,4,5]}}
+{"cmd":"COMMON_NOTICE_DANMAKU","data":{"content_segments":[{"background_color":null,"background_color_dark":null,"font_bold":false,"font_color":"#xxxxxx","font_color_dark":"","highlight_font_color":"","highlight_font_color_dark":"","img_height":0,"img_url":"","img_width":0,"text":"xxx","type":1}],"danmaku_style":{"background_color":null,"background_color_dark":null},"dmscore":xxx,"terminals":[1,2,3,4,5]}}
 {"cmd":"COMMON_NOTICE_DANMAKU","data":{"biz_id":0,	"content_segments":[{"font_color":"#998EFF","font_color_dark":"#998EFF","text":"恭喜 xxx 成为上时段 xxx 第 xx 名","type":1}],"danmaku_style":{"background_color":null,"background_color_dark":null},"danmaku_uri":"","dmscore":1008,"terminals":[4]}}
 {"cmd":"LIKE_INFO_V3_NOTICE",  "data":{				"content_segments":[{"font_color":"#F494AF",							"text":"试试双击点赞，让主播被更多人看到吧～","type":1}],"danmaku_style":{"background_color":null},"terminals":[1,4]}}
 {"cmd":"LIKE_INFO_V3_NOTICE",  "data":{				"content_segments":[{"font_color":"#F494AF",							"text":"本场点赞已累计100，快去号召直播间用户继续为你助力吧~","type":1}],"danmaku_style":{"background_color":null},"terminals":[2,5]}}
@@ -2507,6 +2532,7 @@ content_segments__text=[
 	f"{event_name}(限时任务)?：恭喜主播完成限时任务，直播间派发{num}元红包，速抢手慢无！",
 	f"{event_name}限时任务：任务即将结束，抓紧完成获取{num}{reward_name}奖励吧！未完成任务将无法获得奖励",
 	# 用户
+	[f"{name}","投喂","大航海盲盒","爆出",f"{anchor_name}*{num}天"],
 	f"<%{gift_name}%> 被点亮啦！恭喜 <%{name}%> 成为星球守护者！",
 	f"恭喜 <%{name}%> 成为 <%{gift_name}%> 星球守护者~",
 	f"{name} 送出的红包为主播新增{num}个粉丝！",
@@ -2553,8 +2579,6 @@ content_segments__text=[
 | gift_icon		| str		| |
 | rp_type		| num		| |
 ```json
-{"cmd":"POPULARITY_RED_POCKET_NEW",   "data":{"lot_id":123,"start_time":1704038400,"current_time":1704038400,"wait_num":0,"uname":"直播小电视","uid":1407831746,"action":"送出","num":1,"gift_name":"红包","gift_id":13000,"price":950,"name_color":"","medal_info":xxx}}
-{"cmd":"POPULARITY_RED_POCKET_NEW",   "data":{"lot_id":123,"start_time":1710000000,"current_time":1710000000,"wait_num":xx,"wait_num_v2":xx,"uname":"xxx","uid":123,"action":"送出","num":1,"gift_name":"红包","gift_id":13000,"price":20,"name_color":"#xxxxxx","medal_info":xxx,"wealth_level":123,"group_medal":null,"is_mystery":false,"sender_info":xxx,"gift_icon":"","rp_type":0}}
 {"cmd":"POPULARITY_RED_POCKET_V2_NEW","data":{"lot_id":123,"start_time":1710000000,"current_time":1710000000,"wait_num":xx,"wait_num_v2":xx,"uname":"xxx","uid":123,"action":"送出","num":1,"gift_name":"红包","gift_id":13000,"price":20,"name_color":"#xxxxxx","medal_info":xxx,"wealth_level":123,"group_medal":null,"is_mystery":false,"sender_info":xxx,"gift_icon":"","rp_type":0}}
 ```
 ----
@@ -2650,12 +2674,12 @@ content_segments__text=[
 {
 	"cmd":"POPULARITY_RED_POCKET_V2_WINNER_LIST",
 	"data":{
-		"lot_id":xxx,
+		"lot_id":123,
 		"total_num":8,
 		"award_num":0,
 		"winner_info":[
-			[12345,"xxx",1234567,31212,false,null,1710000000,xxx],
-			[...]+7
+			[12345,"xxx",1234567,31212,false,null,1710000000,123456],
+			[xxx]+7
 	],
 	"awards":{
 			"31212":{"award_type":1,"award_name":"打call","award_pic":"https://s1.hdslb.com/bfs/live/461be640f60788c1d159ec8d6c5d5cf1ef3d1830.png","award_big_pic":"https://i0.hdslb.com/bfs/live/9e6521c57f24c7149c054d265818d4b82059f2ef.png","award_price":500},
@@ -2738,10 +2762,10 @@ timestamp: N×5
 		"action_type":2,
 		"timestamp":1706266146,
 		"msg_id":"9db34ad1-49f6-4e64-9fab-d77aecdaf7fb",
-		"jump_url_link":"https://live.bilibili.com/p/html/live-app-hotrank/index.html?clientType=3&{ruid=}&{conf_id=}......../area-rank",
-		"jump_url_pc":"https://live.bilibili.com/p/html/live-app-hotrank/index.html?clientType=4&{ruid=}&{conf_id=}......../area-rank",
-		"jump_url_pink":"https://live.bilibili.com/p/html/live-app-hotrank/index.html?clientType=1&{ruid=}&{conf_id=}......../area-rank",
-		"jump_url_web":"https://live.bilibili.com/p/html/live-app-hotrank/index.html?clientType=2&{ruid=}&{conf_id=}#/area-rank"
+		"jump_url_link":"https://live.xxx.com/p/html/live-app-hotrank/index.html?clientType=3&{ruid=}&{conf_id=}....../area-rank",
+		"jump_url_pc":"https://live.xxx.com/p/html/live-app-hotrank/index.html?clientType=4&{ruid=}&{conf_id=}....../area-rank",
+		"jump_url_pink":"https://live.xxx.com/p/html/live-app-hotrank/index.html?clientType=1&{ruid=}&{conf_id=}....../area-rank",
+		"jump_url_web":"https://live.xxx.com/p/html/live-app-hotrank/index.html?clientType=2&{ruid=}&{conf_id=}#/area-rank"
 	}
 }
 ```
@@ -2819,9 +2843,9 @@ lastMinuteWin= 3
 fail = -1
 ```
 ```json
-{"cmd":"PK_BATTLE_END","data":{"battle_type":2,"timer":10,"init_info":{"room_id":xxx,"votes":xxx,"winner_type":2,"best_uname":"XXX"},"match_info":{"room_id":xxx,"votes":xxx,"winner_type":-1,"best_uname":"YYY"}}}
-{"cmd":"PK_BATTLE_END","data":{"battle_type":2,"timer":10,"init_info":{"room_id":xxx,"votes":xxx,"winner_type":3,"best_uname":"XXX"},"match_info":{"room_id":xxx,"votes":xxx,"winner_type":-1,"best_uname":"YYY"}}}
-{"cmd":"PK_BATTLE_END","data":{"battle_sub_type":0,"battle_type":2,"dm_conf":{"bg_color":"#72C5E2","font_color":"#FFE10B"},"init_info":{"assist_info":[{"award_content":"","face":"xxx","is_mystery":false,"rank":"1","score":"52","uid":"xxx","uinfo":xxx,"uname":"xxx"}],"best_uname":"xxx","room_id":xxx,"votes":xxx,"winner_type":2},"match_info":{"assist_info":[],"best_uname":"","room_id":xxx,"votes":0,"winner_type":-1},"show_streak":false,"timer":10},"msg_id":"XXX:1000:1000","p_is_ack":true,"p_msg_type":1,"pk_id":"xxx","pk_status":401,"send_time":xxx,"timestamp":xxx}
+{"cmd":"PK_BATTLE_END","data":{"battle_type":2,"timer":10,"init_info":{"room_id":12345,"votes":111,"winner_type":2,"best_uname":"xxx"},"match_info":{"room_id":67890,"votes":222,"winner_type":-1,"best_uname":"xxx"}}}
+{"cmd":"PK_BATTLE_END","data":{"battle_type":2,"timer":10,"init_info":{"room_id":12345,"votes":111,"winner_type":3,"best_uname":"xxx"},"match_info":{"room_id":67890,"votes":222,"winner_type":-1,"best_uname":"xxx"}}}
+{"cmd":"PK_BATTLE_END","data":{"battle_sub_type":0,"battle_type":2,"dm_conf":{"bg_color":"#72C5E2","font_color":"#FFE10B"},"init_info":{"assist_info":[{"award_content":"","face":"xxx","is_mystery":false,"rank":"1","score":"52","uid":"xxx","uinfo":xxx,"uname":"xxx"}],"best_uname":"xxx","room_id":xxx,"votes":xxx,"winner_type":2},"match_info":{"assist_info":[],"best_uname":"","room_id":xxx,"votes":0,"winner_type":-1},"show_streak":false,"timer":10},"msg_id":"xxx:xxx:xxx","p_is_ack":true,"p_msg_type":1,"pk_id":"xxx","pk_status":401,"send_time":xxx,"timestamp":xxx}
 ```
 ----
 ### WIDGET_GIFT_STAR_PROCESS
@@ -2901,7 +2925,7 @@ fail = -1
 | anchor_info		| null	| |
 | combo_info		| null	| |
 ```json
-{"cmd":"LIVE_INTERACTIVE_GAME","data":{"type":2,"uid":123,"uname":"XXX","uface":"","gift_id":0,"gift_name":"","gift_num":0,"price":0,"paid":false,"msg":"text","fans_medal_level":18,"guard_level":0,"timestamp":1704038400,"anchor_lottery":null,"pk_info":null,"anchor_info":null,"combo_info":null}}
+{"cmd":"LIVE_INTERACTIVE_GAME","data":{"type":2,"uid":123,"uname":"xxx","uface":"","gift_id":0,"gift_name":"","gift_num":0,"price":0,"paid":false,"msg":"text","fans_medal_level":18,"guard_level":0,"timestamp":1704038400,"anchor_lottery":null,"pk_info":null,"anchor_info":null,"combo_info":null}}
 ```
 ----
 ### LIVE_MULTI_VIEW_CHANGE
@@ -2933,8 +2957,8 @@ fail = -1
 | jump_url			| str	| |
 | broadcast_type	| num	| 0 / 1 |
 ```json
-{"cmd":"SUPER_CHAT_ENTRANCE","data":{"icon":"https://i0.hdslb.com/bfs/live/0a9ebd72c76e9cbede9547386dd453475d4af6fe.png","jump_url":"https://live.XXXX.com/p/html/live-app-superchat2/index.html?is_live_half_webview=1&hybrid_half_ui=1,3,100p,70p,ffffff,0,30,100;2,2,375,100p,ffffff,0,30,100;3,3,100p,70p,ffffff,0,30,100;4,2,375,100p,ffffff,0,30,100;5,3,100p,60p,ffffff,0,30,100;6,3,100p,60p,ffffff,0,30,100;7,3,100p,60p,ffffff,0,30,100","status":0}}
-{"cmd":"SUPER_CHAT_ENTRANCE","data":{"status":1,"jump_url":"https://live.XXXX.com/p/html/live-app-superchat2/index.html?is_live_half_webview=1&hybrid_half_ui=1,3,100p,70p,ffffff,0,30,100;2,2,375,100p,ffffff,0,30,100;3,3,100p,70p,ffffff,0,30,100;4,2,375,100p,ffffff,0,30,100;5,3,100p,60p,ffffff,0,30,100;6,3,100p,60p,ffffff,0,30,100;7,3,100p,60p,ffffff,0,30,100","icon":"https://i0.hdslb.com/bfs/live/0a9ebd72c76e9cbede9547386dd453475d4af6fe.png","broadcast_type":1},"roomid":"xxx"}
+{"cmd":"SUPER_CHAT_ENTRANCE","data":{"icon":"https://i0.hdslb.com/bfs/live/0a9ebd72c76e9cbede9547386dd453475d4af6fe.png","jump_url":"https://live.xxx.com/p/html/live-app-superchat2/index.html?is_live_half_webview=1&hybrid_half_ui=1,3,100p,70p,ffffff,0,30,100;2,2,375,100p,ffffff,0,30,100;3,3,100p,70p,ffffff,0,30,100;4,2,375,100p,ffffff,0,30,100;5,3,100p,60p,ffffff,0,30,100;6,3,100p,60p,ffffff,0,30,100;7,3,100p,60p,ffffff,0,30,100","status":0}}
+{"cmd":"SUPER_CHAT_ENTRANCE","data":{"status":1,"jump_url":"https://live.xxx.com/p/html/live-app-superchat2/index.html?is_live_half_webview=1&hybrid_half_ui=1,3,100p,70p,ffffff,0,30,100;2,2,375,100p,ffffff,0,30,100;3,3,100p,70p,ffffff,0,30,100;4,2,375,100p,ffffff,0,30,100;5,3,100p,60p,ffffff,0,30,100;6,3,100p,60p,ffffff,0,30,100;7,3,100p,60p,ffffff,0,30,100","icon":"https://i0.hdslb.com/bfs/live/0a9ebd72c76e9cbede9547386dd453475d4af6fe.png","broadcast_type":1},"roomid":"xxx"}
 ```
 ----
 ### SYS_MSG
@@ -2974,9 +2998,9 @@ fail = -1
 | user_name			| str		| |
 | web_share_link	| str		| 直播间URL |
 ```json
-{"cmd":"VOICE_JOIN_STATUS","data":{"room_id":xxx,"status":0,"channel":"","channel_type":"voice","uid":0,"user_name":"","head_pic":"","guard":0,"start_at":0,"current_time":xxx,"web_share_link":"https://live.XXXX.com/h5/xxx"},"room_id":xxx}
-{"cmd":"VOICE_JOIN_STATUS","data":{"channel":"",	"channel_type":"voice","current_time":xxx,"guard":x,"head_pic":"",		"is_mystery":false,"room_id":12345,"start_at":0,	"status":0,"uid":0,		"uinfo":null,"user_name":"",	"web_share_link":"https://live.bilibili.com/h5/12345"},"msg_id":"xxx:1000:1000","p_is_ack":true,"p_msg_type":1,"room_id":12345,"send_time":xxx}
-{"cmd":"VOICE_JOIN_STATUS","data":{"channel":"xxx",	"channel_type":"voice","current_time":xxx,"guard":x,"head_pic":"xxx",	"is_mystery":false,"room_id":12345,"start_at":xxx,	"status":1,"uid":xxx,	"uinfo":null,"user_name":"xxx",	"web_share_link":"https://live.bilibili.com/h5/12345"},"msg_id":"xxx:1000:1000","p_is_ack":true,"p_msg_type":1,"room_id":12345,"send_time":xxx}
+{"cmd":"VOICE_JOIN_STATUS","data":{"room_id":12345,"status":0,"channel":"","channel_type":"voice","uid":0,"user_name":"","head_pic":"","guard":0,"start_at":0,"current_time":1111111111,"web_share_link":"https://live.xxx.com/h5/xxx"},"room_id":12345}
+{"cmd":"VOICE_JOIN_STATUS","data":{"channel":"",   "channel_type":"voice","current_time":1111111111,"guard":9,"head_pic":"",   "is_mystery":false,"room_id":12345,"start_at":0,         "status":0,"uid":0,    "uinfo":null,"user_name":"",   "web_share_link":"https://live.xxx.com/h5/12345"},"msg_id":"xxx:xxx:xxx","p_is_ack":true,"p_msg_type":1,"room_id":12345,"send_time":xxx}
+{"cmd":"VOICE_JOIN_STATUS","data":{"channel":"xxx","channel_type":"voice","current_time":1111111111,"guard":9,"head_pic":"xxx","is_mystery":false,"room_id":12345,"start_at":1111111111,"status":1,"uid":12345,"uinfo":null,"user_name":"xxx","web_share_link":"https://live.xxx.com/h5/12345"},"msg_id":"xxx:xxx:xxx","p_is_ack":true,"p_msg_type":1,"room_id":12345,"send_time":xxx}
 ```
 ----
 ### DM_INTERACTION
@@ -3036,9 +3060,9 @@ fail = -1
 | fade_duration			| num		| |
 #### DM_INTERACTION__example
 ```json
-{"cmd":"DM_INTERACTION","data":{"id":104,"status":4,"type":101,"data":"{\"question\":\"本局谁将获得胜利？\",\"options\":[{\"idx\":1,\"desc\":\"AAA\",\"cnt\":0,\"percent\":0},{\"idx\":2,\"desc\":\"BBB\",\"cnt\":0,\"percent\":0}],\"vote_id\":12234567,\"cnt\":0,\"duration\":180000,\"left_duration\":179000,\"fade_duration\":1000,\"waiting_duration\":-1,\"result\":1,\"result_text\":\"平局\",\"component\":\"https://live.XXXX.com/p/html/live-app-guessing-game/vote.html?is_live_half_webview=1&hybrid_half_ui=1,3,100p,324,0,0,30,100,12,0;2,2,375,100p,0,0,30,100,12,0;3,3,100p,324,0,0,30,100,12,0;4,2,375,100p,0,0,30,100,12,0;5,3,100p,70p,0,0,30,100,12,0;6,3,100p,70p,0,0,30,100,12,0;7,3,100p,70p,0,0,30,100,12,0;8,3,100p,70p,0,0,30,100,12,0\",\"natural_die_duration\":30000,\"my_vote\":0}"}}
-{"cmd":"DM_INTERACTION","data":{"data":"{\"question\":\"xxx\",\"options\":[{\"idx\":1,\"desc\":\"xxx\",\"cnt\":1282,\"percent\":0.24066078468180965},{\"idx\":2,\"desc\":\"yyyyy\",\"cnt\":4045,\"percent\":0.7593392153181904}],\"vote_id\":7194538,\"cnt\":5327,\"duration\":180000,\"left_duration\":0,\"fade_duration\":1000,\"waiting_duration\":-1,\"result\":3,\"result_text\":\"红获胜\",\"component\":\"https://live.XXXX.com/p/html/live-app-guessing-game/vote.html?is_live_half_webview=1&hybrid_half_ui=1,3,100p,324,0,0,30,100,12,0;2,2,375,100p,0,0,30,100,12,0;3,3,100p,324,0,0,30,100,12,0;4,2,375,100p,0,0,30,100,12,0;5,3,100p,70p,0,0,30,100,12,0;6,3,100p,70p,0,0,30,100,12,0;7,3,100p,70p,0,0,30,100,12,0;8,3,100p,70p,0,0,30,100,12,0\",\"natural_die_duration\":30000,\"my_vote\":0}","id":xxx,"status":5,"type":101}}
-{"cmd":"DM_INTERACTION","data":{"id":xxx,"status":4,"type":102,"data":"{\"combo\":[{\"id\":xxx,\"status\":4,\"content\":\"****\",\"cnt\":50,\"guide\":\"他们都在说:\",\"left_duration\":19000,\"fade_duration\":20000}],\"merge_interval\":1000,\"card_appear_interval\":1000,\"send_interval\":1000}"}}
+{"cmd":"DM_INTERACTION","data":{"id":104,"status":4,"type":101,"data":"{\"question\":\"本局谁将获得胜利？\",\"options\":[{\"idx\":1,\"desc\":\"AAA\",\"cnt\":0,\"percent\":0},{\"idx\":2,\"desc\":\"BBB\",\"cnt\":0,\"percent\":0}],\"vote_id\":12234567,\"cnt\":0,\"duration\":180000,\"left_duration\":179000,\"fade_duration\":1000,\"waiting_duration\":-1,\"result\":1,\"result_text\":\"平局\",\"component\":\"https://live.xxx.com/p/html/live-app-guessing-game/vote.html?is_live_half_webview=1&hybrid_half_ui=1,3,100p,324,0,0,30,100,12,0;2,2,375,100p,0,0,30,100,12,0;3,3,100p,324,0,0,30,100,12,0;4,2,375,100p,0,0,30,100,12,0;5,3,100p,70p,0,0,30,100,12,0;6,3,100p,70p,0,0,30,100,12,0;7,3,100p,70p,0,0,30,100,12,0;8,3,100p,70p,0,0,30,100,12,0\",\"natural_die_duration\":30000,\"my_vote\":0}"}}
+{"cmd":"DM_INTERACTION","data":{"data":"{\"question\":\"xxx\",\"options\":[{\"idx\":1,\"desc\":\"xxx\",\"cnt\":1282,\"percent\":0.24066078468180965},{\"idx\":2,\"desc\":\"yyyyy\",\"cnt\":4045,\"percent\":0.7593392153181904}],\"vote_id\":7194538,\"cnt\":5327,\"duration\":180000,\"left_duration\":0,\"fade_duration\":1000,\"waiting_duration\":-1,\"result\":3,\"result_text\":\"红获胜\",\"component\":\"https://live.xxx.com/p/html/live-app-guessing-game/vote.html?is_live_half_webview=1&hybrid_half_ui=1,3,100p,324,0,0,30,100,12,0;2,2,375,100p,0,0,30,100,12,0;3,3,100p,324,0,0,30,100,12,0;4,2,375,100p,0,0,30,100,12,0;5,3,100p,70p,0,0,30,100,12,0;6,3,100p,70p,0,0,30,100,12,0;7,3,100p,70p,0,0,30,100,12,0;8,3,100p,70p,0,0,30,100,12,0\",\"natural_die_duration\":30000,\"my_vote\":0}","id":xxx,"status":5,"type":101}}
+{"cmd":"DM_INTERACTION","data":{"id":999,"status":4,"type":102,"data":"{\"combo\":[{\"id\":xxx,\"status\":4,\"content\":\"****\",\"cnt\":50,\"guide\":\"他们都在说:\",\"left_duration\":19000,\"fade_duration\":20000}],\"merge_interval\":1000,\"card_appear_interval\":1000,\"send_interval\":1000}"}}
 ```
 ----
 ### PLAY_TAG
@@ -3056,7 +3080,7 @@ fail = -1
 | timestamp	| num	| TimeStamp(秒) |
 | type		| str	| "ADD" |
 ```json
-{"cmd":"PLAY_TAG","data":{"pic":"https://i0.hdslb.com/bfs/live/xxx.png","tag_id":123,"timestamp":xxx,"type":"ADD"}}
+{"cmd":"PLAY_TAG","data":{"pic":"https://i0.hdslb.com/bfs/live/xxx.png","tag_id":123,"timestamp":1111111111,"type":"ADD"}}
 ```
 ----
 ### FULL_SCREEN_SPECIAL_EFFECT
@@ -3080,6 +3104,7 @@ fail = -1
 {"cmd":"FULL_SCREEN_SPECIAL_EFFECT","data":{"type":2,"ids":[949],"queue":2,"platform_in":[1,2]}}
 {"cmd":"FULL_SCREEN_SPECIAL_EFFECT","data":{"type":2,"ids":[1022],"queue":2,"platform_in":[1,2]}}
 {"cmd":"FULL_SCREEN_SPECIAL_EFFECT","data":{"type":2,"ids":[1045],"queue":2,"platform_in":[1,2]}}
+{"cmd":"FULL_SCREEN_SPECIAL_EFFECT","data":{"type":3,"ids":[1226],"queue":2,"platform_in":[1,2]}}
 ```
 ----
 ### TRADING_SCORE
@@ -3099,8 +3124,8 @@ fail = -1
 | update_time		| num	| 当前时间TimeStamp(秒) |
 | update_type		| num	| 1 / 2 |
 ```json
-{"cmd":"TRADING_SCORE","data":{"bubble_show_time":3,"num":200,"score_id":3,"uid":xxx,"update_time":xxx,"update_type":2}}
-{"cmd":"TRADING_SCORE","data":{"bubble_show_time":3,"num":xxx,"score_id":3,"uid":xxx,"update_time":xxx,"update_type":1}}
+{"cmd":"TRADING_SCORE","data":{"bubble_show_time":3,"num":200,"score_id":3,"uid":12345,"update_time":1111111111,"update_type":2}}
+{"cmd":"TRADING_SCORE","data":{"bubble_show_time":3,"num":000,"score_id":3,"uid":12345,"update_time":1111111111,"update_type":1}}
 ```
 ----
 ### PK_BATTLE_START_NEW
@@ -3134,10 +3159,10 @@ fail = -1
 | pk_votes_type		| num	| |
 | star_light_msg	| str	| |
 ```json
-{"cmd":"PK_BATTLE_START",		"pk_id":xxx,"pk_status":201,"timestamp":xxx,"data":{"battle_type":2,"final_hit_votes":0,"pk_start_time":xxx,"pk_frozen_time":xxx,"pk_end_time":xxx,"pk_votes_type":0,"pk_votes_add":0,"pk_votes_name":"乱斗值","star_light_msg":"","pk_countdown":xxx,"final_conf":{"switch":1,"start_time":xxx,"end_time":xxx},"init_info":{"room_id":xxx,"date_streak":0},"match_info":{"room_id":xxx,"date_streak":0}},"roomid":"xxx"}
-{"cmd":"PK_BATTLE_START_NEW",	"pk_id":xxx,"pk_status":201,"timestamp":xxx,"data":{"battle_type":2,"final_hit_votes":0,"pk_start_time":xxx,"pk_frozen_time":xxx,"pk_end_time":xxx,"pk_votes_type":0,"pk_votes_add":0,"pk_votes_name":"乱斗值","star_light_msg":"","pk_countdown":xxx,"final_conf":{"switch":1,"start_time":xxx,"end_time":xxx},"init_info":{"room_id":xxx,"date_streak":0},"match_info":{"room_id":xxx,"date_streak":0}},"roomid":"xxx"}
-{"cmd":"PK_BATTLE_START",		"data":{"battle_sub_type":0,"battle_type":2,"final_conf":{"end_time":xxx,"start_time":xxx,"switch":1},"final_hit_votes":0,"init_info":{"date_streak":0,"room_id":AAAA},"match_info":{"date_streak":0,"room_id":BBBB},"pk_countdown":xxx,"pk_end_time":xxx,"pk_frozen_time":xxx,"pk_start_time":xxx,"pk_votes_add":0,"pk_votes_name":"PK值","pk_votes_type":0,"star_light_msg":""},"msg_id":"XXX:1000:1000","p_is_ack":true,"p_msg_type":1,"pk_id":xxx,"pk_status":201,"roomid":"xxx","send_time":xxx,"timestamp":xxx}
-{"cmd":"PK_BATTLE_START_NEW",	"data":{"battle_sub_type":0,"battle_type":2,"final_conf":{"end_time":xxx,"start_time":xxx,"switch":1},"final_hit_votes":0,"init_info":{"date_streak":0,"room_id":AAAA},"match_info":{"date_streak":0,"room_id":BBBB},"pk_countdown":xxx,"pk_end_time":xxx,"pk_frozen_time":xxx,"pk_start_time":xxx,"pk_votes_add":0,"pk_votes_name":"PK值","pk_votes_type":0,"star_light_msg":""},"msg_id":"XXX:1000:1000","p_is_ack":true,"p_msg_type":1,"pk_id":xxx,"pk_status":201,"roomid":"xxx","send_time":xxx,"timestamp":xxx}
+{"cmd":"PK_BATTLE_START",    "pk_id":123,"pk_status":201,"timestamp":xxx,"data":{"battle_type":2,"final_hit_votes":0,"pk_start_time":xxx,"pk_frozen_time":xxx,"pk_end_time":xxx,"pk_votes_type":0,"pk_votes_add":0,"pk_votes_name":"乱斗值","star_light_msg":"","pk_countdown":xxx,"final_conf":{"switch":1,"start_time":xxx,"end_time":xxx},"init_info":{"room_id":xxx,"date_streak":0},"match_info":{"room_id":xxx,"date_streak":0}},"roomid":"xxx"}
+{"cmd":"PK_BATTLE_START_NEW","pk_id":123,"pk_status":201,"timestamp":xxx,"data":{"battle_type":2,"final_hit_votes":0,"pk_start_time":xxx,"pk_frozen_time":xxx,"pk_end_time":xxx,"pk_votes_type":0,"pk_votes_add":0,"pk_votes_name":"乱斗值","star_light_msg":"","pk_countdown":xxx,"final_conf":{"switch":1,"start_time":xxx,"end_time":xxx},"init_info":{"room_id":xxx,"date_streak":0},"match_info":{"room_id":xxx,"date_streak":0}},"roomid":"xxx"}
+{"cmd":"PK_BATTLE_START",    "data":{"battle_sub_type":0,"battle_type":2,"final_conf":{"end_time":xxx,"start_time":xxx,"switch":1},"final_hit_votes":0,"init_info":{"date_streak":0,"room_id":AAAA},"match_info":{"date_streak":0,"room_id":BBBB},"pk_countdown":xxx,"pk_end_time":xxx,"pk_frozen_time":xxx,"pk_start_time":xxx,"pk_votes_add":0,"pk_votes_name":"PK值","pk_votes_type":0,"star_light_msg":""},"msg_id":"xxx:xxx:xxx","p_is_ack":true,"p_msg_type":1,"pk_id":xxx,"pk_status":201,"roomid":"xxx","send_time":xxx,"timestamp":xxx}
+{"cmd":"PK_BATTLE_START_NEW","data":{"battle_sub_type":0,"battle_type":2,"final_conf":{"end_time":xxx,"start_time":xxx,"switch":1},"final_hit_votes":0,"init_info":{"date_streak":0,"room_id":AAAA},"match_info":{"date_streak":0,"room_id":BBBB},"pk_countdown":xxx,"pk_end_time":xxx,"pk_frozen_time":xxx,"pk_start_time":xxx,"pk_votes_add":0,"pk_votes_name":"PK值","pk_votes_type":0,"star_light_msg":""},"msg_id":"xxx:xxx:xxx","p_is_ack":true,"p_msg_type":1,"pk_id":xxx,"pk_status":201,"roomid":"xxx","send_time":xxx,"timestamp":xxx}
 ```
 ----
 ### ROOM_SILENT
@@ -3322,8 +3347,8 @@ match data["type"]:
 | md5		| str	| |
 | ...		| ...	| ... |
 ```json
-{"cmd":"ROOM_SKIN_MSG","skin_id":64,"status":1,"end_time":1704038400,"current_time":1704038400,"only_local":false,"scatter":{"min":1,"max":200},"skin_config":{"android":{"1":{"zip":"https://i0.hdslb.com/bfs/live/roomSkin/545a91102973626b1e39cec1c7cb93edfd55a7d8.zip","md5":"083B542663A17F47E0379EF7E7269CA3"}},"ios":{"1":{"zip":"https://i0.hdslb.com/bfs/live/roomSkin/ae3c6c3ca3b32fd21d3612dc7938a5bfce928dcf.zip","md5":"AB4F5A4D83FACA7D45AF2ACCC175CEAF"}},"ipad":{"1":{"zip":"https://i0.hdslb.com/bfs/live/roomSkin/e26c2cb17d3b063d736104926bdeadcacef8a46b.zip","md5":"B2A4F7BD6B4F446BC85980B0B31EF37B"}},"web":{"1":{"zip":"https://i0.hdslb.com/bfs/live/roomSkin/a6bde45e0de2010afebdeab3572c2d078f2b3525.zip","md5":"9B0E3DEC95E3DB1CDC49CF838B539715","platform":"web","version":"1","headInfoBgPic":"https://i0.hdslb.com/bfs/live/roomSkin/78c2321d946dcdf57c37779e674da6983f0850ee.png","giftControlBgPic":"https://i0.hdslb.com/bfs/live/roomSkin/13f1bad1b1c1a050df36beb907d742a6a68d3fdb.png","rankListBgPic":"https://i0.hdslb.com/bfs/live/roomSkin/93db8458c57791f7b89ec75ff54221aa8f33e9fa.png","mainText":"#FFf2ae09","normalText":"#FF999999","highlightContent":"#FFf2ae09","border":"#33999999"}}}}
-{"cmd":"ROOM_SKIN_MSG","skin_id":65,"status":0,"end_time":1704038400,"current_time":1704038400,"only_local":false}
+{"cmd":"ROOM_SKIN_MSG","skin_id":64, "status":1,"end_time":1704038400,"current_time":1704038400,"only_local":false,"scatter":{"min":1,"max":200},"skin_config":{"android":{"1":{"zip":"https://i0.hdslb.com/bfs/live/roomSkin/545a91102973626b1e39cec1c7cb93edfd55a7d8.zip","md5":"083B542663A17F47E0379EF7E7269CA3"}},"ios":{"1":{"zip":"https://i0.hdslb.com/bfs/live/roomSkin/ae3c6c3ca3b32fd21d3612dc7938a5bfce928dcf.zip","md5":"AB4F5A4D83FACA7D45AF2ACCC175CEAF"}},"ipad":{"1":{"zip":"https://i0.hdslb.com/bfs/live/roomSkin/e26c2cb17d3b063d736104926bdeadcacef8a46b.zip","md5":"B2A4F7BD6B4F446BC85980B0B31EF37B"}},"web":{"1":{"zip":"https://i0.hdslb.com/bfs/live/roomSkin/a6bde45e0de2010afebdeab3572c2d078f2b3525.zip","md5":"9B0E3DEC95E3DB1CDC49CF838B539715","platform":"web","version":"1","headInfoBgPic":"https://i0.hdslb.com/bfs/live/roomSkin/78c2321d946dcdf57c37779e674da6983f0850ee.png","giftControlBgPic":"https://i0.hdslb.com/bfs/live/roomSkin/13f1bad1b1c1a050df36beb907d742a6a68d3fdb.png","rankListBgPic":"https://i0.hdslb.com/bfs/live/roomSkin/93db8458c57791f7b89ec75ff54221aa8f33e9fa.png","mainText":"#FFf2ae09","normalText":"#FF999999","highlightContent":"#FFf2ae09","border":"#33999999"}}}}
+{"cmd":"ROOM_SKIN_MSG","skin_id":65, "status":0,"end_time":1704038400,"current_time":1704038400,"only_local":false}
 {"cmd":"ROOM_SKIN_MSG","skin_id":452,"status":1,"end_time":1704038400,"current_time":1704038400,"only_local":true,"scatter":{"min":1,"max":200},"skin_config":{"android":{"1":{"zip":"https://i0.hdslb.com/bfs/live/c6a13965d7ae8ab433ef05f643876d70ccd35204.zip","md5":"6EFCA3C8FEC1A595B2C185FCAE1741A0"}},"ios":{"1":{"zip":"https://i0.hdslb.com/bfs/live/8bd0abf11eb68e1867eda7ec74c8ff6bc158392a.zip","md5":"DE24184A495D8AC4D36C40E653EE6F1C"}},"ipad":{"1":{"zip":"https://i0.hdslb.com/bfs/live/0fb370c451460cb0df6dafec005f7c361b6fbd98.zip","md5":"20B5DE12BC2C20037F30DD0ED76DC67F"}},"web":{"1":{"zip":"https://i0.hdslb.com/bfs/live/2e2857bbaa31de676896d436e3dadd083c439dc0.zip","md5":"66CF9042BBB331FF056DAB75FC56398E","platform":"web","version":"1","headInfoBgPic":"https://i0.hdslb.com/bfs/live/0847cbf4e927d494015bfa0ef025c2d38b6a3b7a.jpg","giftControlBgPic":"https://i0.hdslb.com/bfs/live/bfb1140f97cef5d1ed42fe32d9d873db17f1e443.jpg","rankListBgPic":"https://i0.hdslb.com/bfs/live/3cf53eb68bf888cafd958b26f1257ef892de6e6f.jpg","mainText":"#FFffffff","normalText":"#FFffe2b2","highlightContent":"#FF500c22","border":"#FFffe2b2","buttonText":"#FFffffff"}}}}
 {"cmd":"ROOM_SKIN_MSG","skin_id":454,"status":1,"end_time":1704038400,"current_time":1704038400,"only_local":false,"scatter":{"min":1,"max":200},"skin_config":{"android":{"1":{"zip":"https://i0.hdslb.com/bfs/live/c9a6c91cf1b3c0410053ad8d7453f1d3fa877549.zip","md5":"621F5833CE6FD085E800303AFFB4C3FD"}},"ios":{"1":{"zip":"https://i0.hdslb.com/bfs/live/3b91fa0f1e9e19016afa7af4c488b378657a5897.zip","md5":"716CCAB55B2D95EC8982F324BB59658C"}},"ipad":{"1":{"zip":"https://i0.hdslb.com/bfs/live/0369e00a3b15672638bae9c7363d177ebe437281.zip","md5":"5FCA732A31E2B52AAF674F589C97230F"}},"web":{"1":{"zip":"https://i0.hdslb.com/bfs/live/20fe37059dbdf179ba34907496180caf48f9b2fd.zip","md5":"FD0306E4CE4D2848DDD430CD7C72C341","platform":"web","version":"1","headInfoBgPic":"https://i0.hdslb.com/bfs/live/0b8ac21001db3bf723fd2f654868361a07114320.jpg","giftControlBgPic":"https://i0.hdslb.com/bfs/live/d2b7bf6fb6e6d66780a1227e71ea6bdc66dcf0e2.jpg","rankListBgPic":"https://i0.hdslb.com/bfs/live/b936cd3a73fe2350ae0bfc0aa0321b8d749ff82c.jpg","mainText":"#FFffffff","normalText":"#FFffffff","highlightContent":"#FFff72a3","border":"#FF6c99dc","buttonText":"#FFffffff"}}}}
 {"cmd":"ROOM_SKIN_MSG","skin_id":461,"status":1,"end_time":1704038400,"current_time":1704038400,"only_local":false,"scatter":{"min":1,"max":200},"skin_config":{"android":{"1":{"zip":"https://i0.hdslb.com/bfs/live/b2e54b7cb64142ee32833d1ed84903fed67a0378.zip","md5":"710AFA69D08FC727EDA821E3AF5CA0C5"}},"ios":{"1":{"zip":"https://i0.hdslb.com/bfs/live/1143aa4127f6e6faf4ba36c483e506df88b069a8.zip","md5":"55AE9AC3311D58A5EABBABD85366BB2D"}},"ipad":{"1":{"zip":"https://i0.hdslb.com/bfs/live/261dfdb079b3e5ee54f9000cec2274b5f4c5fe7c.zip","md5":"FE1737D3597AC78C791CD408D3A44B3B"}},"web":{"1":{"zip":"https://i0.hdslb.com/bfs/live/4d1bccb234baa040e379dfe55467e3ccc76658bf.zip","md5":"3CC0D358666AAEE5B0A8CA6411BA6730","platform":"web","version":"1","headInfoBgPic":"https://i0.hdslb.com/bfs/live/0b8ac21001db3bf723fd2f654868361a07114320.jpg","giftControlBgPic":"https://i0.hdslb.com/bfs/live/50b6c93ccdcbdff73589c19eb6138fdf97a95d31.jpg","rankListBgPic":"https://i0.hdslb.com/bfs/live/b936cd3a73fe2350ae0bfc0aa0321b8d749ff82c.jpg","mainText":"#FFffffff","normalText":"#FFffffff","highlightContent":"#FFff72a3","border":"#FF4f6dcb","buttonText":"#FFffffff"}}}}
@@ -3401,35 +3426,37 @@ RANK_REM_RANK_NEW
 | anchor_guard_achieve_level	| num	| |
 | anchor_modal					| obj	| |
 | app_basemap_url				| str	| |
-| current_achievement_level		| num	| 3 |
-| dmscore						| num	| 8 |
-| event_type					| num	| 1 |
+| current_achievement_level		| num	| |
+| dmscore						| num	| |
+| event_type					| num	| |
 | face							| str	| 主播头像URL |
-| first_line_content			| str	| 恭喜主播<%XXX%> |
+| first_line_content			| str	| 恭喜主播<%xxx%> |
 | first_line_highlight_color	| str	| #FFD432 |
 | first_line_normal_color		| str	| #FFFFFF |
 | headmap_url					| str	| |
-| is_first						| bool	| True |
-| is_first_new					| bool	| False |
-| room_id						| num	| 12345 |
-| second_line_content			| str	| 舰队规模突破<%XXX%> |
-| second_line_highlight_color	| str	| #06DDFF |
-| second_line_normal_color		| str	| #FFFFFF |
-| show_time						| num	| 3 |
+| is_first						| bool	| |
+| is_first_new					| bool	| |
+| room_id						| num	| |
+| second_line_content			| str	| 舰队规模突破<%xxx%> |
+| second_line_highlight_color	| str	| "#06DDFF" |
+| second_line_normal_color		| str	| "#FFFFFF" |
+| show_time						| num	| |
 | web_basemap_url				| str	| |
 #### GUARD_ACHIEVEMENT_ROOM__anchor_modal
 | key							| type	| value	|
 |-|-|-|
-| first_line_content			| str	| 恭喜当前舰队规模突破<%XXX%> |
-| highlight_color				| str	| #00DCFF |
+| first_line_content			| str	| 恭喜当前舰队规模突破<%xxx%> |
+| highlight_color				| str	| "#00DCFF" |
 | second_line_content			| str	| 至直播中心 - 获奖记录填写收货信息可获得实物勋章奖励哦～ |
 | show_time						| num	| 5 |
 ```json
-{"cmd":"GUARD_ACHIEVEMENT_ROOM","data":{"anchor_basemap_url":"https://i0.hdslb.com/bfs/live/c69db9cc9cecd7c2e93718a83a31d26e2234c35a.png","anchor_guard_achieve_level":1000,"anchor_modal":{"first_line_content":"恭喜当前舰队规模突破<%1000%>","highlight_color":"#00DCFF","second_line_content":"至直播中心 - 获奖记录填写收货信息可获得实物勋章奖励哦～","show_time":5},"app_basemap_url":"https://i0.hdslb.com/bfs/live/1f06adc9618a5b6d6b1ea5e4a6ec41fca919ca86.png","current_achievement_level":3,"dmscore":8,"event_type":1,"face":"...","first_line_content":"恭喜主播<%XXX%>","first_line_highlight_color":"#FFD432","first_line_normal_color":"#FFFFFF","headmap_url":"https://i0.hdslb.com/bfs/vc/40862cd8245b1742bdc9f2b563fcae1335e6fa6c.png","is_first":true,"is_first_new":false,"room_id":12345,"second_line_content":"舰队规模突破<%1000%>","second_line_highlight_color":"#06DDFF","second_line_normal_color":"#FFFFFF","show_time":3,"web_basemap_url":"https://i0.hdslb.com/bfs/live/1f06adc9618a5b6d6b1ea5e4a6ec41fca919ca86.png"}}
-{"cmd":"GUARD_ACHIEVEMENT_ROOM","data":{"anchor_basemap_url":"https://i0.hdslb.com/bfs/live/f873a04b1544d8f8bcc37fb2924ac9a2c2554031.png","anchor_guard_achieve_level":100,"anchor_modal":{"first_line_content":"恭喜当前舰队规模突破<%100%>","highlight_color":"#00DCFF","second_line_content":"至直播中心 - 获奖记录填写收货信息可获得实物勋章奖励哦～","show_time":5},"app_basemap_url":"https://i0.hdslb.com/bfs/live/83008812e86cae42049414e965d6ab6002f061cb.png","current_achievement_level":2,"dmscore":8,"event_type":2,"face":"...","first_line_content":"恭喜主播<%XXX%>","first_line_highlight_color":"#F2AE09","first_line_normal_color":"#FFFFFF","headmap_url":"https://i0.hdslb.com/bfs/vc/071eb10548fe9bc482ff69331983d94192ce9507.png","is_first":false,"is_first_new":false,"room_id":12345,"second_line_content":"舰队规模突破<%100%>","second_line_highlight_color":"#06DDFF","second_line_normal_color":"#FFFFFF","show_time":3,"web_basemap_url":"https://i0.hdslb.com/bfs/live/83008812e86cae42049414e965d6ab6002f061cb.png"}}
-{"cmd":"GUARD_ACHIEVEMENT_ROOM","data":{"anchor_basemap_url":"https://i0.hdslb.com/bfs/live/f873a04b1544d8f8bcc37fb2924ac9a2c2554031.png","anchor_guard_achieve_level":100,"anchor_modal":{"first_line_content":"恭喜当前舰队规模突破<%100%>","highlight_color":"#00DCFF","second_line_content":"至直播中心 - 获奖记录填写收货信息可获得实物勋章奖励哦～","show_time":5},"app_basemap_url":"https://i0.hdslb.com/bfs/live/83008812e86cae42049414e965d6ab6002f061cb.png","current_achievement_level":2,"dmscore":8,"event_type":1,"face":"...","first_line_content":"恭喜主播<%XXX%>","first_line_highlight_color":"#F2AE09","first_line_normal_color":"#FFFFFF","headmap_url":"https://i0.hdslb.com/bfs/vc/071eb10548fe9bc482ff69331983d94192ce9507.png","is_first":true,"is_first_new":false,"room_id":12345,"second_line_content":"舰队规模突破<%100%>","second_line_highlight_color":"#06DDFF","second_line_normal_color":"#FFFFFF","show_time":3,"web_basemap_url":"https://i0.hdslb.com/bfs/live/83008812e86cae42049414e965d6ab6002f061cb.png"}}
-{"cmd":"GUARD_ACHIEVEMENT_ROOM","data":{"anchor_basemap_url":"https://i0.hdslb.com/bfs/live/f873a04b1544d8f8bcc37fb2924ac9a2c2554031.png","anchor_guard_achieve_level":100,"anchor_modal":{"first_line_content":"恭喜当前舰队规模突破<%100%>","highlight_color":"#00DCFF","second_line_content":"至直播中心 - 获奖记录填写收货信息可获得实物勋章奖励哦～","show_time":5},"app_basemap_url":"https://i0.hdslb.com/bfs/live/83008812e86cae42049414e965d6ab6002f061cb.png","current_achievement_level":2,"dmscore":56,"event_type":1,"face":"...","first_line_content":"恭喜主播<%XXX%>","first_line_highlight_color":"#F2AE09","first_line_normal_color":"#FFFFFF","headmap_url":"https://i0.hdslb.com/bfs/vc/071eb10548fe9bc482ff69331983d94192ce9507.png","is_first":true,"is_first_new":false,"room_id":12345,"second_line_content":"舰队规模突破<%100%>","second_line_highlight_color":"#06DDFF","second_line_normal_color":"#FFFFFF","show_time":3,"web_basemap_url":"https://i0.hdslb.com/bfs/live/83008812e86cae42049414e965d6ab6002f061cb.png"}}
-{"cmd":"GUARD_ACHIEVEMENT_ROOM","data":{"anchor_basemap_url":"","anchor_guard_achieve_level":0,"anchor_modal":{"first_line_content":"恭喜当前舰队规模突破<%0%>","highlight_color":"#00DCFF","second_line_content":"至直播中心 - 获奖记录填写收货信息可获得实物勋章奖励哦～","show_time":0},"app_basemap_url":"","current_achievement_level":1,"dmscore":8,"event_type":2,"face":"...","first_line_content":"恭喜主播<%XXX%>","first_line_highlight_color":"","first_line_normal_color":"","headmap_url":"","is_first":false,"is_first_new":false,"room_id":1234,"second_line_content":"舰队规模突破<%0%>","second_line_highlight_color":"","second_line_normal_color":"","show_time":3,"web_basemap_url":"普通无需图片"}}
+{"cmd":"GUARD_ACHIEVEMENT_ROOM","data":{"anchor_basemap_url":"https://i0.hdslb.com/bfs/live/c69db9cc9cecd7c2e93718a83a31d26e2234c35a.png","anchor_guard_achieve_level":1000,"anchor_modal":{"first_line_content":"恭喜当前舰队规模突破<%1000%>","highlight_color":"#00DCFF","second_line_content":"至直播中心 - 获奖记录填写收货信息可获得实物勋章奖励哦～","show_time":5},"app_basemap_url":"https://i0.hdslb.com/bfs/live/1f06adc9618a5b6d6b1ea5e4a6ec41fca919ca86.png","current_achievement_level":3,"dmscore":99999,"event_type":1,"face":"xxx","first_line_content":"恭喜主播<%xxx%>","first_line_highlight_color":"#FFD432","first_line_normal_color":"#FFFFFF","headmap_url":"https://i0.hdslb.com/bfs/vc/40862cd8245b1742bdc9f2b563fcae1335e6fa6c.png","is_first":true,"is_first_new":false,"room_id":12345,"second_line_content":"舰队规模突破<%1000%>","second_line_highlight_color":"#06DDFF","second_line_normal_color":"#FFFFFF","show_time":3,"web_basemap_url":"https://i0.hdslb.com/bfs/live/1f06adc9618a5b6d6b1ea5e4a6ec41fca919ca86.png"}}
+{"cmd":"GUARD_ACHIEVEMENT_ROOM","data":{"anchor_basemap_url":"https://i0.hdslb.com/bfs/live/c69db9cc9cecd7c2e93718a83a31d26e2234c35a.png","anchor_guard_achieve_level":1000,"anchor_modal":{"first_line_content":"恭喜当前舰队规模突破<%1000%>","highlight_color":"#00DCFF","second_line_content":"至直播中心 - 获奖记录填写收货信息可获得实物勋章奖励哦～","show_time":5},"app_basemap_url":"https://i0.hdslb.com/bfs/live/1f06adc9618a5b6d6b1ea5e4a6ec41fca919ca86.png","current_achievement_level":3,"dmscore":99999,"event_type":1,"face":"xxx","first_line_content":"恭喜主播<%xxx%>","first_line_highlight_color":"#FFD432","first_line_normal_color":"#FFFFFF","headmap_url":"https://i0.hdslb.com/bfs/vc/40862cd8245b1742bdc9f2b563fcae1335e6fa6c.png","is_first":true,"is_first_new":true,"room_id":12345,"second_line_content":"舰队规模突破<%1000%>","second_line_highlight_color":"#06DDFF","second_line_normal_color":"#FFFFFF","show_time":3,"web_basemap_url":"https://i0.hdslb.com/bfs/live/1f06adc9618a5b6d6b1ea5e4a6ec41fca919ca86.png"}}
+
+{"cmd":"GUARD_ACHIEVEMENT_ROOM","data":{"anchor_basemap_url":"https://i0.hdslb.com/bfs/live/f873a04b1544d8f8bcc37fb2924ac9a2c2554031.png","anchor_guard_achieve_level":100,"anchor_modal":{"first_line_content":"恭喜当前舰队规模突破<%100%>","highlight_color":"#00DCFF","second_line_content":"至直播中心 - 获奖记录填写收货信息可获得实物勋章奖励哦～","show_time":5},"app_basemap_url":"https://i0.hdslb.com/bfs/live/83008812e86cae42049414e965d6ab6002f061cb.png","current_achievement_level":2,"dmscore":99999,"event_type":2,"face":"xxx","first_line_content":"恭喜主播<%xxx%>","first_line_highlight_color":"#F2AE09","first_line_normal_color":"#FFFFFF","headmap_url":"https://i0.hdslb.com/bfs/vc/071eb10548fe9bc482ff69331983d94192ce9507.png","is_first":false,"is_first_new":false,"room_id":12345,"second_line_content":"舰队规模突破<%100%>","second_line_highlight_color":"#06DDFF","second_line_normal_color":"#FFFFFF","show_time":3,"web_basemap_url":"https://i0.hdslb.com/bfs/live/83008812e86cae42049414e965d6ab6002f061cb.png"}}
+{"cmd":"GUARD_ACHIEVEMENT_ROOM","data":{"anchor_basemap_url":"https://i0.hdslb.com/bfs/live/f873a04b1544d8f8bcc37fb2924ac9a2c2554031.png","anchor_guard_achieve_level":100,"anchor_modal":{"first_line_content":"恭喜当前舰队规模突破<%100%>","highlight_color":"#00DCFF","second_line_content":"至直播中心 - 获奖记录填写收货信息可获得实物勋章奖励哦～","show_time":5},"app_basemap_url":"https://i0.hdslb.com/bfs/live/83008812e86cae42049414e965d6ab6002f061cb.png","current_achievement_level":2,"dmscore":99999,"event_type":1,"face":"xxx","first_line_content":"恭喜主播<%xxx%>","first_line_highlight_color":"#F2AE09","first_line_normal_color":"#FFFFFF","headmap_url":"https://i0.hdslb.com/bfs/vc/071eb10548fe9bc482ff69331983d94192ce9507.png","is_first":true,"is_first_new":false,"room_id":12345,"second_line_content":"舰队规模突破<%100%>","second_line_highlight_color":"#06DDFF","second_line_normal_color":"#FFFFFF","show_time":3,"web_basemap_url":"https://i0.hdslb.com/bfs/live/83008812e86cae42049414e965d6ab6002f061cb.png"}}
+{"cmd":"GUARD_ACHIEVEMENT_ROOM","data":{"anchor_basemap_url":"https://i0.hdslb.com/bfs/live/f873a04b1544d8f8bcc37fb2924ac9a2c2554031.png","anchor_guard_achieve_level":100,"anchor_modal":{"first_line_content":"恭喜当前舰队规模突破<%100%>","highlight_color":"#00DCFF","second_line_content":"至直播中心 - 获奖记录填写收货信息可获得实物勋章奖励哦～","show_time":5},"app_basemap_url":"https://i0.hdslb.com/bfs/live/83008812e86cae42049414e965d6ab6002f061cb.png","current_achievement_level":2,"dmscore":99999,"event_type":1,"face":"xxx","first_line_content":"恭喜主播<%xxx%>","first_line_highlight_color":"#F2AE09","first_line_normal_color":"#FFFFFF","headmap_url":"https://i0.hdslb.com/bfs/vc/071eb10548fe9bc482ff69331983d94192ce9507.png","is_first":true,"is_first_new":false,"room_id":12345,"second_line_content":"舰队规模突破<%100%>","second_line_highlight_color":"#06DDFF","second_line_normal_color":"#FFFFFF","show_time":3,"web_basemap_url":"https://i0.hdslb.com/bfs/live/83008812e86cae42049414e965d6ab6002f061cb.png"}}
+{"cmd":"GUARD_ACHIEVEMENT_ROOM","data":{"anchor_basemap_url":"","anchor_guard_achieve_level":0,"anchor_modal":{"first_line_content":"恭喜当前舰队规模突破<%0%>","highlight_color":"#00DCFF","second_line_content":"至直播中心 - 获奖记录填写收货信息可获得实物勋章奖励哦～","show_time":0},"app_basemap_url":"","current_achievement_level":1,"dmscore":99999,"event_type":2,"face":"xxx","first_line_content":"恭喜主播<%xxx%>","first_line_highlight_color":"","first_line_normal_color":"","headmap_url":"","is_first":false,"is_first_new":false,"room_id":12345,"second_line_content":"舰队规模突破<%0%>","second_line_highlight_color":"","second_line_normal_color":"","show_time":3,"web_basemap_url":"普通无需图片"}}
 ```
 ----
 ### PK_BATTLE_FINAL_PROCESS
@@ -3500,8 +3527,8 @@ PK_BATTLE_PROCESS_NEW
 | uinfo			| null/obj	| |
 | uname			| str		| |
 ```json
-{"cmd":"PK_BATTLE_PROCESS",		"data":{"battle_type":2,"init_info":{"assist_info":[{"award_content":"","face":"xxx","is_mystery":false,"rank":1,"uid":xxx,"uinfo":xxx,"uname":"xxx"}],"best_uname":"xxx","room_id":xxx,"vision_desc":0,"votes":xxx},"match_info":{"assist_info":null,"best_uname":"","room_id":xxx,"vision_desc":0,"votes":0},"trace_id":"xxxxxxxxxxxxxfffffff"},"msg_id":"XXX:1000:1000","p_is_ack":true,"p_msg_type":1,"pk_id":xxx,"pk_status":201,"send_time":xxx,"timestamp":xxx}
-{"cmd":"PK_BATTLE_PROCESS_NEW",	"data":{"battle_type":2,"init_info":{"assist_info":[{"award_content":"","face":"xxx","is_mystery":false,"rank":1,"uid":xxx,"uinfo":xxx,"uname":"xxx"}],"best_uname":"xxx","room_id":xxx,"vision_desc":0,"votes":xxx},"match_info":{"assist_info":null,"best_uname":"","room_id":xxx,"vision_desc":0,"votes":0},"trace_id":"xxxxxxxxxxxxxfffffff"},"msg_id":"XXX:1000:1000","p_is_ack":true,"p_msg_type":1,"pk_id":xxx,"pk_status":201,"send_time":xxx,"timestamp":xxx}
+{"cmd":"PK_BATTLE_PROCESS",		"data":{"battle_type":2,"init_info":{"assist_info":[{"award_content":"","face":"xxx","is_mystery":false,"rank":1,"uid":xxx,"uinfo":xxx,"uname":"xxx"}],"best_uname":"xxx","room_id":xxx,"vision_desc":0,"votes":xxx},"match_info":{"assist_info":null,"best_uname":"","room_id":xxx,"vision_desc":0,"votes":0},"trace_id":"xxxxxxxxxxxxxfffffff"},"msg_id":"xxx:xxx:xxx","p_is_ack":true,"p_msg_type":1,"pk_id":xxx,"pk_status":201,"send_time":xxx,"timestamp":xxx}
+{"cmd":"PK_BATTLE_PROCESS_NEW",	"data":{"battle_type":2,"init_info":{"assist_info":[{"award_content":"","face":"xxx","is_mystery":false,"rank":1,"uid":xxx,"uinfo":xxx,"uname":"xxx"}],"best_uname":"xxx","room_id":xxx,"vision_desc":0,"votes":xxx},"match_info":{"assist_info":null,"best_uname":"","room_id":xxx,"vision_desc":0,"votes":0},"trace_id":"xxxxxxxxxxxxxfffffff"},"msg_id":"xxx:xxx:xxx","p_is_ack":true,"p_msg_type":1,"pk_id":xxx,"pk_status":201,"send_time":xxx,"timestamp":xxx}
 ```
 ----
 ### PK_BATTLE_PRE_NEW
@@ -3529,15 +3556,9 @@ PK_BATTLE_PROCESS_NEW
 | pk_votes_name		| str		| |
 | end_win_task		| null/xxx	| |
 ```json
-{"cmd":"PK_BATTLE_PRE_NEW","pk_id":xxx,"pk_status":101,"status_msg":"","timestamp":1704038400,"data":{"is_followed":1,"uname":"XXX","face":"...","uid":xxx,"room_id":xxx,"season_id":10000,"pre_timer":10,"pk_votes_name":"","end_win_task":null,"battle_type":6,"match_type":5}}
-{"cmd":"PK_BATTLE_PRE_NEW","pk_id":xxx,"pk_status":101,"status_msg":"","timestamp":1704038400,"data":{"is_followed":1,"uname":"XXX","face":"...","uid":xxx,"room_id":xxx,"season_id":10000,"pre_timer":10,"pk_votes_name":"","end_win_task":null,"battle_type":6,"match_type":5}}
-{"cmd":"PK_BATTLE_PRE_NEW","pk_status":101,"pk_id":xxx,"timestamp":1704038400,"data":{"battle_type":2,"match_type":1,"uname":"XXX","face":"...","uid":xxx,"room_id":xxx,"season_id":58,"pre_timer":10,"pk_votes_name":"乱斗值","end_win_task":null},"roomid":xxx}
-{"cmd":"PK_BATTLE_PRE_NEW","pk_status":101,"pk_id":xxx,"timestamp":1704038400,"data":{"battle_type":2,"match_type":1,"uname":"XXX","face":"...","uid":xxx,"room_id":xxx,"season_id":58,"pre_timer":10,"pk_votes_name":"乱斗值","end_win_task":null},"roomid":xxx}
-{"cmd":"PK_BATTLE_PRE_NEW","pk_status":101,"pk_id":xxx,"timestamp":1704038400,"data":{"battle_type":2,"match_type":1,"uname":"XXX","face":"...","uid":xxx,"room_id":xxx,"season_id":58,"pre_timer":10,"pk_votes_name":"乱斗值","end_win_task":null},"roomid":xxx}
-{"cmd":"PK_BATTLE_PRE_NEW","pk_status":101,"pk_id":xxx,"timestamp":1704038400,"data":{"battle_type":2,"match_type":1,"uname":"XXX","face":"...","uid":xxx,"room_id":xxx,"season_id":58,"pre_timer":10,"pk_votes_name":"乱斗值","end_win_task":null},"roomid":xxx}
-{"cmd":"PK_BATTLE_PRE_NEW","pk_status":101,"pk_id":xxx,"timestamp":1712322237,"data":{"battle_type":2,"match_type":1,"battle_sub_type":0,"uname":"xxx","face":"...","uid":xxx,"room_id":xxx,"season_id":72,"pre_timer":10,"pk_votes_name":"PK值","end_win_task":null},"roomid":xxx}
-{"cmd":"PK_BATTLE_PRE_NEW","pk_status":101,"pk_id":345038095,"timestamp":1712322237,"data":{"battle_type":2,"match_type":1,"battle_sub_type":0,"uname":"XXX","face":"XXX","uid":xxx,"room_id":xxx,"season_id":72,"pre_timer":10,"pk_votes_name":"PK值","end_win_task":null},"roomid":xxx}
-{"cmd":"PK_BATTLE_PRE",																"data":{"battle_sub_type":0,"battle_type":2,"end_win_task":null,"face":"XXX","match_type":1,"pk_votes_name":"PK值","pre_timer":10,"room_id":xxx,"season_id":72,"uid":xxx,"uname":"XXX"},"msg_id":"XXX:1000:1000","p_is_ack":true,"p_msg_type":1,"pk_id":345038095,"pk_status":101,"roomid":xxx,"send_time":xxx147,"timestamp":xxx}
+{"cmd":"PK_BATTLE_PRE_NEW","pk_id":xxx,"pk_status":101,"status_msg":"","timestamp":1704038400,"data":{"is_followed":1,"uname":"xxx","face":"xxx","uid":xxx,"room_id":xxx,"season_id":xxx,"pre_timer":10,"pk_votes_name":"","end_win_task":null,"battle_type":6,"match_type":5}}
+{"cmd":"PK_BATTLE_PRE_NEW","pk_status":101,"pk_id":xxx,"timestamp":1704038400,"data":{"battle_type":2,"match_type":1,"uname":"xxx","face":"xxx","uid":xxx,"room_id":xxx,"season_id":xxx,"pre_timer":10,"pk_votes_name":"乱斗值","end_win_task":null},"roomid":xxx}
+{"cmd":"PK_BATTLE_PRE_NEW","pk_status":101,"pk_id":xxx,"timestamp":1704038400,"data":{"battle_type":2,"match_type":1,"battle_sub_type":0,"uname":"xxx","face":"xxx","uid":xxx,"room_id":xxx,"season_id":xxx,"pre_timer":10,"pk_votes_name":"PK值","end_win_task":null},"roomid":xxx}
 ```
 ----
 ### PK_BATTLE_PUNISH_END
@@ -3570,7 +3591,7 @@ PK_BATTLE_PROCESS_NEW
 | interval_between_queues	| num			| |
 | cycle_time				| num			| |
 | goods_count				| num			| |
-| checksum					| str			| **md5("null")** |
+| checksum					| str			| md5("null") |
 | bubbles_list				| null/\[+\]obj	| |
 ```json
 {"cmd":"SHOPPING_BUBBLES_STYLE","data":{"interval_between_bubbles":10,"interval_between_queues":10,"cycle_time":180,"goods_count":0,"checksum":"37a6259cc0c1dae299a7866489dff0bd","bubbles_list":null}}
@@ -3592,32 +3613,11 @@ PK_BATTLE_PROCESS_NEW
 | status	| num	| 1 / 2 |
 | tip		| str	| |
 ```json
-{"cmd":"GIFT_STAR_PROCESS","data":{"status":1,"tip":"爱心戒指已点亮"}}
-{"cmd":"GIFT_STAR_PROCESS","data":{"status":1,"tip":"棒棒糖已点亮"}}
-{"cmd":"GIFT_STAR_PROCESS","data":{"status":1,"tip":"打call已点亮"}}
-{"cmd":"GIFT_STAR_PROCESS","data":{"status":1,"tip":"带你出游已点亮"}}
-{"cmd":"GIFT_STAR_PROCESS","data":{"status":1,"tip":"动鳗电池已点亮"}}
-{"cmd":"GIFT_STAR_PROCESS","data":{"status":1,"tip":"干杯已点亮"}}
-{"cmd":"GIFT_STAR_PROCESS","data":{"status":1,"tip":"告白花束已点亮"}}
-{"cmd":"GIFT_STAR_PROCESS","data":{"status":1,"tip":"告白气球已点亮"}}
-{"cmd":"GIFT_STAR_PROCESS","data":{"status":1,"tip":"快乐时光已点亮"}}
-{"cmd":"GIFT_STAR_PROCESS","data":{"status":1,"tip":"绿色战袍已点亮"}}
-{"cmd":"GIFT_STAR_PROCESS","data":{"status":1,"tip":"萌兔火箭已点亮"}}
-{"cmd":"GIFT_STAR_PROCESS","data":{"status":1,"tip":"情书已点亮"}}
-{"cmd":"GIFT_STAR_PROCESS","data":{"status":1,"tip":"水晶之恋已点亮"}}
-{"cmd":"GIFT_STAR_PROCESS","data":{"status":1,"tip":"喜鹊已点亮"}}
-{"cmd":"GIFT_STAR_PROCESS","data":{"status":1,"tip":"小蛋糕已点亮"}}
-{"cmd":"GIFT_STAR_PROCESS","data":{"status":1,"tip":"小蝴蝶已点亮"}}
-{"cmd":"GIFT_STAR_PROCESS","data":{"status":1,"tip":"小花花已点亮"}}
-{"cmd":"GIFT_STAR_PROCESS","data":{"status":1,"tip":"星辰闪烁已点亮"}}
-{"cmd":"GIFT_STAR_PROCESS","data":{"status":1,"tip":"星轨列车已点亮"}}
-{"cmd":"GIFT_STAR_PROCESS","data":{"status":1,"tip":"星河入梦已点亮"}}
-{"cmd":"GIFT_STAR_PROCESS","data":{"status":1,"tip":"星愿水晶球已点亮"}}
-{"cmd":"GIFT_STAR_PROCESS","data":{"status":1,"tip":"银河花灯已点亮"}}
-{"cmd":"GIFT_STAR_PROCESS","data":{"status":1,"tip":"玉兔已点亮"}}
-{"cmd":"GIFT_STAR_PROCESS","data":{"status":1,"tip":"月宫玉兔已点亮"}}
-{"cmd":"GIFT_STAR_PROCESS","data":{"status":1,"tip":"这个好诶已点亮"}}
+{"cmd":"GIFT_STAR_PROCESS","data":{"status":1,"tip":"XXX已点亮"}}
 {"cmd":"GIFT_STAR_PROCESS","data":{"status":2,"tip":"所有星球已点亮"}}
+["爱心戒指","棒棒糖","打call","带你出游","动鳗电池","干杯","告白花束","告白气球","快乐时光","绿色战袍",
+"萌兔火箭","情书","水晶之恋","喜鹊","小蛋糕","小蝴蝶","小花花","星辰闪烁","星轨列车","星河入梦",
+"星愿水晶球","银河花灯","玉兔","月宫玉兔","这个好诶"]
 ```
 ----
 ### ANCHOR_NORMAL_NOTIFY
@@ -3657,30 +3657,6 @@ PK_BATTLE_PROCESS_NEW
 | interactive_panel_conf	| str			| |
 | timestamp					| num			| 当前时间 TimeStamp(秒) |
 | block_uids				| null/\[?\]	| |
-#### LIVE_OPEN_PLATFORM_GAME__data__game_conf
-| key				| type	| value	|
-|-|-|-|
-| roomId			| num	| |
-| state				| num	| |
-| isShowIdentity	| bool	| |
-| endTime			| num	| |
-| maxPlayerCount	| num	| |
-| players			| []obj	| |
-#### LIVE_OPEN_PLATFORM_GAME__data__game_conf__players
-| key				| type	| value	|
-|-|-|-|
-| ......			| xxx	| |
-#### LIVE_OPEN_PLATFORM_GAME__data__game_conf__players__role
-| key				| type	| value	|
-|-|-|-|
-| ......			| xxx	| |
-```json
-{"cmd":"LIVE_OPEN_PLATFORM_GAME","data":{"msg_type":"panel_update",	"msg_sub_type":"panel_update",	"game_name":"XXXX","game_code":"16502xxxxxxxx","game_id":"XXXXXXXX-XXXX-4XXX-XXXX-XXXXXXXXXXXX","game_status":"","game_msg":"{\"roomId\":123,\"state\":6,\"isShowIdentity\":true,\"endTime\":1680367570,\"maxPlayerCount\":36,\"players\":[{\"no\":5,\"uid\":1,\"role\":{\"roleType\":4,\"campType\":1,\"isDie\":false}},{\"no\":10,\"uid\":2,\"role\":{\"roleType\":20,\"campType\":2,\"isDie\":false}},{\"no\":12,\"uid\":3,\"role\":{\"roleType\":19,\"campType\":1,\"isDie\":false}},{\"no\":14,\"uid\":4,\"role\":{\"roleType\":23,\"campType\":1,\"isDie\":false}},{\"no\":17,\"uid\":5,\"role\":{\"roleType\":19,\"campType\":1,\"isDie\":false}},{\"no\":20,\"uid\":6,\"role\":{\"roleType\":2,\"campType\":2,\"isDie\":false}},{\"no\":21,\"uid\":7,\"role\":{\"roleType\":18,\"campType\":2,\"isDie\":false}},{\"no\":25,\"uid\":8,\"role\":{\"roleType\":22,\"campType\":1,\"isDie\":false}},{\"no\":26,\"uid\":9,\"role\":{\"roleType\":21,\"campType\":2,\"isDie\":false}},{\"no\":35,\"uid\":10,\"role\":{\"roleType\":13,\"campType\":2,\"isDie\":false}},{\"no\":36,\"uid\":11,\"role\":{\"roleType\":19,\"campType\":1,\"isDie\":false}},{\"no\":30,\"uid\":12,\"role\":{\"roleType\":23,\"campType\":1,\"isDie\":false}},{\"no\":9,\"uid\":13,\"role\":{\"roleType\":23,\"campType\":1,\"isDie\":false}},{\"no\":7,\"uid\":14,\"role\":{\"roleType\":8,\"campType\":1,\"isDie\":true}},{\"no\":18,\"uid\":15,\"role\":{\"roleType\":17,\"campType\":1,\"isDie\":true}},{\"no\":27,\"uid\":1+,\"role\":{\"roleType\":8,\"campType\":1,\"isDie\":true}},{\"no\":34,\"uid\":17,\"role\":{\"roleType\":22,\"campType\":1,\"isDie\":true}},{\"no\":15,\"uid\":18,\"role\":{\"roleType\":1,\"campType\":1,\"isDie\":true}},{\"no\":3,\"uid\":19,\"role\":{\"roleType\":8,\"campType\":1,\"isDie\":true}},{\"no\":6,\"uid\":20,\"role\":{\"roleType\":21,\"campType\":2,\"isDie\":true}},{\"no\":23,\"uid\":21,\"role\":{\"roleType\":2,\"campType\":2,\"isDie\":true}},{\"no\":19,\"uid\":22,\"role\":{\"roleType\":1,\"campType\":1,\"isDie\":true}},{\"no\":11,\"uid\":23,\"role\":{\"roleType\":2,\"campType\":2,\"isDie\":true}},{\"no\":8,\"uid\":24,\"role\":{\"roleType\":9,\"campType\":1,\"isDie\":true}},{\"no\":2,\"uid\":25,\"role\":{\"roleType\":5,\"campType\":1,\"isDie\":true}},{\"no\":16,\"uid\":26,\"role\":{\"roleType\":5,\"campType\":1,\"isDie\":true}},{\"no\":24,\"uid\":27,\"role\":{\"roleType\":9,\"campType\":1,\"isDie\":true}},{\"no\":29,\"uid\":28,\"role\":{\"roleType\":5,\"campType\":1,\"isDie\":true}},{\"no\":13,\"uid\":29,\"role\":{\"roleType\":1,\"campType\":1,\"isDie\":true}},{\"no\":33,\"uid\":30,\"role\":{\"roleType\":3,\"campType\":2,\"isDie\":true}},{\"no\":22,\"uid\":31,\"role\":{\"roleType\":21,\"campType\":2,\"isDie\":true}},{\"no\":1,\"uid\":32,\"role\":{\"roleType\":15,\"campType\":1,\"isDie\":true}},{\"no\":28,\"uid\":33,\"role\":{\"roleType\":9,\"campType\":1,\"isDie\":true}},{\"no\":4,\"uid\":34,\"role\":{\"roleType\":17,\"campType\":1,\"isDie\":true}},{\"no\":31,\"uid\":35,\"role\":{\"roleType\":17,\"campType\":1,\"isDie\":true}},{\"no\":32,\"uid\":36,\"role\":{\"roleType\":11,\"campType\":1,\"isDie\":true}}]}","game_conf":"","interactive_panel_conf":"","timestamp":1680367540,"block_uids":null}}
-{"cmd":"LIVE_OPEN_PLATFORM_GAME","data":{"msg_type":"panel_reset",	"msg_sub_type":"panel_reset",	"game_name":"XXXX","game_code":"16502xxxxxxxx","game_id":"XXXXXXXX-XXXX-4XXX-XXXX-XXXXXXXXXXXX","game_status":"","game_msg":"","game_conf":"","interactive_panel_conf":"","timestamp":1704038400,"block_uids":null}}
-{"cmd":"LIVE_OPEN_PLATFORM_GAME","data":{"msg_type":"panel_reset",	"msg_sub_type":"panel_reset",	"game_name":"XXXX","game_code":"16502xxxxxxxx","game_id":"XXXXXXXX-XXXX-4XXX-XXXX-XXXXXXXXXXXX","game_status":"","game_msg":"","game_conf":"","interactive_panel_conf":"","timestamp":1704038400,"block_uids":null}}
-{"cmd":"LIVE_OPEN_PLATFORM_GAME","data":{"msg_type":"game_end",		"msg_sub_type":"game_end",		"game_name":"XXXX","game_code":"16502xxxxxxxx","game_id":"XXXXXXXX-XXXX-4XXX-XXXX-XXXXXXXXXXXX","game_status":"","game_msg":"","game_conf":"","interactive_panel_conf":"","timestamp":1704038400,"block_uids":[]}}
-{"cmd":"LIVE_OPEN_PLATFORM_GAME","data":{"block_uids":[],"game_code":"16568xxxxxxxx","game_conf":"","game_id":"ffffffff-ffff-4xxx-ffff-ffffffffffff","game_msg":"","game_name":"弹幕宠物","game_status":"","interactive_panel_conf":"","msg_sub_type":"game_end","msg_type":"game_end","timestamp":1704038400}}
-```
 ----
 ### room_admin_entrance
 [TOP](#直播弹幕)  
@@ -3739,7 +3715,7 @@ PK_BATTLE_PROCESS_NEW
 ----
 ### VOICE_CHAT_UPDATE
 [TOP](#直播弹幕)  
-文档更新：2024-01-28  
+文档更新：2024-06-01  
 | key	| type	| value	|
 |-|-|-|
 | cmd	| str	| "VOICE_CHAT_UPDATE" |
@@ -3776,7 +3752,7 @@ PK_BATTLE_PROCESS_NEW
 | medal_id				| num	| 粉丝勋章id |
 | medal_level			| num	| 粉丝勋章等级 |
 | medal_name			| str	| 粉丝勋章称号 |
-| msg_content			| str	| "获得`X`点亲密度\n你的粉丝勋章达到`Y`级" |
+| msg_content			| str	| "获得`x`点亲密度\n你的粉丝勋章达到`y`级" |
 | msg_title				| str	| "恭喜你获得【`主播`】的粉丝勋章~" <br> "欢迎萌新~" |
 | next_intimacy			| num	| 下一级所需经验 |
 | normal_color			| num	| |
@@ -3786,7 +3762,7 @@ PK_BATTLE_PROCESS_NEW
 | uid					| num	| |
 | up_uid				| num	| 主播uid |
 ```json
-{"cmd":"MESSAGEBOX_USER_GAIN_MEDAL","data":{"day_limit":1500,"fan_name":"xxx","guard_level":0,"highlight_color":16478873,"intimacy":xxx,"is_lighted":1,"is_received":1,"is_wear":0,"medal_color":xxx,"medal_color_border":xxx,"medal_color_end":xxx,"medal_color_start":xxx,"medal_id":xxx,"medal_level":3,"medal_name":"xxx","msg_content":"获得xxx点亲密度\n你的粉丝勋章达到xxx级","msg_title":"恭喜你获得【XXX】的粉丝勋章~","next_intimacy":xxx,"normal_color":xxx,"toast":"成功入团并关注主播，得1级大礼包","today_feed":xxx,"type":3,"uid":xxx,"up_uid":xxx}}
+{"cmd":"MESSAGEBOX_USER_GAIN_MEDAL","data":{"day_limit":1500,"fan_name":"xxx","guard_level":0,"highlight_color":16478873,"intimacy":xxx,"is_lighted":1,"is_received":1,"is_wear":0,"medal_color":xxx,"medal_color_border":xxx,"medal_color_end":xxx,"medal_color_start":xxx,"medal_id":xxx,"medal_level":3,"medal_name":"xxx","msg_content":"获得xxx点亲密度\n你的粉丝勋章达到xxx级","msg_title":"恭喜你获得【xxx】的粉丝勋章~","next_intimacy":xxx,"normal_color":xxx,"toast":"成功入团并关注主播，得1级大礼包","today_feed":xxx,"type":3,"uid":xxx,"up_uid":xxx}}
 ```
 ----
 ### COMBO_SEND
@@ -3832,17 +3808,17 @@ PK_BATTLE_PROCESS_NEW
 	"cmd":"COMBO_SEND",
 	"data":{
 		"action":"投喂",
-		"batch_combo_id":"batch:gift:combo_id:AAAA:BBBB:CCCC:DDDD.dddd",
-		"batch_combo_id":"batch:gift:combo_id:31383333353835323733d41d8cd98f00b204e9800998ecf8427e:BBBB:CCCC:DDDD.dddd",
+		"batch_combo_id":"batch:gift:combo_id:11111:22222:33333:DDDD.dddd",
+		"batch_combo_id":"batch:gift:combo_id:31383333353835323733d41d8cd98f00b204e9800998ecf8427e:22222:33333:DDDD.dddd",
 		"batch_combo_num":xxx,
 		"coin_type":"gold",
-		"combo_id":"gift:combo_id:AAAA:BBBB:CCCC:EEEE.eeee",
-		"combo_id":"gift:combo_id:31383333353835323733d41d8cd98f00b204e9800998ecf8427e:BBBB:CCCC:DDDD.eeee",
+		"combo_id":"gift:combo_id:11111:22222:33333:EEEE.eeee",
+		"combo_id":"gift:combo_id:31383333353835323733d41d8cd98f00b204e9800998ecf8427e:22222:33333:EEEE.eeee",
 		"combo_num":xxx,
 		"combo_total_coin":xxx,
 		"dmscore":xxx,
-		"gift_id":CCCC,
-		"gift_name":"...",
+		"gift_id":33333,
+		"gift_name":"xxx",
 		"gift_num":0,
 		"group_medal":null,
 		"is_join_receiver":false,
@@ -3851,15 +3827,15 @@ PK_BATTLE_PROCESS_NEW
 		"medal_info":...,
 		"name_color":"",
 		"r_uname":"xxx",
-		"receive_user_info":{"uid":BBBB,"uname":"xxx"},
+		"receive_user_info":{"uid":22222,"uname":"xxx"},
 		"receiver_uinfo":...,
-		"ruid":BBBB,
+		"ruid":22222,
 		"send_master":null,
 		"sender_uinfo":...,
 		"total_num":...,
-		"uid":AAAA,
+		"uid":11111,
 		"uname":"yyy",
-		"wealth_level":xx
+		"wealth_level":1
 	}
 }
 ```
@@ -3895,7 +3871,7 @@ PK_BATTLE_PROCESS_NEW
 | uid				| num	| |
 | uname				| str	| |
 ```json
-{"cmd":"COMBO_END","data":{"action":"投喂","batch_combo_num":1,"combo_num":1,"combo_total_coin":100,"end_time":AAA,"gift_id":31036,"gift_name":"小花花","gift_num":1,"guard_level":0,"name_color":"","price":100,"r_uname":"XXX","ruid":XXX,"send_master":null,"start_time":AAA,"uid":YYY,"uname":"YYY"},"is_report":false,"msg_id":"XXX","send_time":XXX}
+{"cmd":"COMBO_END","data":{"action":"投喂","batch_combo_num":1,"combo_num":1,"combo_total_coin":100,"end_time":AAA,"gift_id":31036,"gift_name":"小花花","gift_num":1,"guard_level":0,"name_color":"","price":100,"r_uname":"xxx","ruid":xxx,"send_master":null,"start_time":AAA,"uid":YYY,"uname":"YYY"},"is_report":false,"msg_id":"xxx","send_time":xxx}
 ```
 ----
 ### ANCHOR_ECOMMERCE_STATUS
@@ -3911,7 +3887,7 @@ PK_BATTLE_PROCESS_NEW
 | status	| num	| |
 ```json
 {"cmd":"ANCHOR_ECOMMERCE_STATUS","data":{"status":1}}
-{"cmd":"ANCHOR_ECOMMERCE_STATUS","data":{"status":1},"is_report":false,"msg_id":"XXX","send_time":XXX}
+{"cmd":"ANCHOR_ECOMMERCE_STATUS","data":{"status":1},"is_report":false,"msg_id":"xxx","send_time":xxx}
 ```
 ----
 ### ADMIN_SHIELD_KEYWORD
@@ -3958,12 +3934,12 @@ PK_BATTLE_PROCESS_NEW
 |100855|航海回馈说明页面|
 |||
 ```json
-{"cmd":"ANCHOR_HELPER_DANMU","data":{"button_label":0,"button_name":"","button_platform":0,"button_target":"","msg":"XXX取消了语音连麦","platform":3,"report":"","report_type":"","sender":"直播小助手"}}
+{"cmd":"ANCHOR_HELPER_DANMU","data":{"button_label":0,"button_name":"","button_platform":0,"button_target":"","msg":"xxx取消了语音连麦","platform":3,"report":"","report_type":"","sender":"直播小助手"}}
 {"cmd":"ANCHOR_HELPER_DANMU","data":{"button_label":0,"button_name":"查看>","button_platform":3,"button_target":"bililive://xxxx","msg":"发起航海回馈更容易吸引粉丝开通大航海哦","platform":3,"report":"$uid","report_type":"live.live.guard","sender":"直播小助手"}}
 {"cmd":"ANCHOR_HELPER_DANMU","data":{"button_label":0,"button_name":"查看规则","button_platform":3,"button_target":"bililive://xxxx","msg":"您正在新主播扶持中，良好的互动和直播封面，会帮你吸引观众","platform":3,"report":"$uid","report_type":"star_perception","sender":"直播小助手"}}
 {"cmd":"ANCHOR_HELPER_DANMU","data":{"button_label":0,"button_name":"去看看","button_platform":3,"button_target":"bililive://xxxx","msg":"本周开播满7有效天，必得xxx元奖励金！今天再收到xxx电池，即可+1天哦","platform":3,"report":"$uid","report_type":"weekly_task","sender":"直播小助手"}}
 {"cmd":"ANCHOR_HELPER_DANMU","data":{"button_label":0,"button_name":"去领取","button_platform":3,"button_target":"bililive://xxxx","msg":"本周开播满1天，恭喜获得xxx元奖励金。再播1天，再得xxx元奖励金","platform":3,"report":"$uid","report_type":"weekly_task_finish","sender":"直播小助手"}}
-{"cmd":"ANCHOR_HELPER_DANMU","data":{"button_label":1,"button_name":"去看看","button_platform":3,"button_target":"bililive://blink/open_voicelink","msg":"XXX申请了语音连麦","platform":3,"report":"","report_type":"","sender":"直播小助手"}}
+{"cmd":"ANCHOR_HELPER_DANMU","data":{"button_label":1,"button_name":"去看看","button_platform":3,"button_target":"bililive://blink/open_voicelink","msg":"xxx申请了语音连麦","platform":3,"report":"","report_type":"","sender":"直播小助手"}}
 ```
 ----
 ### CARD_MSG
@@ -4114,8 +4090,8 @@ PK_BATTLE_PROCESS_NEW
 | platform_info		| \[\]obj	| | V2
 | ext_data			| str		| | V2
 ```json
-{"cmd":"ACTIVITY_BANNER_CHANGE",   "data":{"list":[{"action":"update","activity_title":"虚拟-三相交流电","cover":"https://i0.hdslb.com/bfs/live/94fcd27cc98ab78eaba5efe40d0e29568018686d.png",              "id":3065,"is_close":1,"jump_url":"https://www.XXXX.com/blackboard/live/activity-qMxJDCQ4kQ.html","position":"bottom","timestamp":1690283936}]}}
-{"cmd":"ACTIVITY_BANNER_CHANGE_V2","data":{"list":[{"action":"update","activity_title":"虚拟-三相交流电","cover":"https://i0.hdslb.com/bfs/live/94fcd27cc98ab78eaba5efe40d0e29568018686d.png","ext_data":"","id":3065,"is_close":1,"jump_url":"https://www.XXXX.com/blackboard/live/activity-qMxJDCQ4kQ.html","platform_info":[{"build":0,"condition":0,"platform":"android"},{"build":0,"condition":0,"platform":"ios"}],"position":"bottom","type":0}],"timestamp":1690283936}}
+{"cmd":"ACTIVITY_BANNER_CHANGE",   "data":{"list":[{"action":"update","activity_title":"虚拟-三相交流电","cover":"https://i0.hdslb.com/bfs/live/94fcd27cc98ab78eaba5efe40d0e29568018686d.png",              "id":3065,"is_close":1,"jump_url":"https://www.xxx.com/blackboard/live/activity-qMxJDCQ4kQ.html","position":"bottom","timestamp":1690283936}]}}
+{"cmd":"ACTIVITY_BANNER_CHANGE_V2","data":{"list":[{"action":"update","activity_title":"虚拟-三相交流电","cover":"https://i0.hdslb.com/bfs/live/94fcd27cc98ab78eaba5efe40d0e29568018686d.png","ext_data":"","id":3065,"is_close":1,"jump_url":"https://www.xxx.com/blackboard/live/activity-qMxJDCQ4kQ.html","platform_info":[{"build":0,"condition":0,"platform":"android"},{"build":0,"condition":0,"platform":"ios"}],"position":"bottom","type":0}],"timestamp":1690283936}}
 ```
 ----
 ### SPREAD_SHOW_FEET_V2
@@ -4346,9 +4322,9 @@ PK_BATTLE_PROCESS_NEW
 | uid							| num		| |
 | version						| num		| --> ts |
 ```json
-{"cmd":"MULTI_VOICE_OPERATIN","data":{"battle_info":null,"hat":null,"pk_group_id":"xxx","pk_group_total_price":xxx,"pk_group_total_price_text":"xxx","pk_total_price":xxx,"pk_total_price_text":"xxx","position":xxx,"room_id":xxx,"total_price":xxx,"total_price_text":"xxx","ts":xxx,"uid":xxx,"version":xxx},"msg_id":"XXX:1000:1000","p_is_ack":true,"p_msg_type":1,"send_time":xxx}
-{"cmd":"MULTI_VOICE_OPERATIN","data":{"battle_info":null,"hat":null,"pk_group_total_price_text":"xxx","pk_total_price_text":"xxx","position":xxx,"room_id":xxx,"total_price":xxx,"total_price_text":"xxx","ts":xxx,"uid":xxx,"version":xxx},"msg_id":"XXX:1000:1000","p_is_ack":true,"p_msg_type":1,"send_time":xxx}
-{"cmd":"MULTI_VOICE_OPERATIN","data":{"battle_info":null,"hat":null,"position":xxx,"room_id":xxx,"total_price":xxx,"total_price_text":"xxx","ts":xxx,"uid":xxx,"version":xxx},"msg_id":"XXX:1000:1000","p_is_ack":true,"p_msg_type":1,"send_time":xxx}
+{"cmd":"MULTI_VOICE_OPERATIN","data":{"battle_info":null,"hat":null,"pk_group_id":"xxx","pk_group_total_price":xxx,"pk_group_total_price_text":"xxx","pk_total_price":xxx,"pk_total_price_text":"xxx","position":xxx,"room_id":xxx,"total_price":xxx,"total_price_text":"xxx","ts":xxx,"uid":xxx,"version":xxx},"msg_id":"xxx:xxx:xxx","p_is_ack":true,"p_msg_type":1,"send_time":xxx}
+{"cmd":"MULTI_VOICE_OPERATIN","data":{"battle_info":null,"hat":null,"pk_group_total_price_text":"xxx","pk_total_price_text":"xxx","position":xxx,"room_id":xxx,"total_price":xxx,"total_price_text":"xxx","ts":xxx,"uid":xxx,"version":xxx},"msg_id":"xxx:xxx:xxx","p_is_ack":true,"p_msg_type":1,"send_time":xxx}
+{"cmd":"MULTI_VOICE_OPERATIN","data":{"battle_info":null,"hat":null,"position":xxx,"room_id":xxx,"total_price":xxx,"total_price_text":"xxx","ts":xxx,"uid":xxx,"version":xxx},"msg_id":"xxx:xxx:xxx","p_is_ack":true,"p_msg_type":1,"send_time":xxx}
 ```
 ---
 ### MULTI_VOICE_ENTER_ANCHOR
@@ -4366,8 +4342,7 @@ want_position -1 0-8
 actual_position 0-8
 gender -1 0 1
 role 0 1 2
-{"cmd":"MULTI_VOICE_ENTER_ANCHOR","data":{"actual_position":xxx,"anchor_uid":xxx,"avatar":"https://ix.hdslb.com/bfs/face/member/noface.jpg","gender":xxx,"nickname":"xxx","role":xxx,"uid":xxx,"version":xxx,"want_position":xxx}}
-{"cmd":"MULTI_VOICE_ENTER_ANCHOR","data":{"actual_position":xxx,"anchor_uid":xxx,"avatar":"https://ix.hdslb.com/bfs/face/xxx.xxx","gender":xxx,"nickname":"xxx","role":xxx,"uid":xxx,"version":xxx,"want_position":xxx}}
+{"cmd":"MULTI_VOICE_ENTER_ANCHOR","data":{"actual_position":xxx,"anchor_uid":xxx,"avatar":"xxx","gender":xxx,"nickname":"xxx","role":xxx,"uid":xxx,"version":xxx,"want_position":xxx}}
 ```
 ---
 ### MULTI_VOICE_OWNER_LEAVE
@@ -4674,7 +4649,7 @@ role 0 1 2
 	"data":{
 		"setting_list":[
 			{"biz_id":1001,"icon":"http://i0.hdslb.com/bfs/live/afd5bc2424ebf7c7c9c68d71ba5a1f7d08154519.png","title":"分享","note":"分享","weight":100,"status_type":1,"notification":null,"custom":null,"jump_url":"","type_id":1,"tab":null,"dynamic_icon":"","sub_icon":"","panel_icon":"https://i0.hdslb.com/bfs/live/98e692836d408ab7f2b321c717e866a8fd9b3bfd.png","match_entrance":0,"icon_info":null},
-			{"biz_id":1012,"icon":"http://i0.hdslb.com/bfs/live/1e3cb35056ebbcc1af5f08f4fe7916f095db26a5.png","title":"管理员","note":"管理员","weight":36,"status_type":1,"notification":null,"custom":null,"jump_url":"https://live.bilibili.com/p/html/live-app-room-admin/index.html?is_live_half_webview=1#/roomManagement","type_id":1,"tab":null,"dynamic_icon":"","sub_icon":"","panel_icon":"https://i0.hdslb.com/bfs/live/98e692836d408ab7f2b321c717e866a8fd9b3bfd.png","match_entrance":0,"icon_info":null},
+			{"biz_id":1012,"icon":"http://i0.hdslb.com/bfs/live/1e3cb35056ebbcc1af5f08f4fe7916f095db26a5.png","title":"管理员","note":"管理员","weight":36,"status_type":1,"notification":null,"custom":null,"jump_url":"https://live.xxx.com/p/html/live-app-room-admin/index.html?is_live_half_webview=1#/roomManagement","type_id":1,"tab":null,"dynamic_icon":"","sub_icon":"","panel_icon":"https://i0.hdslb.com/bfs/live/98e692836d408ab7f2b321c717e866a8fd9b3bfd.png","match_entrance":0,"icon_info":null},
 			{"biz_id":1011,"icon":"http://i0.hdslb.com/bfs/live/7dbaf07b4c10182aeb0e7a8eda3273d40bb9b9b5.png","title":"小窗播放","note":"小窗播放","weight":15.001,"status_type":1,"notification":null,"custom":null,"jump_url":"","type_id":1,"tab":null,"dynamic_icon":"","sub_icon":"","panel_icon":"https://i0.hdslb.com/bfs/live/98e692836d408ab7f2b321c717e866a8fd9b3bfd.png","match_entrance":0,"icon_info":null},
 			{"biz_id":1003,"icon":"http://i0.hdslb.com/bfs/live/a5407c843e72d5efb678b649aecd7184f0d68494.png","title":"播放设置","note":"播放设置","weight":9,"status_type":1,"notification":null,"custom":null,"jump_url":"","type_id":1,"tab":null,"dynamic_icon":"","sub_icon":"","panel_icon":"https://i0.hdslb.com/bfs/live/98e692836d408ab7f2b321c717e866a8fd9b3bfd.png","match_entrance":0,"icon_info":null},
 			{"biz_id":1004,"icon":"http://i0.hdslb.com/bfs/live/1a1b3b9819f78df76f66b3657a6be2cc0e9b8853.png","title":"弹幕设置","note":" 弹幕设置","weight":8,"status_type":1,"notification":null,"custom":null,"jump_url":"","type_id":1,"tab":null,"dynamic_icon":"","sub_icon":"","panel_icon":"https://i0.hdslb.com/bfs/live/98e692836d408ab7f2b321c717e866a8fd9b3bfd.png","match_entrance":0,"icon_info":null},
@@ -4689,7 +4664,7 @@ role 0 1 2
 			{"biz_id":1010,"icon":"http://i0.hdslb.com/bfs/live/1c8331a2c520093a830df0ebf9b5f58eb28cd22d.png","title":"添至桌面","note":"添至桌面","weight":1,"status_type":1,"notification":null,"custom":null,"jump_url":"","type_id":1,"tab":null,"dynamic_icon":"","sub_icon":"","panel_icon":"https://i0.hdslb.com/bfs/live/98e692836d408ab7f2b321c717e866a8fd9b3bfd.png","match_entrance":0,"icon_info":null}
 			],
 		"interaction_list":[
-			{"biz_id":999,"icon":"https://i0.hdslb.com/bfs/live/6c068a5ec8e316ca1b3c9a97ba8e47707b3a0fc8.png","title":" 魔法奇遇","note":"魔法奇遇","weight":1,"status_type":1,"notification":null,"custom":[{"icon":"https://i0.hdslb.com/bfs/live/6c068a5ec8e316ca1b3c9a97ba8e47707b3a0fc8.png","title":"魔法奇遇","note":"魔法奇遇","jump_url":"https://live.bilibili.com/activity/live-activity-full/full-next/index.html?app_name=magical_adventure&-Abrowser=live&is_live_half_webview=1&source_event=1&hybrid_half_ui=1,3,100p,80p,0,0,30,100,15,0;2,2,375,100p,0,0,30,100,15,0;3,3,100p,80p,0,0,30,100,15,0;4,2,375,100p,0,0,30,100,15,0;5,3,100p,80p,0,0,30,100,15,0;6,3,100p,80p,0,0,30,100,15,0;7,3,100p,80p,0,0,30,100,15,0;8,3,100p,80p,0,0,30,100,15,0&room_id=5440&uid=9617619#/","status":0,"sub_icon":"https://i0.hdslb.com/bfs/live/a21478ac7eba92d69ddc7655666083d03756a683.png"}],"jump_url":"https://live.bilibili.com/activity/live-activity-full/full-next/index.html?app_name=magical_adventure&-Abrowser=live&is_live_half_webview=1&source_event=1&hybrid_half_ui=1,3,100p,80p,0,0,30,100,15,0;2,2,375,100p,0,0,30,100,15,0;3,3,100p,80p,0,0,30,100,15,0;4,2,375,100p,0,0,30,100,15,0;5,3,100p,80p,0,0,30,100,15,0;6,3,100p,80p,0,0,30,100,15,0;7,3,100p,80p,0,0,30,100,15,0;8,3,100p,80p,0,0,30,100,15,0&room_id=5440&uid=9617619#/","type_id":2,"tab":{"type":"H5","biz_type":"common-H5","tab_comment":null,"tab_topic":null,"aggregation":0,"id":0,"sub_title":"","sub_icon":"","show_outer_aggregation":0,"show_guide_bubble":"","global_id":"","biz_info":""},"dynamic_icon":"","sub_icon":"https://i0.hdslb.com/bfs/live/a21478ac7eba92d69ddc7655666083d03756a683.png","panel_icon":"http://i0.hdslb.com/bfs/live/c339a3569df7351406f29afae77a917aec3073a3.png","match_entrance":0,"icon_info":null}
+			{"biz_id":999,"icon":"https://i0.hdslb.com/bfs/live/6c068a5ec8e316ca1b3c9a97ba8e47707b3a0fc8.png","title":" 魔法奇遇","note":"魔法奇遇","weight":1,"status_type":1,"notification":null,"custom":[{"icon":"https://i0.hdslb.com/bfs/live/6c068a5ec8e316ca1b3c9a97ba8e47707b3a0fc8.png","title":"魔法奇遇","note":"魔法奇遇","jump_url":"https://live.xxx.com/activity/live-activity-full/full-next/index.html?app_name=magical_adventure&-Abrowser=live&is_live_half_webview=1&source_event=1&hybrid_half_ui=1,3,100p,80p,0,0,30,100,15,0;2,2,375,100p,0,0,30,100,15,0;3,3,100p,80p,0,0,30,100,15,0;4,2,375,100p,0,0,30,100,15,0;5,3,100p,80p,0,0,30,100,15,0;6,3,100p,80p,0,0,30,100,15,0;7,3,100p,80p,0,0,30,100,15,0;8,3,100p,80p,0,0,30,100,15,0&room_id=5440&uid=9617619#/","status":0,"sub_icon":"https://i0.hdslb.com/bfs/live/a21478ac7eba92d69ddc7655666083d03756a683.png"}],"jump_url":"https://live.xxx.com/activity/live-activity-full/full-next/index.html?app_name=magical_adventure&-Abrowser=live&is_live_half_webview=1&source_event=1&hybrid_half_ui=1,3,100p,80p,0,0,30,100,15,0;2,2,375,100p,0,0,30,100,15,0;3,3,100p,80p,0,0,30,100,15,0;4,2,375,100p,0,0,30,100,15,0;5,3,100p,80p,0,0,30,100,15,0;6,3,100p,80p,0,0,30,100,15,0;7,3,100p,80p,0,0,30,100,15,0;8,3,100p,80p,0,0,30,100,15,0&room_id=5440&uid=9617619#/","type_id":2,"tab":{"type":"H5","biz_type":"common-H5","tab_comment":null,"tab_topic":null,"aggregation":0,"id":0,"sub_title":"","sub_icon":"","show_outer_aggregation":0,"show_guide_bubble":"","global_id":"","biz_info":""},"dynamic_icon":"","sub_icon":"https://i0.hdslb.com/bfs/live/a21478ac7eba92d69ddc7655666083d03756a683.png","panel_icon":"http://i0.hdslb.com/bfs/live/c339a3569df7351406f29afae77a917aec3073a3.png","match_entrance":0,"icon_info":null}
 			],
 		"outer_list":[
 			{"biz_id":997,"icon":"https://i0.hdslb.com/bfs/live/273904e5c84d293f5f9df5ade5ac0fadc34e9fad.png","title":"送礼","note":"","weight":100,"status_type":1,"notification":null,"custom":null,"jump_url":"","type_id":2,"tab":null,"dynamic_icon":"https://i0.hdslb.com/bfs/live/a812dfafd427714b3623a352618ca70fa0379c75.webp","sub_icon":"https://i0.hdslb.com/bfs/live/b0b675140c28310a0ff54b05b2fd9a11a5898acf.png","panel_icon":"https://i0.hdslb.com/bfs/live/98e692836d408ab7f2b321c717e866a8fd9b3bfd.png","match_entrance":0,"icon_info":null},
@@ -4876,12 +4851,12 @@ role 0 1 2
 |-|-|-|
 | data	| xxx	| |
 ```json
-{"cmd":"OFFICIAL_ROOM_EVENT","data":{"event_type":2,"room_id":5440,"official_room_id":21496316,"official_anchor_id":441666939,"countdown":30,"scatter_time":3,"sub_title":"","desc":"s后 开始表演","official_base_info":{"uid":441666939,"title":"bilibiliVUP 虚拟之城！","uname":"虚拟区高级运营_Official","face":"https://i0.hdslb.com/bfs/face/a26b52bc7837ce6867802575d300ed70d5e6f2d5.jpg","gender":"保密","official_info":{"role":3,"title":"直播虚拟区官方账号","desc":"","type":1}},"current_room_status":3}}
-{"cmd":"OFFICIAL_ROOM_EVENT","data":{"event_type":3,"room_id":5440,"official_room_id":21496316,"official_anchor_id":441666939,"countdown":0,"scatter_time":3,"sub_title":"","desc":"","official_base_info":{"uid":441666939,"title":"bilibiliVUP 虚拟之城！","uname":"虚拟区高级运营_Official","face":"https://i0.hdslb.com/bfs/face/a26b52bc7837ce6867802575d300ed70d5e6f2d5.jpg","gender":"保密","official_info":{"role":3,"title":"直播虚拟区官方账号","desc":"","type":1}},"current_room_status":1}}
-{"cmd":"OFFICIAL_ROOM_EVENT","data":{"event_type":4,"room_id":5440,"official_room_id":21496316,"official_anchor_id":441666939,"countdown":30,"scatter_time":3,"sub_title":"","desc":"s后 节目单表演结束","official_base_info":{"uid":441666939,"title":"bilibiliVUP 虚拟之城！","uname":"虚拟区高级运营_Official","face":"https://i0.hdslb.com/bfs/face/a26b52bc7837ce6867802575d300ed70d5e6f2d5.jpg","gender":"保密","official_info":{"role":3,"title":"直播虚拟区官方账号","desc":"","type":1}},"current_room_status":1}}
-{"cmd":"OFFICIAL_ROOM_EVENT","data":{"event_type":5,"room_id":5440,"official_room_id":21496316,"official_anchor_id":441666939,"countdown":9,"scatter_time":3,"sub_title":"","desc":"s后 节目单表演结束","official_base_info":{"uid":441666939,"title":"bilibiliVUP 虚拟之城！","uname":"虚拟区高级运营_Official","face":"https://i0.hdslb.com/bfs/face/a26b52bc7837ce6867802575d300ed70d5e6f2d5.jpg","gender":"保密","official_info":{"role":3,"title":"直播虚拟区官方账号","desc":"","type":1}},"current_room_status":1}}
-{"cmd":"OFFICIAL_ROOM_EVENT","data":{"event_type":7,"room_id":5440,"official_room_id":21496316,"official_anchor_id":441666939,"countdown":0,"scatter_time":3,"sub_title":"","desc":"","official_base_info":{"uid":441666939,"title":"bilibiliVUP 虚拟之城！","uname":"虚拟区高级运营_Official","face":"https://i0.hdslb.com/bfs/face/a26b52bc7837ce6867802575d300ed70d5e6f2d5.jpg","gender":"保密","official_info":{"role":3,"title":"直播虚拟区官方账号","desc":"","type":1}},"current_room_status":2}}
-{"cmd":"OFFICIAL_ROOM_EVENT","data":{"event_type":2,"room_id":5440,"official_room_id":21496316,"official_anchor_id":441666939,"countdown":30,"scatter_time":3,"sub_title":"","desc":"s后 开始表演","official_base_info":{"uid":441666939,"title":" 冰火歌会2024远航季 正在直播","uname":"虚拟区官方频道","face":"https://i0.hdslb.com/bfs/face/a26b52bc7837ce6867802575d300ed70d5e6f2d5.jpg","gender":"保密","official_info":{"role":3,"title":"直播虚拟区官方账号","desc":"","type":1}},"current_room_status":3}}
+{"cmd":"OFFICIAL_ROOM_EVENT","data":{"event_type":2,"room_id":5440,"official_room_id":21496316,"official_anchor_id":441666939,"countdown":30,"scatter_time":3,"sub_title":"","desc":"s后 开始表演","official_base_info":{"uid":441666939,"title":"bilibiliVUP 虚拟之城！","uname":"虚拟区高级运营_Official","face":"xxx","gender":"保密","official_info":{"role":3,"title":"直播虚拟区官方账号","desc":"","type":1}},"current_room_status":3}}
+{"cmd":"OFFICIAL_ROOM_EVENT","data":{"event_type":3,"room_id":5440,"official_room_id":21496316,"official_anchor_id":441666939,"countdown":0,"scatter_time":3,"sub_title":"","desc":"","official_base_info":{"uid":441666939,"title":"bilibiliVUP 虚拟之城！","uname":"虚拟区高级运营_Official","face":"xxx","gender":"保密","official_info":{"role":3,"title":"直播虚拟区官方账号","desc":"","type":1}},"current_room_status":1}}
+{"cmd":"OFFICIAL_ROOM_EVENT","data":{"event_type":4,"room_id":5440,"official_room_id":21496316,"official_anchor_id":441666939,"countdown":30,"scatter_time":3,"sub_title":"","desc":"s后 节目单表演结束","official_base_info":{"uid":441666939,"title":"bilibiliVUP 虚拟之城！","uname":"虚拟区高级运营_Official","face":"xxx","gender":"保密","official_info":{"role":3,"title":"直播虚拟区官方账号","desc":"","type":1}},"current_room_status":1}}
+{"cmd":"OFFICIAL_ROOM_EVENT","data":{"event_type":5,"room_id":5440,"official_room_id":21496316,"official_anchor_id":441666939,"countdown":9,"scatter_time":3,"sub_title":"","desc":"s后 节目单表演结束","official_base_info":{"uid":441666939,"title":"bilibiliVUP 虚拟之城！","uname":"虚拟区高级运营_Official","face":"xxx","gender":"保密","official_info":{"role":3,"title":"直播虚拟区官方账号","desc":"","type":1}},"current_room_status":1}}
+{"cmd":"OFFICIAL_ROOM_EVENT","data":{"event_type":7,"room_id":5440,"official_room_id":21496316,"official_anchor_id":441666939,"countdown":0,"scatter_time":3,"sub_title":"","desc":"","official_base_info":{"uid":441666939,"title":"bilibiliVUP 虚拟之城！","uname":"虚拟区高级运营_Official","face":"xxx","gender":"保密","official_info":{"role":3,"title":"直播虚拟区官方账号","desc":"","type":1}},"current_room_status":2}}
+{"cmd":"OFFICIAL_ROOM_EVENT","data":{"event_type":2,"room_id":5440,"official_room_id":21496316,"official_anchor_id":441666939,"countdown":30,"scatter_time":3,"sub_title":"","desc":"s后 开始表演","official_base_info":{"uid":441666939,"title":" 冰火歌会2024远航季 正在直播","uname":"虚拟区官方频道","face":"xxx","gender":"保密","official_info":{"role":3,"title":"直播虚拟区官方账号","desc":"","type":1}},"current_room_status":3}}
 ```
 ---
 ### BENEFIT_CARD_CLEAN
@@ -4984,22 +4959,12 @@ role 0 1 2
 	"sub_text_color":"#FFFFFF",
 	"view_type":0,
 	"room_list":[
-			{"order_id":1,"room_id":xxx,"room_name":"xxx","live_status":1,"jump_url":"https://live.bilibili.com/xxx?broadcast_type=0&is_room_feed=1&live_from=28022"},
-			{"order_id":2,"room_id":xxx,"room_name":"xxx","live_status":1,"jump_url":"https://live.bilibili.com/xxx?broadcast_type=0&is_room_feed=1&live_from=28022"},
-			{"order_id":3,"room_id":xxx,"room_name":"xxx","live_status":1,"jump_url":"https://live.bilibili.com/xxx?broadcast_type=0&is_room_feed=1&live_from=28022"},
-			{"order_id":4,"room_id":xxx,"room_name":"xxx","live_status":1,"jump_url":"https://live.bilibili.com/xxx?broadcast_type=0&is_room_feed=1&live_from=28022"},
-			{"order_id":5,"room_id":xxx,"room_name":"xxx","live_status":1,"jump_url":"https://live.bilibili.com/xxx?broadcast_type=0&is_room_feed=1&live_from=28022"},
-			{"order_id":6,"room_id":xxx,"room_name":"xxx","live_status":1,"jump_url":"https://live.bilibili.com/xxx?broadcast_type=0&is_room_feed=1&live_from=28022"},
-			{"order_id":7,"room_id":xxx,"room_name":"xxx","live_status":1,"jump_url":"https://live.bilibili.com/xxx?broadcast_type=0&is_room_feed=1&live_from=28022"}
+			{"order_id":123,"room_id":xxx,"room_name":"xxx","live_status":1,"jump_url":"https://live.xxx.com/xxx?broadcast_type=0&is_room_feed=1&live_from=28022"},
+			{"order_id":123,"room_id":xxx,"room_name":"xxx","live_status":1,"jump_url":"https://live.xxx.com/xxx?broadcast_type=0&is_room_feed=1&live_from=28022"}
 	],
 	"relation_view":[
-			{"order_id":1,"view_type":0,"view_id":xxx,"view_name":"xxx","title":"xxx","cover":"bfs/live/","jump_url":"https://live.bilibili.com/xxx?broadcast_type=0&is_room_feed=1&live_from=28022","switch":true,"num":xxx,"watch_icon":"https://i0.hdslb.com/bfs/live/a725a9e61242ef44d764ac911691a7ce07f36c1d.png","live_status":1,"text_small":"x.y万","use_view_vt":false,"anchor_face":"https://i0.hdslb.com/bfs/face/xxx.jpg","match_live_room":false,"match_info":null,"duration":0,"up_name":"","pub_date":"","gather_id":0},
-			{"order_id":2,"view_type":0,"view_id":xxx,"view_name":"xxx","title":"xxx","cover":"bfs/live/","jump_url":"https://live.bilibili.com/xxx?broadcast_type=0&is_room_feed=1&live_from=28022","switch":true,"num":xxx,"watch_icon":"https://i0.hdslb.com/bfs/live/a725a9e61242ef44d764ac911691a7ce07f36c1d.png","live_status":1,"text_small":"x.y万","use_view_vt":false,"anchor_face":"https://i1.hdslb.com/bfs/face/xxx.jpg","match_live_room":false,"match_info":null,"duration":0,"up_name":"","pub_date":"","gather_id":0},
-			{"order_id":3,"view_type":0,"view_id":xxx,"view_name":"xxx","title":"xxx","cover":"bfs/live/","jump_url":"https://live.bilibili.com/xxx?broadcast_type=0&is_room_feed=1&live_from=28022","switch":true,"num":xxx,"watch_icon":"https://i0.hdslb.com/bfs/live/a725a9e61242ef44d764ac911691a7ce07f36c1d.png","live_status":1,"text_small":"xxx","use_view_vt":false,"anchor_face":"https://i1.hdslb.com/bfs/face/xxx.jpg","match_live_room":false,"match_info":null,"duration":0,"up_name":"","pub_date":"","gather_id":0},
-			{"order_id":4,"view_type":0,"view_id":xxx,"view_name":"xxx","title":"xxx","cover":"bfs/live/","jump_url":"https://live.bilibili.com/xxx?broadcast_type=0&is_room_feed=1&live_from=28022","switch":true,"num":xxx,"watch_icon":"https://i0.hdslb.com/bfs/live/a725a9e61242ef44d764ac911691a7ce07f36c1d.png","live_status":1,"text_small":"xxx","use_view_vt":false,"anchor_face":"https://i0.hdslb.com/bfs/face/xxx.jpg","match_live_room":false,"match_info":null,"duration":0,"up_name":"","pub_date":"","gather_id":0},
-			{"order_id":5,"view_type":0,"view_id":xxx,"view_name":"xxx","title":"xxx","cover":"bfs/live/","jump_url":"https://live.bilibili.com/xxx?broadcast_type=0&is_room_feed=1&live_from=28022","switch":true,"num":xxx,"watch_icon":"https://i0.hdslb.com/bfs/live/a725a9e61242ef44d764ac911691a7ce07f36c1d.png","live_status":1,"text_small":"xxx","use_view_vt":false,"anchor_face":"https://i0.hdslb.com/bfs/face/xxx.jpg","match_live_room":false,"match_info":null,"duration":0,"up_name":"","pub_date":"","gather_id":0},
-			{"order_id":6,"view_type":0,"view_id":xxx,"view_name":"xxx","title":"xxx","cover":"bfs/live/","jump_url":"https://live.bilibili.com/xxx?broadcast_type=0&is_room_feed=1&live_from=28022","switch":true,"num":xxx,"watch_icon":"https://i0.hdslb.com/bfs/live/a725a9e61242ef44d764ac911691a7ce07f36c1d.png","live_status":1,"text_small":"xxx","use_view_vt":false,"anchor_face":"https://i1.hdslb.com/bfs/face/xxx.jpg","match_live_room":false,"match_info":null,"duration":0,"up_name":"","pub_date":"","gather_id":0},
-			{"order_id":7,"view_type":0,"view_id":xxx,"view_name":"xxx","title":"xxx","cover":"bfs/live/","jump_url":"https://live.bilibili.com/xxx?broadcast_type=0&is_room_feed=1&live_from=28022","switch":true,"num":xxx,"watch_icon":"https://i0.hdslb.com/bfs/live/a725a9e61242ef44d764ac911691a7ce07f36c1d.png","live_status":1,"text_small":"xxx","use_view_vt":false,"anchor_face":"https://i1.hdslb.com/bfs/face/xxx.jpg","match_live_room":false,"match_info":null,"duration":0,"up_name":"","pub_date":"","gather_id":0}
+			{"order_id":123123,"view_type":0,"view_id":xxx,"view_name":"xxx","title":"xxx","cover":"bfs/live/","jump_url":"https://live.xxx.com/xxx?broadcast_type=0&is_room_feed=1&live_from=28022","switch":true,"num":xxx,"watch_icon":"https://i0.hdslb.com/bfs/live/a725a9e61242ef44d764ac911691a7ce07f36c1d.png","live_status":1,"text_small":"x.y万","use_view_vt":false,"anchor_face":"xxx","match_live_room":false,"match_info":null,"duration":0,"up_name":"","pub_date":"","gather_id":0},
+			{"order_id":123123,"view_type":0,"view_id":xxx,"view_name":"xxx","title":"xxx","cover":"bfs/live/","jump_url":"https://live.xxx.com/xxx?broadcast_type=0&is_room_feed=1&live_from=28022","switch":true,"num":xxx,"watch_icon":"https://i0.hdslb.com/bfs/live/a725a9e61242ef44d764ac911691a7ce07f36c1d.png","live_status":1,"text_small":"xxx","use_view_vt":false,"anchor_face":"xxx","match_live_room":false,"match_info":null,"duration":0,"up_name":"","pub_date":"","gather_id":0}
 	],
 	"view_pattern":0,
 		"gather_room_list":[]
@@ -5017,27 +4982,17 @@ role 0 1 2
 		"sub_text_color":"#FFFFFF",
 		"view_type":1,
 		"room_list":[
-			{"order_id":1,"room_id":xxx,"room_name":"主房间","live_status":1,"jump_url":"https://live.bilibili.com/xxx?broadcast_type=0&is_room_feed=1&live_from=28022"},
-			{"order_id":2,"room_id":xxx,"room_name":"xxx","live_status":1,"jump_url":"https://live.bilibili.com/xxx?broadcast_type=0&is_room_feed=1&live_from=28022"},
-			{"order_id":3,"room_id":xxx,"room_name":"xxx","live_status":1,"jump_url":"https://live.bilibili.com/xxx?broadcast_type=0&is_room_feed=1&live_from=28022"},
-			{"order_id":4,"room_id":xxx,"room_name":"xxx","live_status":1,"jump_url":"https://live.bilibili.com/xxx?broadcast_type=0&is_room_feed=1&live_from=28022"},
-			{"order_id":5,"room_id":xxx,"room_name":"xxx","live_status":1,"jump_url":"https://live.bilibili.com/xxx?broadcast_type=0&is_room_feed=1&live_from=28022"},
-			{"order_id":6,"room_id":xxx,"room_name":"xxx","live_status":1,"jump_url":"https://live.bilibili.com/xxx?broadcast_type=0&is_room_feed=1&live_from=28022"},
-			{"order_id":7,"room_id":xxx,"room_name":"xxx","live_status":1,"jump_url":"https://live.bilibili.com/xxx?broadcast_type=0&is_room_feed=1&live_from=28022"},
-			{"order_id":8,"room_id":xxx,"room_name":"xxx","live_status":1,"jump_url":"https://live.bilibili.com/xxx?broadcast_type=0&is_room_feed=1&live_from=28022"}
+			{"order_id":1,"room_id":xxx,"room_name":"主房间","live_status":1,"jump_url":"https://live.xxx.com/xxx?broadcast_type=0&is_room_feed=1&live_from=28022"},
+			{"order_id":123,"room_id":xxx,"room_name":"xxx","live_status":1,"jump_url":"https://live.xxx.com/xxx?broadcast_type=0&is_room_feed=1&live_from=28022"}
 		],
 		"relation_view":[
-			{"order_id":1,"view_type":0,"view_id":xxx,"view_name":"主房间","title":"【直播】xxx","cover":"bfs/live/","jump_url":"https://live.bilibili.com/xxx?broadcast_type=0&is_room_feed=1&live_from=28022","switch":false,"num":xxx,"watch_icon":"https://i0.hdslb.com/bfs/live/0b265af1af0a77abc47aa3b8f1a5c0769d8bd23b.png","live_status":1,"text_small":"x.y万","use_view_vt":false,"anchor_face":"https://i2.hdslb.com/bfs/face/xxx.jpg","match_live_room":true,"match_info":{"match_status":1,"home_team_name":"AAA","away_team_name":"BBB","home_team_icon":"https://i0.hdslb.com//bfs/legacy/xxx.png","away_team_icon":"https://i0.hdslb.com//bfs/feed-admin/xxx.png","home_team_score":0,"away_team_score":0},"duration":0,"up_name":"","pub_date":"","gather_id":0},
-			{"order_id":2,"view_type":0,"view_id":xxx,"view_name":"xxx","title":"xxx","cover":"bfs/live/","jump_url":"https://live.bilibili.com/xxx?broadcast_type=0&is_room_feed=1&live_from=28022","switch":false,"num":xxx,"watch_icon":"https://i0.hdslb.com/bfs/live/0b265af1af0a77abc47aa3b8f1a5c0769d8bd23b.png","live_status":1,"text_small":"x.y万","use_view_vt":false,"anchor_face":"https://i2.hdslb.com/bfs/face/xxx.jpg","match_live_room":false,"match_info":null,"duration":0,"up_name":"","pub_date":"","gather_id":0},
-			{"order_id":3,"view_type":0,"view_id":xxx,"view_name":"xxx","title":"xxx","cover":"bfs/live/","jump_url":"https://live.bilibili.com/xxx?broadcast_type=0&is_room_feed=1&live_from=28022","switch":true,"num":xxx,"watch_icon":"https://i0.hdslb.com/bfs/live/a725a9e61242ef44d764ac911691a7ce07f36c1d.png","live_status":1,"text_small":"x.y万","use_view_vt":false,"anchor_face":"https://i0.hdslb.com/bfs/face/xxx.jpg","match_live_room":false,"match_info":null,"duration":0,"up_name":"","pub_date":"","gather_id":0},
-			{"order_id":4,"view_type":0,"view_id":xxx,"view_name":"xxx","title":"xxx","cover":"bfs/live/","jump_url":"https://live.bilibili.com/xxx?broadcast_type=0&is_room_feed=1&live_from=28022","switch":true,"num":xxx,"watch_icon":"https://i0.hdslb.com/bfs/live/a725a9e61242ef44d764ac911691a7ce07f36c1d.png","live_status":1,"text_small":"x.y万","use_view_vt":false,"anchor_face":"https://i2.hdslb.com/bfs/face/xxx.jpg","match_live_room":false,"match_info":null,"duration":0,"up_name":"","pub_date":"","gather_id":0},
-			{"order_id":5,"view_type":0,"view_id":xxx,"view_name":"xxx","title":"xxx","cover":"bfs/live/","jump_url":"https://live.bilibili.com/xxx?broadcast_type=0&is_room_feed=1&live_from=28022","switch":true,"num":xxx,"watch_icon":"https://i0.hdslb.com/bfs/live/a725a9e61242ef44d764ac911691a7ce07f36c1d.png","live_status":1,"text_small":"x.y万","use_view_vt":false,"anchor_face":"https://i2.hdslb.com/bfs/face/xxx.jpg","match_live_room":false,"match_info":null,"duration":0,"up_name":"","pub_date":"","gather_id":0},
-			{"order_id":6,"view_type":0,"view_id":xxx,"view_name":"xxx","title":"xxx","cover":"bfs/live/","jump_url":"https://live.bilibili.com/xxx?broadcast_type=0&is_room_feed=1&live_from=28022","switch":true,"num":xxx,"watch_icon":"https://i0.hdslb.com/bfs/live/a725a9e61242ef44d764ac911691a7ce07f36c1d.png","live_status":1,"text_small":"x.y万","use_view_vt":false,"anchor_face":"https://i1.hdslb.com/bfs/face/xxx.jpg","match_live_room":false,"match_info":null,"duration":0,"up_name":"","pub_date":"","gather_id":0},
-			{"order_id":7,"view_type":0,"view_id":xxx,"view_name":"xxx","title":"xxx","cover":"bfs/live/","jump_url":"https://live.bilibili.com/xxx?broadcast_type=0&is_room_feed=1&live_from=28022","switch":true,"num":xxx,"watch_icon":"https://i0.hdslb.com/bfs/live/a725a9e61242ef44d764ac911691a7ce07f36c1d.png","live_status":1,"text_small":"x.y万","use_view_vt":false,"anchor_face":"https://i2.hdslb.com/bfs/face/xxx.jpg","match_live_room":false,"match_info":null,"duration":0,"up_name":"","pub_date":"","gather_id":0},
-			{"order_id":8,"view_type":0,"view_id":xxx,"view_name":"xxx","title":"xxx","cover":"bfs/live/","jump_url":"https://live.bilibili.com/xxx?broadcast_type=0&is_room_feed=1&live_from=28022","switch":true,"num":xxx,"watch_icon":"https://i0.hdslb.com/bfs/live/a725a9e61242ef44d764ac911691a7ce07f36c1d.png","live_status":1,"text_small":"xxxx","use_view_vt":false,"anchor_face":"https://i1.hdslb.com/bfs/face/xxx.jpg","match_live_room":false,"match_info":null,"duration":0,"up_name":"","pub_date":"","gather_id":0},
-			{"order_id":90000001,"view_type":1,"view_id":170001,"view_name":"赛事锐评","title":"【xxx】xxx","cover":"bfs/archive/","jump_url":"bilibili://video/170001?player_height=1080&player_rotate=0&player_width=1920","switch":false,"num":xxx,"watch_icon":"","live_status":0,"text_small":"x.y 万","use_view_vt":false,"anchor_face":"https://i2.hdslb.com/bfs/face/xxx.jpg","match_live_room":false,"match_info":null,"duration":xxx,"up_name":"xxx","pub_date":"m-dd","gather_id":1},
-			{"order_id":90000002,"view_type":1,"view_id":170001,"view_name":"赛事资讯","title":"【xxx】xxx","cover":"bfs/archive/","jump_url":"bilibili://video/170001?player_height=1080&player_rotate=0&player_width=1920","switch":false,"num":xxx,"watch_icon":"","live_status":0,"text_small":"x.y 万","use_view_vt":false,"anchor_face":"https://i0.hdslb.com/bfs/face/xxx.jpg","match_live_room":false,"match_info":null,"duration":xxx,"up_name":"xxx","pub_date":"m-dd","gather_id":1},
-			{"order_id":90000003,"view_type":1,"view_id":170001,"view_name":"比赛复盘","title":"【xxx】xxx","cover":"bfs/archive/","jump_url":"bilibili://video/170001?player_height=1080&player_rotate=0&player_width=1920","switch":false,"num":xxx,"watch_icon":"","live_status":0,"text_small":"x.y 万","use_view_vt":false,"anchor_face":"https://i2.hdslb.com/bfs/face/xxx.jpg","match_live_room":false,"match_info":null,"duration":xxx,"up_name":"xxx","pub_date":"m-dd","gather_id":1}
+			{"order_id":1,"view_type":0,"view_id":xxx,"view_name":"主房间","title":"【直播】xxx","cover":"bfs/live/","jump_url":"https://live.xxx.com/xxx?broadcast_type=0&is_room_feed=1&live_from=28022","switch":false,"num":xxx,"watch_icon":"https://i0.hdslb.com/bfs/live/0b265af1af0a77abc47aa3b8f1a5c0769d8bd23b.png","live_status":1,"text_small":"x.y万","use_view_vt":false,"anchor_face":"xxx","match_live_room":true,"match_info":{"match_status":1,"home_team_name":"AAA","away_team_name":"BBB","home_team_icon":"https://i0.hdslb.com//bfs/legacy/xxx.png","away_team_icon":"https://i0.hdslb.com//bfs/feed-admin/xxx.png","home_team_score":0,"away_team_score":0},"duration":0,"up_name":"","pub_date":"","gather_id":0},
+			{"order_id":123,"view_type":0,"view_id":xxx,"view_name":"xxx","title":"xxx","cover":"bfs/live/","jump_url":"https://live.xxx.com/xxx?broadcast_type=0&is_room_feed=1&live_from=28022","switch":false,"num":xxx,"watch_icon":"https://i0.hdslb.com/bfs/live/0b265af1af0a77abc47aa3b8f1a5c0769d8bd23b.png","live_status":1,"text_small":"x.y万","use_view_vt":false,"anchor_face":"xxx","match_live_room":false,"match_info":null,"duration":0,"up_name":"","pub_date":"","gather_id":0},
+			{"order_id":123,"view_type":0,"view_id":xxx,"view_name":"xxx","title":"xxx","cover":"bfs/live/","jump_url":"https://live.xxx.com/xxx?broadcast_type=0&is_room_feed=1&live_from=28022","switch":true,"num":xxx,"watch_icon":"https://i0.hdslb.com/bfs/live/a725a9e61242ef44d764ac911691a7ce07f36c1d.png","live_status":1,"text_small":"x.y万","use_view_vt":false,"anchor_face":"xxx","match_live_room":false,"match_info":null,"duration":0,"up_name":"","pub_date":"","gather_id":0},
+			{"order_id":123,"view_type":0,"view_id":xxx,"view_name":"xxx","title":"xxx","cover":"bfs/live/","jump_url":"https://live.xxx.com/xxx?broadcast_type=0&is_room_feed=1&live_from=28022","switch":true,"num":xxx,"watch_icon":"https://i0.hdslb.com/bfs/live/a725a9e61242ef44d764ac911691a7ce07f36c1d.png","live_status":1,"text_small":"xxxx","use_view_vt":false,"anchor_face":"xxx","match_live_room":false,"match_info":null,"duration":0,"up_name":"","pub_date":"","gather_id":0},
+			{"order_id":90000001,"view_type":1,"view_id":170001,"view_name":"赛事锐评","title":"【xxx】xxx","cover":"bfs/archive/","jump_url":"bilibili://video/170001?player_height=1080&player_rotate=0&player_width=1920","switch":false,"num":xxx,"watch_icon":"","live_status":0,"text_small":"x.y 万","use_view_vt":false,"anchor_face":"xxx","match_live_room":false,"match_info":null,"duration":xxx,"up_name":"xxx","pub_date":"m-dd","gather_id":1},
+			{"order_id":90000002,"view_type":1,"view_id":170001,"view_name":"赛事资讯","title":"【xxx】xxx","cover":"bfs/archive/","jump_url":"bilibili://video/170001?player_height=1080&player_rotate=0&player_width=1920","switch":false,"num":xxx,"watch_icon":"","live_status":0,"text_small":"x.y 万","use_view_vt":false,"anchor_face":"xxx","match_live_room":false,"match_info":null,"duration":xxx,"up_name":"xxx","pub_date":"m-dd","gather_id":1},
+			{"order_id":90000003,"view_type":1,"view_id":170001,"view_name":"比赛复盘","title":"【xxx】xxx","cover":"bfs/archive/","jump_url":"bilibili://video/170001?player_height=1080&player_rotate=0&player_width=1920","switch":false,"num":xxx,"watch_icon":"","live_status":0,"text_small":"x.y 万","use_view_vt":false,"anchor_face":"xxx","match_live_room":false,"match_info":null,"duration":xxx,"up_name":"xxx","pub_date":"m-dd","gather_id":1}
 		],
 		"view_pattern":1,
 		"gather_room_list":[
@@ -5137,7 +5092,7 @@ role 0 1 2
 {
 	"cmd":"GUARD_LEADER_NOTICE",
 	"data":{
-		"jump_url":"https://live.bilibili.com/p/html/live-app-guard-pilot/index.html?is_live_half_webview=1&hybrid_half_ui=1,3,100p,73p,0,0,30,0,12,0;2,2,375,100p,0,0,30,0,0,0;3,3,100p,73p,0,0,30,0,12,0;4,2,375,100p,0,0,30,0,0,0;5,3,100p,73p,0,0,30,0,12,0;6,3,100p,73p,0,0,30,0,12,0;7,3,100p,73p,0,0,30,0,12,0;8,2,320,480,0,0,30,0,0,0&anchorId={mid}&roomId={room_id}",
+		"jump_url":"https://live.xxx.com/p/html/live-app-guard-pilot/index.html?is_live_half_webview=1&hybrid_half_ui=1,3,100p,73p,0,0,30,0,12,0;2,2,375,100p,0,0,30,0,0,0;3,3,100p,73p,0,0,30,0,12,0;4,2,375,100p,0,0,30,0,0,0;5,3,100p,73p,0,0,30,0,12,0;6,3,100p,73p,0,0,30,0,12,0;7,3,100p,73p,0,0,30,0,12,0;8,2,320,480,0,0,30,0,0,0&anchorId={mid}&roomId={room_id}",
 		"input_background_url":"https://i0.hdslb.com/bfs/live/ffba0916dc46c0242ad83644b5ccf1870b54a12a.png",
 		"rank_top_background_url2":"https://i0.hdslb.com/bfs/live/71397554da8a7bd2ac14905c69891df54ad62ede.png",
 		"face":"TOP1_Face",
@@ -5271,9 +5226,9 @@ role 0 1 2
 			},
 			"invoking_time":1,
 			"members":[
-				{"face":"xxx","gender":x,"join_time":xxx,"link_id":"xxx","position":0,"room_id":xxx,"uid":xxx,"uname":"XXX"},
-				{"face":"xxx","gender":x,"join_time":xxx,"link_id":"xxx","position":2,"room_id":xxx,"uid":xxx,"uname":"XXX"},
-				{"face":"xxx","gender":x,"join_time":xxx,"link_id":"xxx","position":1,"room_id":xxx,"uid":xxx,"uname":"XXX"}
+				{"face":"xxx","gender":x,"join_time":xxx,"link_id":"xxx","position":0,"room_id":xxx,"uid":xxx,"uname":"xxx"},
+				{"face":"xxx","gender":x,"join_time":xxx,"link_id":"xxx","position":2,"room_id":xxx,"uid":xxx,"uname":"xxx"},
+				{"face":"xxx","gender":x,"join_time":xxx,"link_id":"xxx","position":1,"room_id":xxx,"uid":xxx,"uname":"xxx"}
 			],
 			"members_version":xxx,
 			"multi_conn_info":{
@@ -5293,14 +5248,14 @@ role 0 1 2
 			"session_status":1,
 			"system_time_unix":xxx,
 			"trace_id":"",
-			"version":XXX
+			"version":xxx
 		},
-		"room_id":XXX
+		"room_id":xxx
 	},
-	"msg_id":"xxx:xxx:1000",
+	"msg_id":"xxx:xxx:xxx",
 	"p_is_ack":true,
 	"p_msg_type":1,
-	"send_time":XXX
+	"send_time":xxx
 }
 ```
 ---
@@ -5316,7 +5271,7 @@ role 0 1 2
 |-|-|-|
 | msg	| str	| |
 ```json
-{"cmd":"LITTLE_TIPS","data":{"msg":"你的粉丝勋章【XXXXXX】已达今日亲密度上限"}}
+{"cmd":"LITTLE_TIPS","data":{"msg":"你的粉丝勋章【xxx】已达今日亲密度上限"}}
 ```
 ---
 ### LIKE_GUIDE_USER
@@ -5346,8 +5301,8 @@ role 0 1 2
 |-|-|-|
 | data	| xxx	| |
 ```json
-{"cmd":"PK_BATTLE_MULTIPLE_AWARD","data":{"pkid":X,"pk_status":xxx,"award_room":A,"award_no":0,"award_name":"0","award_value":0,"multiple_time":0,"start_time":0,"end_time":0,"status":7}}
-{"cmd":"PK_BATTLE_MULTIPLE_AWARD","data":{"pkid":X,"pk_status":xxx,"award_room":B,"award_no":0,"award_name":"0","award_value":0,"multiple_time":0,"start_time":0,"end_time":0,"status":7}}
+{"cmd":"PK_BATTLE_MULTIPLE_AWARD","data":{"pkid":xxx,"pk_status":xxx,"award_room":A,"award_no":0,"award_name":"0","award_value":0,"multiple_time":0,"start_time":0,"end_time":0,"status":7}}
+{"cmd":"PK_BATTLE_MULTIPLE_AWARD","data":{"pkid":xxx,"pk_status":xxx,"award_room":B,"award_no":0,"award_name":"0","award_value":0,"multiple_time":0,"start_time":0,"end_time":0,"status":7}}
 ```
 ---
 ### REENTER_LIVE_ROOM
@@ -5417,16 +5372,16 @@ role 0 1 2
 		"status":1,
 		"stime":-28800
 	},
-	"msg_id":"XXX:1000:1000",
+	"msg_id":"xxx:xxx:xxx",
 	"p_is_ack":true,
 	"p_msg_type":1,
-	"send_time":XXX
+	"send_time":xxx
 }
 ```
 ---
 ### POPULAR_RANK_GUIDE_CARD
 [TOP](#直播弹幕)  
-文档更新：2024-01-01  
+文档更新：2024-06-01  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "POPULAR_RANK_GUIDE_CARD" |
@@ -5437,13 +5392,13 @@ role 0 1 2
 | ruid			| num	| |
 | title			| str	| 1\~100 |
 | sub_text		| str	| |
-| icon_img		| str	| |
+| icon_img		| str	| 头像URL |
 | gift_id		| num	| |
 | countdown		| num	| |
 | popup_title	| str	| |
 ```json
-{"cmd":"POPULAR_RANK_GUIDE_CARD","data":{"ruid":xxx,"title":"目前人气榜NO.XX","sub_text":"帮我投喂人气票冲榜吧~","icon_img":"https://i2.hdslb.com/bfs/face/a6419a5f230c500962c7954c907be74a7cbd61b5.jpg","gift_id":33988,"countdown":10,"popup_title":"投喂一个人气票帮助主播打榜~"}}
-{"data":{"ruid":xxx,"title":"目前人气榜NO.XX","sub_text":"帮我投喂人气票冲榜吧~","icon_img":"https://i1.hdslb.com/bfs/face/26ac6ec5b9d43c8aef9f14848395003eaa7b0234.jpg","gift_id":33988,"countdown":10,"popup_title":"投喂一个人气票帮助主播打榜~"},"cmd":"POPULAR_RANK_GUIDE_CARD"}
+{"cmd":"POPULAR_RANK_GUIDE_CARD","data":{"ruid":12345,"title":"目前人气榜NO.xxx","sub_text":"帮我投喂人气票冲榜吧~","icon_img":"xxx","gift_id":33988,"countdown":10,"popup_title":"投喂一个人气票帮助主播打榜~"}}
+{"data":{"ruid":12345,"title":"目前人气榜NO.xxx","sub_text":"帮我投喂人气票冲榜吧~","icon_img":"xxx","gift_id":33988,"countdown":10,"popup_title":"投喂一个人气票帮助主播打榜~"},"cmd":"POPULAR_RANK_GUIDE_CARD"}
 ```
 ### HOT_RANK_CHANGED_V2
 [TOP](#直播弹幕格式)  
@@ -5536,7 +5491,7 @@ role 0 1 2
 |-|-|-|
 | area_name	| str	| 分区名称(大) |
 | cache_key	| str	| hex(128bit) |
-| dm_msg	| str	| `f"恭喜主播 <% {uname} %> 荣登限时热门榜{总}榜{XXX}!"` "榜首,top2-10" |
+| dm_msg	| str	| `f"恭喜主播 <% {uname} %> 荣登限时热门榜{总}榜{xxx}!"` "榜首,top2-10" |
 | dmscore	| str	| 144 |
 | face		| str	| 主播头像URL |
 | icon		| str	| url_15 |
@@ -5576,8 +5531,8 @@ role 0 1 2
 | success_toast		| str	| |
 | animation_block	| num	| |
 ```json
-{"cmd":"USER_VIRTUAL_MVP","data":{"goods_id":255,"effect_id":1020,"effect_queue":3,"uid":123,"uname":"XXX","uname_color":"#FF7C28","user_guard_level":1,"goods_name":"守护圣法师x7天","goods_num":1,"goods_price":12333300,"goods_icon":"http://i0.hdslb.com/bfs/live/c9206642e90b9e3d2eefc01b11ea7f50152314c2.png","action":"解锁","order_id":"230512214401xxxxxxxxxxxxx","timestamp":1683899041,"success_toast":"解锁成功，已为您穿戴守护圣法师装扮","animation_block":0}}
-{"cmd":"USER_VIRTUAL_MVP","data":{"goods_id":255,"effect_id":1020,"effect_queue":3,"uid":123,"uname":"XXX","uname_color":"#FF7C28","user_guard_level":1,"goods_name":"守护圣法师x7天","goods_num":1,"goods_price":12333300,"goods_icon":"http://i0.hdslb.com/bfs/live/c9206642e90b9e3d2eefc01b11ea7f50152314c2.png","action":"解锁","order_id":"230512215734xxxxxxxxxxxxx","timestamp":1683899854,"success_toast":"解锁成功，已为您穿戴守护圣法师装扮","animation_block":0}}
+{"cmd":"USER_VIRTUAL_MVP","data":{"goods_id":255,"effect_id":1020,"effect_queue":3,"uid":123,"uname":"xxx","uname_color":"#FF7C28","user_guard_level":1,"goods_name":"守护圣法师x7天","goods_num":1,"goods_price":12333300,"goods_icon":"http://i0.hdslb.com/bfs/live/c9206642e90b9e3d2eefc01b11ea7f50152314c2.png","action":"解锁","order_id":"230512214401xxxxxxxxxxxxx","timestamp":1683899041,"success_toast":"解锁成功，已为您穿戴守护圣法师装扮","animation_block":0}}
+{"cmd":"USER_VIRTUAL_MVP","data":{"goods_id":255,"effect_id":1020,"effect_queue":3,"uid":123,"uname":"xxx","uname_color":"#FF7C28","user_guard_level":1,"goods_name":"守护圣法师x7天","goods_num":1,"goods_price":12333300,"goods_icon":"http://i0.hdslb.com/bfs/live/c9206642e90b9e3d2eefc01b11ea7f50152314c2.png","action":"解锁","order_id":"230512215734xxxxxxxxxxxxx","timestamp":1683899854,"success_toast":"解锁成功，已为您穿戴守护圣法师装扮","animation_block":0}}
 ```
 ---
 ### ROOM_MODULE_DISPLAY
@@ -5651,7 +5606,7 @@ role 0 1 2
 | normal				| null/xxx	| |
 | activity				| null/xxx	| |
 ```json
-{"cmd":"SHOPPING_EXPLAIN_CARD","data":{"goods_id":"XXX","goods_name":"XXX","goods_price":"XXX","goods_max_price":"","sale_status":0,"coupon_name":"","goods_icon":"http://i0.hdslb.com/bfs/e-commerce-goods/xxx.jpg","status":1,"h5_url":"https://live.bilibili.com/p/html/live-app-ecommerce/index.html?is_live_half_webview=1&hybrid_rotate_d=0&hybrid_half_ui=1,3,100p,70p,0,0,30,100,12,0;2,2,375,100p,0,0,30,100,0,0;3,3,100p,70p,0,0,30,100,12,0;4,2,375,100p,0,0,30,100,0,0;5,3,100p,70p,0,0,30,100,12,0;6,3,100p,70p,0,0,30,100,12,0;7,3,100p,70p,0,0,30,100,12,0&web_type=1&source=3&goods_id=XXX#/jingdong","source":3,"timestamp":xxx,"is_pre_sale":0,"activity_info":null,"pre_sale_info":null,"early_bird_info":null,"unique_id":"XXX","uid":xxx,"selling_point":"","coupon_discount_price":"","sei_status":0,"gift_buy_info":null,"reward_info":null,"is_exclusive":false,"coupon_id":"","goods_tag_list":["https://i0.hdslb.com/bfs/live/8f27ae1afbe71e9e83dc6f24463de47e3d57f814.png"],"virtual_extra_info":null,"price_info":{"normal":null,"activity":null},"btn_info":null,"goods_sort_id":1,"coupon_info":null,"active_info":null,"jump_url":"","is_repeated":0}}
+{"cmd":"SHOPPING_EXPLAIN_CARD","data":{"goods_id":"xxx","goods_name":"xxx","goods_price":"xxx","goods_max_price":"","sale_status":0,"coupon_name":"","goods_icon":"http://i0.hdslb.com/bfs/e-commerce-goods/xxx.jpg","status":1,"h5_url":"https://live.xxx.com/p/html/live-app-ecommerce/index.html?is_live_half_webview=1&hybrid_rotate_d=0&hybrid_half_ui=1,3,100p,70p,0,0,30,100,12,0;2,2,375,100p,0,0,30,100,0,0;3,3,100p,70p,0,0,30,100,12,0;4,2,375,100p,0,0,30,100,0,0;5,3,100p,70p,0,0,30,100,12,0;6,3,100p,70p,0,0,30,100,12,0;7,3,100p,70p,0,0,30,100,12,0&web_type=1&source=3&goods_id=xxx#/jingdong","source":3,"timestamp":xxx,"is_pre_sale":0,"activity_info":null,"pre_sale_info":null,"early_bird_info":null,"unique_id":"xxx","uid":xxx,"selling_point":"","coupon_discount_price":"","sei_status":0,"gift_buy_info":null,"reward_info":null,"is_exclusive":false,"coupon_id":"","goods_tag_list":["https://i0.hdslb.com/bfs/live/8f27ae1afbe71e9e83dc6f24463de47e3d57f814.png"],"virtual_extra_info":null,"price_info":{"normal":null,"activity":null},"btn_info":null,"goods_sort_id":1,"coupon_info":null,"active_info":null,"jump_url":"","is_repeated":0}}
 ```
 ---
 ### LIVE_MULTI_VIEW_EVENT_CHANGE
@@ -5677,14 +5632,29 @@ role 0 1 2
 {"cmd":"LIVE_MULTI_VIEW_EVENT_CHANGE","data":[{"room_id":xxx,"match_status":2,"home_team_name":"xx1","away_team_name":"xx2","home_team_icon":"xxx.png","away_team_icon":"xxx2.png","home_team_score":x,"away_team_score":x,"time_stamp":xxx}]}
 ```
 ---
-### XXXXXXXXXXX
+### POPULARITY_RANK_TAB_CHG
 [TOP](#直播弹幕)  
 文档更新：2024-01-01  
 | key		| type	| value	|
 |-|-|-|
-| cmd		| str	| "XXXXXXXXXXX" |
+| cmd		| str	| "POPULARITY_RANK_TAB_CHG" |
 | data		| obj	| |
-#### XXXXXXXXXXX__data
+#### POPULARITY_RANK_TAB_CHG__data
+| key		| type	| value	|
+|-|-|-|
+| data	| xxx	| |
+```json
+{"cmd":"POPULARITY_RANK_TAB_CHG","data":{"room_id":123,"ruid":123,"type":"area","need_refresh_tab":true}}
+```
+---
+### XXXXXXXXXXXX
+[TOP](#直播弹幕)  
+文档更新：2024-01-01  
+| key		| type	| value	|
+|-|-|-|
+| cmd		| str	| "XXXXXXXXXXXX" |
+| data		| obj	| |
+#### XXXXXXXXXXXX__data
 | key		| type	| value	|
 |-|-|-|
 | data	| xxx	| |
@@ -5695,12 +5665,12 @@ role 0 1 2
 
 ### others
 [TOP](#直播弹幕)  
-| key				| type	| value	| where	|
-|-|-|-|-|
+| key				| type	| value	|
+|-|-|-|
 | guard_level		| num	| 大航海等级 <br> 0:无 <br> 1:总督GOVERNOR <br> 2:提督PREFECT <br> 3:舰长CAPTAIN |
 | privilege_type	| num	| ！待确定 2:提督 3:舰长 |
 | lot_status		| num	| 抽奖状态 0:开始 1:正在抽奖 2:开奖 |
-| identities		| []num	| 身份 1:"Normal" 2:"管理员" 3:"粉丝" 4:"Vip" 5:"SVip" 6:"舰长" 7:"提督" 8:"总督" |[INTERACT_WORD](#INTERACT_WORD)[LIKE_INFO_V3_CLICK](#LIKE_INFO_V3_CLICK)[ENTRY_EFFECT](#ENTRY_EFFECT)
+| identities		| []num	| 身份 1:"Normal" 2:"管理员" 3:"粉丝" 4:"Vip" 5:"SVip" 6:"舰长" 7:"提督" 8:"总督" 22:"" |
 
 ```json
 "face_frame":{
@@ -5829,12 +5799,12 @@ for i in range(1,len(a)):print(str(a[i]-a[i-1])[0:4])
 "xxx__uinfo":{
 	"uid":xxx,
 	"base":{
-		"name":"XXX",
-		"face":"https://i1.hdslb.com/bfs/face/....jpg",
+		"name":"xxx",
+		"face":"xxx",
 		"name_color":0,
 		"is_mystery":false,
-		"origin_info":{"face":"https://i0.hdslb.com/bfs/baselabs/xxx.png","name":"XXX"},
-		"risk_ctrl_info":{"face":"https://i0.hdslb.com/bfs/baselabs/xxx.png","name":"XXX"},
+		"origin_info":{"face":"xxx","name":"xxx"},
+		"risk_ctrl_info":{"face":"xxx","name":"xxx"},
 		"official_info":null,
 		"official_info":{"role":0,"title":"","desc":"","type":-1},
 		"official_info":{"desc":"","role":7,"title":"bilibili直播高能主播","type":0},
