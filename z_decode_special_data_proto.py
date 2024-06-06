@@ -4,8 +4,7 @@ from google.protobuf.json_format import MessageToJson
 import json
 import sys
 
-try: import zzzz as dm_pb2
-except ModuleNotFoundError: import dm_pb2
+import dm_pb2
 
 from my_lib.file_writer import FileWriter
 

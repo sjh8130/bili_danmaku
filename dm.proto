@@ -14,149 +14,94 @@ service DM {
     rpc DmSegOtt(DmSegOttReq) returns(DmSegOttReply);
     // SDK弹幕列表
     rpc DmSegSDK(DmSegSDKReq) returns(DmSegSDKReply);
-    //
     rpc DmExpoReport(DmExpoReportReq) returns (DmExpoReportRes);
 }
 
-//
 message Avatar {
-    //
     string id = 1;
-    //
     string url = 2;
-    //
     AvatarType avatar_type = 3;
 }
 
-//
 enum AvatarType {
-    AvatarTypeNone = 0; //
-    AvatarTypeNFT  = 1; //
+    AvatarTypeNone = 0;
+    AvatarTypeNFT  = 1;
 }
 
-//
 message Bubble {
-    //
     string text = 1;
-    //
     string url = 2;
 }
 
-//
 enum BubbleType {
-    BubbleTypeNone           = 0; //
-    BubbleTypeClickButton    = 1; //
-    BubbleTypeDmSettingPanel = 2; //
+    BubbleTypeNone           = 0;
+    BubbleTypeClickButton    = 1;
+    BubbleTypeDmSettingPanel = 2;
 }
 
-//
 message BubbleV2 {
-    //
     string text = 1;
-    //
     string url = 2;
-    //
     BubbleType bubble_type = 3;
-    //
     bool exposure_once = 4;
-    //
     ExposureType exposure_type = 5;
 }
 
-//
 message Button {
-    //
     string text = 1;
-    //
     ToastFunctionType action = 2;
 }
 
-//
 message BuzzwordConfig {
-    //
     repeated BuzzwordShowConfig keywords = 1;
 }
 
-//
 message BuzzwordShowConfig {
-    //
     string name = 1;
-    //
     string schema = 2;
-    //
     int32 source = 3;
-    //
     int64 id = 4;
-    //
     int64 buzzword_id = 5;
-    //
     int32 schema_type = 6;
 }
 
-//
 message CheckBox {
-    //
     string text = 1;
-    //
     CheckboxType type = 2;
-    //
     bool default_value = 3;
-    //
     bool show = 4;
 }
 
-//
 enum CheckboxType {
-    CheckboxTypeNone      = 0; //
-    CheckboxTypeEncourage = 1; //
-    CheckboxTypeColorDM   = 2; //?
+    CheckboxTypeNone      = 0;
+    CheckboxTypeEncourage = 1;
+    CheckboxTypeColorDM   = 2;
 }
 
-//
 message CheckBoxV2 {
-    //
     string text = 1;
-    //
     CheckboxType type = 2;
-    //
     bool default_value = 3;
 }
 
-//
 message ClickButton {
-    //
     repeated string portrait_text = 1;
-    //
     repeated string landscape_text = 2;
-    //
     repeated string portrait_text_focus = 3;
-    //
     repeated string landscape_text_focus = 4;
-    //
     RenderType render_type = 5;
-    //
     bool show = 6;
-    //
     Bubble bubble = 7;
 }
 
-//
 message ClickButtonV2 {
-    //
     repeated string portrait_text = 1;
-    //
     repeated string landscape_text = 2;
-    //
     repeated string portrait_text_focus = 3;
-    //
     repeated string landscape_text_focus = 4;
-    //
     RenderType render_type = 5;
-    //
     bool text_input_post = 6;
-    //
     bool exposure_once = 7;
-    //
     ExposureType exposure_type = 8;
 }
 
@@ -210,16 +155,14 @@ message DanmakuElem {
     int64 date = 8;
     // 权重 用于屏蔽等级 区间:[1,10]
     int32 weight = 9;
-    // 动作
     string action = 10;
-    // 弹幕池 0:普通池 1:字幕池 2:特殊池(代码/BAS弹幕)
+    // 弹幕池 0:普通池 1:字幕池 2:特殊池(代码/BAS弹幕) 3:投票
     int32 pool = 11;
     // 弹幕dmid str
     string dmid = 12;
     // 弹幕属性位(bin求AND)
     int32 attr = 13;
-    // 发送者mid
-    // uint64 usermid = 14;
+    uint64 mid = 14;
     // 点赞数量
     uint32 likes = 15;
     // 弹幕回复 目标弹幕dmid
@@ -227,17 +170,16 @@ message DanmakuElem {
     uint64 test17 = 17;
     // 弹幕回复 被回复数量
     uint32 reply_count = 18;
-    // 19 : 未知
     bytes test19 = 19;
     // 弹幕回复 目标弹幕dmid(string)
     string test20 = 20;
     string test21 = 21;
     // 动画？
     string animation = 22;
-    // TBD
     bytes test23 = 23;
-    //
     DmColorfulType colorful = 24;
+    uint64 test25 = 25;
+    int64 oid = 26;
 }
 
 // 弹幕ai云屏蔽条目
@@ -274,9 +216,9 @@ message DanmuDefaultPlayerConfig {
     float player_danmaku_domain                                  = 14; // 弹幕显示区域
     int32 player_danmaku_speed                                   = 15; // 弹幕速度
     bool inline_player_danmaku_switch                            = 16; // 是否开启弹幕
-    int32 player_danmaku_senior_mode_switch                      = 17; //
-    int32 player_danmaku_ai_recommended_level_v2                 = 18; //
-    map<int32, int32> player_danmaku_ai_recommended_level_v2_map = 19; //
+    int32 player_danmaku_senior_mode_switch                      = 17;
+    int32 player_danmaku_ai_recommended_level_v2                 = 18;
+    map<int32, int32> player_danmaku_ai_recommended_level_v2_map = 19;
 }
 
 // 弹幕配置
@@ -298,16 +240,14 @@ message DanmuPlayerConfig {
     int32 player_danmaku_speed                                   = 15; // 弹幕速度
     bool player_danmaku_enableblocklist                          = 16; // 是否开启屏蔽列表
     bool inline_player_danmaku_switch                            = 17; // 是否开启弹幕
-    int32 inline_player_danmaku_config                           = 18; //
-    int32 player_danmaku_ios_switch_save                         = 19; //
-    int32 player_danmaku_senior_mode_switch                      = 20; //
-    int32 player_danmaku_ai_recommended_level_v2                 = 21; //
-    map<int32, int32> player_danmaku_ai_recommended_level_v2_map = 22; //
+    int32 inline_player_danmaku_config                           = 18;
+    int32 player_danmaku_ios_switch_save                         = 19;
+    int32 player_danmaku_senior_mode_switch                      = 20;
+    int32 player_danmaku_ai_recommended_level_v2                 = 21;
+    map<int32, int32> player_danmaku_ai_recommended_level_v2_map = 22;
 }
 
-//
 message DanmuPlayerConfigPanel {
-    //
     string selection_text = 1;
 }
 
@@ -327,7 +267,6 @@ message DanmuPlayerViewConfig {
     DanmuPlayerConfig danmuku_player_config = 2;
     // 弹幕显示区域自动配置列表
     repeated DanmuPlayerDynamicConfig danmuku_player_dynamic_config = 3;
-    //
     DanmuPlayerConfigPanel danmuku_player_config_panel = 4;
 }
 
@@ -353,34 +292,32 @@ message DanmuWebPlayerConfig {
     bool bold                         = 18; // 是否使用加粗
     int32 fontborder                  = 19; // 
     string draw_type                  = 20; // 弹幕渲染类型
-    int32 senior_mode_switch          = 21; //
-    int32 ai_level_v2                 = 22; //
-    map<int32, int32> ai_level_v2_map = 23; //
+    int32 senior_mode_switch          = 21;
+    int32 ai_level_v2                 = 22;
+    map<int32, int32> ai_level_v2_map = 23;
 }
 
 // 弹幕属性位值
 enum DMAttrBit {
-    DMAttrBitProtect  = 0; // 保护弹幕
-    DMAttrBitFromLive = 1; // 直播弹幕
-    DMAttrHighLike    = 2; // 高赞弹幕
+    DMAttrProtect   = 0; // 保护弹幕
+    DMAttrFromLive  = 1; // 直播弹幕
+    DMAttrHighLike  = 2; // 高赞弹幕
+    DMAttrPicture   = 8; // 图片
+    DMAttrNFT       = 11; // NFT
+    DMAttrX15       = 14; // 15
 }
 
-//
 message DmExpoReportReq {
-    //
     string session_id = 1;
-    //
     int64 oid = 2;
-    //
     string spmid = 4;
 }
 
-//
 message DmExpoReportRes {}
 
 // 修改弹幕配置-请求
 message DmPlayerConfigReq {
-    int64 ts                                                  = 1;  //
+    int64 ts                                                  = 1;
     PlayerDanmakuSwitch switch                                = 2;  // 是否开启弹幕
     PlayerDanmakuSwitchSave switch_save                       = 3;  // 是否记录弹幕开关设置
     PlayerDanmakuUseDefaultConfig use_default_config          = 4;  // 是否使用推荐弹幕设置
@@ -398,15 +335,12 @@ message DmPlayerConfigReq {
     PlayerDanmakuSpeed speed                                  = 16; // 弹幕速度
     PlayerDanmakuEnableblocklist enableblocklist              = 17; // 是否开启屏蔽列表
     InlinePlayerDanmakuSwitch inlinePlayerDanmakuSwitch       = 18; // 是否开启弹幕
-    PlayerDanmakuSeniorModeSwitch senior_mode_switch          = 19; //
-    PlayerDanmakuAiRecommendedLevelV2 ai_recommended_level_v2 = 20; //
+    PlayerDanmakuSeniorModeSwitch senior_mode_switch          = 19;
+    PlayerDanmakuAiRecommendedLevelV2 ai_recommended_level_v2 = 20;
 }
 
-//
 message DmSegConfig {
-    //
     int64 page_size = 1;
-    //
     int64 total = 2;
 }
 
@@ -421,7 +355,7 @@ message DmSegMobileReply {
     DanmakuAIFlag ai_flag = 3;
     // 当前文件的结束时间(毫秒)
     int32 time = 4;
-    // 
+    // 彩色弹幕
     repeated DmColorful colorful_src = 5;
 }
 
@@ -438,13 +372,9 @@ message DmSegMobileReq {
     int64 segment_index = 4;
     // 是否青少年模式
     int32 teenagers_mode = 5;
-    //
     int64 ps = 6;
-    //
     int64 pe = 7;
-    //
     int32 pull_mode = 8;
-    //
     int32 from_scene = 9;
 }
 
@@ -521,17 +451,11 @@ message DmViewReply {
     string input_placeholder = 12;
     // 用户举报弹幕 cid维度屏蔽的正则规则
     repeated string report_filter_content = 13;
-    //
     ExpoReport expo_report = 14;
-    //
     BuzzwordConfig buzzword_config = 15;
-    //
     repeated Expressions expressions = 16;
-    //
     repeated PostPanel post_panel = 17;
-    //
     repeated string activity_meta = 18;
-    //
     repeated PostPanelV2 post_panel2 = 19;
 }
 
@@ -556,9 +480,7 @@ message DmWebViewReply {
     // 是否已关闭弹幕
     // 0:未关闭 1:已关闭
     int32 state = 1;
-    //
     string text = 2;
-    //
     string text_side = 3;
     // 分段弹幕配置
     DmSegConfig dm_sge = 4;
@@ -576,75 +498,50 @@ message DmWebViewReply {
     DanmuWebPlayerConfig player_config = 10;
     // 用户举报弹幕 cid维度屏蔽
     repeated string report_filter_content = 11;
-    //
     repeated Expressions expressions = 12;
-    //
     repeated PostPanel post_panel = 13;
-    //
     repeated string activity_meta = 14;
-    //
     repeated PostPanelV2 postPanelV2 = 15;
 }
 
-//
 message ExpoReport {
-    //
     bool should_report_at_end = 1;
 }
 
-//
 enum ExposureType {
-    ExposureTypeNone   = 0; //
-    ExposureTypeDMSend = 1; //
+    ExposureTypeNone   = 0;
+    ExposureTypeDMSend = 1;
 }
 
-//
 message Expression {
-    //
     repeated string keyword = 1;
-    //
     string url = 2;
-    //
     repeated Period period = 3;
 }
 
-//
 message Expressions {
-    //
     repeated Expression data = 1;
 }
 
 // 是否开启弹幕
 message InlinePlayerDanmakuSwitch {
-    //
     bool value = 1;
 } 
 
-//
 message Label {
-    //
     string title = 1;
-    //
     repeated string content = 2;
 }
 
-//
 message LabelV2 {
-    //
     string title = 1;
-    //
     repeated string content = 2;
-    //
     bool exposure_once = 3;
-    //
     ExposureType exposure_type = 4;
 }
 
-//
 message Period {
-    //
     int64 start = 1;
-    //
     int64 end = 2;
 }
 
@@ -661,100 +558,72 @@ message PlayerDanmakuDomain               {float value = 1;} // 弹幕显示区�
 message PlayerDanmakuEnableblocklist      {bool  value = 1;} // 是否开启屏蔽列表
 message PlayerDanmakuOpacity              {float value = 1;} // 弹幕不透明度
 message PlayerDanmakuScalingfactor        {float value = 1;} // 弹幕缩放比例
-message PlayerDanmakuSeniorModeSwitch     {int32 value = 1;} //
+message PlayerDanmakuSeniorModeSwitch     {int32 value = 1;}
 message PlayerDanmakuSpeed                {int32 value = 1;} // 弹幕速度
 message PlayerDanmakuSwitch               {bool  value = 1; bool can_ignore = 2;} // 是否开启弹幕
 message PlayerDanmakuSwitchSave           {bool  value = 1;} // 是否记录弹幕开关设置
 message PlayerDanmakuUseDefaultConfig     {bool  value = 1;} // 是否使用推荐弹幕设置
 
-//
 message PostPanel {
-    //
     int64 start = 1;
-    //
     int64 end = 2;
-    //
     int64 priority = 3;
-    //
     int64 biz_id = 4;
-    //
     PostPanelBizType biz_type = 5;
-    //
     ClickButton click_button = 6;
-    //
     TextInput text_input = 7;
-    //
     CheckBox check_box = 8;
-    //
     Toast toast = 9;
 }
 
-//
 enum PostPanelBizType {
-    PostPanelBizTypeNone      = 0; //
-    PostPanelBizTypeEncourage = 1; //
-    PostPanelBizTypeColorDM   = 2; //
-    PostPanelBizTypeNFTDM     = 3; //?
-    PostPanelBizTypeFragClose = 4; //
-    PostPanelBizTypeRecommend = 5; //?
+    PostPanelBizTypeNone      = 0;
+    PostPanelBizTypeEncourage = 1;
+    PostPanelBizTypeColorDM   = 2;
+    PostPanelBizTypeNFTDM     = 3;
+    PostPanelBizTypeFragClose = 4;
+    PostPanelBizTypeRecommend = 5;
 }
 
-//
 message PostPanelV2 {
-    //
     int64 start = 1;
-    //
     int64 end = 2;
-    //
     int32 biz_type = 3;
-    //
     ClickButtonV2 click_button = 4;
-    //
     TextInputV2 text_input = 5;
-    //
     CheckBoxV2 check_box = 6;
-    //
     ToastV2 toast = 7;
-    //
     BubbleV2 bubble = 8;
-    //
     LabelV2 label = 9;
-    //
     PostStatus post_status = 10;
 }
 
-//
 enum PostStatus {
-    PostStatusNormal = 0; //
-    PostStatusClosed = 1; //
+    PostStatusNormal = 0;
+    PostStatusClosed = 1;
 }
 
-//
 enum RenderType {
-    RenderTypeNone     = 0; //
-    RenderTypeSingle   = 1; //
-    RenderTypeRotation = 2; //
+    RenderTypeNone     = 0;
+    RenderTypeSingle   = 1;
+    RenderTypeRotation = 2;
 }
 
 // 修改弹幕配置-响应
 message Response {
-    //
     int32 code = 1;
-    //
     string message = 2;
 }
 
-//
 enum SubtitleAiStatus {
-    None     = 0; //
-    Exposure = 1; //
-    Assist   = 2; //
+    None     = 0;
+    Exposure = 1;
+    Assist   = 2;
 }
 
-//
 enum SubtitleAiType {
-    Normal    = 0; //
-    Translate = 1; //
+    Normal    = 0;
+    Translate = 1;
 }
 
 // 单个字幕信息
@@ -773,11 +642,8 @@ message SubtitleItem {
     UserInfo author = 6;
     // 字幕类型
     SubtitleType type = 7;
-    //
     string lan_doc_brief = 8;
-    //
     SubtitleAiType ai_type = 9;
-    //
     SubtitleAiStatus ai_status = 10;
 }
 
@@ -786,75 +652,46 @@ enum SubtitleType {
     AI = 1; // AI生成字幕
 }
 
-//
 message TextInput {
-    //
     repeated string portrait_placeholder = 1;
-    //
     repeated string landscape_placeholder = 2;
-    //
     RenderType render_type = 3;
-    //
     bool placeholder_post = 4;
-    //
     bool show = 5;
-    //
     repeated Avatar avatar = 6;
-    //
     PostStatus post_status = 7;
-    //
     Label label = 8;
 }
 
-//
 message TextInputV2 {
-    //
     repeated string portrait_placeholder = 1;
-    //
     repeated string landscape_placeholder = 2;
-    //
     RenderType render_type = 3;
-    //
     bool placeholder_post = 4;
-    //
     repeated Avatar avatar = 5;
-    //
     int32 text_input_limit = 6;
 }
 
-//
 message Toast {
-    //
     string text = 1;
-    //
     int32 duration = 2;
-    //
     bool show = 3;
-    //
     Button button = 4;
 }
 
-//
 message ToastButtonV2 {
-    //
     string text = 1;
-    //
     ToastFunctionType action = 2;
 }
 
-//
 enum ToastFunctionType {
-    ToastFunctionTypeNone      = 0; //
-    ToastFunctionTypePostPanel = 1; //
+    ToastFunctionTypeNone      = 0;
+    ToastFunctionTypePostPanel = 1;
 }
 
-//
 message ToastV2 {
-    //
     string text = 1;
-    //
     int32 duration = 2;
-    //
     ToastButtonV2 toast_button_v2 = 3;
 }
 
@@ -911,5 +748,43 @@ message DmColorful{
     string src = 2;
 }
 message AnyBody{
-    google.protobuf.Any body = 1;
+    // google.protobuf.Any body = 1;
+    GOOGLE_PROTOBUF_ANY body = 1;
+}
+message DmMaskWall{
+    int64 start = 1;
+    int64 end = 2;
+    string content = 3;
+    DmMaskWallContentType contentType = 4;
+    DmMaskWallBizType bizType = 5;
+    repeated DmMaskWallContent contents = 6;
+}
+enum DmMaskWallBizType{
+    DmMaskWallBizTypeUnknown = 0;
+    DmMaskWallBizTypeOGV = 1;
+    DmMaskWallBizTypeBizPic = 2;
+    DmMaskWallBizTypeMute = 3;
+    DmMaskWallBizTypeRecord = 4;
+}
+message DmMaskWallContent{
+    DmMaskWallContentType type = 1;
+    string content = 2;
+}
+enum DmMaskWallContentType{
+    DmMaskWallContentTypeUnknown = 0;
+    DmMaskWallContentTypeText = 1;
+    DmMaskWallContentTypePic = 2;
+}
+message QoeInfo{
+    string info =1;
+}
+message DmSubView{
+    int32 type = 1;
+    int64 oid = 2;
+    int64 pid = 3;
+    repeated PostPanelV2 post_panel_2 = 4;
+}
+message GOOGLE_PROTOBUF_ANY{
+    string type_url = 1;
+    bytes value = 2;
 }

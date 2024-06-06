@@ -1,4 +1,5 @@
 //https://s1.hdslb.com/bfs/static/blive/blfe-live-room/static/js/app.****.js
+//https://s1.hdslb.com/bfs/static/player/main/core.****.js
 // DANMU_MSG dm_v2
 syntax = "proto3";
 package bilibiliDm.community.service.dm.live;
