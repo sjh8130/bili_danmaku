@@ -25,16 +25,17 @@ class Video:
 	avid: int
 	bvid: str
 
-	def __init__(self, avid, bvid):
+	def __init__(self, avid, bvid, avid_n):
 		self.avid = avid
 		self.bvid = bvid
+		self.avid_n = avid_n
 
 
 class VideoPart(Video):
 	cid: int
 
 	def __init__(self, V:Video, cid):
-		super().__init__(V.avid,V.bvid)
+		super().__init__(V.avid,V.bvid, V.avid_n)
 		self.cid = cid
 
 
@@ -79,7 +80,7 @@ def getDanmaku(vp: VideoPart, segments: int, session: requests.Session) -> list[
 			params = {
 				"type": "1",
 				"oid": str(vp.cid),
-				"pid": str(vp.avid),
+				"pid": str(vp.avid_n),
 				"segment_index": "1",
 				"pull_mode": "1",
 				"ps": "0",
@@ -91,7 +92,7 @@ def getDanmaku(vp: VideoPart, segments: int, session: requests.Session) -> list[
 			params = {
 				"type": "1",
 				"oid": str(vp.cid),
-				"pid": str(vp.avid),
+				"pid": str(vp.avid_n),
 				"segment_index": "1",
 				"pull_mode": "1",
 				"ps": "120000",
@@ -104,13 +105,13 @@ def getDanmaku(vp: VideoPart, segments: int, session: requests.Session) -> list[
 			params = {
 				"type": "1",
 				"oid": str(vp.cid),
-				"pid": str(vp.avid),
+				"pid": str(vp.avid_n),
 				"segment_index": str(segment),
 				"web_location": "1315873",
 			}
 		url = "https://api.bilibili.com/x/v2/dm/wbi/web/seg.so?"+gen_w_rid(params)
 		file_content = downloader(url, headers, session)
-		danmakus.append(danmakus)
+		danmakus.append(bytes(file_content))
 		writeToFiles(filename, file_content)
 	return danmakus
 
@@ -143,9 +144,10 @@ def writeToFiles(filename: str, data: str | bytes | dict, _gzip: bool = False) -
 	_type = type(data)
 	if _type == str:
 		_data = bytes(data, encoding="utf-8")
+	elif _type == dict:
+		_data = bytes(json.dumps(data, ensure_ascii=False, separators=(",",":")), encoding="utf-8")
 	else:
-		_data = bytes(json.dumps(data, ensure_ascii=False), encoding="utf-8")
-
+		_data = data
 	if _gzip:
 		gzip.open(filename, "wb", 9).write(_data)
 	else:
@@ -156,9 +158,11 @@ def main(video:Video):
 	"""
 	视频处理
 	"""
-	url_info_1n = "https://api.bilibili.com/x/web-interface/view"
-	url_info_1e = "https://api.bilibili.com/x/web-interface/wbi/view?"+gen_w_rid({"aid":video.avid})
-	url_info_2n = "https://api.bilibili.com/x/web-interface/view/detail"
+	if video == None:
+		return
+	url_info_1n = f"https://api.bilibili.com/x/web-interface/view?bvid={video.bvid}"
+	url_info_1e = "https://api.bilibili.com/x/web-interface/wbi/view?"+gen_w_rid({"aid":video.avid_n})
+	url_info_2n = f"https://api.bilibili.com/x/web-interface/view/detail?bvid={video.bvid}"
 	session = requests.Session()
 	headers = {
 		"Accept-Encoding": "gzip, deflate, br, zstd",
@@ -168,7 +172,7 @@ def main(video:Video):
 		"Connection": "keep-alive",
 	}
 	# ================================ 视频信息1
-	video_info_1 = downloader(url_info_1n, f"[{video.bvid}]_[0]_[Video]_[INFO].json", headers, session)
+	video_info_1 = downloader(url_info_1n, headers, session)
 	video_info_1_load = json.loads(video_info_1)
 	try:
 		video_info_1_load["data"]["ugc_season"]["sections"] = []
@@ -193,13 +197,13 @@ def main(video:Video):
 	json_info = video_info_1_load["data"]
 	# ================================ bvid aid 检查
 	if json_info["bvid"] != video.bvid:
-		print(f"[bvid]: bvid mismatch {json_info["bvid"]}|{video.bvid}")
+		print(f"[bvid]: bvid mismatch {json_info['bvid']}|{video.bvid}")
 	if json_info["aid"] != video.bvid:
-		print(f"[avid]: avid mismatch av{json_info["aid"]}|{video.bvid}")
+		print(f"[avid]: avid mismatch av{json_info['aid']}|{video.bvid}")
 	# ================================ 字幕
 	if json_info["subtitle"] != None:
 		for subs in json_info["subtitle"]["list"]:
-			writeToFiles(f"[{video.bvid}]_[Subtitle]_[{subs["id"]}]_[{subs["lan"]}].bcc", downloader(subs["subtitle_url"], headers, session))
+			writeToFiles(f"[{video.bvid}]_[Subtitle]_[{subs['id']}]_[{subs['lan']}].bcc", downloader(subs["subtitle_url"], headers, session))
 	# ================================ 首映
 	try:
 		if json_info["premiere"] is not None:
@@ -213,7 +217,7 @@ def main(video:Video):
 		oid = int(this["cid"])
 		vp = VideoPart(V=video,cid=oid)
 
-		segment_count = (int(this["duration"])/360).__ceil__()
+		segment_count = (int(this["duration"])/360).__ceil__()+1
 		extra_info_proto_binary = downloader(f"https://api.bilibili.com/x/v2/dm/web/view?type=1&oid={vp.cid}", headers, session)
 		writeToFiles(f"[{video.bvid}]_[{vp.cid}]_[BAS]_[INFO].bin", extra_info_proto_binary)
 
@@ -224,30 +228,44 @@ def main(video:Video):
 		danmaku_binary_list = getDanmaku(vp, segment_count, session)
 		danmaku_list = []
 		danmakuColorful_list = []
+		for dm_bin in danmaku_binary_list:
+			dms = dm_pb2.DmSegMobileReply()
+			dms.ParseFromString(dm_bin)
+			dms_j = json.loads(MessageToJson(dms, indent=0))
+			for dm in dms_j['elems']:
+				danmaku_list.append(dm)
+			for dmc in dms_j['colorfulSrc']:
+				danmakuColorful_list.append(dmc)
+		final_json = {
+			"elems":danmaku_list,
+			"colorfulSrc":danmakuColorful_list
+		}
+		with open(f"[{video.bvid}]_[{video.avid}].json","w",encoding="utf-8") as fp:
+			final_string = json.dumps(final_json, ensure_ascii=False, separators=(",",":"))
+			fp.write(final_string.replace("{\"id\":","\n\t{\"id\":"))
 
 
-def process_args(argv):
-	for i in argv:
-		i = str(i)
-		if i.find("https://www.bilibili.com/video/") == 0:
-			i = i.lstrip("https://www.bilibili.com/video/")
-		if i.find("http://www.bilibili.com/video/") == 0:
-			i = i.lstrip("http://www.bilibili.com/video/")
-		if i.find("https://b23.tv/BV1") == 0 or i.find("https://b23.tv/av") == 0:
-			i = i.lstrip("https://b23.tv/")
-		i = i.split("?")[0].split("/")[0]
-		if i.find("BV") == 0:
-			bvid = i[i.find("BV"):i.find("BV")+12]
-			avid_in = BV2AV(bvid)
-			avid = f"av{avid_in}"
-		else:
-			avid = i
-			avid_in = int(avid.lstrip("av"))
-			avid = f"av{avid_in}"
-			bvid = AV2BV(avid_in)
-
-		main(Video(avid,bvid))
+def process_args(vid: str):
+	if vid.find("https://www.bilibili.com/video/") == 0:
+		vid = vid.lstrip("https://www.bilibili.com/video/")
+	elif vid.find("http://www.bilibili.com/video/") == 0:
+		vid = vid.lstrip("http://www.bilibili.com/video/")
+	elif vid.find("https://b23.tv/BV1") == 0 or vid.find("https://b23.tv/av") == 0:
+		vid = vid.lstrip("https://b23.tv/")
+	vid = vid.split("?")[0].split("/")[0]
+	if vid.find("BV") == 0:
+		bvid = vid[vid.find("BV"):vid.find("BV")+12]
+		avid_n = BV2AV(bvid)
+		avid = f"av{avid_n}"
+	elif vid.find("av") == 0:
+		avid_n = int(vid.lstrip("av"))
+		avid = f"av{avid_n}"
+		bvid = AV2BV(avid_n)
+	else:
+		raise Exception(msg=vid)
+	return Video(avid, bvid, avid_n)
 
 
 if __name__ == "__main__":
-	main(process_args(sys.argv))
+	for i in sys.argv[1:]:
+		main(process_args(i))
