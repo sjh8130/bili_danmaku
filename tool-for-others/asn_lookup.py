@@ -54,6 +54,7 @@ ISO3166_1 = ["AD", "AE", "AF", "AG", "AI", "AL", "AM", "AO", "AQ", "AR", "AS", "
 			 "ZA", "ZM", "ZW",
 			 ]
 
+#    ip_cidr | region | dses
 ips = [
 	["0.0.0.0/8",			"XX", "listening", "reserved"],
 	["10.0.0.0/8",			"XX", "PRIVATE-A", "reserved"],
@@ -209,7 +210,7 @@ def query_ip(ip: str):
 		return
 	for item in ips:
 		if ip == item[0]:
-			print(f"{item[0]}\t{item[1]}\t{item[2]}\t{item[3]}")
+			print(str.join(item))
 		elif "/" in item[0]:
 			if ip_in_range(ip, item[0]):
 				print(f"{item[0]}\t{item[1]}\t{item[2]}\t{item[3]}")
