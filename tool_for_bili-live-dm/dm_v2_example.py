@@ -1,13 +1,12 @@
 import io
 import json
 import time
-from zlib import crc32
-from google.protobuf.json_format import MessageToJson
+from google.protobuf.json_format import MessageToDict
 from base64 import b64decode
 # import Live_dm_v2_pb2 as live_dm
 import Live_dm_v2_2023_03_23_pb2 as live_dm
 import sys
-from filters import HASHED_LIST
+from filters import FILTER_WORDS
 
 """
 11th Intel Core : 9MB/s/1GHz
@@ -34,9 +33,9 @@ with open(in_path, "r", 1048576, encoding="utf-8") as F_in, io.open(outPath, "w"
 			else:
 				break
 		# if dm_proto.text.lstrip(" ").rstrip(" ").lstrip("　").rstrip("　").lower() in FILTER_WORDS or dm_proto.text.find("【")>0 or dm_proto.text.find("】")>0 or dm_proto.dm_type!=live_dm.DmTypeNormal:
-		if crc32(bytes(dm_proto.text.lstrip(" ").rstrip(" ").lstrip("　").rstrip("　").lower(),encoding="utf-8")) in HASHED_LIST or dm_proto.text.find("【")>0 or dm_proto.text.find("】")>0 or dm_proto.dm_type!=live_dm.DmTypeNormal:
+		if dm_proto.text.lstrip(" ").rstrip(" ").lstrip("　").rstrip("　").lower() in FILTER_WORDS or dm_proto.text.find("【")>0 or dm_proto.text.find("】")>0 or dm_proto.dm_type!=live_dm.DmTypeNormal:
 			continue
-		temp_json2 = json.loads(MessageToJson(dm_proto, indent=0, including_default_value_fields=False))
+		temp_json2 = MessageToDict(dm_proto)
 		temp_json2["text"] = temp_json2["text"].lstrip(" ").rstrip(" ").lstrip("　").rstrip("　")
 		if 1:
 			del temp_json2["dmid"]	# 1

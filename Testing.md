@@ -1112,22 +1112,22 @@ Link = 6
 | cmd		| str	| "LIKE_INFO_V3_CLICK" |
 | data		| obj	| |
 #### LIKE_INFO_V3_CLICK__data
-| key 14					| type		| value	|
+| key 14			| type		| value	|
 |-|-|-|
-| show_area					| num		| 0 / 1(30s) |
-| msg_type					| num		| 6 |
-| like_icon					| str		| [图标][img_16] |
-| uid						| num		| uid |
-| like_text					| str		| "为主播点赞了" |
-| uname						| str		| 昵称 |
-| uname_color				| str		| "" |
-| identities				| \[+]\num	| [identities](#others) |
-| fans_medal				| obj		| [fans_medal](#粉丝勋章medal_info) |
-| contribution_info			| obj		| |
-| dmscore					| num		| 20 |
-| group_medal				| null/		| |
-| is_mystery				| bool		| |
-| uinfo						| null/obj	| [uinfo](#pubilc_uinfo) |
+| show_area			| num		| 0 / 1(30s) |
+| msg_type			| num		| 6 |
+| like_icon			| str		| [图标][img_16] |
+| uid				| num		| uid |
+| like_text			| str		| "为主播点赞了" |
+| uname				| str		| 昵称 |
+| uname_color		| str		| "" |
+| identities		| \[+]\num	| [identities](#others) |
+| fans_medal		| obj		| [fans_medal](#粉丝勋章medal_info) |
+| contribution_info	| obj		| |
+| dmscore			| num		| 20 |
+| group_medal		| null/		| |
+| is_mystery		| bool		| |
+| uinfo				| null/obj	| [uinfo](#pubilc_uinfo) |
 ```json
 {
 	"cmd":"LIKE_INFO_V3_CLICK",
@@ -1364,13 +1364,14 @@ f"欢迎 <^icon^> {anchor_name} <%{USERNAME}%> 进入直播间"
 | is_group				| num	| 0 |
 | is_show				| num	| 0 |
 | num					| num	| 购买数量 |
-| op_type				| num	| 1 / 2 |
+| op_type				| num	| 1: 开通大航海广播 / 2: 续费大航海广播 |
 | payflow_id			| str	| 订单号(25)(YYMMDD HHmmss xxxxxxxxxxxxx) |
-| price					| num	| 舰长138 158 198 / 提督1598 1998 / 总督15998 19998 |
+| price					| num	| 舰长138 158 168 198 / 提督1598 1998 / 总督15998 19998 |
 | role_name				| str	| "舰长" / "提督" / "总督" |
 | room_effect_id		| num	| |
 | room_gift_effect_id	| num	| |
 | room_group_effect_id	| num	| |
+| source				| num	| |
 | start_time			| num	| 购买时间 TimeStamp(秒) |
 | svga_block			| num	| 0 |
 | target_guard_count	| num	| 主播当前大航海成员数 |
@@ -1388,6 +1389,7 @@ f"欢迎 <^icon^> {anchor_name} <%{USERNAME}%> 进入直播间"
 {"cmd":"USER_TOAST_MSG","data":{"anchor_show":true,"color":"#00D1F1","dmscore":90, "effect_id":397,"end_time":1704038400,"face_effect_id":44,"gift_id":10003,"group_name":"","group_op_type":0,"group_role_name":"","guard_level":3,"is_group":0,"is_show":0,"num":1,"op_type":1,"payflow_id":"240101000000xxxxxxxxxxxxx","price":198000,"role_name":"舰长","room_effect_id":590,"room_group_effect_id":1337,"start_time":1704038400,"svga_block":0,"target_guard_count":123,"toast_msg":"<%xxx%> 在主播YYY的直播间开通了舰长，今天是TA陪伴主播的第xx天","uid":12345,"unit":"月","user_show":true,"username":"xxx"}}
 {"cmd":"USER_TOAST_MSG","data":{"anchor_show":true,"color":"#00D1F1","dmscore":90, "effect_id":397,"end_time":1704038400,"face_effect_id":44,"gift_id":10003,"group_name":"","group_op_type":0,"group_role_name":"","guard_level":3,"is_group":0,"is_show":0,"num":3,"op_type":2,"payflow_id":"240101000000xxxxxxxxxxxxx","price":514000,"role_name":"舰长","room_effect_id":590,"room_group_effect_id":1337,"start_time":1704038400,"svga_block":0,"target_guard_count":123,"toast_msg":"<%xxx%> 在主播YYY的直播间开通了3个月舰长，今天是TA陪伴主播的第xx天","uid":12345,"unit":"月","user_show":true,"username":"xxx"}}
 {"cmd":"USER_TOAST_MSG","data":{"anchor_show":true,"color":"#00D1F1","dmscore":90, "effect_id":397,"end_time":1704038400,"face_effect_id":44,"gift_id":10003,"group_name":"","group_op_type":0,"group_role_name":"","guard_level":3,"is_group":0,"is_show":0,"num":6,"op_type":2,"payflow_id":"240101000000xxxxxxxxxxxxx","price":948000,"role_name":"舰长","room_effect_id":590,"room_group_effect_id":1337,"start_time":1704038400,"svga_block":0,"target_guard_count":123,"toast_msg":"<%xxx%> 在主播YYY的直播间续费了6个月舰长，今天是TA陪伴主播的第xx天","uid":12345,"unit":"月","user_show":true,"username":"xxx"}}
+{"cmd":"USER_TOAST_MSG","data":{"anchor_show":true,"color":"#00D1F1","dmscore":999,"effect_id":397,"end_time":1721282408,"face_effect_id":44,"gift_id":10003,"group_name":"","group_op_type":0,"group_role_name":"","guard_level":3,"is_group":0,"is_show":0,"num":1,"op_type":2,"payflow_id":"240718111111xxxxxxxxxxxxx","price":168000,"role_name":"舰长","room_effect_id":590,"room_gift_effect_id":0,   "room_group_effect_id":1337,"source":0,"start_time":1721282408,"svga_block":0,"target_guard_count":123,"toast_msg":"<%xxx%> 在主播YYY的直播间续费了舰长，今天是TA陪伴主播的第xxx天","uid":12345,"unit":"月","user_show":true,"username":"xxx"},"msg_id":"xxx:1000:1000","p_is_ack":true,"p_msg_type":1,"send_time":000}
 {"cmd":"USER_TOAST_MSG","data":{"anchor_show":true,"color":"#00D1F1","dmscore":999,"effect_id":0,  "end_time":1717000000,"face_effect_id":44,"gift_id":10003,"group_name":"","group_op_type":0,"group_role_name":"","guard_level":3,"is_group":0,"is_show":0,"num":1,"op_type":2,"payflow_id":"2405xxxxxxxxxxxxxxxxxxxxx","price":50000, "role_name":"舰长","room_effect_id":0,  "room_gift_effect_id":0,   "room_group_effect_id":0,   "source":2,"start_time":1717000000,"svga_block":0,"target_guard_count":123,"toast_msg":"<%xxx%>续费了舰长1*5天","uid":12345,"unit":"*5天","user_show":true,"username":"xxx"},"msg_id":"xxx:1000:1000","p_is_ack":true,"p_msg_type":1,"send_time":000}
 {"cmd":"USER_TOAST_MSG","data":{"anchor_show":true,"color":"#00D1F1","dmscore":999,"effect_id":0,  "end_time":1717000000,"face_effect_id":44,"gift_id":10003,"group_name":"","group_op_type":0,"group_role_name":"","guard_level":3,"is_group":0,"is_show":0,"num":1,"op_type":2,"payflow_id":"2405xxxxxxxxxxxxxxxxxxxxx","price":50000, "role_name":"舰长","room_effect_id":0,  "room_gift_effect_id":0,   "room_group_effect_id":0,   "source":2,"start_time":1717000000,"svga_block":0,"target_guard_count":123,"toast_msg":"<%xxx%>续费了舰长1*8天","uid":12345,"unit":"*8天","user_show":true,"username":"xxx"},"msg_id":"xxx:1000:1000","p_is_ack":true,"p_msg_type":1,"send_time":000}
 {"cmd":"USER_TOAST_MSG","data":{"anchor_show":true,"color":"#00D1F1","dmscore":999,"effect_id":397,"end_time":1717000000,"face_effect_id":44,"gift_id":10003,"group_name":"","group_op_type":0,"group_role_name":"","guard_level":3,"is_group":0,"is_show":0,"num":1,"op_type":1,"payflow_id":"240602xxxxxxxxxxxxxxxxxxx","price":198000,"role_name":"舰长","room_effect_id":590,"room_gift_effect_id":1485,"room_group_effect_id":1337,"source":1,"start_time":1717000000,"svga_block":0,"target_guard_count":123,"toast_msg":"<%xxx%> 在主播YYY的直播间开通了舰长，今天是TA陪伴主播的第xx天","uid":12345,"unit":"月","user_show":true,"username":"xxx"},"msg_id":"xxx:1000:1000","p_is_ack":true,"p_msg_type":1,"send_time":000}
@@ -1925,15 +1927,19 @@ SC 删除
 | cmd		| str	| "POPULAR_RANK_CHANGED" |
 | data		| obj	| |
 #### POPULAR_RANK_CHANGED__data
-| key		| type	| value	|
+| key			| type	| value	|
 |-|-|-|
-| uid		| num	| 主播uid |
-| rank		| num	| \[0-100\] |
-| countdown	| num	| \[0-3600\] |
-| timestamp	| num	| 当前时间TimeStamp(秒) |
-| cache_key	| str	| `f"rank_change:{hex_256bit}"` |
+| uid			| num	| 主播uid |
+| rank			| num	| \[0-100\] |
+| countdown		| num	| \[0-3600\] |
+| timestamp		| num	| 当前时间TimeStamp(秒) |
+| cache_key		| str	| `f"rank_change:{hex_256bit}"` |
+| url_by_type	| str	| |
+| rank_by_type	| num	| |
+| default_url	| str	| |
 ```json
 {"cmd":"POPULAR_RANK_CHANGED","data":{"uid":12345,"rank":9999,"countdown":9999,"timestamp":1704038400,"cache_key":"rank_change:ffffffffffffffffffffffffffffffff"}}
+{"cmd":"POPULAR_RANK_CHANGED","data":{"uid":12345,"rank":9999,"countdown":9999,"timestamp":1719571320,"cache_key":"rank_change:ffffffffffffffffffffffffffffffff","on_rank_name_by_type":"xxx","rank_name_by_type":"人气榜","url_by_type":"https://live.bilibili.com/p/html/live-app-hotrank/index.html?is_live_half_webview=1&hybrid_rotate_d=1&hybrid_half_ui=1,3,100p,70p,0,0,30,100,12;2,2,375,100p,0,0,30,100,0;3,3,100p,70p,0,0,30,100,12;4,2,375,100p,0,0,30,100,0;5,3,100p,70p,0,0,30,100,0;6,3,100p,70p,0,0,30,100,0;7,3,100p,70p,0,0,30,100,0;8,3,100p,70p,0,0,30,100,0&pc_ui=338,465,f4eefa,0&redirect=v2&anchorId={xxx}&rank_type=2","rank_by_type":22,"default_url":"https://live.bilibili.com/p/html/live-app-hotrank/index.html?is_live_half_webview=1&hybrid_rotate_d=1&hybrid_half_ui=1,3,100p,70p,0,0,30,100,12;2,2,375,100p,0,0,30,100,0;3,3,100p,70p,0,0,30,100,12;4,2,375,100p,0,0,30,100,0;5,3,100p,70p,0,0,30,100,0;6,3,100p,70p,0,0,30,100,0;7,3,100p,70p,0,0,30,100,0;8,3,100p,70p,0,0,30,100,0&pc_ui=338,465,f4eefa,0&redirect=v2&anchorId={xxx}"}}
 ```
 ----
 ### PREPARING
@@ -1946,6 +1952,7 @@ SC 删除
 | roomid	| str	| 长_短直播间ID |
 | ?scatter	| obj	| |
 ```json
+{"roomid":"12345","scatter":{"min":10,"max":30},"round":1,"cmd":"PREPARING"}
 {"roomid":"12345","round":1,"cmd":"PREPARING"}
 {"roomid":"12345","cmd":"PREPARING"}
 //{"cmd":"PREPARING","roomid":"12345","round":1,"scatter":{"max":30,"min":10}}
@@ -1992,15 +1999,15 @@ SC 删除
 |-|-|-|-|
 | 0[0]	| num		| 0 |
 | 0[1]	| num		| `mode` 弹幕位置 | 0:普通 / 4:底部
-| 0[2]	| num		| `size/fontsize` 弹幕字体大小 | 25
+| 0[2]	| num		| `size/fontsize` 弹幕字体大小 | `SendMsgReq.Fontsize` |
 | 0[3]	| num		| `color` 弹幕颜色 |
-| 0[4]	| num		| `ctime` | TimeStamp(毫秒)
-| 0[5]	| num		| `dmid/rnd/danmakuRnd` <br> 抽奖/弹幕互动游戏 为 0 | WEB:进入直播间时间TimeStamp(秒) <br> iOS/Android:随机
+| 0[4]	| num		| `ctime` | TimeStamp(毫秒) `time.Now().Unix()` |
+| 0[5]	| num		| `dmid/rnd/danmakuRnd` <br> 抽奖/弹幕互动游戏 为 0 | `var rand int64` <br> WEB:进入直播间时间TimeStamp(秒) <br> iOS/Android:随机 |
 | 0[6]	| num		| 0 |
-| 0[7]	| str		| `midHash` | HEX:crc32(uid)
+| 0[7]	| str		| `midHash` | HEX:crc32(uid) |
 | 0[8]	| num		| 0 |
 | 0[9]	| num		| `type/danmakuType` | \[0,1,2,7,9\] 1:节奏风暴 / 2:天选时刻 / 9:弹幕互动游戏
-| 0[10]	| num		| `chatBubbleType` | 0 / 1 / 2 / 5
+| 0[10]	| num		| `chatBubbleType` | 0 / 1 / 2 / 5 |
 | 0[11]	| str		| `chatBubbleColor` | 5:`"#1453BAFF,#4C2263A2,#3353BAFF"` <br> 2:`"#1453BAFF,#4C2263A2,#3353BAFF"` <br> 1:`"#33FFE99E,#40DCA731,#33FFE99E"`
 | 0[12]	| num		| `dm_type/dmType/danmakuSpecialType` | 0:文本 <br> 1:表情包 <br> 2:语音
 | 0[13]	| obj/str	| 表情包:[`emoticonOptions`](#DANMU_MSG__info__0__13) <br> `"{}"` |
@@ -2014,11 +2021,11 @@ SC 删除
 |-|-|-|-|
 | 2[0]	| num	| `uid` | 用户uid
 | 2[1]	| str	| `uname/username` | 昵称
-| 2[2]	| num	| `isAdmin` | 房管
+| 2[2]	| num	| `isAdmin` | 房管 `RoomAdmin` |
 | 2[3]	| num	| `isVip` |
 | 2[4]	| num	| `isSvip` |
-| 2[5]	| num	| `rank` | LV0/非正式会员:5000 / 10000
-| 2[6]	| num	| `verify` | 手机号验证
+| 2[5]	| num	| `rank` | LV0/非正式会员:5000 / 10000 |
+| 2[6]	| num	| `verify` | 手机号验证 `MobileVerify` |
 | 2[7]	| str	| `usernameColor` | 舰长:`"#00D1F1"` <br> 提督:`"#E17AFF"` <br> 总督:`"#FF7C28"`
 #### DANMU_MSG__info__3
 **粉丝勋章/fansMedal**
@@ -2026,7 +2033,7 @@ SC 删除
 |-|-|-|
 | 3[0]	| num	| `level` 粉丝勋章 等级 |
 | 3[1]	| str	| `label` 粉丝勋章 称号 |
-| 3[2]	| num	| `anchorUsername` 主播昵称 |
+| 3[2]	| num	| `anchorUsername` 主播名称 |
 | 3[3]	| num	| `shortRoomID/RoomID` 长_短直播间ID |
 | 3[4]	| num	| [`medalColor`](#medal_color) |
 | 3[5]	| str	| `special` "" |
@@ -2044,7 +2051,7 @@ SC 删除
 | 4[0]	| num		| `userLevel` | 用户UL等级
 | 4[1]	| num		| 0 |
 | 4[2]	| num		| UL等级 颜色 |
-| 4[3]	| str/num	| `rank` 直播 用户排名| ">50000" / 当前排名
+| 4[3]	| str/num	| `rank` 直播 用户排名| `">50000"` / 当前排名 |
 | 4[4]	| num		| `online_rank` [0,1,2,3] | 高能榜实时排名(仅前三)
 #### DANMU_MSG__info__5
 **头衔/title**
@@ -3172,9 +3179,10 @@ fail = -1
 #### ROOM_SILENT__data
 | key		| type	| value	|
 |-|-|-|
-| type		| str	| "":关闭 / "member":全员禁言 / "medal":粉丝勋章等级禁言 / "level":UL等级禁言 |
-| level		| num	| 粉丝勋章等级 / 用户UL等级 |
+| type		| str	| "":关闭 / "member":全员禁言 / "medal":粉丝勋章等级禁言 / "level":UL等级禁言 "wealth":荣耀等级 |
+| level		| num	| 粉丝勋章等级:1-40 / 用户UL等级 / 荣耀等级:1-80 |
 | second	| num	| 结束时间TimeStamp(秒) / -1:永久 |
+| msg		| str	| |
 ```json
 {"cmd":"ROOM_SILENT_ON","data":{"level":1,"second":-1,"type":"member"}}
 {"cmd":"ROOM_SILENT_ON","data":{"level":1,"second":1704038400,"type":"member"}}
@@ -3189,7 +3197,9 @@ fail = -1
 {"cmd":"ROOM_SILENT_ON","data":{"level":1,"second":1704038400,"type":"medal"}}
 {"cmd":"ROOM_SILENT_ON","data":{"level":40,"second":1704038400,"type":"medal"}}
 
-{"cmd":"ROOM_SILENT_OFF","data":{"level":0,"second":0,"type":""}}
+{"data":{"type":"wealth","level":xxx,"second":xxx,"msg":"[系统]: 主播对荣耀等级xxx级以下的用户开启了禁言"},"cmd":"ROOM_SILENT_ON"}
+
+{"data":{"type":"","level":0,"second":0,"msg":"[系统]: 主播取消了房间禁言"},"cmd":"ROOM_SILENT_OFF"}
 ```
 ```python
 match data["type"]:
@@ -3488,6 +3498,7 @@ RANK_REM_RANK_NEW
 {"cmd":"PK_BATTLE_MATCH_TIMEOUT","data":{"battle_type":2}}
 ```
 ----
+### PK_BATTLE_PROCESS
 ### PK_BATTLE_PROCESS_NEW
 [TOP](#直播弹幕)  
 PK_BATTLE_PROCESS_NEW  
@@ -3527,6 +3538,7 @@ PK_BATTLE_PROCESS_NEW
 {"cmd":"PK_BATTLE_PROCESS_NEW",	"data":{"battle_type":2,"init_info":{"assist_info":[{"award_content":"","face":"xxx","is_mystery":false,"rank":1,"uid":xxx,"uinfo":xxx,"uname":"xxx"}],"best_uname":"xxx","room_id":xxx,"vision_desc":0,"votes":xxx},"match_info":{"assist_info":null,"best_uname":"","room_id":xxx,"vision_desc":0,"votes":0},"trace_id":"xxxxxxxxxxxxxfffffff"},"msg_id":"xxx:xxx:xxx","p_is_ack":true,"p_msg_type":1,"pk_id":xxx,"pk_status":201,"send_time":xxx,"timestamp":xxx}
 ```
 ----
+### PK_BATTLE_PRE
 ### PK_BATTLE_PRE_NEW
 [TOP](#直播弹幕)  
 | key		| type	| value	|
@@ -4015,25 +4027,28 @@ PK_BATTLE_PROCESS_NEW
 #### MESSAGEBOX_USER_MEDAL_CHANGE__data
 | key					| type		| value	|
 |-|-|-|
-| guard_level			| num		| |
-| is_lighted			| num		| |
-| medal_color_border	| num		| |
-| medal_color_end		| num		| |
-| medal_color_start		| num		| |
-| medal_level			| num		| |
-| medal_name			| str		| |
-| multi_unlock_level	| str		| |
-| MultiUnlockLevel		| \[\]str	| |
 | type					| num		| |
 | uid					| num		| |
+| up_uid				| num		| |
+| medal_level			| num		| |
+| medal_name			| str		| |
+| medal_color_start		| num		| |
+| medal_color_end		| num		| |
+| medal_color_border	| num		| |
+| is_lighted			| num		| |
+| is_lighted_v2			| bool		| |
+| guard_level			| num		| |
 | unlock				| num		| |
 | unlock_level			| num		| |
-| up_uid				| num		| |
+| multi_unlock_level	| str		| |
 | upper_bound_content	| str		| |
+| uinfo_medal			| obj		| |
+| ~~MultiUnlockLevel~~	| \[\]str	| |
 ```json
 {"cmd":"MESSAGEBOX_USER_MEDAL_CHANGE","data":{"guard_level":xxx,"is_lighted":xxx,"medal_color_border":xxx,"medal_color_end":xxx,"medal_color_start":xxx,"medal_level":xxx,"medal_name":"xxx","multi_unlock_level":"","type":0,"uid":xxx,"unlock":0,"unlock_level":0,"up_uid":xxx,"upper_bound_content":""}}
 {"cmd":"MESSAGEBOX_USER_MEDAL_CHANGE","data":{"MultiUnlockLevel":[],"guard_level":xxx,"is_lighted":xxx,"medal_color_border":xxx,"medal_color_end":xxx,"medal_color_start":xxx,"medal_level":xxx,"medal_name":"xxx","multi_unlock_level":"","type":1,"uid":xxx,"unlock":0,"unlock_level":0,"up_uid":xxx,"upper_bound_content":"恭喜你的粉丝勋章【xxx】升到xxx级"}}
 {"cmd":"MESSAGEBOX_USER_MEDAL_CHANGE","data":{"MultiUnlockLevel":["5"],"guard_level":x,"is_lighted":xx,"medal_color_border":xxx,"medal_color_end":xxx,"medal_color_start":xxx,"medal_level":5,"medal_name":"xxx","multi_unlock_level":"5","type":1,"uid":xx,"unlock":1,"unlock_level":5,"up_uid":xxx,"upper_bound_content":"恭喜你的粉丝勋章【xxx】升到5级"}}
+{"cmd":"MESSAGEBOX_USER_MEDAL_CHANGE","data":{"type":1,"uid":xxx,"up_uid":xxx,"medal_level":20,"medal_name":"XXX","medal_color_start":xxx,"medal_color_end":xxx,"medal_color_border":xxx,"is_lighted":1,"is_lighted_v2":false,"guard_level":0,"unlock":0,"unlock_level":0,"multi_unlock_level":"","upper_bound_content":"恭喜你的粉丝勋章【xxx】升到20级","uinfo_medal":{"name":"xxx","level":20,"color_start":xxx,"color_end":xxx,"color_border":xxx,"color":0,"id":0,"typ":0,"is_light":1,"ruid":xxx,"guard_level":0,"score":0,"guard_icon":"","honor_icon":"","v2_medal_color_start":"#xxx","v2_medal_color_end":"#xxx","v2_medal_color_border":"#xxx","v2_medal_color_text":"#xxx","v2_medal_color_level":"#xxx","user_receive_count":0}}}
 ```
 ----
 ### WEALTH_NOTIFY
@@ -5695,7 +5710,7 @@ for i in range(1,len(a)):print(str(a[i]-a[i-1])[0:4])
 | key					| type		| value	| 备注 |
 |-|-|-|-|
 | anchor_roomid			| num		| 主播 短直播间ID | 
-| anchor_uname			| str		| 主播昵称 | 
+| anchor_uname			| str		| 主播名称 | 
 | guard_level			| num		| [大航海等级](#others) |
 | icon_id				| num		| 0！ |
 | is_lighted			| num		| 0: <br> 1: 七天内在直播间有互动 |
@@ -5762,6 +5777,12 @@ for i in range(1,len(a)):print(str(a[i]-a[i-1])[0:4])
 | score						| num		| 亲密值 |
 | guard_icon				| str		| 大航海等级图标 |
 | honor_icon				| str		| |
+| v2_medal_color_start		| str		| #RGBA |
+| v2_medal_color_end		| str		| #RGBA |
+| v2_medal_color_border		| str		| #RGBA |
+| v2_medal_color_text		| str		| #RGBA |
+| v2_medal_color_level		| str		| #RGBA |
+| user_receive_count		| num		| |
 #### PUBLIC_uinfo__base
 | key						| type		| value	|
 |-|-|-|-|
@@ -5802,18 +5823,15 @@ for i in range(1,len(a)):print(str(a[i]-a[i-1])[0:4])
 		"origin_info":{"face":"xxx","name":"xxx"},
 		"risk_ctrl_info":{"face":"xxx","name":"xxx"},
 		"official_info":null,
-		"official_info":{"role":0,"title":"","desc":"","type":-1},
-		"official_info":{"desc":"","role":7,"title":"bilibili直播高能主播","type":0},
-		"official_info":{"role":7,"title":"专栏优质UP主","desc":"","type":0},
-		"official_info":{"desc":"","role":1,"title":"bilibili 知名游戏UP主、直播高能主播","type":0},
-		"official_info":{"desc":"","role":1,"title":"bilibili 知名虚拟UP主","type":0},
-		"official_info":{"desc":"","role":1,"title":"bilibili 知名游戏UP主","type":0},
-		"official_info":{"desc":"","role":1,"title":"bilibili 知名美食UP主","type":0},
-		"official_info":{"desc":"","role":1,"title":"bilibili 知名UP主","type":0},
-		"official_info":{"role":1,"title":"bilibili 知名游戏UP主","desc":"","type":0},
+		"official_info":{"role":0,"desc":"","title":"","type":-1},
+		"official_info":{"role":7,"desc":"","title":"bilibili直播高能主播","type":0},
+		"official_info":{"role":7,"desc":"","title":"专栏优质UP主","type":0},
+		"official_info":{"role":1,"desc":"","title":"bilibili 知名〇〇UP主、直播高能主播","type":0},
+		"official_info":{"role":1,"desc":"","title":"bilibili 知名〇〇UP主","type":0},
+		"official_info":{"role":1,"desc":"","title":"bilibili 知名UP主","type":0},
 	},
 	"medal":{
-		"name":"〇〇〇",
+		"name":"粉丝团",
 		"level":xx,
 		"color_start":398668,"color_end":6850801,"color_border":16771156,"color":398668,
 		"id":0,
@@ -5823,16 +5841,19 @@ for i in range(1,len(a)):print(str(a[i]-a[i-1])[0:4])
 		"guard_level":x,
 		"score":xxx,
 		"guard_icon":"https://i0.hdslb.com/bfs/live/xxx.png",
-		"honor_icon":""
+		"honor_icon":"",
+		"v2_medal_color_border":"#XXXXXXXX",
+		"v2_medal_color_end":"#XXXXXXXX",
+		"v2_medal_color_level":"#XXXXXXXX",
+		"v2_medal_color_start":"#XXXXXXXX",
+		"v2_medal_color_text":"#FFFFFFFF",
+		"user_receive_count":0,
 	},
 	"wealth":{"level":xxx,"dm_icon_key":""},
 	"title":{"old_title_css_id":"","title_css_id":""},
-	"guard":{"level":xxx,"expired_str":"2024-xx-xx23:59:59"},
+	"guard":{"level":xxx,"expired_str":"2024-xx-xx 23:59:59"},
 	"uhead_frame":null,
-	"uhead_frame":{
-				"id":1775,
-				"frame_img":"https://i0.hdslb.com/bfs/live/xxx.png"
-			},
+	"uhead_frame":{"id":xxx,"frame_img":"https://i0.hdslb.com/bfs/live/xxx.png"},
 	"guard_leader":{"is_guard_leader":false}
 }
 ```
@@ -5882,34 +5903,51 @@ for i in range(1,len(a)):print(str(a[i]-a[i-1])[0:4])
 | XXXXXXXX	| 40 |
 
 ### medal_color
-| medal_level	| medal_color | medal_color_border | medal_color_end | medal_color_start | 备注 |
-| -: | -: | -: | -: | -: | - |
-| 未互动		| 12632256	| 12632256	| 12632256	| 12632256	|
-| 0　　			| 0 | 0 | 0 | 0 |
-| 1 - 4　　		| 6067854	| 6067854	| 6067854	| 6067854	|
-| 5 - 8　　		| 6126494	| 6126494	| 6126494	| 6126494	|
-| 9 -12　　		| 9272486	| 9272486	| 9272486	| 9272486	|
-| 13-16　　		| 12478086	| 12478086	| 12478086	| 12478086	|
-| 17-20　　		| 13081892	| 13081892	| 13081892	| 13081892	|
-| 21-24	无　	| 1725515	| 1725515	| 5414290	| 1725515	|
-| 21-24 舰长	| 1725515	| 1725515	| 5414290	| 6809855	|
-| 21-24 提督	| 1725515	| 1725515	| 5414290	| ????????	|绝版
-| 25-28	无　	| 398668	| 398668	| 6850801	| 398668	|
-| 25-28 舰长	| 398668	| 398668	| 6850801	| 6809855	|
-| 25-28 提督	| 398668	| 398668	| 6850801	| 16771156	|
-| 25-28 总督	| 398668	| 398668	| 6850801	| 16771156	|
-| 29-32	无　	| 2951253	| 2951253	| 10329087	| 2951253	|
-| 29-32 舰长	| 2951253	| 2951253	| 10329087	| 6809855	|
-| 29-32 提督	| 2951253	| 2951253	| 10329087	| 6809855	|
-| 29-32 总督	| 2951253	| 2951253	| 10329087	| 6809855	|
-| 33-36	无　	| 7996451	| 7996451	| 15304379	| 7996451	|
-| 33-36 舰长	| 7996451	| 7996451	| 15304379	| 6809855	|
-| 33-36 提督	| 7996451	| 7996451	| 15304379	| 16771156	|
-| 33-36 总督	| 7996451	| 7996451	| 15304379	| 16771156	|
-| 37-40	无　	| 16736523	| 16736523	| 16765060	| 16736523	|
-| 37-40 舰长	| 16736523	| 16736523	| 16765060	| 6809855	|
-| 37-40 提督	| 16736523	| 16736523	| 16765060	| 16771156	|
-| 37-40 总督	| 16736523	| 16736523	| 16765060	| 16771156	|
+| LVL	| medal_color | medal_color_border | medal_color_end | medal_color_start |
+| - | -: | -: | -: | -: |
+| gray		| 12632256	| 12632256	| 12632256	| 12632256	|
+| 0			| 0 | 0 | 0 | 0 |
+| 1 - 4		| 6067854	| 6067854	| 6067854	| 6067854	|
+| 5 - 8		| 6126494	| 6126494	| 6126494	| 6126494	|
+| 9 -12		| 9272486	| 9272486	| 9272486	| 9272486	|
+| 13-16		| 12478086	| 12478086	| 12478086	| 12478086	|
+| 17-20		| 13081892	| 13081892	| 13081892	| 13081892	|
+| 21-24	无	| 1725515	| 1725515	| 5414290	| 1725515	|
+| 21-24 舰	| 1725515	| 1725515	| 5414290	| 6809855	|
+| 21-24 提	| 1725515	| 1725515	| 5414290	| ????????	|
+| 21-24 总	| -	| -	| -	| -	|
+| 25-28	无	| 398668	| 398668	| 6850801	| 398668	|
+| 25-28 舰	| 398668	| 398668	| 6850801	| 6809855	|
+| 25-28 提	| 398668	| 398668	| 6850801	| 16771156	|
+| 25-28 总	| 398668	| 398668	| 6850801	| 16771156	|
+| 29-32	无	| 2951253	| 2951253	| 10329087	| 2951253	|
+| 29-32 舰	| 2951253	| 2951253	| 10329087	| 6809855	|
+| 29-32 提	| 2951253	| 2951253	| 10329087	| 6809855	|
+| 29-32 总	| 2951253	| 2951253	| 10329087	| 6809855	|
+| 33-36	无	| 7996451	| 7996451	| 15304379	| 7996451	|
+| 33-36 舰	| 7996451	| 7996451	| 15304379	| 6809855	|
+| 33-36 提	| 7996451	| 7996451	| 15304379	| 16771156	|
+| 33-36 总	| 7996451	| 7996451	| 15304379	| 16771156	|
+| 37-40	无	| 16736523	| 16736523	| 16765060	| 16736523	|
+| 37-40 舰	| 16736523	| 16736523	| 16765060	| 6809855	|
+| 37-40 提	| 16736523	| 16736523	| 16765060	| 16771156	|
+| 37-40 总	| 16736523	| 16736523	| 16765060	| 16771156	|
+
+### medal_color_v2
+| LVL	| v2_medal_color_start | v2_m-c-end | v2_m-c-border | v2_m-c-text | v2_m-c-level |
+| - | -: | -: | -: | -: | -: |
+| GRAY	| #00000000	| #00000000	| #00000000	| #FFFFFFFF	| #00000000	|
+| 0		| #00000000	| #00000000	| #00000000	| #FFFFFFFF	| #00000000	|
+| 1 - 4	| #5762A799	| #5762A799	| #5762A799	| #FFFFFFFF	| #000B7099	|
+| 5 - 8	| #5866C799	| #5866C799	| #5866C799	| #FFFFFFFF	| #000B7099	|
+| 9 -12	| #596FE099	| #596FE099	| #596FE099	| #FFFFFFFF	| #000B7099	|
+| 13-16	| #C85DC499	| #C85DC499	| #C85DC499	| #FFFFFFFF	| #59005699	|
+| 17-20	| #DC6B6B99	| #DC6B6B99	| #DC6B6B99	| #FFFFFFFF	| #81001F99	|
+| 21-24	| #43B3E3CC	| #43B3E3CC	| #5FC7F4FF	| #FFFFFFFF	| #00308C99	|
+| 25-28	| #4775EFCC	| #4775EFCC	| #58A1F8FF	| #FFFFFFFF	| #000B7099	|
+| 29-32	| #9660E5CC	| #9660E5CC	| #D47AFFFF	| #FFFFFFFF	| #6C00A099	|
+| 33-36	| #BE4960CC	| #BE4960CC	| #F18087FF	| #FFFFFFFF	| #91007199	|
+| 37-40	| #FF842BCC	| #FF842BCC	| #FFCE20FF	| #FFFFFFFF	| #C2000099	|
 
 ### UNIXts
 ```

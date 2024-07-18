@@ -5181,7 +5181,6 @@ STICKER_PACK=[
 	"rainbow","Re","remake","rich","RICH","RIP","rp客","Rua!","rua","sad","SC免费了","SC汪汪","shift","so","sorry","SOS","SSW","suki","sun","Suo","SwitchON","Ti","ttk","TTK","TUI","U","U脑过载","upup","uruge","V20","v50",
 	"V50","V87","v我50","V我50","VIP","VMEN","what？","whats","Wiki","win！","wink","Wink","WINK","wish","wow","WOW","wwds","www","xx","XxX","XY","yeah~","yep","yes","YES","yue","yue了","YYDS","zzZ","ZZZ",
 ]
-# ================================ 非友好用語 Unfriendly
 FILTER_WORDS = [
 	"",
 	"\r",

@@ -1,4 +1,8 @@
 #!/dev/null
+from functools import lru_cache
+
+
+@lru_cache
 def DanmakuAttrType(attr: int):
 	"""
 	Text
