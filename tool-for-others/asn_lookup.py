@@ -3,7 +3,7 @@ import sys
 import ipaddress
 
 
-def init():
+def init(force=False):
 	PATH_BASE = "Z:\\"
 	FILEPATH = (
 		f"{PATH_BASE}delegated-iana-latest",#互联网号码分配局#~1500
@@ -23,7 +23,7 @@ def init():
 		f"{URL_BASE}/afrinic/delegated-afrinic-latest",
 	)
 	for url, filepath in zip(URL, FILEPATH):
-		download_file(url, filepath)
+		download_file(url, filepath, force)
 		process_cidr(filepath)
 
 
@@ -55,7 +55,7 @@ ISO3166_1 = ["AD", "AE", "AF", "AG", "AI", "AL", "AM", "AO", "AQ", "AR", "AS", "
 			 ]
 
 #    ip_cidr | region | dses
-ips = [
+IPSO = [
 	["0.0.0.0/8",			"XX", "listening", "reserved"],
 	["10.0.0.0/8",			"XX", "PRIVATE-A", "reserved"],
 	["127.0.0.0/8",			"XX", "Loopback", "reserved"],
@@ -94,6 +94,7 @@ ips = [
 	["172.64.0.0/13",		"US", "Cloudflare", "allocated"],
 	["131.0.72.0/22",		"US", "Cloudflare", "allocated"],
 ]
+ips = IPSO
 
 cidr_calc = {
 	"4294967296": "0",
@@ -132,25 +133,26 @@ cidr_calc = {
 }
 
 
-def download_file(url: str, filepath: str):
+def download_file(url: str, filepath: str, force=False):
 	# 检查文件是否存在
-	if not os.path.isfile(filepath):
-		import requests
-		# file {} not exist, downloading...
-		print(f"文件 {filepath} 不存在，正在下载...")
-		# 发送HTTP GET请求到url
-		response = requests.get(url, stream=True, headers={"Accept-Encoding": "gzip, deflate, br, zstd"})
-		# 检查请求是否成功(状态码为200)
-		if response.status_code == 200:
-			# 打开一个文件以二进制写模式
-			with open(filepath, "wb") as file:
-				# 使用迭代器逐块写入文件
-				for chunk in response.iter_content(1024):
-					file.write(chunk)
-		# print(f"文件 {filepath} 下载完成.")
-	else:
+	if os.path.isfile(filepath) and (not force):
+		# file exist
 		# print(f"文件 {filepath} 已存在.")
 		pass
+	else:
+		import requests
+		if force:
+			# file {} not exist, downloading...
+			print(f"文件 {filepath} 正在下载...")
+		else:
+			# file {} not exist, downloading...
+			print(f"文件 {filepath} 不存在，正在下载...")
+
+		response = requests.get(url, stream=True, headers={"Accept-Encoding": "gzip, deflate, br, zstd"})
+		if response.status_code == 200:
+			with open(filepath, "wb") as file:
+				file.write(response.content)
+		# print(f"文件 {filepath} 下载完成.")
 
 
 def process_cidr(filepath: str):
@@ -186,11 +188,10 @@ def process_cidr(filepath: str):
 			if line[3] in ["", "\t"]:
 				continue
 			if line[2] == "ipv4":
-				if line[4] not in cidr_calc:
-					cidr = f"{line[3]}+{line[4]}"
-				else:
+				if line[4] in cidr_calc:
 					cidr = f"{line[3]}/{cidr_calc[line[4]]}"
-				# cidr_block = str(32 - int(math.log2(int(line[4]))))
+				else:
+					cidr = f"{line[3]}+{line[4]}"
 			elif line[2] == "ipv6":
 				cidr = f"{line[3]}/{line[4]}"
 			if line[1] == "":
@@ -290,6 +291,9 @@ if __name__ == "__main__":
 				query_status(query_string)
 			elif query_string in ["afrinic", "apnic", "arin", "iana", "lacnic", "ripe-ncc", "ripencc"]:
 				query_status(query_string)
+			elif query_string == "update":
+				ips = IPSO
+				init(force=True)
 			else:
 				try:
 					query_ip(query_string)

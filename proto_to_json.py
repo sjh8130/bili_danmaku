@@ -1,14 +1,11 @@
 #!/usr/bin/python3
-from google.protobuf.json_format import MessageToJson
+from google.protobuf.json_format import MessageToDict
 
 import json
 import sys
 import time
 
-try:
-	import zzzz as dm_pb2
-except ModuleNotFoundError:
-	import dm_pb2
+import dm_pb2
 
 from my_lib.file_writer import FileWriter
 
@@ -20,15 +17,15 @@ if __name__ == "__main__":
 
 	time2 = time.time()
 	print("proto")
-	Temp_Binary = dm_pb2.DmSegMobileReply()
-	Temp_Binary.ParseFromString(danmaku_binary)
+	temp_binary = dm_pb2.DmSegMobileReply()
+	temp_binary.ParseFromString(danmaku_binary)
 
-	if len(Temp_Binary.elems) == 0:
+	if len(temp_binary.elems) == 0:
 		print("No Data")
 		sys.exit()
 	time3 = time.time()
 	print("json")
-	j1 = json.loads(MessageToJson(Temp_Binary, indent=0))
+	j1 = MessageToDict(temp_binary)
 	# for this in Temp_Binary.elems:
 	# 	if this.attr == 2:
 	# 		is_live_recording = True
@@ -104,7 +101,7 @@ if __name__ == "__main__":
 	# j1["info"]["is_live_record"] = is_live_recording
 	Write_Data = json.dumps(j1, ensure_ascii=False, separators=(",", ":"))
 
-	Temp_Binary = None
+	temp_binary = None
 	time4 = time.time()
 	print("write")
 	FileWriter(f"{sys.argv[1]}.json", Write_Data.replace(

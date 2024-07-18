@@ -1,18 +1,21 @@
 #!/dev/null
 import gzip
-import tarfile
-import os
-import sys
-import io
 
 
-def FileWriter(filename: str, data, gz: bool = False, binary_: bool = False):
+def FileWriter(filename: str, data: str | bytes | dict, _gzip: bool = False) -> None:
 	"""
-	Text
+	输出文件
 	"""
-	if gz:
-		io.TextIOWrapper(gzip.open(filename + ".gz", 'wb', compresslevel=9), encoding='utf-8').writelines(data)
-	elif binary_:
-		open(filename, "wb").write(data)
+	_type = type(data)
+	if _type == str:
+		_data = bytes(data, encoding="utf-8")
+	elif _type == dict:
+		import json
+		_data = bytes(json.dumps(data, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
 	else:
-		open(filename, "w", encoding="utf-8").write(data)
+		_data = data
+
+	if _gzip:
+		gzip.open(filename, 'wb', compresslevel=9).write(data)
+	else:
+		open(filename, "wb", 1048576).write(_data)

@@ -1,5 +1,4 @@
 #!/usr/bin/python3
-import gzip
 import ssl
 import requests
 import time
@@ -9,8 +8,9 @@ import sys
 import dm_pb2
 from my_lib.bvav import BV2AV, AV2BV
 from my_lib.gen_wib import gen_w_rid
+from my_lib.file_writer import FileWriter
 
-from google.protobuf.json_format import MessageToJson
+from google.protobuf.json_format import MessageToDict
 
 ssl._create_default_https_context = ssl._create_unverified_context
 requests.packages.urllib3.disable_warnings()
@@ -22,8 +22,12 @@ RETRY_SIZE = 2048
 
 
 class Video:
-	avid: int
-	bvid: str
+	avid: int = None
+	"""avid 数字部分"""
+	avid_n: str = None
+	"""avid"""
+	bvid: str = None
+	"""bvid"""
 
 	def __init__(self, avid, bvid, avid_n):
 		self.avid = avid
@@ -32,14 +36,22 @@ class Video:
 
 
 class VideoPart(Video):
-	cid: int
+	cid: int = None
+	oid: int = None
 
-	def __init__(self, V:Video, cid):
-		super().__init__(V.avid,V.bvid, V.avid_n)
+	def __init__(self, V: Video, cid, oid):
+		super().__init__(V.avid, V.bvid, V.avid_n)
 		self.cid = cid
+		self.oid = oid
+		if cid is None and oid is not None:
+			self.cid = self.oid
+		elif oid is None and cid is not None:
+			self.cid = self.oid
+		elif (oid is not None and cid is not None) and cid != oid:
+			raise
 
 
-def downloader(url: str, headers: dict, session: requests.Session) -> bytes:
+def Downloader(url: str, headers: dict, session: requests.Session) -> bytes:
 	"""
 	下载
 	"""
@@ -58,25 +70,25 @@ def downloader(url: str, headers: dict, session: requests.Session) -> bytes:
 				continue
 
 
-def getDanmaku(vp: VideoPart, segments: int, session: requests.Session) -> list[bytes]:
+def GetDanmaku(vp: VideoPart, segments: int, session: requests.Session) -> list[bytes]:
 	"""
 	获取弹幕
 	"""
 	danmakus = []
 	headers = {
 		"Accept-Encoding": "gzip, deflate, br, zstd",
-		"Accept" : "application/json, text/plain, */*",
+		"Accept": "application/json, text/plain, */*",
 		"Connection": "keep-alive",
-		"Host" : "api.bilibili.com",
-		"Origin" : "https://www.bilibili.com",
-		"Referer" : f"https://www.bilibili.com/video/{vp.bvid}/",
+		"Host": "api.bilibili.com",
+		"Origin": "https://www.bilibili.com",
+		"Referer": f"https://www.bilibili.com/video/{vp.bvid}/",
 		"User-Agent": USER_AGENT,
 	}
 
 	for segment in range(segments):
 		filename = f"[{vp.bvid}]_[{vp.cid}]_[Danmaku]_[{segment}].bin"
 		if segment == 0:
-		#"?type=1&oid=XXX&pid=XXX&segment_index=1&pull_mode=1&ps=0&pe=120000&web_location=1315873&w_rid=XXX&wts=XXX"
+			# "?type=1&oid=XXX&pid=XXX&segment_index=1&pull_mode=1&ps=0&pe=120000&web_location=1315873&w_rid=XXX&wts=XXX"
 			params = {
 				"type": "1",
 				"oid": str(vp.cid),
@@ -88,7 +100,7 @@ def getDanmaku(vp: VideoPart, segments: int, session: requests.Session) -> list[
 				"web_location": "1315873",
 			}
 		elif segment == 1:
-		#"?type=1&oid=XXX&pid=XXX&segment_index=1&pull_mode=1&ps=120000&pe=360000&web_location=1315873&w_rid=XXX&wts=XXX"
+			# "?type=1&oid=XXX&pid=XXX&segment_index=1&pull_mode=1&ps=120000&pe=360000&web_location=1315873&w_rid=XXX&wts=XXX"
 			params = {
 				"type": "1",
 				"oid": str(vp.cid),
@@ -100,8 +112,8 @@ def getDanmaku(vp: VideoPart, segments: int, session: requests.Session) -> list[
 				"web_location": "1315873",
 			}
 		else:
-		#"?type=1&oid=XXX&pid=XXX&segment_index=3&web_location=1315873&w_rid=XXX&wts=XXX"
-		#"?type=1&oid=XXX&pid=XXX&segment_index=3&web_location=1315873&w_rid=XXX&wts=XXX"
+			# "?type=1&oid=XXX&pid=XXX&segment_index=3&web_location=1315873&w_rid=XXX&wts=XXX"
+			# "?type=1&oid=XXX&pid=XXX&segment_index=3&web_location=1315873&w_rid=XXX&wts=XXX"
 			params = {
 				"type": "1",
 				"oid": str(vp.cid),
@@ -109,14 +121,14 @@ def getDanmaku(vp: VideoPart, segments: int, session: requests.Session) -> list[
 				"segment_index": str(segment),
 				"web_location": "1315873",
 			}
-		url = "https://api.bilibili.com/x/v2/dm/wbi/web/seg.so?"+gen_w_rid(params)
-		file_content = downloader(url, headers, session)
+		url = "https://api.bilibili.com/x/v2/dm/wbi/web/seg.so?" + gen_w_rid(params)
+		file_content = Downloader(url, headers, session)
 		danmakus.append(bytes(file_content))
-		writeToFiles(filename, file_content)
+		FileWriter(filename, file_content)
 	return danmakus
 
 
-def getSpecialDanmaku(vp: VideoPart, input: dm_pb2.DmWebViewReply, session: requests.Session) -> list[bytes]:
+def GetSpecialDanmaku(vp: VideoPart, input: dm_pb2.DmWebViewReply, session: requests.Session) -> list[bytes]:
 	"""
 	获取特殊弹幕
 	"""
@@ -130,38 +142,21 @@ def getSpecialDanmaku(vp: VideoPart, input: dm_pb2.DmWebViewReply, session: requ
 
 	bas_danmakus = []
 	for url in input.special_dms:
-		bas_data = downloader(url, headers, session)
+		bas_data = Downloader(url, headers, session)
 		filename = f"[{vp.bvid}]_[{vp.cid}]_[BAS]_[{url[27:67]}].bin"
 		bas_danmakus.append(bas_data)
-		writeToFiles(filename, bas_data)
+		FileWriter(filename, bas_data)
 	return bas_danmakus
 
 
-def writeToFiles(filename: str, data: str | bytes | dict, _gzip: bool = False) -> None:
-	"""
-	输出文件
-	"""
-	_type = type(data)
-	if _type == str:
-		_data = bytes(data, encoding="utf-8")
-	elif _type == dict:
-		_data = bytes(json.dumps(data, ensure_ascii=False, separators=(",",":")), encoding="utf-8")
-	else:
-		_data = data
-	if _gzip:
-		gzip.open(filename, "wb", 9).write(_data)
-	else:
-		open(filename, "wb", 1048576).write(_data)
-
-
-def main(video:Video):
+def main(video: Video):
 	"""
 	视频处理
 	"""
 	if video == None:
 		return
 	url_info_1n = f"https://api.bilibili.com/x/web-interface/view?bvid={video.bvid}"
-	url_info_1e = "https://api.bilibili.com/x/web-interface/wbi/view?"+gen_w_rid({"aid":video.avid_n})
+	url_info_1e = "https://api.bilibili.com/x/web-interface/wbi/view?" + gen_w_rid({"aid": video.avid_n})
 	url_info_2n = f"https://api.bilibili.com/x/web-interface/view/detail?bvid={video.bvid}"
 	session = requests.Session()
 	headers = {
@@ -172,15 +167,15 @@ def main(video:Video):
 		"Connection": "keep-alive",
 	}
 	# ================================ 视频信息1
-	video_info_1 = downloader(url_info_1n, headers, session)
+	video_info_1 = Downloader(url_info_1n, headers, session)
 	video_info_1_load = json.loads(video_info_1)
 	try:
 		video_info_1_load["data"]["ugc_season"]["sections"] = []
 	except:
 		pass
-	writeToFiles(f"[{video.bvid}]_[0]_[Video]_[INFO].json", video_info_1_load)
+	FileWriter(f"[{video.bvid}]_[0]_[Video]_[INFO].json", video_info_1_load)
 	# ================================ 视频信息2
-	video_info_2 = downloader(url_info_2n, headers, session)
+	video_info_2 = Downloader(url_info_2n, headers, session)
 	video_info_2_load = json.loads(video_info_2)
 	video_info_2_load["data"]["Related"] = []
 	video_info_2_load["data"]["Reply"]["replies"] = []
@@ -188,11 +183,11 @@ def main(video:Video):
 		video_info_2_load["data"]["View"]["ugc_season"]["sections"] = []
 	except:
 		pass
-	writeToFiles(f"[{video.bvid}]_[0]_[Video]_[INFO_2].json", video_info_2_load)
+	FileWriter(f"[{video.bvid}]_[0]_[Video]_[INFO_2].json", video_info_2_load)
 	# ================================ 视频信息3
-	video_info_3 = downloader(url_info_1e, headers, session)
+	video_info_3 = Downloader(url_info_1e, headers, session)
 	video_info_3_load = json.loads(video_info_3)
-	writeToFiles(f"[{video.bvid}]_[0]_[Video]_[INFO_3].json", video_info_3_load)
+	FileWriter(f"[{video.bvid}]_[0]_[Video]_[INFO_3].json", video_info_3_load)
 	# ================================ 加载
 	json_info = video_info_1_load["data"]
 	# ================================ bvid aid 检查
@@ -203,7 +198,9 @@ def main(video:Video):
 	# ================================ 字幕
 	if json_info["subtitle"] != None:
 		for subs in json_info["subtitle"]["list"]:
-			writeToFiles(f"[{video.bvid}]_[Subtitle]_[{subs['id']}]_[{subs['lan']}].bcc", downloader(subs["subtitle_url"], headers, session))
+			_data = Downloader(subs["subtitle_url"], headers, session)
+			FileWriter(f"[{video.bvid}]_[Subtitle]_[{subs['id']}]_[{subs['lan']}].bcc", _data)
+			del _data
 	# ================================ 首映
 	try:
 		if json_info["premiere"] is not None:
@@ -215,34 +212,34 @@ def main(video:Video):
 	for this in json_info["pages"]:
 		part += 1
 		oid = int(this["cid"])
-		vp = VideoPart(V=video,cid=oid)
+		vp = VideoPart(V=video, cid=oid)
 
 		segment_count = (int(this["duration"])/360).__ceil__()+1
-		extra_info_proto_binary = downloader(f"https://api.bilibili.com/x/v2/dm/web/view?type=1&oid={vp.cid}", headers, session)
-		writeToFiles(f"[{video.bvid}]_[{vp.cid}]_[BAS]_[INFO].bin", extra_info_proto_binary)
+		v_url = f"https://api.bilibili.com/x/v2/dm/web/view?type=1&oid={vp.cid}"
+		extra_info_proto_binary = Downloader(v_url, headers, session)
+		FileWriter(f"[{video.bvid}]_[{vp.cid}]_[BAS]_[INFO].bin", extra_info_proto_binary)
 
 		extra_info_proto = dm_pb2.DmWebViewReply()
 		extra_info_proto.ParseFromString(extra_info_proto_binary)
-		extra_info_json = json.loads(MessageToJson(extra_info_proto, indent=0))
+		extra_info_json = MessageToDict(extra_info_proto)
 
-		danmaku_binary_list = getDanmaku(vp, segment_count, session)
+		danmaku_binary_list = GetDanmaku(vp, segment_count, session)
 		danmaku_list = []
 		danmakuColorful_list = []
 		for dm_bin in danmaku_binary_list:
 			dms = dm_pb2.DmSegMobileReply()
 			dms.ParseFromString(dm_bin)
-			dms_j = json.loads(MessageToJson(dms, indent=0))
+			dms_j = MessageToDict(dms)
 			for dm in dms_j['elems']:
 				danmaku_list.append(dm)
 			for dmc in dms_j['colorfulSrc']:
 				danmakuColorful_list.append(dmc)
 		final_json = {
-			"elems":danmaku_list,
-			"colorfulSrc":danmakuColorful_list
+			"elems": danmaku_list,
+			"colorfulSrc": danmakuColorful_list
 		}
-		with open(f"[{video.bvid}]_[{video.avid}].json","w",encoding="utf-8") as fp:
-			final_string = json.dumps(final_json, ensure_ascii=False, separators=(",",":"))
-			fp.write(final_string.replace("{\"id\":","\n\t{\"id\":"))
+		final_string = json.dumps(final_json, ensure_ascii=False, separators=(",", ":")).replace("{\"id\":", "\n\t{\"id\":")
+		FileWriter(f"[{video.bvid}]_[{video.avid}].json", final_string)
 
 
 def process_args(vid: str):

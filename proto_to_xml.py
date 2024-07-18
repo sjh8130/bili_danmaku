@@ -3,10 +3,7 @@ import os
 import sys
 import time
 
-try:
-	import zzzz as dm_pb2
-except ModuleNotFoundError:
-	import dm_pb2
+import dm_pb2
 
 from my_lib.proto2xml_Lib import Proto2XML
 
