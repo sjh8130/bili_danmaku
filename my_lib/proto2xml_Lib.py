@@ -2,7 +2,7 @@
 import dm_pb2
 
 
-def Proto2XML(this: dm_pb2.DanmakuElem) -> str:
+def proto_to_xml(this: dm_pb2.DanmakuElem) -> str:
 	"""
 	Text
 	"""

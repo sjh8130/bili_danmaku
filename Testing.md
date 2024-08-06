@@ -332,6 +332,7 @@
 | [❌](#BIG_R_WELCOME)							| BIG_R_WELCOME							| |
 | [✅](#CARD_MSG)								| CARD_MSG								| |
 | [✅](#CHANGE_ROOM_INFO)						| CHANGE_ROOM_INFO						| WEB:更改直播间背景 |
+| [✅](#CHG_RANK_REFRESH)						| CHG_RANK_REFRESH						| |
 | [❌](#CHASE_FRAME_SWITCH)						| CHASE_FRAME_SWITCH					| |
 | [✅](#COMBO_END)								| COMBO_END								| |
 | [✅](#COMBO_SEND)								| COMBO_SEND							| 送礼物: 连击 |
@@ -469,6 +470,7 @@
 | [✅](#room_admin_entrance)						| room_admin_entrance					| |
 | [❌](#RAFFLE_END)								| RAFFLE_END							| |
 | [❌](#RAFFLE_START)							| RAFFLE_START							| |
+| [✅](#RANK_CHANGED)							| RANK_CHANGED							| |
 | [✅](#RANK_REM)								| RANK_REM								| |
 | [✅](#RECOMMEND_CARD)							| RECOMMEND_CARD						| 商品推销(移动端) |
 | [✅](#RING_STATUS_CHANGE)						| RING_STATUS_CHANGE					| |
@@ -523,6 +525,7 @@
 | [✅](#USER_PANEL_RED_ALARM)					| USER_PANEL_RED_ALARM					| |
 | [❌](#USER_TITLE_GET)							| USER_TITLE_GET						| |
 | [✅](#USER_TOAST_MSG)							| USER_TOAST_MSG						| 大航海购买(新) |
+| [✅](#USER_TOAST_MSG_V2)						| USER_TOAST_MSG_V2						| 大航海购买(新新) |
 | [✅](#USER_VIRTUAL_MVP)						| USER_VIRTUAL_MVP						| 守护圣法师 |
 | [❌](#VIDEO_CONNECTION_JOIN_END)				| VIDEO_CONNECTION_JOIN_END				| |
 | [❌](#VIDEO_CONNECTION_JOIN_START)				| VIDEO_CONNECTION_JOIN_START			| |
@@ -1231,6 +1234,8 @@ Link = 6
 | new_style					| num		| |
 | is_mystery				| bool		| |
 | uinfo						| obj		| |
+| full_cartoon_id			| num		| |
+| priority_level			| num		| |
 ```json
 {
 	"cmd":"ENTRY_EFFECT",
@@ -1279,6 +1284,7 @@ USERNAME = [
 f"<%{USERNAME}%>进入直播间"
 f"欢迎 <%{USERNAME}%> 进入直播间"
 f"欢迎{anchor_name} <%{USERNAME}%> 进入直播间"
+f"<%{USERNAME}%> 来了"
 # copy_writing_v2
 USERNAME = [
 	"123456",
@@ -1289,6 +1295,7 @@ f"欢迎 <%{USERNAME}%> 进入直播间"
 f"欢迎{anchor_name} <%{USERNAME}%> 进入直播间"
 f"欢迎 <^icon^> <%{USERNAME}%> 进入直播间"
 f"欢迎 <^icon^> {anchor_name} <%{USERNAME}%> 进入直播间"
+f"<%{USERNAME}%> 来了"
 ```
 ----
 ### STOP_LIVE_ROOM_LIST
@@ -1934,6 +1941,8 @@ SC 删除
 | countdown		| num	| \[0-3600\] |
 | timestamp		| num	| 当前时间TimeStamp(秒) |
 | cache_key		| str	| `f"rank_change:{hex_256bit}"` |
+| on_rank_name_by_type	| str	| |
+| rank_name_by_type	| str	| |
 | url_by_type	| str	| |
 | rank_by_type	| num	| |
 | default_url	| str	| |
@@ -1982,7 +1991,7 @@ SC 删除
 | 4		| array		| `user_level`[用户直播区信息](#DANMU_MSG__info__4) |
 | 5		| array		| `title` [头衔](docs/头衔.md) |
 | 6		| num		| 0 |
-| 7		| num		| `guardLevel`[大航海等级](#others) |
+| 7		| num		| `PrivilegeType`[大航海等级](#others) |
 | 8		| null		| |曾经为 obj
 | 9		| obj		| [`validation`](#DANMU_MSG__info__9) |
 | 10	| num		| 0 |
@@ -2718,12 +2727,15 @@ content_segments__text=[
 #### ROOM_BLOCK_MSG__data
 | key		| type	| value	|
 |-|-|-|
+| block_expired	| num	| |
 | dmscore	| num	| 30 45 90 135 |
 | operator	| num	| 1:房管 / 2:主播 |
 | uid		| num	| |
 | uname		| str	| |
+| vaild_period	| str	| | 20240720-20240724
 ```json
 {"cmd":"ROOM_BLOCK_MSG","data":{"dmscore":x,"operator":y,"uid":123,"uname":"xxx"},"uid":"123","uname":"xxx"}
+{"cmd":"ROOM_BLOCK_MSG","data":{"block_expired":2145888000,"dmscore":90,"operator":2,"uid":xxx,"uname":"xxx","vaild_period":"永久"},"uid":xxx,"uname":"xxx"}
 ```
 ----
 ### AREA_RANK_CHANGED
@@ -3397,6 +3409,7 @@ match data["type"]:
 ----
 ### RANK_REM
 [TOP](#直播弹幕)  
+文档更新：2024-07-24  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "RANK_REM" |
@@ -3407,10 +3420,17 @@ match data["type"]:
 | name		| str	| |
 | room_id	| num	| 直播间id |
 | ruid		| num	| 主播uid |
-| time		| num	| 当前时间TimeStamp(秒) |
+| time		| num	| 当前时间TimeStamp\(秒\) \(+10,+15,+20\) |
 | uid		| num	| |
 ```json
-{"cmd":"RANK_REM","data":{"name":"online_gold","room_id":12345,"ruid":12345,"time":1704038400,"uid":123}}
+//用户被禁言时触发
+1721733565374{"cmd":"ROOM_BLOCK_MSG","data":{"block_expired":2145888000,"dmscore":90,"operator":2,"uid":xxx,"uname":"xxx","vaild_period":"永久"},"uid":xxx,"uname":"xxx"}
+1721733569344{"cmd":"RANK_REM","data":{"name":"online_gold","room_id":xxx,"ruid":xxx,"time":1721733570,"uid":xxx}}
+1721733569370{"cmd":"RANK_REM","data":{"name":"online_gold","room_id":xxx,"ruid":xxx,"time":1721733570,"uid":xxx}}
+1721733569398{"cmd":"RANK_REM","data":{"name":"online_rank","room_id":xxx,"ruid":xxx,"time":1721733570,"uid":xxx}}
+1721733579405{"cmd":"RANK_REM","data":{"name":"daily_rank","room_id":xxx,"ruid":xxx,"time":1721733580,"uid":xxx}}
+1721733584374{"cmd":"RANK_REM","data":{"name":"weekly_rank","room_id":xxx,"ruid":xxx,"time":1721733585,"uid":xxx}}
+1721733589335{"cmd":"RANK_REM","data":{"name":"monthly_rank","room_id":xxx,"ruid":xxx,"time":1721733590,"uid":xxx}}
 //name
 guard	online_gold	online_rank	daily_rank	weekly_rank	monthly_rank
 //cmd
@@ -5651,11 +5671,160 @@ role 0 1 2
 | cmd		| str	| "POPULARITY_RANK_TAB_CHG" |
 | data		| obj	| |
 #### POPULARITY_RANK_TAB_CHG__data
-| key		| type	| value	|
+| key				| type	| value	|
 |-|-|-|
-| data	| xxx	| |
+| room_id			| num	| |
+| ruid				| num	| |
+| type				| str	| |
+| need_refresh_tab	| bool	| |
 ```json
 {"cmd":"POPULARITY_RANK_TAB_CHG","data":{"room_id":123,"ruid":123,"type":"area","need_refresh_tab":true}}
+```
+---
+### RANK_CHANGED
+[TOP](#直播弹幕)  
+文档更新：2024-07-24  
+| key		| type	| value	|
+|-|-|-|
+| cmd		| str	| "RANK_CHANGED" |
+| data		| obj	| |
+#### RANK_CHANGED__data
+| key					| type	| value	|
+|-|-|-|
+| uid					| num	| |
+| rank					| num	| |
+| countdown				| num	| |
+| timestamp				| num	| |
+| on_rank_name_by_type	| str	| |
+| rank_name_by_type		| str	| |
+| url_by_type			| str	| |
+| rank_by_type			| num	| |
+| rank_type				| num	| |
+```json
+{"cmd":"RANK_CHANGED","data":{"uid":xxx,"rank":0,"countdown":0,"timestamp":xxx,"on_rank_name_by_type":"热门榜","rank_name_by_type":"热门榜","url_by_type":"https://live.bilibili.com/p/html/live-app-hotrank/index.html?is_live_half_webview=1&hybrid_rotate_d=1&hybrid_half_ui=1,3,100p,70p,0,0,30,100,12;2,2,375,100p,0,0,30,100,0;3,3,100p,70p,0,0,30,100,12;4,2,375,100p,0,0,30,100,0;5,3,100p,70p,0,0,30,100,0;6,3,100p,70p,0,0,30,100,0;7,3,100p,70p,0,0,30,100,0;8,3,100p,70p,0,0,30,100,0&pc_ui=338,465,f4eefa,0&redirect=v2&rank=hot&anchorId=xxx&rank_type=1","rank_by_type":0,"rank_type":3}}
+```
+---
+### CHG_RANK_REFRESH
+[TOP](#直播弹幕)  
+文档更新：2024-07-24  
+| key		| type	| value	|
+|-|-|-|
+| cmd		| str	| "CHG_RANK_REFRESH" |
+| data		| obj	| |
+#### CHG_RANK_REFRESH__data
+| key			| type	| value	|
+|-|-|-|
+| cmd			| str	| |
+| rank_type		| num	| |
+| rank_module	| str	| |
+| room_id		| num	| |
+| ruid			| num	| |
+| need_refresh	| bool	| |
+| version		| num	| |
+
+```json
+{"cmd":"CHG_RANK_REFRESH","data":{"cmd":"CHG_RANK_REFRESH","rank_type":3,"rank_module":"area","room_id":xxx,"ruid":xxx,"need_refresh":true,"version":1721805138162}}
+```
+---
+### USER_TOAST_MSG_V2
+[TOP](#直播弹幕)  
+文档更新：2024-08-01  
+| key		| type	| value	|
+|-|-|-|
+| cmd		| str	| "USER_TOAST_MSG_V2" |
+| data		| obj	| |
+#### USER_TOAST_MSG_V2__data
+| key				| type	| value |
+| - | - | - |
+| sender_uinfo		| obj	| uinfo(base) |
+| receiver_uinfo	| obj	| uinfo(base) |
+| guard_info		| obj	| |
+| group_guard_info	| null	| |
+| pay_info			| obj	| |
+| gift_info			| obj	| |
+| effect_info		| obj	| |
+| toast_msg			| str	| |
+| option			| obj	| |
+#### USER_TOAST_MSG_V2__data__guard_info
+| key | type | value |
+| - | - | - |
+| guard_level | num | |
+| role_name | str | |
+| room_guard_count | num | |
+| op_type | num | |
+| start_time | num | |
+| end_time | num | |
+#### USER_TOAST_MSG_V2__data__pay_info
+| key | type | value |
+| - | - | - |
+| payflow_id | str | |
+| price | num | |
+| num | num | |
+| unit | str | |
+#### USER_TOAST_MSG_V2__data__gift_info
+| key | type | value |
+| - | - | - |
+| gift_id | num | |
+#### USER_TOAST_MSG_V2__data__effect_info
+| key | type | value |
+| - | - | - |
+| effect_id | num | |
+| room_effect_id | num | |
+| face_effect_id | num | |
+| room_gift_effect_id | num | |
+| room_group_effect_id | num | |
+#### USER_TOAST_MSG_V2__data__option
+| key | type | value |
+| - | - | - |
+| anchor_show | bool | |
+| user_show | bool | |
+| is_group | num | |
+| is_show | num | |
+| source | num | |
+| svga_block | num | |
+| color | str | |
+```json
+{
+	"cmd":"USER_TOAST_MSG_V2",
+	"data":{
+		"sender_uinfo":{"uid":xxx,"base":{"name":"xxx","face":""}},
+		"receiver_uinfo":{"uid":xxx,"base":{"name":"xxx","face":"https://i1.hdslb.com/bfs/face/xxx.jpg"}},
+		"guard_info":{"guard_level":2,"role_name":"提督","room_guard_count":xxx,"op_type":2,"start_time":xxx,"end_time":xxx},
+		"group_guard_info":null,
+		"pay_info":{"payflow_id":"xxx(25)","price":1598000,"num":1,"unit":"月"},
+		"gift_info":{"gift_id":10002},
+		"effect_info":{"effect_id":398,"room_effect_id":591,"face_effect_id":43,"room_gift_effect_id":0,"room_group_effect_id":398},
+		"toast_msg":"<%xxx%> 在主播xxx的直播间续费了提督，今天是TA陪伴主播的第xxx天",
+		"option":{"anchor_show":true,"user_show":true,"is_group":0,"is_show":0,"source":0,"svga_block":0,"color":"#E17AFF"}
+	}
+}
+```
+---
+### WIN_ACTIVITY
+[TOP](#直播弹幕)  
+文档更新：2024-01-01  
+| key		| type	| value	|
+|-|-|-|
+| cmd		| str	| "WIN_ACTIVITY" |
+| data		| obj	| |
+| number	 | num | |
+#### WIN_ACTIVITY__data
+| key		| type	| value	|
+|-|-|-|
+| delay_time_min| num	| |
+| delay_time_max| num	| |
+| activity_id	| num	| |
+| jump_url		| str	| |
+| weight		| num	| |
+| closeable		| num	| |
+| title			| str	| |
+| title_color	| str	| |
+| activity_pic	| str	| |
+| background	| str	| |
+| current_round	| num	| |
+| typeB			| []obj	| |
+```json
+{"cmd":"WIN_ACTIVITY","number":1,"data":{"delay_time_min":0,"delay_time_max":30,"activity_id":1090,"jump_url":"https://live.bilibili.com/p/html/live-app-treasurebox/index.html?is_live_half_webview=1&hybrid_biz=live-app-treasurebox&hybrid_rotate_d=1&hybrid_half_ui=1,3,100p,70p,0,0,30,100;2,2,375,100p,0,0,30,100;3,3,100p,70p,0,0,30,100;4,2,375,100p,0,0,30,100;5,3,100p,70p,0,0,30,100;6,3,100p,70p,0,0,30,100;7,3,100p,70p,0,0,30,100&aid=1090","weight":20,"closeable":0,"title":"华为nova Flip新生之夜","title_color":"#FFFFFF","activity_pic":"https://i0.hdslb.com/bfs/live/c3ed87683f6e87d256d1f5fdddbfb220fc4c2cdf.png","background":"https://i0.hdslb.com/bfs/live/84cd59bcb1e977359df618dbeb0f7828751f457c.png","current_round":1,"typeB":[{"join_start_time":1722857640,"join_end_time":1722858900,"round_num":1}]}}
 ```
 ---
 ### XXXXXXXXXXXX

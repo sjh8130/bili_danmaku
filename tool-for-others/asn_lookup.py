@@ -181,23 +181,23 @@ def process_cidr(filepath: str):
 				continue
 			if line[1] in ["afrinic", "apnic", "arin", "iana", "lacnic", "ripe-ncc", "ripencc"]:
 				continue
-			if line[2] == "asn":
-				continue
+			elif line[1] == "":
+				region = "XX"
+			else:
+				region = line[1]
 			if line[5] == "summary":
 				continue
 			if line[3] in ["", "\t"]:
 				continue
-			if line[2] == "ipv4":
+			if line[2] == "asn":
+				continue
+			elif line[2] == "ipv4":
 				if line[4] in cidr_calc:
 					cidr = f"{line[3]}/{cidr_calc[line[4]]}"
 				else:
 					cidr = f"{line[3]}+{line[4]}"
 			elif line[2] == "ipv6":
 				cidr = f"{line[3]}/{line[4]}"
-			if line[1] == "":
-				region = "XX"
-			else:
-				region = line[1]
 			ips.append([cidr, region, line[0], line[6]])
 
 

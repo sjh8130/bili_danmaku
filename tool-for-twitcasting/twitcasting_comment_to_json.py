@@ -7,6 +7,8 @@ import bs4
 import lxml
 import requests
 
+from my_lib.file_writer import write_file
+
 ssl._create_default_https_context = ssl._create_unverified_context
 requests.packages.urllib3.disable_warnings()
 
@@ -38,7 +40,7 @@ session = requests.Session()
 def Downloader(page: int | str):
 	retry_count = 0
 	url = f"https://{TWITCASTING_URL}/{user}/moviecomment/{movie_id}-{page}"
-	while retry_count < 5:
+	while True:
 		try:
 			response = session.get(url, headers=headers, verify=False, timeout=30)
 			response.raise_for_status()
@@ -50,6 +52,8 @@ def Downloader(page: int | str):
 			retry_count += 1
 			print(f"Error fetching {url}: {e}, {retry_count}")
 			time.sleep(1)
+		if retry_count > 5:
+			raise 
 
 
 out = {
@@ -58,7 +62,7 @@ out = {
 		"user": user,
 		"movie_id": int(movie_id),
 		"title": "",
-		"url": f"https://{TWITCASTING_URL}/{user}/movie/{movie_id}"
+		"url": f"https://{TWITCASTING_URL_GL}/{user}/movie/{movie_id}"
 	}
 }
 current_page = 0
@@ -91,5 +95,5 @@ while (not end):
 		end = True
 session.close()
 out_data = json.dumps(out, ensure_ascii=False, separators=(",", ":"), indent="\t").replace("\n\t\t\t\t", "").replace("\n\t\t\t", "").replace("\n\t\t}", "}")
-with open(f"twitcasting_{user}_{movie_id}.json", "w", encoding="utf-8") as fo:
-	fo.write(out_data)
+
+write_file(f"twitcasting_{user}_{movie_id}.json", out_data)

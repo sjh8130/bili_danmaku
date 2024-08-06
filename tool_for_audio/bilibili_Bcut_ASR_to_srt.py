@@ -46,6 +46,10 @@ def proc_ASS(item: dict):
 	return fi___itm+fi_k_itm.replace(" \n", "\n").replace("  ", " ").replace(",,0,0,0,, ", ",,0,0,0,,")
 
 
+def write(path, data):
+	open(path, "w", encoding="utf-8").write(data)
+
+
 input_File = sys.argv[1]
 
 output_SRT = input_File.rsplit(".", 1)[-2]+"_P.srt"
@@ -95,7 +99,7 @@ if aegisub_time_overflow:
 # print(Final_ASS_Content)
 # print(Final_LRC_Content)
 # print(Final_TXT_Content)
-open(output_SRT, "w", encoding="utf-8").write(Final_SRT_Content)
-# open(output_ASS, "w", encoding="utf-8").write(Final_ASS_Content)
-# open(output_LRC, "w", encoding="utf-8").write(Final_LRC_Content)
-# open(output_TXT, "w", encoding="utf-8").write(Final_TXT_Content)
+write(output_SRT, Final_SRT_Content)
+# write(output_ASS, Final_ASS_Content)
+# write(output_LRC, Final_LRC_Content)
+# write(output_TXT, Final_TXT_Content)
