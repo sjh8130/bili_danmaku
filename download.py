@@ -8,7 +8,7 @@ import sys
 import dm_pb2
 from my_lib.bvav import BV2AV, AV2BV
 from my_lib.gen_wib import gen_w_rid
-from my_lib.file_writer import FileWriter
+from my_lib.file_writer import write_file
 
 from google.protobuf.json_format import MessageToDict
 
@@ -124,7 +124,7 @@ def GetDanmaku(vp: VideoPart, segments: int, session: requests.Session) -> list[
 		url = "https://api.bilibili.com/x/v2/dm/wbi/web/seg.so?" + gen_w_rid(params)
 		file_content = Downloader(url, headers, session)
 		danmakus.append(bytes(file_content))
-		FileWriter(filename, file_content)
+		write_file(filename, file_content)
 	return danmakus
 
 
@@ -145,7 +145,7 @@ def GetSpecialDanmaku(vp: VideoPart, input: dm_pb2.DmWebViewReply, session: requ
 		bas_data = Downloader(url, headers, session)
 		filename = f"[{vp.bvid}]_[{vp.cid}]_[BAS]_[{url[27:67]}].bin"
 		bas_danmakus.append(bas_data)
-		FileWriter(filename, bas_data)
+		write_file(filename, bas_data)
 	return bas_danmakus
 
 
@@ -173,7 +173,7 @@ def main(video: Video):
 		video_info_1_load["data"]["ugc_season"]["sections"] = []
 	except:
 		pass
-	FileWriter(f"[{video.bvid}]_[0]_[Video]_[INFO].json", video_info_1_load)
+	write_file(f"[{video.bvid}]_[0]_[Video]_[INFO].json", video_info_1_load)
 	# ================================ 视频信息2
 	video_info_2 = Downloader(url_info_2n, headers, session)
 	video_info_2_load = json.loads(video_info_2)
@@ -183,11 +183,11 @@ def main(video: Video):
 		video_info_2_load["data"]["View"]["ugc_season"]["sections"] = []
 	except:
 		pass
-	FileWriter(f"[{video.bvid}]_[0]_[Video]_[INFO_2].json", video_info_2_load)
+	write_file(f"[{video.bvid}]_[0]_[Video]_[INFO_2].json", video_info_2_load)
 	# ================================ 视频信息3
 	video_info_3 = Downloader(url_info_1e, headers, session)
 	video_info_3_load = json.loads(video_info_3)
-	FileWriter(f"[{video.bvid}]_[0]_[Video]_[INFO_3].json", video_info_3_load)
+	write_file(f"[{video.bvid}]_[0]_[Video]_[INFO_3].json", video_info_3_load)
 	# ================================ 加载
 	json_info = video_info_1_load["data"]
 	# ================================ bvid aid 检查
@@ -199,7 +199,7 @@ def main(video: Video):
 	if json_info["subtitle"] != None:
 		for subs in json_info["subtitle"]["list"]:
 			_data = Downloader(subs["subtitle_url"], headers, session)
-			FileWriter(f"[{video.bvid}]_[Subtitle]_[{subs['id']}]_[{subs['lan']}].bcc", _data)
+			write_file(f"[{video.bvid}]_[Subtitle]_[{subs['id']}]_[{subs['lan']}].bcc", _data)
 			del _data
 	# ================================ 首映
 	try:
@@ -217,7 +217,7 @@ def main(video: Video):
 		segment_count = (int(this["duration"])/360).__ceil__()+1
 		v_url = f"https://api.bilibili.com/x/v2/dm/web/view?type=1&oid={vp.cid}"
 		extra_info_proto_binary = Downloader(v_url, headers, session)
-		FileWriter(f"[{video.bvid}]_[{vp.cid}]_[BAS]_[INFO].bin", extra_info_proto_binary)
+		write_file(f"[{video.bvid}]_[{vp.cid}]_[BAS]_[INFO].bin", extra_info_proto_binary)
 
 		extra_info_proto = dm_pb2.DmWebViewReply()
 		extra_info_proto.ParseFromString(extra_info_proto_binary)
@@ -239,7 +239,7 @@ def main(video: Video):
 			"colorfulSrc": danmakuColorful_list
 		}
 		final_string = json.dumps(final_json, ensure_ascii=False, separators=(",", ":")).replace("{\"id\":", "\n\t{\"id\":")
-		FileWriter(f"[{video.bvid}]_[{video.avid}].json", final_string)
+		write_file(f"[{video.bvid}]_[{video.avid}].json", final_string)
 
 
 def process_args(vid: str):

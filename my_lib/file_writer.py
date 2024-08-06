@@ -2,14 +2,13 @@
 import gzip
 
 
-def FileWriter(filename: str, data: str | bytes | dict, _gzip: bool = False) -> None:
+def write_file(filename: str, data: str | bytes | dict, _gzip: bool = False) -> None:
 	"""
 	输出文件
 	"""
-	_type = type(data)
-	if _type == str:
+	if isinstance(data, str):
 		_data = bytes(data, encoding="utf-8")
-	elif _type == dict:
+	elif isinstance(data, dict):
 		import json
 		_data = bytes(json.dumps(data, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
 	else:
