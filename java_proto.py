@@ -21,13 +21,25 @@ def camel_to_snake_improved(name):
 @lru_cache
 def get_type(a: str):
     match a:
-        case "String": return "string"
-        case "int" | "Integer": return "int32"
-        case "long" | "Long": return "int64"
+        case "String" | "StringValue": return "string"
+
+        case "UInt32Value" | "UInt32Value" | "UInt32Value": return "uint32"
+        case "UInt64Value" | "UInt64Value" | "UInt64Value": return "uint64"
+
+        case "int" | "Integer" | "Int32Value": return "int32"
+        case "long" | "Long" | "Int64Value": return "int64"
+
         case "Internal.IntList": return "repeated int32"
         case "Internal.LongList": return "repeated int64"
-        case "boolean": return "bool"
-        case "ByteString": return "bytes"
+
+        case "Internal.FloatList": return "repeated float"
+        case "Internal.FloatList": return "repeated float"
+
+        case "FloatValue": return "float"
+        case "DoubleValue": return "double"
+
+        case "boolean" | "BoolValue": return "bool"
+        case "ByteString" | "BytesValue": return "bytes"
         case _:
             if a.startswith("Internal.ProtobufList"):
                 return "repeated " + get_type(a[22:-1])

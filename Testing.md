@@ -4065,10 +4065,7 @@ PK_BATTLE_PROCESS_NEW
 | uinfo_medal			| obj		| |
 | ~~MultiUnlockLevel~~	| \[\]str	| |
 ```json
-{"cmd":"MESSAGEBOX_USER_MEDAL_CHANGE","data":{"guard_level":xxx,"is_lighted":xxx,"medal_color_border":xxx,"medal_color_end":xxx,"medal_color_start":xxx,"medal_level":xxx,"medal_name":"xxx","multi_unlock_level":"","type":0,"uid":xxx,"unlock":0,"unlock_level":0,"up_uid":xxx,"upper_bound_content":""}}
-{"cmd":"MESSAGEBOX_USER_MEDAL_CHANGE","data":{"MultiUnlockLevel":[],"guard_level":xxx,"is_lighted":xxx,"medal_color_border":xxx,"medal_color_end":xxx,"medal_color_start":xxx,"medal_level":xxx,"medal_name":"xxx","multi_unlock_level":"","type":1,"uid":xxx,"unlock":0,"unlock_level":0,"up_uid":xxx,"upper_bound_content":"恭喜你的粉丝勋章【xxx】升到xxx级"}}
-{"cmd":"MESSAGEBOX_USER_MEDAL_CHANGE","data":{"MultiUnlockLevel":["5"],"guard_level":x,"is_lighted":xx,"medal_color_border":xxx,"medal_color_end":xxx,"medal_color_start":xxx,"medal_level":5,"medal_name":"xxx","multi_unlock_level":"5","type":1,"uid":xx,"unlock":1,"unlock_level":5,"up_uid":xxx,"upper_bound_content":"恭喜你的粉丝勋章【xxx】升到5级"}}
-{"cmd":"MESSAGEBOX_USER_MEDAL_CHANGE","data":{"type":1,"uid":xxx,"up_uid":xxx,"medal_level":20,"medal_name":"XXX","medal_color_start":xxx,"medal_color_end":xxx,"medal_color_border":xxx,"is_lighted":1,"is_lighted_v2":false,"guard_level":0,"unlock":0,"unlock_level":0,"multi_unlock_level":"","upper_bound_content":"恭喜你的粉丝勋章【xxx】升到20级","uinfo_medal":{"name":"xxx","level":20,"color_start":xxx,"color_end":xxx,"color_border":xxx,"color":0,"id":0,"typ":0,"is_light":1,"ruid":xxx,"guard_level":0,"score":0,"guard_icon":"","honor_icon":"","v2_medal_color_start":"#xxx","v2_medal_color_end":"#xxx","v2_medal_color_border":"#xxx","v2_medal_color_text":"#xxx","v2_medal_color_level":"#xxx","user_receive_count":0}}}
+{"cmd":"MESSAGEBOX_USER_MEDAL_CHANGE","data":{"type":1,"uid":xxx,"up_uid":xxx,"medal_level":xx,"medal_name":"XXX","medal_color_start":xxx,"medal_color_end":xxx,"medal_color_border":xxx,"is_lighted":1,"is_lighted_v2":true,"guard_level":0,"unlock":0,"unlock_level":0,"multi_unlock_level":"","upper_bound_content":"恭喜你的粉丝勋章【xxx】升到xxx级","uinfo_medal":{"name":"xxx","level":xx,"color_start":xxx,"color_end":xxx,"color_border":xxx,"color":0,"id":0,"typ":0,"is_light":1,"ruid":xxx,"guard_level":0,"score":0,"guard_icon":"","honor_icon":"","v2_medal_color_start":"#xxx","v2_medal_color_end":"#xxx","v2_medal_color_border":"#xxx","v2_medal_color_text":"#xxx","v2_medal_color_level":"#xxx","user_receive_count":0}}}
 ```
 ----
 ### WEALTH_NOTIFY
@@ -5720,10 +5717,10 @@ role 0 1 2
 | room_id		| num	| |
 | ruid			| num	| |
 | need_refresh	| bool	| |
-| version		| num	| |
+| version		| num	| ts(ms) |
 
 ```json
-{"cmd":"CHG_RANK_REFRESH","data":{"cmd":"CHG_RANK_REFRESH","rank_type":3,"rank_module":"area","room_id":xxx,"ruid":xxx,"need_refresh":true,"version":1721805138162}}
+{"cmd":"CHG_RANK_REFRESH","data":{"cmd":"CHG_RANK_REFRESH","rank_type":3,"rank_module":"area","room_id":xxx,"ruid":xxx,"need_refresh":true,"version":xxx}}
 ```
 ---
 ### USER_TOAST_MSG_V2
@@ -5825,6 +5822,21 @@ role 0 1 2
 | typeB			| []obj	| |
 ```json
 {"cmd":"WIN_ACTIVITY","number":1,"data":{"delay_time_min":0,"delay_time_max":30,"activity_id":1090,"jump_url":"https://live.bilibili.com/p/html/live-app-treasurebox/index.html?is_live_half_webview=1&hybrid_biz=live-app-treasurebox&hybrid_rotate_d=1&hybrid_half_ui=1,3,100p,70p,0,0,30,100;2,2,375,100p,0,0,30,100;3,3,100p,70p,0,0,30,100;4,2,375,100p,0,0,30,100;5,3,100p,70p,0,0,30,100;6,3,100p,70p,0,0,30,100;7,3,100p,70p,0,0,30,100&aid=1090","weight":20,"closeable":0,"title":"华为nova Flip新生之夜","title_color":"#FFFFFF","activity_pic":"https://i0.hdslb.com/bfs/live/c3ed87683f6e87d256d1f5fdddbfb220fc4c2cdf.png","background":"https://i0.hdslb.com/bfs/live/84cd59bcb1e977359df618dbeb0f7828751f457c.png","current_round":1,"typeB":[{"join_start_time":1722857640,"join_end_time":1722858900,"round_num":1}]}}
+```
+---
+### COMMON_ANIMATION
+[TOP](#直播弹幕)  
+文档更新：2024-01-01  
+| key		| type	| value	|
+|-|-|-|
+| cmd		| str	| "COMMON_ANIMATION" |
+| data		| obj	| |
+#### COMMON_ANIMATION__data
+| key		| type	| value	|
+|-|-|-|
+| data	| xxx	| |
+```json
+{"cmd":"COMMON_ANIMATION","data":{"uid":xxx,"effect_id":xxx,"demarcation":xxx,"order_id":"240810171633xxxxxxxxxxxxx"}}
 ```
 ---
 ### XXXXXXXXXXXX

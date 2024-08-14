@@ -28,6 +28,30 @@ class DMAttrBit(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     DMAttrBitProtect: _ClassVar[DMAttrBit]
     DMAttrBitFromLive: _ClassVar[DMAttrBit]
     DMAttrHighLike: _ClassVar[DMAttrBit]
+    DMAttrPicture: _ClassVar[DMAttrBit]
+    DMAttrNFT: _ClassVar[DMAttrBit]
+    DMAttrX15: _ClassVar[DMAttrBit]
+
+class DmColorfulType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
+    __slots__ = []
+    NoneType: _ClassVar[DmColorfulType]
+    VipGradualColor: _ClassVar[DmColorfulType]
+
+class DmMaskWallBizType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
+    __slots__ = []
+    Unknown: _ClassVar[DmMaskWallBizType]
+    OGV: _ClassVar[DmMaskWallBizType]
+    BizPic: _ClassVar[DmMaskWallBizType]
+    Mute: _ClassVar[DmMaskWallBizType]
+    Record: _ClassVar[DmMaskWallBizType]
+    Cloud: _ClassVar[DmMaskWallBizType]
+    AIGC: _ClassVar[DmMaskWallBizType]
+
+class DmMaskWallContentType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
+    __slots__ = []
+    DmMaskWallContentTypeUnknown: _ClassVar[DmMaskWallContentType]
+    DmMaskWallContentTypeText: _ClassVar[DmMaskWallContentType]
+    DmMaskWallContentTypePic: _ClassVar[DmMaskWallContentType]
 
 class ExposureType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     __slots__ = []
@@ -42,6 +66,8 @@ class PostPanelBizType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     PostPanelBizTypeNFTDM: _ClassVar[PostPanelBizType]
     PostPanelBizTypeFragClose: _ClassVar[PostPanelBizType]
     PostPanelBizTypeRecommend: _ClassVar[PostPanelBizType]
+    PostPanelBizTypePlotLeak: _ClassVar[PostPanelBizType]
+    PostPanelBizTypeAntiHarassment: _ClassVar[PostPanelBizType]
 
 class PostStatus(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     __slots__ = []
@@ -75,29 +101,10 @@ class ToastFunctionType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     ToastFunctionTypeNone: _ClassVar[ToastFunctionType]
     ToastFunctionTypePostPanel: _ClassVar[ToastFunctionType]
 
-class DmColorfulType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
-    __slots__ = []
-    NoneType: _ClassVar[DmColorfulType]
-    VipGradualColor: _ClassVar[DmColorfulType]
-
 class ToastBizType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     __slots__ = []
     ToastBizTypeNone: _ClassVar[ToastBizType]
     ToastBizTypeEncourage: _ClassVar[ToastBizType]
-
-class DmMaskWallBizType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
-    __slots__ = []
-    DmMaskWallBizTypeUnknown: _ClassVar[DmMaskWallBizType]
-    DmMaskWallBizTypeOGV: _ClassVar[DmMaskWallBizType]
-    DmMaskWallBizTypeBizPic: _ClassVar[DmMaskWallBizType]
-    DmMaskWallBizTypeMute: _ClassVar[DmMaskWallBizType]
-    DmMaskWallBizTypeRecord: _ClassVar[DmMaskWallBizType]
-
-class DmMaskWallContentType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
-    __slots__ = []
-    DmMaskWallContentTypeUnknown: _ClassVar[DmMaskWallContentType]
-    DmMaskWallContentTypeText: _ClassVar[DmMaskWallContentType]
-    DmMaskWallContentTypePic: _ClassVar[DmMaskWallContentType]
 AvatarTypeNone: AvatarType
 AvatarTypeNFT: AvatarType
 BubbleTypeNone: BubbleType
@@ -109,6 +116,21 @@ CheckboxTypeColorDM: CheckboxType
 DMAttrBitProtect: DMAttrBit
 DMAttrBitFromLive: DMAttrBit
 DMAttrHighLike: DMAttrBit
+DMAttrPicture: DMAttrBit
+DMAttrNFT: DMAttrBit
+DMAttrX15: DMAttrBit
+NoneType: DmColorfulType
+VipGradualColor: DmColorfulType
+Unknown: DmMaskWallBizType
+OGV: DmMaskWallBizType
+BizPic: DmMaskWallBizType
+Mute: DmMaskWallBizType
+Record: DmMaskWallBizType
+Cloud: DmMaskWallBizType
+AIGC: DmMaskWallBizType
+DmMaskWallContentTypeUnknown: DmMaskWallContentType
+DmMaskWallContentTypeText: DmMaskWallContentType
+DmMaskWallContentTypePic: DmMaskWallContentType
 ExposureTypeNone: ExposureType
 ExposureTypeDMSend: ExposureType
 PostPanelBizTypeNone: PostPanelBizType
@@ -117,6 +139,8 @@ PostPanelBizTypeColorDM: PostPanelBizType
 PostPanelBizTypeNFTDM: PostPanelBizType
 PostPanelBizTypeFragClose: PostPanelBizType
 PostPanelBizTypeRecommend: PostPanelBizType
+PostPanelBizTypePlotLeak: PostPanelBizType
+PostPanelBizTypeAntiHarassment: PostPanelBizType
 PostStatusNormal: PostStatus
 PostStatusClosed: PostStatus
 RenderTypeNone: RenderType
@@ -131,18 +155,8 @@ CC: SubtitleType
 AI: SubtitleType
 ToastFunctionTypeNone: ToastFunctionType
 ToastFunctionTypePostPanel: ToastFunctionType
-NoneType: DmColorfulType
-VipGradualColor: DmColorfulType
 ToastBizTypeNone: ToastBizType
 ToastBizTypeEncourage: ToastBizType
-DmMaskWallBizTypeUnknown: DmMaskWallBizType
-DmMaskWallBizTypeOGV: DmMaskWallBizType
-DmMaskWallBizTypeBizPic: DmMaskWallBizType
-DmMaskWallBizTypeMute: DmMaskWallBizType
-DmMaskWallBizTypeRecord: DmMaskWallBizType
-DmMaskWallContentTypeUnknown: DmMaskWallContentType
-DmMaskWallContentTypeText: DmMaskWallContentType
-DmMaskWallContentTypePic: DmMaskWallContentType
 
 class Avatar(_message.Message):
     __slots__ = ["id", "url", "avatar_type"]
@@ -266,29 +280,43 @@ class ClickButtonV2(_message.Message):
     exposure_type: ExposureType
     def __init__(self, portrait_text: _Optional[_Iterable[str]] = ..., landscape_text: _Optional[_Iterable[str]] = ..., portrait_text_focus: _Optional[_Iterable[str]] = ..., landscape_text_focus: _Optional[_Iterable[str]] = ..., render_type: _Optional[_Union[RenderType, str]] = ..., text_input_post: bool = ..., exposure_once: bool = ..., exposure_type: _Optional[_Union[ExposureType, str]] = ...) -> None: ...
 
+class Command(_message.Message):
+    __slots__ = ["command_dms"]
+    COMMAND_DMS_FIELD_NUMBER: _ClassVar[int]
+    command_dms: _containers.RepeatedCompositeFieldContainer[CommandDm]
+    def __init__(self, command_dms: _Optional[_Iterable[_Union[CommandDm, _Mapping]]] = ...) -> None: ...
+
 class CommandDm(_message.Message):
-    __slots__ = ["id", "oid", "mid", "command", "text", "stime", "ctime", "mtime", "extra", "dmid"]
+    __slots__ = ["id", "oid", "mid", "command", "content", "progress", "ctime", "mtime", "extra", "idstr", "type", "autocreate", "countdown", "attr"]
     ID_FIELD_NUMBER: _ClassVar[int]
     OID_FIELD_NUMBER: _ClassVar[int]
     MID_FIELD_NUMBER: _ClassVar[int]
     COMMAND_FIELD_NUMBER: _ClassVar[int]
-    TEXT_FIELD_NUMBER: _ClassVar[int]
-    STIME_FIELD_NUMBER: _ClassVar[int]
+    CONTENT_FIELD_NUMBER: _ClassVar[int]
+    PROGRESS_FIELD_NUMBER: _ClassVar[int]
     CTIME_FIELD_NUMBER: _ClassVar[int]
     MTIME_FIELD_NUMBER: _ClassVar[int]
     EXTRA_FIELD_NUMBER: _ClassVar[int]
-    DMID_FIELD_NUMBER: _ClassVar[int]
+    IDSTR_FIELD_NUMBER: _ClassVar[int]
+    TYPE_FIELD_NUMBER: _ClassVar[int]
+    AUTOCREATE_FIELD_NUMBER: _ClassVar[int]
+    COUNTDOWN_FIELD_NUMBER: _ClassVar[int]
+    ATTR_FIELD_NUMBER: _ClassVar[int]
     id: int
     oid: int
     mid: int
     command: str
-    text: str
-    stime: int
+    content: str
+    progress: int
     ctime: str
     mtime: str
     extra: str
-    dmid: str
-    def __init__(self, id: _Optional[int] = ..., oid: _Optional[int] = ..., mid: _Optional[int] = ..., command: _Optional[str] = ..., text: _Optional[str] = ..., stime: _Optional[int] = ..., ctime: _Optional[str] = ..., mtime: _Optional[str] = ..., extra: _Optional[str] = ..., dmid: _Optional[str] = ...) -> None: ...
+    idstr: str
+    type: int
+    autocreate: bool
+    countdown: int
+    attr: int
+    def __init__(self, id: _Optional[int] = ..., oid: _Optional[int] = ..., mid: _Optional[int] = ..., command: _Optional[str] = ..., content: _Optional[str] = ..., progress: _Optional[int] = ..., ctime: _Optional[str] = ..., mtime: _Optional[str] = ..., extra: _Optional[str] = ..., idstr: _Optional[str] = ..., type: _Optional[int] = ..., autocreate: bool = ..., countdown: _Optional[int] = ..., attr: _Optional[int] = ...) -> None: ...
 
 class DanmakuAIFlag(_message.Message):
     __slots__ = ["dm_flags"]
@@ -297,20 +325,21 @@ class DanmakuAIFlag(_message.Message):
     def __init__(self, dm_flags: _Optional[_Iterable[_Union[DanmakuFlag, _Mapping]]] = ...) -> None: ...
 
 class DanmakuElem(_message.Message):
-    __slots__ = ["id", "stime", "mode", "size", "color", "uhash", "text", "date", "weight", "action", "pool", "dmid", "attr", "likes", "test16", "test17", "reply_count", "test19", "test20", "test21", "animation", "test23", "colorful", "test25", "oid"]
+    __slots__ = ["id", "progress", "mode", "fontsize", "color", "midHash", "content", "ctime", "weight", "action", "pool", "idStr", "attr", "mid", "likes", "test16", "test17", "reply_count", "test19", "test20", "test21", "animation", "extra", "colorful", "type", "oid"]
     ID_FIELD_NUMBER: _ClassVar[int]
-    STIME_FIELD_NUMBER: _ClassVar[int]
+    PROGRESS_FIELD_NUMBER: _ClassVar[int]
     MODE_FIELD_NUMBER: _ClassVar[int]
-    SIZE_FIELD_NUMBER: _ClassVar[int]
+    FONTSIZE_FIELD_NUMBER: _ClassVar[int]
     COLOR_FIELD_NUMBER: _ClassVar[int]
-    UHASH_FIELD_NUMBER: _ClassVar[int]
-    TEXT_FIELD_NUMBER: _ClassVar[int]
-    DATE_FIELD_NUMBER: _ClassVar[int]
+    MIDHASH_FIELD_NUMBER: _ClassVar[int]
+    CONTENT_FIELD_NUMBER: _ClassVar[int]
+    CTIME_FIELD_NUMBER: _ClassVar[int]
     WEIGHT_FIELD_NUMBER: _ClassVar[int]
     ACTION_FIELD_NUMBER: _ClassVar[int]
     POOL_FIELD_NUMBER: _ClassVar[int]
-    DMID_FIELD_NUMBER: _ClassVar[int]
+    IDSTR_FIELD_NUMBER: _ClassVar[int]
     ATTR_FIELD_NUMBER: _ClassVar[int]
+    MID_FIELD_NUMBER: _ClassVar[int]
     LIKES_FIELD_NUMBER: _ClassVar[int]
     TEST16_FIELD_NUMBER: _ClassVar[int]
     TEST17_FIELD_NUMBER: _ClassVar[int]
@@ -319,23 +348,24 @@ class DanmakuElem(_message.Message):
     TEST20_FIELD_NUMBER: _ClassVar[int]
     TEST21_FIELD_NUMBER: _ClassVar[int]
     ANIMATION_FIELD_NUMBER: _ClassVar[int]
-    TEST23_FIELD_NUMBER: _ClassVar[int]
+    EXTRA_FIELD_NUMBER: _ClassVar[int]
     COLORFUL_FIELD_NUMBER: _ClassVar[int]
-    TEST25_FIELD_NUMBER: _ClassVar[int]
+    TYPE_FIELD_NUMBER: _ClassVar[int]
     OID_FIELD_NUMBER: _ClassVar[int]
     id: int
-    stime: int
+    progress: int
     mode: int
-    size: int
+    fontsize: int
     color: int
-    uhash: str
-    text: str
-    date: int
+    midHash: str
+    content: str
+    ctime: int
     weight: int
     action: str
     pool: int
-    dmid: str
+    idStr: str
     attr: int
+    mid: int
     likes: int
     test16: int
     test17: int
@@ -344,11 +374,11 @@ class DanmakuElem(_message.Message):
     test20: str
     test21: str
     animation: str
-    test23: bytes
+    extra: str
     colorful: DmColorfulType
-    test25: int
+    type: int
     oid: int
-    def __init__(self, id: _Optional[int] = ..., stime: _Optional[int] = ..., mode: _Optional[int] = ..., size: _Optional[int] = ..., color: _Optional[int] = ..., uhash: _Optional[str] = ..., text: _Optional[str] = ..., date: _Optional[int] = ..., weight: _Optional[int] = ..., action: _Optional[str] = ..., pool: _Optional[int] = ..., dmid: _Optional[str] = ..., attr: _Optional[int] = ..., likes: _Optional[int] = ..., test16: _Optional[int] = ..., test17: _Optional[int] = ..., reply_count: _Optional[int] = ..., test19: _Optional[bytes] = ..., test20: _Optional[str] = ..., test21: _Optional[str] = ..., animation: _Optional[str] = ..., test23: _Optional[bytes] = ..., colorful: _Optional[_Union[DmColorfulType, str]] = ..., test25: _Optional[int] = ..., oid: _Optional[int] = ...) -> None: ...
+    def __init__(self, id: _Optional[int] = ..., progress: _Optional[int] = ..., mode: _Optional[int] = ..., fontsize: _Optional[int] = ..., color: _Optional[int] = ..., midHash: _Optional[str] = ..., content: _Optional[str] = ..., ctime: _Optional[int] = ..., weight: _Optional[int] = ..., action: _Optional[str] = ..., pool: _Optional[int] = ..., idStr: _Optional[str] = ..., attr: _Optional[int] = ..., mid: _Optional[int] = ..., likes: _Optional[int] = ..., test16: _Optional[int] = ..., test17: _Optional[int] = ..., reply_count: _Optional[int] = ..., test19: _Optional[bytes] = ..., test20: _Optional[str] = ..., test21: _Optional[str] = ..., animation: _Optional[str] = ..., extra: _Optional[str] = ..., colorful: _Optional[_Union[DmColorfulType, str]] = ..., type: _Optional[int] = ..., oid: _Optional[int] = ...) -> None: ...
 
 class DanmakuFlag(_message.Message):
     __slots__ = ["dmid", "flag"]
@@ -369,7 +399,7 @@ class DanmakuFlagConfig(_message.Message):
     def __init__(self, rec_flag: _Optional[int] = ..., rec_text: _Optional[str] = ..., rec_switch: _Optional[int] = ...) -> None: ...
 
 class DanmuDefaultPlayerConfig(_message.Message):
-    __slots__ = ["player_danmaku_use_default_config", "player_danmaku_ai_recommended_switch", "player_danmaku_ai_recommended_level", "player_danmaku_blocktop", "player_danmaku_blockscroll", "player_danmaku_blockbottom", "player_danmaku_blockcolorful", "player_danmaku_blockrepeat", "player_danmaku_blockspecial", "player_danmaku_opacity", "player_danmaku_scalingfactor", "player_danmaku_domain", "player_danmaku_speed", "inline_player_danmaku_switch", "player_danmaku_senior_mode_switch", "player_danmaku_ai_recommended_level_v2", "player_danmaku_ai_recommended_level_v2_map"]
+    __slots__ = ["player_danmaku_use_default_config", "player_danmaku_ai_recommended_switch", "player_danmaku_ai_recommended_level", "player_danmaku_blocktop", "player_danmaku_blockscroll", "player_danmaku_blockbottom", "player_danmaku_blockcolorful", "player_danmaku_blockrepeat", "player_danmaku_blockspecial", "player_danmaku_opacity", "player_danmaku_scalingfactor", "player_danmaku_domain", "player_danmaku_speed", "inline_player_danmaku_switch", "player_danmaku_senior_mode_switch", "player_danmaku_ai_recommended_level_v2", "player_danmaku_ai_recommended_level_v2_map", "player_danmaku_enable_herd_dm"]
     class PlayerDanmakuAiRecommendedLevelV2MapEntry(_message.Message):
         __slots__ = ["key", "value"]
         KEY_FIELD_NUMBER: _ClassVar[int]
@@ -394,6 +424,7 @@ class DanmuDefaultPlayerConfig(_message.Message):
     PLAYER_DANMAKU_SENIOR_MODE_SWITCH_FIELD_NUMBER: _ClassVar[int]
     PLAYER_DANMAKU_AI_RECOMMENDED_LEVEL_V2_FIELD_NUMBER: _ClassVar[int]
     PLAYER_DANMAKU_AI_RECOMMENDED_LEVEL_V2_MAP_FIELD_NUMBER: _ClassVar[int]
+    PLAYER_DANMAKU_ENABLE_HERD_DM_FIELD_NUMBER: _ClassVar[int]
     player_danmaku_use_default_config: bool
     player_danmaku_ai_recommended_switch: bool
     player_danmaku_ai_recommended_level: int
@@ -411,10 +442,11 @@ class DanmuDefaultPlayerConfig(_message.Message):
     player_danmaku_senior_mode_switch: int
     player_danmaku_ai_recommended_level_v2: int
     player_danmaku_ai_recommended_level_v2_map: _containers.ScalarMap[int, int]
-    def __init__(self, player_danmaku_use_default_config: bool = ..., player_danmaku_ai_recommended_switch: bool = ..., player_danmaku_ai_recommended_level: _Optional[int] = ..., player_danmaku_blocktop: bool = ..., player_danmaku_blockscroll: bool = ..., player_danmaku_blockbottom: bool = ..., player_danmaku_blockcolorful: bool = ..., player_danmaku_blockrepeat: bool = ..., player_danmaku_blockspecial: bool = ..., player_danmaku_opacity: _Optional[float] = ..., player_danmaku_scalingfactor: _Optional[float] = ..., player_danmaku_domain: _Optional[float] = ..., player_danmaku_speed: _Optional[int] = ..., inline_player_danmaku_switch: bool = ..., player_danmaku_senior_mode_switch: _Optional[int] = ..., player_danmaku_ai_recommended_level_v2: _Optional[int] = ..., player_danmaku_ai_recommended_level_v2_map: _Optional[_Mapping[int, int]] = ...) -> None: ...
+    player_danmaku_enable_herd_dm: bool
+    def __init__(self, player_danmaku_use_default_config: bool = ..., player_danmaku_ai_recommended_switch: bool = ..., player_danmaku_ai_recommended_level: _Optional[int] = ..., player_danmaku_blocktop: bool = ..., player_danmaku_blockscroll: bool = ..., player_danmaku_blockbottom: bool = ..., player_danmaku_blockcolorful: bool = ..., player_danmaku_blockrepeat: bool = ..., player_danmaku_blockspecial: bool = ..., player_danmaku_opacity: _Optional[float] = ..., player_danmaku_scalingfactor: _Optional[float] = ..., player_danmaku_domain: _Optional[float] = ..., player_danmaku_speed: _Optional[int] = ..., inline_player_danmaku_switch: bool = ..., player_danmaku_senior_mode_switch: _Optional[int] = ..., player_danmaku_ai_recommended_level_v2: _Optional[int] = ..., player_danmaku_ai_recommended_level_v2_map: _Optional[_Mapping[int, int]] = ..., player_danmaku_enable_herd_dm: bool = ...) -> None: ...
 
 class DanmuPlayerConfig(_message.Message):
-    __slots__ = ["player_danmaku_switch", "player_danmaku_switch_save", "player_danmaku_use_default_config", "player_danmaku_ai_recommended_switch", "player_danmaku_ai_recommended_level", "player_danmaku_blocktop", "player_danmaku_blockscroll", "player_danmaku_blockbottom", "player_danmaku_blockcolorful", "player_danmaku_blockrepeat", "player_danmaku_blockspecial", "player_danmaku_opacity", "player_danmaku_scalingfactor", "player_danmaku_domain", "player_danmaku_speed", "player_danmaku_enableblocklist", "inline_player_danmaku_switch", "inline_player_danmaku_config", "player_danmaku_ios_switch_save", "player_danmaku_senior_mode_switch", "player_danmaku_ai_recommended_level_v2", "player_danmaku_ai_recommended_level_v2_map"]
+    __slots__ = ["player_danmaku_switch", "player_danmaku_switch_save", "player_danmaku_use_default_config", "player_danmaku_ai_recommended_switch", "player_danmaku_ai_recommended_level", "player_danmaku_blocktop", "player_danmaku_blockscroll", "player_danmaku_blockbottom", "player_danmaku_blockcolorful", "player_danmaku_blockrepeat", "player_danmaku_blockspecial", "player_danmaku_opacity", "player_danmaku_scalingfactor", "player_danmaku_domain", "player_danmaku_speed", "player_danmaku_enableblocklist", "inline_player_danmaku_switch", "inline_player_danmaku_config", "player_danmaku_ios_switch_save", "player_danmaku_senior_mode_switch", "player_danmaku_ai_recommended_level_v2", "player_danmaku_ai_recommended_level_v2_map", "player_danmaku_enable_herd_dm", "player_danmaku_blocktop_bottom", "player_danmaku_domain_v2", "player_danmaku_density", "player_danmaku_subtitle_proof", "player_danmaku_people_proof"]
     class PlayerDanmakuAiRecommendedLevelV2MapEntry(_message.Message):
         __slots__ = ["key", "value"]
         KEY_FIELD_NUMBER: _ClassVar[int]
@@ -444,6 +476,12 @@ class DanmuPlayerConfig(_message.Message):
     PLAYER_DANMAKU_SENIOR_MODE_SWITCH_FIELD_NUMBER: _ClassVar[int]
     PLAYER_DANMAKU_AI_RECOMMENDED_LEVEL_V2_FIELD_NUMBER: _ClassVar[int]
     PLAYER_DANMAKU_AI_RECOMMENDED_LEVEL_V2_MAP_FIELD_NUMBER: _ClassVar[int]
+    PLAYER_DANMAKU_ENABLE_HERD_DM_FIELD_NUMBER: _ClassVar[int]
+    PLAYER_DANMAKU_BLOCKTOP_BOTTOM_FIELD_NUMBER: _ClassVar[int]
+    PLAYER_DANMAKU_DOMAIN_V2_FIELD_NUMBER: _ClassVar[int]
+    PLAYER_DANMAKU_DENSITY_FIELD_NUMBER: _ClassVar[int]
+    PLAYER_DANMAKU_SUBTITLE_PROOF_FIELD_NUMBER: _ClassVar[int]
+    PLAYER_DANMAKU_PEOPLE_PROOF_FIELD_NUMBER: _ClassVar[int]
     player_danmaku_switch: bool
     player_danmaku_switch_save: bool
     player_danmaku_use_default_config: bool
@@ -466,7 +504,13 @@ class DanmuPlayerConfig(_message.Message):
     player_danmaku_senior_mode_switch: int
     player_danmaku_ai_recommended_level_v2: int
     player_danmaku_ai_recommended_level_v2_map: _containers.ScalarMap[int, int]
-    def __init__(self, player_danmaku_switch: bool = ..., player_danmaku_switch_save: bool = ..., player_danmaku_use_default_config: bool = ..., player_danmaku_ai_recommended_switch: bool = ..., player_danmaku_ai_recommended_level: _Optional[int] = ..., player_danmaku_blocktop: bool = ..., player_danmaku_blockscroll: bool = ..., player_danmaku_blockbottom: bool = ..., player_danmaku_blockcolorful: bool = ..., player_danmaku_blockrepeat: bool = ..., player_danmaku_blockspecial: bool = ..., player_danmaku_opacity: _Optional[float] = ..., player_danmaku_scalingfactor: _Optional[float] = ..., player_danmaku_domain: _Optional[float] = ..., player_danmaku_speed: _Optional[int] = ..., player_danmaku_enableblocklist: bool = ..., inline_player_danmaku_switch: bool = ..., inline_player_danmaku_config: _Optional[int] = ..., player_danmaku_ios_switch_save: _Optional[int] = ..., player_danmaku_senior_mode_switch: _Optional[int] = ..., player_danmaku_ai_recommended_level_v2: _Optional[int] = ..., player_danmaku_ai_recommended_level_v2_map: _Optional[_Mapping[int, int]] = ...) -> None: ...
+    player_danmaku_enable_herd_dm: bool
+    player_danmaku_blocktop_bottom: bool
+    player_danmaku_domain_v2: int
+    player_danmaku_density: int
+    player_danmaku_subtitle_proof: bool
+    player_danmaku_people_proof: bool
+    def __init__(self, player_danmaku_switch: bool = ..., player_danmaku_switch_save: bool = ..., player_danmaku_use_default_config: bool = ..., player_danmaku_ai_recommended_switch: bool = ..., player_danmaku_ai_recommended_level: _Optional[int] = ..., player_danmaku_blocktop: bool = ..., player_danmaku_blockscroll: bool = ..., player_danmaku_blockbottom: bool = ..., player_danmaku_blockcolorful: bool = ..., player_danmaku_blockrepeat: bool = ..., player_danmaku_blockspecial: bool = ..., player_danmaku_opacity: _Optional[float] = ..., player_danmaku_scalingfactor: _Optional[float] = ..., player_danmaku_domain: _Optional[float] = ..., player_danmaku_speed: _Optional[int] = ..., player_danmaku_enableblocklist: bool = ..., inline_player_danmaku_switch: bool = ..., inline_player_danmaku_config: _Optional[int] = ..., player_danmaku_ios_switch_save: _Optional[int] = ..., player_danmaku_senior_mode_switch: _Optional[int] = ..., player_danmaku_ai_recommended_level_v2: _Optional[int] = ..., player_danmaku_ai_recommended_level_v2_map: _Optional[_Mapping[int, int]] = ..., player_danmaku_enable_herd_dm: bool = ..., player_danmaku_blocktop_bottom: bool = ..., player_danmaku_domain_v2: _Optional[int] = ..., player_danmaku_density: _Optional[int] = ..., player_danmaku_subtitle_proof: bool = ..., player_danmaku_people_proof: bool = ...) -> None: ...
 
 class DanmuPlayerConfigPanel(_message.Message):
     __slots__ = ["selection_text"]
@@ -495,7 +539,7 @@ class DanmuPlayerViewConfig(_message.Message):
     def __init__(self, danmuku_default_player_config: _Optional[_Union[DanmuDefaultPlayerConfig, _Mapping]] = ..., danmuku_player_config: _Optional[_Union[DanmuPlayerConfig, _Mapping]] = ..., danmuku_player_dynamic_config: _Optional[_Iterable[_Union[DanmuPlayerDynamicConfig, _Mapping]]] = ..., danmuku_player_config_panel: _Optional[_Union[DanmuPlayerConfigPanel, _Mapping]] = ...) -> None: ...
 
 class DanmuWebPlayerConfig(_message.Message):
-    __slots__ = ["dm_switch", "ai_switch", "ai_level", "type_top", "type_scroll", "type_bottom", "type_color", "type_special", "preventshade", "dmask", "opacity", "dmarea", "speedplus", "fontsize", "fullscreensync", "speedsync", "fontfamily", "bold", "fontborder", "draw_type", "senior_mode_switch", "ai_level_v2", "ai_level_v2_map"]
+    __slots__ = ["dm_switch", "ai_switch", "ai_level", "blocktop", "blockscroll", "blockbottom", "blockcolor", "blockspecial", "preventshade", "dmask", "opacity", "dmarea", "speedplus", "fontsize", "screensync", "speedsync", "fontfamily", "bold", "fontborder", "draw_type", "senior_mode_switch", "ai_level_v2", "ai_level_v2_map", "blocktop_bottom", "dm_area_v2", "dm_density"]
     class AiLevelV2MapEntry(_message.Message):
         __slots__ = ["key", "value"]
         KEY_FIELD_NUMBER: _ClassVar[int]
@@ -506,18 +550,18 @@ class DanmuWebPlayerConfig(_message.Message):
     DM_SWITCH_FIELD_NUMBER: _ClassVar[int]
     AI_SWITCH_FIELD_NUMBER: _ClassVar[int]
     AI_LEVEL_FIELD_NUMBER: _ClassVar[int]
-    TYPE_TOP_FIELD_NUMBER: _ClassVar[int]
-    TYPE_SCROLL_FIELD_NUMBER: _ClassVar[int]
-    TYPE_BOTTOM_FIELD_NUMBER: _ClassVar[int]
-    TYPE_COLOR_FIELD_NUMBER: _ClassVar[int]
-    TYPE_SPECIAL_FIELD_NUMBER: _ClassVar[int]
+    BLOCKTOP_FIELD_NUMBER: _ClassVar[int]
+    BLOCKSCROLL_FIELD_NUMBER: _ClassVar[int]
+    BLOCKBOTTOM_FIELD_NUMBER: _ClassVar[int]
+    BLOCKCOLOR_FIELD_NUMBER: _ClassVar[int]
+    BLOCKSPECIAL_FIELD_NUMBER: _ClassVar[int]
     PREVENTSHADE_FIELD_NUMBER: _ClassVar[int]
     DMASK_FIELD_NUMBER: _ClassVar[int]
     OPACITY_FIELD_NUMBER: _ClassVar[int]
     DMAREA_FIELD_NUMBER: _ClassVar[int]
     SPEEDPLUS_FIELD_NUMBER: _ClassVar[int]
     FONTSIZE_FIELD_NUMBER: _ClassVar[int]
-    FULLSCREENSYNC_FIELD_NUMBER: _ClassVar[int]
+    SCREENSYNC_FIELD_NUMBER: _ClassVar[int]
     SPEEDSYNC_FIELD_NUMBER: _ClassVar[int]
     FONTFAMILY_FIELD_NUMBER: _ClassVar[int]
     BOLD_FIELD_NUMBER: _ClassVar[int]
@@ -526,21 +570,24 @@ class DanmuWebPlayerConfig(_message.Message):
     SENIOR_MODE_SWITCH_FIELD_NUMBER: _ClassVar[int]
     AI_LEVEL_V2_FIELD_NUMBER: _ClassVar[int]
     AI_LEVEL_V2_MAP_FIELD_NUMBER: _ClassVar[int]
+    BLOCKTOP_BOTTOM_FIELD_NUMBER: _ClassVar[int]
+    DM_AREA_V2_FIELD_NUMBER: _ClassVar[int]
+    DM_DENSITY_FIELD_NUMBER: _ClassVar[int]
     dm_switch: bool
     ai_switch: bool
     ai_level: int
-    type_top: bool
-    type_scroll: bool
-    type_bottom: bool
-    type_color: bool
-    type_special: bool
+    blocktop: bool
+    blockscroll: bool
+    blockbottom: bool
+    blockcolor: bool
+    blockspecial: bool
     preventshade: bool
     dmask: bool
     opacity: float
     dmarea: int
     speedplus: float
     fontsize: float
-    fullscreensync: bool
+    screensync: bool
     speedsync: bool
     fontfamily: str
     bold: bool
@@ -549,24 +596,69 @@ class DanmuWebPlayerConfig(_message.Message):
     senior_mode_switch: int
     ai_level_v2: int
     ai_level_v2_map: _containers.ScalarMap[int, int]
-    def __init__(self, dm_switch: bool = ..., ai_switch: bool = ..., ai_level: _Optional[int] = ..., type_top: bool = ..., type_scroll: bool = ..., type_bottom: bool = ..., type_color: bool = ..., type_special: bool = ..., preventshade: bool = ..., dmask: bool = ..., opacity: _Optional[float] = ..., dmarea: _Optional[int] = ..., speedplus: _Optional[float] = ..., fontsize: _Optional[float] = ..., fullscreensync: bool = ..., speedsync: bool = ..., fontfamily: _Optional[str] = ..., bold: bool = ..., fontborder: _Optional[int] = ..., draw_type: _Optional[str] = ..., senior_mode_switch: _Optional[int] = ..., ai_level_v2: _Optional[int] = ..., ai_level_v2_map: _Optional[_Mapping[int, int]] = ...) -> None: ...
+    blocktop_bottom: bool
+    dm_area_v2: int
+    dm_density: int
+    def __init__(self, dm_switch: bool = ..., ai_switch: bool = ..., ai_level: _Optional[int] = ..., blocktop: bool = ..., blockscroll: bool = ..., blockbottom: bool = ..., blockcolor: bool = ..., blockspecial: bool = ..., preventshade: bool = ..., dmask: bool = ..., opacity: _Optional[float] = ..., dmarea: _Optional[int] = ..., speedplus: _Optional[float] = ..., fontsize: _Optional[float] = ..., screensync: bool = ..., speedsync: bool = ..., fontfamily: _Optional[str] = ..., bold: bool = ..., fontborder: _Optional[int] = ..., draw_type: _Optional[str] = ..., senior_mode_switch: _Optional[int] = ..., ai_level_v2: _Optional[int] = ..., ai_level_v2_map: _Optional[_Mapping[int, int]] = ..., blocktop_bottom: bool = ..., dm_area_v2: _Optional[int] = ..., dm_density: _Optional[int] = ...) -> None: ...
+
+class DmColorful(_message.Message):
+    __slots__ = ["type", "src"]
+    TYPE_FIELD_NUMBER: _ClassVar[int]
+    SRC_FIELD_NUMBER: _ClassVar[int]
+    type: DmColorfulType
+    src: str
+    def __init__(self, type: _Optional[_Union[DmColorfulType, str]] = ..., src: _Optional[str] = ...) -> None: ...
 
 class DmExpoReportReq(_message.Message):
-    __slots__ = ["session_id", "oid", "spmid"]
+    __slots__ = ["session_id", "oid", "dmids", "spmid"]
     SESSION_ID_FIELD_NUMBER: _ClassVar[int]
     OID_FIELD_NUMBER: _ClassVar[int]
+    DMIDS_FIELD_NUMBER: _ClassVar[int]
     SPMID_FIELD_NUMBER: _ClassVar[int]
     session_id: str
     oid: int
+    dmids: bytes
     spmid: str
-    def __init__(self, session_id: _Optional[str] = ..., oid: _Optional[int] = ..., spmid: _Optional[str] = ...) -> None: ...
+    def __init__(self, session_id: _Optional[str] = ..., oid: _Optional[int] = ..., dmids: _Optional[bytes] = ..., spmid: _Optional[str] = ...) -> None: ...
 
 class DmExpoReportRes(_message.Message):
     __slots__ = []
     def __init__(self) -> None: ...
 
+class DmHerdView(_message.Message):
+    __slots__ = ["display_herd_dm_num", "herd_dms"]
+    DISPLAY_HERD_DM_NUM_FIELD_NUMBER: _ClassVar[int]
+    HERD_DMS_FIELD_NUMBER: _ClassVar[int]
+    display_herd_dm_num: int
+    herd_dms: _containers.RepeatedCompositeFieldContainer[ViewHerdDmElem]
+    def __init__(self, display_herd_dm_num: _Optional[int] = ..., herd_dms: _Optional[_Iterable[_Union[ViewHerdDmElem, _Mapping]]] = ...) -> None: ...
+
+class DmMaskWall(_message.Message):
+    __slots__ = ["start", "end", "content", "content_type", "biz_type", "contents"]
+    START_FIELD_NUMBER: _ClassVar[int]
+    END_FIELD_NUMBER: _ClassVar[int]
+    CONTENT_FIELD_NUMBER: _ClassVar[int]
+    CONTENT_TYPE_FIELD_NUMBER: _ClassVar[int]
+    BIZ_TYPE_FIELD_NUMBER: _ClassVar[int]
+    CONTENTS_FIELD_NUMBER: _ClassVar[int]
+    start: int
+    end: int
+    content: str
+    content_type: DmMaskWallContentType
+    biz_type: DmMaskWallBizType
+    contents: _containers.RepeatedCompositeFieldContainer[DmMaskWallContent]
+    def __init__(self, start: _Optional[int] = ..., end: _Optional[int] = ..., content: _Optional[str] = ..., content_type: _Optional[_Union[DmMaskWallContentType, str]] = ..., biz_type: _Optional[_Union[DmMaskWallBizType, str]] = ..., contents: _Optional[_Iterable[_Union[DmMaskWallContent, _Mapping]]] = ...) -> None: ...
+
+class DmMaskWallContent(_message.Message):
+    __slots__ = ["type", "content"]
+    TYPE_FIELD_NUMBER: _ClassVar[int]
+    CONTENT_FIELD_NUMBER: _ClassVar[int]
+    type: DmMaskWallContentType
+    content: str
+    def __init__(self, type: _Optional[_Union[DmMaskWallContentType, str]] = ..., content: _Optional[str] = ...) -> None: ...
+
 class DmPlayerConfigReq(_message.Message):
-    __slots__ = ["ts", "switch", "switch_save", "use_default_config", "ai_recommended_switch", "ai_recommended_level", "blocktop", "blockscroll", "blockbottom", "blockcolorful", "blockrepeat", "blockspecial", "opacity", "scalingfactor", "domain", "speed", "enableblocklist", "inlinePlayerDanmakuSwitch", "senior_mode_switch", "ai_recommended_level_v2"]
+    __slots__ = ["ts", "switch", "switch_save", "use_default_config", "ai_recommended_switch", "ai_recommended_level", "blocktop", "blockscroll", "blockbottom", "blockcolorful", "blockrepeat", "blockspecial", "opacity", "scalingfactor", "domain", "speed", "enableblocklist", "inlinePlayerDanmakuSwitch", "senior_mode_switch", "ai_recommended_level_v2", "enable_herd_dm", "blocktop_bottom", "domain_v2", "density", "subtitle_proof", "people_proof"]
     TS_FIELD_NUMBER: _ClassVar[int]
     SWITCH_FIELD_NUMBER: _ClassVar[int]
     SWITCH_SAVE_FIELD_NUMBER: _ClassVar[int]
@@ -587,6 +679,12 @@ class DmPlayerConfigReq(_message.Message):
     INLINEPLAYERDANMAKUSWITCH_FIELD_NUMBER: _ClassVar[int]
     SENIOR_MODE_SWITCH_FIELD_NUMBER: _ClassVar[int]
     AI_RECOMMENDED_LEVEL_V2_FIELD_NUMBER: _ClassVar[int]
+    ENABLE_HERD_DM_FIELD_NUMBER: _ClassVar[int]
+    BLOCKTOP_BOTTOM_FIELD_NUMBER: _ClassVar[int]
+    DOMAIN_V2_FIELD_NUMBER: _ClassVar[int]
+    DENSITY_FIELD_NUMBER: _ClassVar[int]
+    SUBTITLE_PROOF_FIELD_NUMBER: _ClassVar[int]
+    PEOPLE_PROOF_FIELD_NUMBER: _ClassVar[int]
     ts: int
     switch: PlayerDanmakuSwitch
     switch_save: PlayerDanmakuSwitchSave
@@ -607,7 +705,13 @@ class DmPlayerConfigReq(_message.Message):
     inlinePlayerDanmakuSwitch: InlinePlayerDanmakuSwitch
     senior_mode_switch: PlayerDanmakuSeniorModeSwitch
     ai_recommended_level_v2: PlayerDanmakuAiRecommendedLevelV2
-    def __init__(self, ts: _Optional[int] = ..., switch: _Optional[_Union[PlayerDanmakuSwitch, _Mapping]] = ..., switch_save: _Optional[_Union[PlayerDanmakuSwitchSave, _Mapping]] = ..., use_default_config: _Optional[_Union[PlayerDanmakuUseDefaultConfig, _Mapping]] = ..., ai_recommended_switch: _Optional[_Union[PlayerDanmakuAiRecommendedSwitch, _Mapping]] = ..., ai_recommended_level: _Optional[_Union[PlayerDanmakuAiRecommendedLevel, _Mapping]] = ..., blocktop: _Optional[_Union[PlayerDanmakuBlocktop, _Mapping]] = ..., blockscroll: _Optional[_Union[PlayerDanmakuBlockscroll, _Mapping]] = ..., blockbottom: _Optional[_Union[PlayerDanmakuBlockbottom, _Mapping]] = ..., blockcolorful: _Optional[_Union[PlayerDanmakuBlockcolorful, _Mapping]] = ..., blockrepeat: _Optional[_Union[PlayerDanmakuBlockrepeat, _Mapping]] = ..., blockspecial: _Optional[_Union[PlayerDanmakuBlockspecial, _Mapping]] = ..., opacity: _Optional[_Union[PlayerDanmakuOpacity, _Mapping]] = ..., scalingfactor: _Optional[_Union[PlayerDanmakuScalingfactor, _Mapping]] = ..., domain: _Optional[_Union[PlayerDanmakuDomain, _Mapping]] = ..., speed: _Optional[_Union[PlayerDanmakuSpeed, _Mapping]] = ..., enableblocklist: _Optional[_Union[PlayerDanmakuEnableblocklist, _Mapping]] = ..., inlinePlayerDanmakuSwitch: _Optional[_Union[InlinePlayerDanmakuSwitch, _Mapping]] = ..., senior_mode_switch: _Optional[_Union[PlayerDanmakuSeniorModeSwitch, _Mapping]] = ..., ai_recommended_level_v2: _Optional[_Union[PlayerDanmakuAiRecommendedLevelV2, _Mapping]] = ...) -> None: ...
+    enable_herd_dm: PlayerDanmakuEnableHerdDm
+    blocktop_bottom: PlayerDanmakuBlocktopBottom
+    domain_v2: PlayerDanmakuDomainV2
+    density: PlayerDanmakuDensity
+    subtitle_proof: PlayerDanmakuSubtitleProof
+    people_proof: PlayerDanmakuPeopleProof
+    def __init__(self, ts: _Optional[int] = ..., switch: _Optional[_Union[PlayerDanmakuSwitch, _Mapping]] = ..., switch_save: _Optional[_Union[PlayerDanmakuSwitchSave, _Mapping]] = ..., use_default_config: _Optional[_Union[PlayerDanmakuUseDefaultConfig, _Mapping]] = ..., ai_recommended_switch: _Optional[_Union[PlayerDanmakuAiRecommendedSwitch, _Mapping]] = ..., ai_recommended_level: _Optional[_Union[PlayerDanmakuAiRecommendedLevel, _Mapping]] = ..., blocktop: _Optional[_Union[PlayerDanmakuBlocktop, _Mapping]] = ..., blockscroll: _Optional[_Union[PlayerDanmakuBlockscroll, _Mapping]] = ..., blockbottom: _Optional[_Union[PlayerDanmakuBlockbottom, _Mapping]] = ..., blockcolorful: _Optional[_Union[PlayerDanmakuBlockcolorful, _Mapping]] = ..., blockrepeat: _Optional[_Union[PlayerDanmakuBlockrepeat, _Mapping]] = ..., blockspecial: _Optional[_Union[PlayerDanmakuBlockspecial, _Mapping]] = ..., opacity: _Optional[_Union[PlayerDanmakuOpacity, _Mapping]] = ..., scalingfactor: _Optional[_Union[PlayerDanmakuScalingfactor, _Mapping]] = ..., domain: _Optional[_Union[PlayerDanmakuDomain, _Mapping]] = ..., speed: _Optional[_Union[PlayerDanmakuSpeed, _Mapping]] = ..., enableblocklist: _Optional[_Union[PlayerDanmakuEnableblocklist, _Mapping]] = ..., inlinePlayerDanmakuSwitch: _Optional[_Union[InlinePlayerDanmakuSwitch, _Mapping]] = ..., senior_mode_switch: _Optional[_Union[PlayerDanmakuSeniorModeSwitch, _Mapping]] = ..., ai_recommended_level_v2: _Optional[_Union[PlayerDanmakuAiRecommendedLevelV2, _Mapping]] = ..., enable_herd_dm: _Optional[_Union[PlayerDanmakuEnableHerdDm, _Mapping]] = ..., blocktop_bottom: _Optional[_Union[PlayerDanmakuBlocktopBottom, _Mapping]] = ..., domain_v2: _Optional[_Union[PlayerDanmakuDomainV2, _Mapping]] = ..., density: _Optional[_Union[PlayerDanmakuDensity, _Mapping]] = ..., subtitle_proof: _Optional[_Union[PlayerDanmakuSubtitleProof, _Mapping]] = ..., people_proof: _Optional[_Union[PlayerDanmakuPeopleProof, _Mapping]] = ...) -> None: ...
 
 class DmSegConfig(_message.Message):
     __slots__ = ["page_size", "total"]
@@ -618,21 +722,23 @@ class DmSegConfig(_message.Message):
     def __init__(self, page_size: _Optional[int] = ..., total: _Optional[int] = ...) -> None: ...
 
 class DmSegMobileReply(_message.Message):
-    __slots__ = ["elems", "state", "ai_flag", "time", "colorful_src"]
+    __slots__ = ["elems", "state", "ai_flag", "segment_rules", "colorful_src", "context_src"]
     ELEMS_FIELD_NUMBER: _ClassVar[int]
     STATE_FIELD_NUMBER: _ClassVar[int]
     AI_FLAG_FIELD_NUMBER: _ClassVar[int]
-    TIME_FIELD_NUMBER: _ClassVar[int]
+    SEGMENT_RULES_FIELD_NUMBER: _ClassVar[int]
     COLORFUL_SRC_FIELD_NUMBER: _ClassVar[int]
+    CONTEXT_SRC_FIELD_NUMBER: _ClassVar[int]
     elems: _containers.RepeatedCompositeFieldContainer[DanmakuElem]
     state: int
     ai_flag: DanmakuAIFlag
-    time: int
+    segment_rules: _containers.RepeatedScalarFieldContainer[int]
     colorful_src: _containers.RepeatedCompositeFieldContainer[DmColorful]
-    def __init__(self, elems: _Optional[_Iterable[_Union[DanmakuElem, _Mapping]]] = ..., state: _Optional[int] = ..., ai_flag: _Optional[_Union[DanmakuAIFlag, _Mapping]] = ..., time: _Optional[int] = ..., colorful_src: _Optional[_Iterable[_Union[DmColorful, _Mapping]]] = ...) -> None: ...
+    context_src: str
+    def __init__(self, elems: _Optional[_Iterable[_Union[DanmakuElem, _Mapping]]] = ..., state: _Optional[int] = ..., ai_flag: _Optional[_Union[DanmakuAIFlag, _Mapping]] = ..., segment_rules: _Optional[_Iterable[int]] = ..., colorful_src: _Optional[_Iterable[_Union[DmColorful, _Mapping]]] = ..., context_src: _Optional[str] = ...) -> None: ...
 
 class DmSegMobileReq(_message.Message):
-    __slots__ = ["pid", "oid", "type", "segment_index", "teenagers_mode", "ps", "pe", "pull_mode", "from_scene"]
+    __slots__ = ["pid", "oid", "type", "segment_index", "teenagers_mode", "ps", "pe", "pull_mode", "from_scene", "spmid", "context_ext"]
     PID_FIELD_NUMBER: _ClassVar[int]
     OID_FIELD_NUMBER: _ClassVar[int]
     TYPE_FIELD_NUMBER: _ClassVar[int]
@@ -642,6 +748,8 @@ class DmSegMobileReq(_message.Message):
     PE_FIELD_NUMBER: _ClassVar[int]
     PULL_MODE_FIELD_NUMBER: _ClassVar[int]
     FROM_SCENE_FIELD_NUMBER: _ClassVar[int]
+    SPMID_FIELD_NUMBER: _ClassVar[int]
+    CONTEXT_EXT_FIELD_NUMBER: _ClassVar[int]
     pid: int
     oid: int
     type: int
@@ -651,15 +759,17 @@ class DmSegMobileReq(_message.Message):
     pe: int
     pull_mode: int
     from_scene: int
-    def __init__(self, pid: _Optional[int] = ..., oid: _Optional[int] = ..., type: _Optional[int] = ..., segment_index: _Optional[int] = ..., teenagers_mode: _Optional[int] = ..., ps: _Optional[int] = ..., pe: _Optional[int] = ..., pull_mode: _Optional[int] = ..., from_scene: _Optional[int] = ...) -> None: ...
+    spmid: str
+    context_ext: str
+    def __init__(self, pid: _Optional[int] = ..., oid: _Optional[int] = ..., type: _Optional[int] = ..., segment_index: _Optional[int] = ..., teenagers_mode: _Optional[int] = ..., ps: _Optional[int] = ..., pe: _Optional[int] = ..., pull_mode: _Optional[int] = ..., from_scene: _Optional[int] = ..., spmid: _Optional[str] = ..., context_ext: _Optional[str] = ...) -> None: ...
 
 class DmSegOttReply(_message.Message):
-    __slots__ = ["closed", "elems"]
-    CLOSED_FIELD_NUMBER: _ClassVar[int]
+    __slots__ = ["state", "elems"]
+    STATE_FIELD_NUMBER: _ClassVar[int]
     ELEMS_FIELD_NUMBER: _ClassVar[int]
-    closed: bool
+    state: int
     elems: _containers.RepeatedCompositeFieldContainer[DanmakuElem]
-    def __init__(self, closed: bool = ..., elems: _Optional[_Iterable[_Union[DanmakuElem, _Mapping]]] = ...) -> None: ...
+    def __init__(self, state: _Optional[int] = ..., elems: _Optional[_Iterable[_Union[DanmakuElem, _Mapping]]] = ...) -> None: ...
 
 class DmSegOttReq(_message.Message):
     __slots__ = ["pid", "oid", "type", "segment_index"]
@@ -693,8 +803,20 @@ class DmSegSDKReq(_message.Message):
     segment_index: int
     def __init__(self, pid: _Optional[int] = ..., oid: _Optional[int] = ..., type: _Optional[int] = ..., segment_index: _Optional[int] = ...) -> None: ...
 
+class DmSubView(_message.Message):
+    __slots__ = ["type", "oid", "pid", "post_panel_2"]
+    TYPE_FIELD_NUMBER: _ClassVar[int]
+    OID_FIELD_NUMBER: _ClassVar[int]
+    PID_FIELD_NUMBER: _ClassVar[int]
+    POST_PANEL_2_FIELD_NUMBER: _ClassVar[int]
+    type: int
+    oid: int
+    pid: int
+    post_panel_2: _containers.RepeatedCompositeFieldContainer[PostPanelV2]
+    def __init__(self, type: _Optional[int] = ..., oid: _Optional[int] = ..., pid: _Optional[int] = ..., post_panel_2: _Optional[_Iterable[_Union[PostPanelV2, _Mapping]]] = ...) -> None: ...
+
 class DmViewReply(_message.Message):
-    __slots__ = ["closed", "mask", "subtitle", "special_dms", "ai_flag", "player_config", "send_box_style", "allow", "check_box", "check_box_show_msg", "text_placeholder", "input_placeholder", "report_filter_content", "expo_report", "buzzword_config", "expressions", "post_panel", "activity_meta", "post_panel2"]
+    __slots__ = ["closed", "mask", "subtitle", "special_dms", "ai_flag", "player_config", "send_box_style", "allow", "check_box", "check_box_show_msg", "text_placeholder", "input_placeholder", "report_filter_content", "expo_report", "buzzword_config", "expressions", "post_panel", "activity_meta", "post_panel2", "dm_mask_wall", "dm_herd", "command", "kv", "sub_views", "qoe"]
     CLOSED_FIELD_NUMBER: _ClassVar[int]
     MASK_FIELD_NUMBER: _ClassVar[int]
     SUBTITLE_FIELD_NUMBER: _ClassVar[int]
@@ -714,6 +836,12 @@ class DmViewReply(_message.Message):
     POST_PANEL_FIELD_NUMBER: _ClassVar[int]
     ACTIVITY_META_FIELD_NUMBER: _ClassVar[int]
     POST_PANEL2_FIELD_NUMBER: _ClassVar[int]
+    DM_MASK_WALL_FIELD_NUMBER: _ClassVar[int]
+    DM_HERD_FIELD_NUMBER: _ClassVar[int]
+    COMMAND_FIELD_NUMBER: _ClassVar[int]
+    KV_FIELD_NUMBER: _ClassVar[int]
+    SUB_VIEWS_FIELD_NUMBER: _ClassVar[int]
+    QOE_FIELD_NUMBER: _ClassVar[int]
     closed: bool
     mask: VideoMask
     subtitle: VideoSubtitle
@@ -733,24 +861,32 @@ class DmViewReply(_message.Message):
     post_panel: _containers.RepeatedCompositeFieldContainer[PostPanel]
     activity_meta: _containers.RepeatedScalarFieldContainer[str]
     post_panel2: _containers.RepeatedCompositeFieldContainer[PostPanelV2]
-    def __init__(self, closed: bool = ..., mask: _Optional[_Union[VideoMask, _Mapping]] = ..., subtitle: _Optional[_Union[VideoSubtitle, _Mapping]] = ..., special_dms: _Optional[_Iterable[str]] = ..., ai_flag: _Optional[_Union[DanmakuFlagConfig, _Mapping]] = ..., player_config: _Optional[_Union[DanmuPlayerViewConfig, _Mapping]] = ..., send_box_style: _Optional[int] = ..., allow: bool = ..., check_box: _Optional[str] = ..., check_box_show_msg: _Optional[str] = ..., text_placeholder: _Optional[str] = ..., input_placeholder: _Optional[str] = ..., report_filter_content: _Optional[_Iterable[str]] = ..., expo_report: _Optional[_Union[ExpoReport, _Mapping]] = ..., buzzword_config: _Optional[_Union[BuzzwordConfig, _Mapping]] = ..., expressions: _Optional[_Iterable[_Union[Expressions, _Mapping]]] = ..., post_panel: _Optional[_Iterable[_Union[PostPanel, _Mapping]]] = ..., activity_meta: _Optional[_Iterable[str]] = ..., post_panel2: _Optional[_Iterable[_Union[PostPanelV2, _Mapping]]] = ...) -> None: ...
+    dm_mask_wall: _containers.RepeatedCompositeFieldContainer[DmMaskWall]
+    dm_herd: DmHerdView
+    command: Command
+    kv: str
+    sub_views: _containers.RepeatedCompositeFieldContainer[DmSubView]
+    qoe: QoeInfo
+    def __init__(self, closed: bool = ..., mask: _Optional[_Union[VideoMask, _Mapping]] = ..., subtitle: _Optional[_Union[VideoSubtitle, _Mapping]] = ..., special_dms: _Optional[_Iterable[str]] = ..., ai_flag: _Optional[_Union[DanmakuFlagConfig, _Mapping]] = ..., player_config: _Optional[_Union[DanmuPlayerViewConfig, _Mapping]] = ..., send_box_style: _Optional[int] = ..., allow: bool = ..., check_box: _Optional[str] = ..., check_box_show_msg: _Optional[str] = ..., text_placeholder: _Optional[str] = ..., input_placeholder: _Optional[str] = ..., report_filter_content: _Optional[_Iterable[str]] = ..., expo_report: _Optional[_Union[ExpoReport, _Mapping]] = ..., buzzword_config: _Optional[_Union[BuzzwordConfig, _Mapping]] = ..., expressions: _Optional[_Iterable[_Union[Expressions, _Mapping]]] = ..., post_panel: _Optional[_Iterable[_Union[PostPanel, _Mapping]]] = ..., activity_meta: _Optional[_Iterable[str]] = ..., post_panel2: _Optional[_Iterable[_Union[PostPanelV2, _Mapping]]] = ..., dm_mask_wall: _Optional[_Iterable[_Union[DmMaskWall, _Mapping]]] = ..., dm_herd: _Optional[_Union[DmHerdView, _Mapping]] = ..., command: _Optional[_Union[Command, _Mapping]] = ..., kv: _Optional[str] = ..., sub_views: _Optional[_Iterable[_Union[DmSubView, _Mapping]]] = ..., qoe: _Optional[_Union[QoeInfo, _Mapping]] = ...) -> None: ...
 
 class DmViewReq(_message.Message):
-    __slots__ = ["pid", "oid", "type", "spmid", "is_hard_boot"]
+    __slots__ = ["pid", "oid", "type", "spmid", "is_hard_boot", "context_ext"]
     PID_FIELD_NUMBER: _ClassVar[int]
     OID_FIELD_NUMBER: _ClassVar[int]
     TYPE_FIELD_NUMBER: _ClassVar[int]
     SPMID_FIELD_NUMBER: _ClassVar[int]
     IS_HARD_BOOT_FIELD_NUMBER: _ClassVar[int]
+    CONTEXT_EXT_FIELD_NUMBER: _ClassVar[int]
     pid: int
     oid: int
     type: int
     spmid: str
     is_hard_boot: int
-    def __init__(self, pid: _Optional[int] = ..., oid: _Optional[int] = ..., type: _Optional[int] = ..., spmid: _Optional[str] = ..., is_hard_boot: _Optional[int] = ...) -> None: ...
+    context_ext: str
+    def __init__(self, pid: _Optional[int] = ..., oid: _Optional[int] = ..., type: _Optional[int] = ..., spmid: _Optional[str] = ..., is_hard_boot: _Optional[int] = ..., context_ext: _Optional[str] = ...) -> None: ...
 
 class DmWebViewReply(_message.Message):
-    __slots__ = ["state", "text", "text_side", "dm_sge", "flag", "special_dms", "check_box", "count", "commandDms", "player_config", "report_filter_content", "expressions", "post_panel", "activity_meta", "postPanelV2"]
+    __slots__ = ["state", "text", "text_side", "dm_sge", "flag", "special_dms", "check_box", "count", "commandDms", "player_config", "report_filter_content", "expressions", "post_panel", "activity_meta", "post_panel_2", "sub_views", "qoe"]
     STATE_FIELD_NUMBER: _ClassVar[int]
     TEXT_FIELD_NUMBER: _ClassVar[int]
     TEXT_SIDE_FIELD_NUMBER: _ClassVar[int]
@@ -765,7 +901,9 @@ class DmWebViewReply(_message.Message):
     EXPRESSIONS_FIELD_NUMBER: _ClassVar[int]
     POST_PANEL_FIELD_NUMBER: _ClassVar[int]
     ACTIVITY_META_FIELD_NUMBER: _ClassVar[int]
-    POSTPANELV2_FIELD_NUMBER: _ClassVar[int]
+    POST_PANEL_2_FIELD_NUMBER: _ClassVar[int]
+    SUB_VIEWS_FIELD_NUMBER: _ClassVar[int]
+    QOE_FIELD_NUMBER: _ClassVar[int]
     state: int
     text: str
     text_side: str
@@ -780,8 +918,10 @@ class DmWebViewReply(_message.Message):
     expressions: _containers.RepeatedCompositeFieldContainer[Expressions]
     post_panel: _containers.RepeatedCompositeFieldContainer[PostPanel]
     activity_meta: _containers.RepeatedScalarFieldContainer[str]
-    postPanelV2: _containers.RepeatedCompositeFieldContainer[PostPanelV2]
-    def __init__(self, state: _Optional[int] = ..., text: _Optional[str] = ..., text_side: _Optional[str] = ..., dm_sge: _Optional[_Union[DmSegConfig, _Mapping]] = ..., flag: _Optional[_Union[DanmakuFlagConfig, _Mapping]] = ..., special_dms: _Optional[_Iterable[str]] = ..., check_box: bool = ..., count: _Optional[int] = ..., commandDms: _Optional[_Iterable[_Union[CommandDm, _Mapping]]] = ..., player_config: _Optional[_Union[DanmuWebPlayerConfig, _Mapping]] = ..., report_filter_content: _Optional[_Iterable[str]] = ..., expressions: _Optional[_Iterable[_Union[Expressions, _Mapping]]] = ..., post_panel: _Optional[_Iterable[_Union[PostPanel, _Mapping]]] = ..., activity_meta: _Optional[_Iterable[str]] = ..., postPanelV2: _Optional[_Iterable[_Union[PostPanelV2, _Mapping]]] = ...) -> None: ...
+    post_panel_2: _containers.RepeatedCompositeFieldContainer[PostPanelV2]
+    sub_views: _containers.RepeatedCompositeFieldContainer[DmSubView]
+    qoe: QoeInfo
+    def __init__(self, state: _Optional[int] = ..., text: _Optional[str] = ..., text_side: _Optional[str] = ..., dm_sge: _Optional[_Union[DmSegConfig, _Mapping]] = ..., flag: _Optional[_Union[DanmakuFlagConfig, _Mapping]] = ..., special_dms: _Optional[_Iterable[str]] = ..., check_box: bool = ..., count: _Optional[int] = ..., commandDms: _Optional[_Iterable[_Union[CommandDm, _Mapping]]] = ..., player_config: _Optional[_Union[DanmuWebPlayerConfig, _Mapping]] = ..., report_filter_content: _Optional[_Iterable[str]] = ..., expressions: _Optional[_Iterable[_Union[Expressions, _Mapping]]] = ..., post_panel: _Optional[_Iterable[_Union[PostPanel, _Mapping]]] = ..., activity_meta: _Optional[_Iterable[str]] = ..., post_panel_2: _Optional[_Iterable[_Union[PostPanelV2, _Mapping]]] = ..., sub_views: _Optional[_Iterable[_Union[DmSubView, _Mapping]]] = ..., qoe: _Optional[_Union[QoeInfo, _Mapping]] = ...) -> None: ...
 
 class ExpoReport(_message.Message):
     __slots__ = ["should_report_at_end"]
@@ -893,13 +1033,37 @@ class PlayerDanmakuBlocktop(_message.Message):
     value: bool
     def __init__(self, value: bool = ...) -> None: ...
 
+class PlayerDanmakuBlocktopBottom(_message.Message):
+    __slots__ = ["value"]
+    VALUE_FIELD_NUMBER: _ClassVar[int]
+    value: bool
+    def __init__(self, value: bool = ...) -> None: ...
+
+class PlayerDanmakuDensity(_message.Message):
+    __slots__ = ["value"]
+    VALUE_FIELD_NUMBER: _ClassVar[int]
+    value: int
+    def __init__(self, value: _Optional[int] = ...) -> None: ...
+
 class PlayerDanmakuDomain(_message.Message):
     __slots__ = ["value"]
     VALUE_FIELD_NUMBER: _ClassVar[int]
     value: float
     def __init__(self, value: _Optional[float] = ...) -> None: ...
 
+class PlayerDanmakuDomainV2(_message.Message):
+    __slots__ = ["value"]
+    VALUE_FIELD_NUMBER: _ClassVar[int]
+    value: int
+    def __init__(self, value: _Optional[int] = ...) -> None: ...
+
 class PlayerDanmakuEnableblocklist(_message.Message):
+    __slots__ = ["value"]
+    VALUE_FIELD_NUMBER: _ClassVar[int]
+    value: bool
+    def __init__(self, value: bool = ...) -> None: ...
+
+class PlayerDanmakuEnableHerdDm(_message.Message):
     __slots__ = ["value"]
     VALUE_FIELD_NUMBER: _ClassVar[int]
     value: bool
@@ -910,6 +1074,12 @@ class PlayerDanmakuOpacity(_message.Message):
     VALUE_FIELD_NUMBER: _ClassVar[int]
     value: float
     def __init__(self, value: _Optional[float] = ...) -> None: ...
+
+class PlayerDanmakuPeopleProof(_message.Message):
+    __slots__ = ["value"]
+    VALUE_FIELD_NUMBER: _ClassVar[int]
+    value: bool
+    def __init__(self, value: bool = ...) -> None: ...
 
 class PlayerDanmakuScalingfactor(_message.Message):
     __slots__ = ["value"]
@@ -929,13 +1099,19 @@ class PlayerDanmakuSpeed(_message.Message):
     value: int
     def __init__(self, value: _Optional[int] = ...) -> None: ...
 
-class PlayerDanmakuSwitch(_message.Message):
-    __slots__ = ["value", "can_ignore"]
+class PlayerDanmakuSubtitleProof(_message.Message):
+    __slots__ = ["value"]
     VALUE_FIELD_NUMBER: _ClassVar[int]
-    CAN_IGNORE_FIELD_NUMBER: _ClassVar[int]
     value: bool
-    can_ignore: bool
-    def __init__(self, value: bool = ..., can_ignore: bool = ...) -> None: ...
+    def __init__(self, value: bool = ...) -> None: ...
+
+class PlayerDanmakuSwitch(_message.Message):
+    __slots__ = ["value", "canIgnore"]
+    VALUE_FIELD_NUMBER: _ClassVar[int]
+    CANIGNORE_FIELD_NUMBER: _ClassVar[int]
+    value: bool
+    canIgnore: bool
+    def __init__(self, value: bool = ..., canIgnore: bool = ...) -> None: ...
 
 class PlayerDanmakuSwitchSave(_message.Message):
     __slots__ = ["value"]
@@ -994,6 +1170,12 @@ class PostPanelV2(_message.Message):
     label: LabelV2
     post_status: PostStatus
     def __init__(self, start: _Optional[int] = ..., end: _Optional[int] = ..., biz_type: _Optional[int] = ..., click_button: _Optional[_Union[ClickButtonV2, _Mapping]] = ..., text_input: _Optional[_Union[TextInputV2, _Mapping]] = ..., check_box: _Optional[_Union[CheckBoxV2, _Mapping]] = ..., toast: _Optional[_Union[ToastV2, _Mapping]] = ..., bubble: _Optional[_Union[BubbleV2, _Mapping]] = ..., label: _Optional[_Union[LabelV2, _Mapping]] = ..., post_status: _Optional[_Union[PostStatus, str]] = ...) -> None: ...
+
+class QoeInfo(_message.Message):
+    __slots__ = ["info"]
+    INFO_FIELD_NUMBER: _ClassVar[int]
+    info: str
+    def __init__(self, info: _Optional[str] = ...) -> None: ...
 
 class Response(_message.Message):
     __slots__ = ["code", "message"]
@@ -1080,8 +1262,8 @@ class ToastButtonV2(_message.Message):
     TEXT_FIELD_NUMBER: _ClassVar[int]
     ACTION_FIELD_NUMBER: _ClassVar[int]
     text: str
-    action: ToastFunctionType
-    def __init__(self, text: _Optional[str] = ..., action: _Optional[_Union[ToastFunctionType, str]] = ...) -> None: ...
+    action: int
+    def __init__(self, text: _Optional[str] = ..., action: _Optional[int] = ...) -> None: ...
 
 class ToastV2(_message.Message):
     __slots__ = ["text", "duration", "toast_button_v2"]
@@ -1124,70 +1306,36 @@ class VideoMask(_message.Message):
     def __init__(self, cid: _Optional[int] = ..., plat: _Optional[int] = ..., fps: _Optional[int] = ..., time: _Optional[int] = ..., mask_url: _Optional[str] = ...) -> None: ...
 
 class VideoSubtitle(_message.Message):
-    __slots__ = ["lan", "lanDoc", "subtitles"]
+    __slots__ = ["lan", "lan_doc", "subtitles"]
     LAN_FIELD_NUMBER: _ClassVar[int]
-    LANDOC_FIELD_NUMBER: _ClassVar[int]
+    LAN_DOC_FIELD_NUMBER: _ClassVar[int]
     SUBTITLES_FIELD_NUMBER: _ClassVar[int]
     lan: str
-    lanDoc: str
+    lan_doc: str
     subtitles: _containers.RepeatedCompositeFieldContainer[SubtitleItem]
-    def __init__(self, lan: _Optional[str] = ..., lanDoc: _Optional[str] = ..., subtitles: _Optional[_Iterable[_Union[SubtitleItem, _Mapping]]] = ...) -> None: ...
+    def __init__(self, lan: _Optional[str] = ..., lan_doc: _Optional[str] = ..., subtitles: _Optional[_Iterable[_Union[SubtitleItem, _Mapping]]] = ...) -> None: ...
 
-class DmColorful(_message.Message):
-    __slots__ = ["type", "src"]
-    TYPE_FIELD_NUMBER: _ClassVar[int]
-    SRC_FIELD_NUMBER: _ClassVar[int]
-    type: DmColorfulType
-    src: str
-    def __init__(self, type: _Optional[_Union[DmColorfulType, str]] = ..., src: _Optional[str] = ...) -> None: ...
+class ViewHerdDmElem(_message.Message):
+    __slots__ = ["herd_msg", "herd_start_cnt", "herd_end_cnt", "regex_rule", "start_progress", "end_progress"]
+    HERD_MSG_FIELD_NUMBER: _ClassVar[int]
+    HERD_START_CNT_FIELD_NUMBER: _ClassVar[int]
+    HERD_END_CNT_FIELD_NUMBER: _ClassVar[int]
+    REGEX_RULE_FIELD_NUMBER: _ClassVar[int]
+    START_PROGRESS_FIELD_NUMBER: _ClassVar[int]
+    END_PROGRESS_FIELD_NUMBER: _ClassVar[int]
+    herd_msg: str
+    herd_start_cnt: int
+    herd_end_cnt: int
+    regex_rule: str
+    start_progress: int
+    end_progress: int
+    def __init__(self, herd_msg: _Optional[str] = ..., herd_start_cnt: _Optional[int] = ..., herd_end_cnt: _Optional[int] = ..., regex_rule: _Optional[str] = ..., start_progress: _Optional[int] = ..., end_progress: _Optional[int] = ...) -> None: ...
 
 class AnyBody(_message.Message):
     __slots__ = ["body"]
     BODY_FIELD_NUMBER: _ClassVar[int]
     body: GOOGLE_PROTOBUF_ANY
     def __init__(self, body: _Optional[_Union[GOOGLE_PROTOBUF_ANY, _Mapping]] = ...) -> None: ...
-
-class DmMaskWall(_message.Message):
-    __slots__ = ["start", "end", "content", "contentType", "bizType", "contents"]
-    START_FIELD_NUMBER: _ClassVar[int]
-    END_FIELD_NUMBER: _ClassVar[int]
-    CONTENT_FIELD_NUMBER: _ClassVar[int]
-    CONTENTTYPE_FIELD_NUMBER: _ClassVar[int]
-    BIZTYPE_FIELD_NUMBER: _ClassVar[int]
-    CONTENTS_FIELD_NUMBER: _ClassVar[int]
-    start: int
-    end: int
-    content: str
-    contentType: DmMaskWallContentType
-    bizType: DmMaskWallBizType
-    contents: _containers.RepeatedCompositeFieldContainer[DmMaskWallContent]
-    def __init__(self, start: _Optional[int] = ..., end: _Optional[int] = ..., content: _Optional[str] = ..., contentType: _Optional[_Union[DmMaskWallContentType, str]] = ..., bizType: _Optional[_Union[DmMaskWallBizType, str]] = ..., contents: _Optional[_Iterable[_Union[DmMaskWallContent, _Mapping]]] = ...) -> None: ...
-
-class DmMaskWallContent(_message.Message):
-    __slots__ = ["type", "content"]
-    TYPE_FIELD_NUMBER: _ClassVar[int]
-    CONTENT_FIELD_NUMBER: _ClassVar[int]
-    type: DmMaskWallContentType
-    content: str
-    def __init__(self, type: _Optional[_Union[DmMaskWallContentType, str]] = ..., content: _Optional[str] = ...) -> None: ...
-
-class QoeInfo(_message.Message):
-    __slots__ = ["info"]
-    INFO_FIELD_NUMBER: _ClassVar[int]
-    info: str
-    def __init__(self, info: _Optional[str] = ...) -> None: ...
-
-class DmSubView(_message.Message):
-    __slots__ = ["type", "oid", "pid", "post_panel_2"]
-    TYPE_FIELD_NUMBER: _ClassVar[int]
-    OID_FIELD_NUMBER: _ClassVar[int]
-    PID_FIELD_NUMBER: _ClassVar[int]
-    POST_PANEL_2_FIELD_NUMBER: _ClassVar[int]
-    type: int
-    oid: int
-    pid: int
-    post_panel_2: _containers.RepeatedCompositeFieldContainer[PostPanelV2]
-    def __init__(self, type: _Optional[int] = ..., oid: _Optional[int] = ..., pid: _Optional[int] = ..., post_panel_2: _Optional[_Iterable[_Union[PostPanelV2, _Mapping]]] = ...) -> None: ...
 
 class GOOGLE_PROTOBUF_ANY(_message.Message):
     __slots__ = ["type_url", "value"]
@@ -1196,3 +1344,71 @@ class GOOGLE_PROTOBUF_ANY(_message.Message):
     type_url: str
     value: bytes
     def __init__(self, type_url: _Optional[str] = ..., value: _Optional[bytes] = ...) -> None: ...
+
+class xxxxxx(_message.Message):
+    __slots__ = ["t1", "t2", "t3", "t4", "t5", "t6", "t7", "t8", "t9", "t10", "t11", "t12", "t13", "t14", "t15", "t16", "t17", "t18", "t19", "t20", "t21", "t22", "t23", "t24", "t25", "t26", "t27", "t28", "t29", "t30", "t31", "t32"]
+    T1_FIELD_NUMBER: _ClassVar[int]
+    T2_FIELD_NUMBER: _ClassVar[int]
+    T3_FIELD_NUMBER: _ClassVar[int]
+    T4_FIELD_NUMBER: _ClassVar[int]
+    T5_FIELD_NUMBER: _ClassVar[int]
+    T6_FIELD_NUMBER: _ClassVar[int]
+    T7_FIELD_NUMBER: _ClassVar[int]
+    T8_FIELD_NUMBER: _ClassVar[int]
+    T9_FIELD_NUMBER: _ClassVar[int]
+    T10_FIELD_NUMBER: _ClassVar[int]
+    T11_FIELD_NUMBER: _ClassVar[int]
+    T12_FIELD_NUMBER: _ClassVar[int]
+    T13_FIELD_NUMBER: _ClassVar[int]
+    T14_FIELD_NUMBER: _ClassVar[int]
+    T15_FIELD_NUMBER: _ClassVar[int]
+    T16_FIELD_NUMBER: _ClassVar[int]
+    T17_FIELD_NUMBER: _ClassVar[int]
+    T18_FIELD_NUMBER: _ClassVar[int]
+    T19_FIELD_NUMBER: _ClassVar[int]
+    T20_FIELD_NUMBER: _ClassVar[int]
+    T21_FIELD_NUMBER: _ClassVar[int]
+    T22_FIELD_NUMBER: _ClassVar[int]
+    T23_FIELD_NUMBER: _ClassVar[int]
+    T24_FIELD_NUMBER: _ClassVar[int]
+    T25_FIELD_NUMBER: _ClassVar[int]
+    T26_FIELD_NUMBER: _ClassVar[int]
+    T27_FIELD_NUMBER: _ClassVar[int]
+    T28_FIELD_NUMBER: _ClassVar[int]
+    T29_FIELD_NUMBER: _ClassVar[int]
+    T30_FIELD_NUMBER: _ClassVar[int]
+    T31_FIELD_NUMBER: _ClassVar[int]
+    T32_FIELD_NUMBER: _ClassVar[int]
+    t1: str
+    t2: str
+    t3: str
+    t4: str
+    t5: str
+    t6: str
+    t7: str
+    t8: str
+    t9: str
+    t10: str
+    t11: str
+    t12: str
+    t13: str
+    t14: str
+    t15: str
+    t16: str
+    t17: str
+    t18: str
+    t19: str
+    t20: str
+    t21: str
+    t22: str
+    t23: str
+    t24: str
+    t25: str
+    t26: str
+    t27: str
+    t28: str
+    t29: str
+    t30: str
+    t31: str
+    t32: str
+    def __init__(self, t1: _Optional[str] = ..., t2: _Optional[str] = ..., t3: _Optional[str] = ..., t4: _Optional[str] = ..., t5: _Optional[str] = ..., t6: _Optional[str] = ..., t7: _Optional[str] = ..., t8: _Optional[str] = ..., t9: _Optional[str] = ..., t10: _Optional[str] = ..., t11: _Optional[str] = ..., t12: _Optional[str] = ..., t13: _Optional[str] = ..., t14: _Optional[str] = ..., t15: _Optional[str] = ..., t16: _Optional[str] = ..., t17: _Optional[str] = ..., t18: _Optional[str] = ..., t19: _Optional[str] = ..., t20: _Optional[str] = ..., t21: _Optional[str] = ..., t22: _Optional[str] = ..., t23: _Optional[str] = ..., t24: _Optional[str] = ..., t25: _Optional[str] = ..., t26: _Optional[str] = ..., t27: _Optional[str] = ..., t28: _Optional[str] = ..., t29: _Optional[str] = ..., t30: _Optional[str] = ..., t31: _Optional[str] = ..., t32: _Optional[str] = ...) -> None: ...
