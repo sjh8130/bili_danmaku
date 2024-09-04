@@ -42,7 +42,9 @@ IN_FILE_2 = argv[2].rsplit(".", 1)[-2] + SUFFIX
 OUT__FILE = "NUL"
 OUT__FILE = IN_FILE_1.rsplit(".")[-2] + "_OUT." + IN_FILE_1.rsplit(".")[-1]
 
-with open(IN_INFO_1, "r") as HASH_1, open(IN_INFO_2, "r") as HASH_2, io.open(IN_FILE_1, "rb") as FILE_1, io.open(IN_FILE_2, "rb") as FILE_2, io.open(OUT__FILE, "wb") as OUT_FI:
+with open(IN_INFO_1, "r") as HASH_1, open(IN_INFO_2, "r") as HASH_2, io.open(
+    IN_FILE_1, "rb"
+) as FILE_1, io.open(IN_FILE_2, "rb") as FILE_2, io.open(OUT__FILE, "wb") as OUT_FI:
     print_control = 0
     output_frames = 0
     output_file_size = 0
@@ -84,12 +86,20 @@ with open(IN_INFO_1, "r") as HASH_1, open(IN_INFO_2, "r") as HASH_2, io.open(IN_
             k = "A"
             i += 1
             j += 1
-            print(f"{OUT_A}\t{output_frames}\t{skip_count}\t{i+1}\t{j+1}\t{output_file_size}", end="\r")
+            print(
+                f"{OUT_A}\t{output_frames}\t{skip_count}\t{i+1}\t{j+1}\t{output_file_size}",
+                end="\r",
+            )
         else:
-            if (k.__contains__("L") and i <= LEN_P1 - 1) or (i < LEN_P1 and j == LEN_P2):
+            if (k.__contains__("L") and i <= LEN_P1 - 1) or (
+                i < LEN_P1 and j == LEN_P2
+            ):
                 if k.__contains__("S"):
                     skip_count += 1
-                    print(f"{OUT_S}\t{output_frames}\t{skip_count}\t{i+1}\t{j+1}\t{output_file_size}", end="\r")
+                    print(
+                        f"{OUT_S}\t{output_frames}\t{skip_count}\t{i+1}\t{j+1}\t{output_file_size}",
+                        end="\r",
+                    )
                 else:
                     FILE_1.seek(int(pktL["pos"]))
                     OUT_FI.write(FILE_1.read(int(pktL["size"])))
@@ -100,13 +110,16 @@ with open(IN_INFO_1, "r") as HASH_1, open(IN_INFO_2, "r") as HASH_2, io.open(IN_
                     output_file_size += int(pktL["size"])
                     print(
                         f"{OUT_L}\t{output_frames}\t{skip_count}\t{i+1}\t{j+1}\t{output_file_size}",
-                        end="\r"
+                        end="\r",
                     )
                 i += 1
             elif k.__contains__("R"):
                 if k.__contains__("S"):
                     skip_count += 1
-                    print(f"{OUT_S}\t{output_frames}\t{skip_count}\t{i+1}\t{j+1}\t{output_file_size}", end="\r")
+                    print(
+                        f"{OUT_S}\t{output_frames}\t{skip_count}\t{i+1}\t{j+1}\t{output_file_size}",
+                        end="\r",
+                    )
                 else:
                     FILE_2.seek(int(pktR["pos"]))
                     OUT_FI.write(FILE_2.read(int(pktR["size"])))
@@ -115,7 +128,10 @@ with open(IN_INFO_1, "r") as HASH_1, open(IN_INFO_2, "r") as HASH_2, io.open(IN_
                     output_file_size += int(pktR["size"])
                     if print_control != 2:
                         print()
-                    print(f"{OUT_R}\t{output_frames}\t{skip_count}\t{i+1}\t{j+1}\t{output_file_size}", end="\r")
+                    print(
+                        f"{OUT_R}\t{output_frames}\t{skip_count}\t{i+1}\t{j+1}\t{output_file_size}",
+                        end="\r",
+                    )
                 j += 1
             elif k == "A":
                 k = input("\nNext:")
@@ -132,5 +148,7 @@ with open(IN_INFO_1, "r") as HASH_1, open(IN_INFO_2, "r") as HASH_2, io.open(IN_
     print("#\tFrames\t\tSize")
     print(f"A\t{LEN_P1}\t\t{os.stat(IN_FILE_1).st_size}")
     print(f"B\t{LEN_P2}\t\t{os.stat(IN_FILE_2).st_size}")
-    print(f"Sum\t{LEN_P1+LEN_P2}\t\t{os.stat(IN_FILE_1).st_size+os.stat(IN_FILE_2).st_size}")
+    print(
+        f"Sum\t{LEN_P1+LEN_P2}\t\t{os.stat(IN_FILE_1).st_size+os.stat(IN_FILE_2).st_size}"
+    )
     print(f"F\t{output_frames}\t\t{output_file_size}")
