@@ -2,44 +2,59 @@ import re
 from functools import lru_cache
 
 
-PFC = ['public', 'final', 'class']
-PFC2 = ['public', 'static', 'final', 'class']
-PFU = ['public', 'enum']
-ITM = ['public', 'static', 'final', 'int']
+PFC = ["public", "final", "class"]
+PFC2 = ["public", "static", "final", "class"]
+PFU = ["public", "enum"]
+ITM = ["public", "static", "final", "int"]
 MSG = "message"
 ENUM = "enum"
 
 
 @lru_cache
 def camel_to_snake_improved(name):
-    a = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', name)
-    b = re.sub('([a-z0-9])([A-Z])', r'\1_\2', a)
-    c = re.sub('([A-Za-z])([0-9]+)', r'\1_\2', b)
-    return c.lower()
+    # Convert camelCase to snake_case, including handling for numbers
+    a = re.sub("(.)([A-Z][a-z]+)", r"\1_\2", name)
+    b = re.sub("([a-z0-9])([A-Z])", r"\1_\2", a)
+    c = re.sub("([a-zA-Z])([0-9])", r"\1_\2", b)
+    d = re.sub("([0-9])([A-Z])", r"\1_\2", c)
+    return d.lower()
 
 
 @lru_cache
 def get_type(a: str):
     match a:
-        case "String" | "StringValue": return "string"
+        case "String" | "StringValue":
+            return "string"
 
-        case "UInt32Value" | "UInt32Value" | "UInt32Value": return "uint32"
-        case "UInt64Value" | "UInt64Value" | "UInt64Value": return "uint64"
+        case "UInt32Value" | "UInt32Value" | "UInt32Value":
+            return "uint32"
+        case "UInt64Value" | "UInt64Value" | "UInt64Value":
+            return "uint64"
 
-        case "int" | "Integer" | "Int32Value": return "int32"
-        case "long" | "Long" | "Int64Value": return "int64"
+        case "int" | "Integer" | "Int32Value":
+            return "int32"
+        case "long" | "Long" | "Int64Value":
+            return "int64"
 
-        case "Internal.IntList": return "repeated int32"
-        case "Internal.LongList": return "repeated int64"
+        case "Internal.IntList":
+            return "repeated int32"
+        case "Internal.LongList":
+            return "repeated int64"
 
-        case "Internal.FloatList": return "repeated float"
-        case "Internal.FloatList": return "repeated float"
+        case "Internal.FloatList":
+            return "repeated float"
+        case "Internal.FloatList":
+            return "repeated float"
 
-        case "FloatValue": return "float"
-        case "DoubleValue": return "double"
+        case "FloatValue":
+            return "float"
+        case "DoubleValue":
+            return "double"
 
-        case "boolean" | "BoolValue": return "bool"
-        case "ByteString" | "BytesValue": return "bytes"
+        case "boolean" | "BoolValue":
+            return "bool"
+        case "ByteString" | "BytesValue":
+            return "bytes"
         case _:
             if a.startswith("Internal.ProtobufList"):
                 return "repeated " + get_type(a[22:-1])
@@ -121,12 +136,12 @@ def process(data):
     print("\n//")
     if msg_type == MSG:
         combine_str = combine_msg(s1, s2)
-        print(f"{msg_type} {name} "+"{")
+        print(f"{msg_type} {name} " + "{")
         print(combine_str, end="")
         print("}\n")
     elif msg_type == ENUM:
         combine_str = combine_enum(s1)
-        print(f"{msg_type} {name} "+"{")
+        print(f"{msg_type} {name} " + "{")
         print(combine_str, end="")
         print("}\n")
 

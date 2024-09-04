@@ -10,34 +10,48 @@ from my_lib.file_writer import write_file
 start_time = time.time()
 in_path = sys.argv[1]
 
-with open(in_path, "rb")as fl:
+with open(in_path, "rb") as fl:
 	preload = fl.read(4)
 
-with open(in_path, "rb")as file_in:
-	if preload == b"{\"el":
+with open(in_path, "rb") as file_in:
+	if preload == b'{"el':
 		data = json.load(file_in)
 	elif preload == b"\xeb\xbb\xbf":
 		data = json.load(file_in)
 	elif preload[0:2] == b"\x1f\x8b":
 		import gzip
+
 		tmp1 = str(gzip.open(in_path, "rb").read(), encoding="utf-8")
 		data = json.loads(tmp1)
 		del tmp1
 
-out_path = in_path.rstrip(".gz").rstrip(".json").rstrip(".bin")+".xml"
+out_path = in_path.rstrip(".gz").rstrip(".json").rstrip(".bin") + ".xml"
 
 SPLIT_2ND_SIZE = 4000
 SPLIT_3RD_SIZE = 40000
 
 i = 1
 
-try: cid = 0
-except KeyError: cid = 0
+try:
+	cid = 0
+except KeyError:
+	cid = 0
 
-try: max_limit = 0*6000
-except KeyError: max_limit = 6000
+try:
+	max_limit = 0 * 6000
+except KeyError:
+	max_limit = 6000
 
-xml_cache_layer_1 = f"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<i>\n\t<chatserver>chat.bilibili.com</chatserver>\n\t<chatid>{cid}</chatid>\n\t<mission>0</mission>\n\t<maxlimit>{max_limit}</maxlimit>\n\t<state>0</state>\n\t<real_name>0</real_name>\n\t<source>k-v</source>\n"
+xml_cache_layer_1 = f"""<?xml version="1.0" encoding="UTF-8"?>
+<i>
+	<chatserver>chat.bilibili.com</chatserver>
+	<chatid>{cid}</chatid>
+	<mission>0</mission>
+	<maxlimit>{max_limit}</maxlimit>
+	<state>0</state>
+	<real_name>0</real_name>
+	<source>k-v</source>
+"""
 xml_cache_layer_2 = ""
 xml_cache_layer_3 = ""
 
@@ -70,9 +84,20 @@ for this in data["elems"]:
 	if i % SPLIT_3RD_SIZE == 0:
 		xml_cache_layer_1 += xml_cache_layer_2
 		xml_cache_layer_2 = ""
-		print(f"\rProgress: {i}/{danmaku_count}, Time: {round(time.time()-start_time,3)}", end="")
+		print(
+			f"\rProgress: {i}/{danmaku_count}, Time: {round(time.time()-start_time,3)}",
+			end="",
+		)
 
-write_file(out_path, xml_cache_layer_1 + xml_cache_layer_2 + xml_cache_layer_3 + f"</i>\n<!-- Create Time: {last_modified_time} -->")
+write_file(
+	out_path,
+	xml_cache_layer_1
+	+ xml_cache_layer_2
+	+ xml_cache_layer_3
+	+ f"</i>\n<!-- Create Time: {last_modified_time} -->",
+)
 
 end_time = time.time()
-print(f"\r{danmaku_count}, 总计用时：{round(end_time-start_time, 4)}                     ")
+print(
+	f"\r{danmaku_count}, 总计用时：{round(end_time-start_time, 4)}                     "
+)

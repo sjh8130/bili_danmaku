@@ -13,7 +13,8 @@ lmt = os.stat(sys.argv[1]).st_mtime
 
 SPLIT_2ND_SIZE = 4000
 SPLIT_3RD_SIZE = 40000
-fs = """<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<i>
+fs = """<?xml version="1.0" encoding="UTF-8"?>
+<i>
 	<chatserver>chat.bilibili.com</chatserver>
 	<chatid>_MARK_FOR_SEARCH_</chatid>
 	<mission>0</mission>
@@ -34,19 +35,19 @@ itm.ParseFromString(open(sys.argv[1], "rb").read())
 
 count_ = len(itm.elems)
 if count_ == 0:
-	# cache_1 += '<d p="0.00000,1,25,16776960,1660114514,9,ffffffff,99999999,9">_MARK_FOR_SEARCH_</d>\n'
-	print("No Data")
-	sys.exit()
+    # cache_1 += '<d p="0.00000,1,25,16776960,1660114514,9,ffffffff,99999999,9">_MARK_FOR_SEARCH_</d>\n'
+    print("No Data")
+    sys.exit()
 for this in itm.elems:
-	cache_3 += proto_to_xml(this, extra_data=True, enable_weight=True)
-	i += 1
-	if i % SPLIT_3RD_SIZE == 0:
-		cache_1 += cache_2
-		cache_2 = ""
-	if i % SPLIT_2ND_SIZE == 0:
-		cache_2 += cache_3
-		cache_3 = ""
-		print(f"\rProgress: {i}/{count_}, Time: {round(time.time()-st,3)}", end="")
+    cache_3 += proto_to_xml(this, extra_data=True, enable_weight=True)
+    i += 1
+    if i % SPLIT_3RD_SIZE == 0:
+        cache_1 += cache_2
+        cache_2 = ""
+    if i % SPLIT_2ND_SIZE == 0:
+        cache_2 += cache_3
+        cache_3 = ""
+        print(f"\rProgress: {i}/{count_}, Time: {round(time.time()-st,3)}", end="")
 print(f"\rProgress: {i}/{count_}, Time: {round(time.time()-st,3)}")
 
 write_file(f"{sys.argv[1]}.xml", fs + cache_1 + cache_2 + cache_3 + fe)

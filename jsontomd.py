@@ -1,4 +1,5 @@
 import json
+
 # 读取json数据
 f = input("input:")
 data = json.loads(f)
