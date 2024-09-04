@@ -128,7 +128,9 @@ def GetDanmaku(vp: VideoPart, segments: int, session: requests.Session) -> list[
 	return danmakus
 
 
-def GetSpecialDanmaku(vp: VideoPart, input: dm_pb2.DmWebViewReply, session: requests.Session) -> list[bytes]:
+def GetSpecialDanmaku(
+	vp: VideoPart, input: dm_pb2.DmWebViewReply, session: requests.Session
+) -> list[bytes]:
 	"""
 	获取特殊弹幕
 	"""
@@ -156,8 +158,12 @@ def main(video: Video):
 	if video == None:
 		return
 	url_info_1n = f"https://api.bilibili.com/x/web-interface/view?bvid={video.bvid}"
-	url_info_1e = "https://api.bilibili.com/x/web-interface/wbi/view?" + gen_w_rid({"aid": video.avid_n})
-	url_info_2n = f"https://api.bilibili.com/x/web-interface/view/detail?bvid={video.bvid}"
+	url_info_1e = "https://api.bilibili.com/x/web-interface/wbi/view?" + gen_w_rid(
+		{"aid": video.avid_n}
+	)
+	url_info_2n = (
+		f"https://api.bilibili.com/x/web-interface/view/detail?bvid={video.bvid}"
+	)
 	session = requests.Session()
 	headers = {
 		"Accept-Encoding": "gzip, deflate, br, zstd",
@@ -199,7 +205,9 @@ def main(video: Video):
 	if json_info["subtitle"] != None:
 		for subs in json_info["subtitle"]["list"]:
 			_data = Downloader(subs["subtitle_url"], headers, session)
-			write_file(f"[{video.bvid}]_[Subtitle]_[{subs['id']}]_[{subs['lan']}].bcc", _data)
+			write_file(
+				f"[{video.bvid}]_[Subtitle]_[{subs['id']}]_[{subs['lan']}].bcc", _data
+			)
 			del _data
 	# ================================ 首映
 	try:
@@ -214,10 +222,12 @@ def main(video: Video):
 		oid = int(this["cid"])
 		vp = VideoPart(V=video, cid=oid)
 
-		segment_count = (int(this["duration"])/360).__ceil__()+1
+		segment_count = (int(this["duration"]) / 360).__ceil__() + 1
 		v_url = f"https://api.bilibili.com/x/v2/dm/web/view?type=1&oid={vp.cid}"
 		extra_info_proto_binary = Downloader(v_url, headers, session)
-		write_file(f"[{video.bvid}]_[{vp.cid}]_[BAS]_[INFO].bin", extra_info_proto_binary)
+		write_file(
+			f"[{video.bvid}]_[{vp.cid}]_[BAS]_[INFO].bin", extra_info_proto_binary
+		)
 
 		extra_info_proto = dm_pb2.DmWebViewReply()
 		extra_info_proto.ParseFromString(extra_info_proto_binary)
@@ -230,15 +240,14 @@ def main(video: Video):
 			dms = dm_pb2.DmSegMobileReply()
 			dms.ParseFromString(dm_bin)
 			dms_j = MessageToDict(dms)
-			for dm in dms_j['elems']:
+			for dm in dms_j["elems"]:
 				danmaku_list.append(dm)
-			for dmc in dms_j['colorfulSrc']:
+			for dmc in dms_j["colorfulSrc"]:
 				danmakuColorful_list.append(dmc)
-		final_json = {
-			"elems": danmaku_list,
-			"colorfulSrc": danmakuColorful_list
-		}
-		final_string = json.dumps(final_json, ensure_ascii=False, separators=(",", ":")).replace("{\"id\":", "\n\t{\"id\":")
+		final_json = {"elems": danmaku_list, "colorfulSrc": danmakuColorful_list}
+		final_string = json.dumps(
+			final_json, ensure_ascii=False, separators=(",", ":")
+		).replace('{"id":', '\n\t{"id":')
 		write_file(f"[{video.bvid}]_[{video.avid}].json", final_string)
 
 
@@ -251,7 +260,7 @@ def process_args(vid: str):
 		vid = vid.lstrip("https://b23.tv/")
 	vid = vid.split("?")[0].split("/")[0]
 	if vid.find("BV") == 0:
-		bvid = vid[vid.find("BV"):vid.find("BV")+12]
+		bvid = vid[vid.find("BV") : vid.find("BV") + 12]
 		avid_n = BV2AV(bvid)
 		avid = f"av{avid_n}"
 	elif vid.find("av") == 0:
