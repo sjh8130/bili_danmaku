@@ -13,15 +13,11 @@ def convert_lrc_time(t):
 
 
 def convert_ass_time(time):
-    return f"{(time//3600000):01d}:{(time//60000%60):02d}:{(time//1000%60):02d}.{(time%1000):03d}"[
-        0:-1
-    ]
+    return f"{(time//3600000):01d}:{(time//60000%60):02d}:{(time//1000%60):02d}.{(time%1000):03d}"[0:-1]
 
 
 def proc_karaoke(word):
-    karaoke_word = (
-        f"\x7b\\K{int((word[0]['end']-word[0]['start'])/10)}\x7d{word[0]['word']}"
-    )
+    karaoke_word = f"\x7b\\K{int((word[0]['end']-word[0]['start'])/10)}\x7d{word[0]['word']}"
     if word[0]["word"].isascii():
         karaoke_word += " "
     for timed_chars in range(len(word)):
@@ -43,9 +39,7 @@ def proc_ASS(item):
         # karaoke_line = f"Dialogue: 1,{convert_ass_time(line_start)},{convert_ass_time(line_end)},B,,0,0,0,,{proc_karaoke(item['words'])}\n".replace("{\k0}", "")
     except KeyError:
         pass
-    return normal_line + karaoke_line.replace(" \n", "\n").replace("  ", " ").replace(
-        ",,0,0,0,, ", ",,0,0,0,,"
-    )
+    return normal_line + karaoke_line.replace(" \n", "\n").replace("  ", " ").replace(",,0,0,0,, ", ",,0,0,0,,")
 
 
 input_File = sys.argv[1]

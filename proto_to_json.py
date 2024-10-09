@@ -31,12 +31,7 @@ if __name__ == "__main__":
     #         is_live_recording = True
     #         break
     fw = json.dumps(j1, ensure_ascii=False, separators=(",", ":"))
-    fw = (
-        fw.replace('},{"id"', '},\x0a{"id"')
-        .replace(',"test20":"0"', "")
-        .replace(',"test21":"0"', "")
-        .replace(',"test25":"1"', "")
-    )
+    fw = fw.replace('},{"id"', '},\x0a{"id"').replace(',"test20":"0"', "").replace(',"test21":"0"', "").replace(',"test25":"1"', "")
     temp_binary = None
     t4 = time.time()
     print("write")

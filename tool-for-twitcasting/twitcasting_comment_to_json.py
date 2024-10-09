@@ -37,7 +37,7 @@ headers = {
 session = requests.Session()
 
 
-def Downloader(page: int | str):
+def downloader(page: int | str):
     retry_count = 0
     url = f"https://{TWITCASTING_URL}/{user}/moviecomment/{movie_id}-{page}"
     while True:
@@ -69,71 +69,33 @@ current_page = 0
 end = False
 while not end:
     # a = open(f"twitcasting_{user}_{movie_id}_{page}.html", encoding="utf-8").read()
-    page = Downloader(current_page)
+    page = downloader(current_page)
     if page == b"BREAK":
         break
-    comments = list(
-        bs4.BeautifulSoup(page, "lxml").select(".tw-comment-history-item", limit=999)
-    )
+    comments = list(bs4.BeautifulSoup(page, "lxml").select(".tw-comment-history-item", limit=999))
     # out["info"]["title"] = str(bs4.BeautifulSoup(a, "lxml").title.contents[0]).replace(" Comment - TwitCasting", "").replace(" コメント - ツイキャス", "")
     if current_page == 0:
-        out["info"]["title"] = str(
-            bs4.BeautifulSoup(page, "lxml")
-            .select(".tw-basic-page-header-path", limit=1)[0]
-            .contents[3]
-            .contents[1]
-            .contents[0]
-        ).rstrip(" ")
-        page_count = int(
-            bs4.BeautifulSoup(page, "lxml")
-            .select(".tw-pager", limit=1)[0]
-            .contents[-1]
-            .contents[0]
-        )
+        out["info"]["title"] = str(bs4.BeautifulSoup(page, "lxml").select(".tw-basic-page-header-path", limit=1)[0].contents[3].contents[1].contents[0]).rstrip(" ")
+        page_count = int(bs4.BeautifulSoup(page, "lxml").select(".tw-pager", limit=1)[0].contents[-1].contents[0])
         print(page_count)
     for comment in comments:
         out["comment"].append(
             {
                 "type": "comment",
                 "id": int(comment.attrs["data-comment-id"]),
-                "message": str(
-                    comment.select(".tw-comment-history-item__content__text")[
-                        0
-                    ].contents[0]
-                )
-                .lstrip("\n")
-                .lstrip("\t")
-                .lstrip(" ")
-                .rstrip(" "),
+                "message": str(comment.select(".tw-comment-history-item__content__text")[0].contents[0]).lstrip("\n").lstrip("\t").lstrip(" ").rstrip(" "),
                 "createdAt": int(
                     time.mktime(
                         time.strptime(
-                            comment.select(".tw-comment-history-item__info__date")[
-                                0
-                            ].attrs["datetime"],
+                            comment.select(".tw-comment-history-item__info__date")[0].attrs["datetime"],
                             "%a, %d %b %Y %H:%M:%S %z",
                         )
                     )
                 ),
                 "author": {
-                    "id": comment.select(
-                        ".tw-comment-history-item__details__user-link"
-                    )[0].attrs["href"][1:],
-                    "name": str(
-                        comment.select(".tw-comment-history-item__details__user-link")[
-                            0
-                        ].contents[0]
-                    )
-                    .lstrip("\n")
-                    .lstrip("\t")
-                    .lstrip(" ")
-                    .rstrip(" "),
-                    "profileImage": (
-                        "https:"
-                        + comment.select(".tw-comment-history-item__user__icon")[
-                            0
-                        ].attrs["src"]
-                    ).replace("https:https://", "https://"),
+                    "id": comment.select(".tw-comment-history-item__details__user-link")[0].attrs["href"][1:],
+                    "name": str(comment.select(".tw-comment-history-item__details__user-link")[0].contents[0]).lstrip("\n").lstrip("\t").lstrip(" ").rstrip(" "),
+                    "profileImage": ("https:" + comment.select(".tw-comment-history-item__user__icon")[0].attrs["src"]).replace("https:https://", "https://"),
                 },
             }
         )
@@ -141,11 +103,6 @@ while not end:
     if page_count >= current_page:
         end = True
 session.close()
-out_data = (
-    json.dumps(out, ensure_ascii=False, separators=(",", ":"), indent="\t")
-    .replace("\n\t\t\t\t", "")
-    .replace("\n\t\t\t", "")
-    .replace("\n\t\t}", "}")
-)
+out_data = json.dumps(out, ensure_ascii=False, separators=(",", ":"), indent="\t").replace("\n\t\t\t\t", "").replace("\n\t\t\t", "").replace("\n\t\t}", "}")
 
 write_file(f"twitcasting_{user}_{movie_id}.json", out_data)

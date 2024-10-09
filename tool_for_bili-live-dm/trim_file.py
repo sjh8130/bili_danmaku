@@ -1,37 +1,23 @@
 import sys
 
+skip_keywords = ["DM_INTERACTION", "LIKE_INFO_V3_CLICK", "LIKE_INFO_V3_UPDATE", "ONLINE_RANK_COUNT", "ONLINE_RANK_V2", "STOP_LIVE_ROOM_LIST", "WATCHED_CHANGE", "WIDGET_BANNER"]
+
 
 def trim_file(input_file_path: str):
     print(input_file_path)
     # 读取文件内容
-    with open(input_file_path, "r", encoding="utf-8") as input_file, open(
-        input_file_path + "1", "a", 1048576, "utf-8"
-    ) as output_file:
+    with open(input_file_path, "r", encoding="utf-8") as input_file, open(input_file_path + "1", "a", 1048576, "utf-8") as output_file:
         for line in input_file.readlines():
-            if "DM_INTERACTION" in line:
-                continue
-            if "LIKE_INFO_V3_CLICK" in line:
-                continue
-            if "LIKE_INFO_V3_UPDATE" in line:
-                continue
-            if "ONLINE_RANK_COUNT" in line:
-                continue
-            if "ONLINE_RANK_V2" in line:
-                continue
-            if "STOP_LIVE_ROOM_LIST" in line:
-                continue
-            if "WATCHED_CHANGE" in line:
-                continue
-            if "WIDGET_BANNER" in line:
+            if any(keyword in line for keyword in skip_keywords):
                 continue
 
             ls = line.find("{")
             if ls == 0:
                 output_file.write(line)
             else:
-                date_raw = line[0:ls]
+                date_raw = line[:ls]
                 if "." in date_raw:
-                    date = str(float(date_raw) * 1000)[0:13]
+                    date = str(float(date_raw) * 1000)[:13]
                 else:
                     date = date_raw[0:13]
                 # output_file.write(date+"\n")

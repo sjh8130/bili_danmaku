@@ -7,6 +7,8 @@ def main(in_paths, out_path):
     line: str
     left_pos = 0
     l_line: dict
+    if in_paths == []:
+        return
     try:
         with open(out_path, "r", encoding="utf-8") as file_io:
             final_write = json.load(file_io)

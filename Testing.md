@@ -687,10 +687,12 @@
 | face					| str		| 发送者 头像URL |
 | face_effect_id		| num		| 0 |
 | face_effect_type		| num		| 0 |
+| face_effect_v2		| obj		| |
 | float_sc_resource_id	| num		| 0 |
 | giftId				| num		| 礼物ID |
 | giftName				| str		| 礼物名称 |
 | giftType				| num		| 礼物类型 |
+| gift_info				| obj		| |
 | gift_tag				| \[\]num	| |
 | gold					| num		| 0 |
 | group_medal			| null/?	| |
@@ -960,10 +962,10 @@ date2: 添加`count_text`和`online_count_text`
 | online_count		| num	| |
 | online_count_text	| str	| |
 ```json
-{"cmd":"ONLINE_RANK_COUNT","data":{"count":10000,"count_text":"1万+"}}
-{"cmd":"ONLINE_RANK_COUNT","data":{"count":10001,"count_text":"1万+","online_count":415011,"online_count_text":"41万+"}}
-{"cmd":"ONLINE_RANK_COUNT","data":{"count":0,"count_text":"0"}}
+// {"cmd":"ONLINE_RANK_COUNT","data":{"count":10000,"count_text":"1万+"}}
+// {"cmd":"ONLINE_RANK_COUNT","data":{"count":10001,"count_text":"1万+","online_count":415011,"online_count_text":"41万+"}}
 {"cmd":"ONLINE_RANK_COUNT","data":{"count":0,"count_text":"0","online_count":0,"online_count_text":"0"}}
+{"cmd":"ONLINE_RANK_COUNT","data":{"count":999,"count_text":"999+","online_count":999,"online_count_text":"999+"}}
 ```
 ----
 ### INTERACT_WORD
@@ -996,6 +998,7 @@ date7: 添加`uinfo`
 | is_spread			| num		| 流量包推广 0 / 1 |
 | msg_type			| num		| |
 | privilege_type	| num		| [privilege_type](#others) is_spread==1:`0` |
+| relation_tail		| obj		| |
 | roomid			| num		| 长_短直播间ID |
 | score				| num		| TimeStamp(毫秒 ms 13) |
 | spread_desc		| str		| is_spread==1:"流量包推广" |
@@ -1046,6 +1049,7 @@ Link = 6
 		"is_spread":0,
 		"msg_type":1,
 		"privilege_type":0,
+		"relation_tail":{"tail_guide_text":"","tail_icon":"","tail_type":0},
 		"roomid":12345,
 		"score":1704872049684,
 		"spread_desc":"",
@@ -1060,6 +1064,7 @@ Link = 6
 		"uname_color":""
 	}
 }
+{"cmd":"INTERACT_WORD","data":{"contribution":{"grade":0},"contribution_v2":{"grade":0,"rank_type":"","text":""},"core_user_type":0,"dmscore":20,"fans_medal":null,"group_medal":null,"identities":[1],"is_mystery":false,"is_spread":0,"msg_type":1,"privilege_type":0,"roomid":8879281,"score":1721220466257,"spread_desc":"","spread_info":"","tail_icon":0,"tail_text":"","timestamp":1721220466,"trigger_time":1721220464995732500,"uid":13545537,"uinfo":{"base":{"face":"https://i0.hdslb.com/bfs/face/e585004dce31cfa8a38d581de83fb5e20c7b1efc.jpg","is_mystery":false,"name":"SJH8130","name_color":0,"name_color_str":"","official_info":null,"origin_info":null,"risk_ctrl_info":null},"guard":{"expired_str":"","level":0},"guard_leader":null,"medal":null,"title":null,"uhead_frame":null,"uid":13545537,"wealth":{"dm_icon_key":"","level":6}},"uname":"SJH8130","uname_color":""}}
 "contribution_v2":[
 	{"grade":0123,"rank_type":"","text":""},
 	{"grade":0123,"rank_type":"daily_rank","text":"日榜前3用户"},
@@ -1269,6 +1274,7 @@ Link = 6
 		"web_dynamic_url_apng":"",
 		"mobile_dynamic_url_webp":"",
 		"wealthy_info": null,
+		"wealthy_info": {"uid":0,"level":xx,"level_total_score":0,"cur_score":0,"upgrade_need_score":0,"status":0,"dm_icon_key":""},
 		"new_style":0,
 		"is_mystery":false,
 		"uinfo": {}
@@ -2055,13 +2061,13 @@ SC 删除
 | 3[12]	| num	| `anchorId` 主播uid |
 #### DANMU_MSG__info__4
 **用户直播区信息/userLevel/user_level**
-| array	| type		| value	| 备注	|
-|-|-|-|-|
-| 4[0]	| num		| `userLevel` | 用户UL等级
+| array	| type		| value	|
+|-|-|-|
+| 4[0]	| num		| `userLevel` 用户UL等级 |
 | 4[1]	| num		| 0 |
 | 4[2]	| num		| UL等级 颜色 |
-| 4[3]	| str/num	| `rank` 直播 用户排名| `">50000"` / 当前排名 |
-| 4[4]	| num		| `online_rank` [0,1,2,3] | 高能榜实时排名(仅前三)
+| 4[3]	| str/num	| `rank` 用户直播排名 `">50000"` / 当前排名 |
+| 4[4]	| num		| `online_rank` \[0,1,2,3\] 高能榜实时排名(仅前三) |
 #### DANMU_MSG__info__5
 **头衔/title**
 | array	| type	| value	|
@@ -2156,6 +2162,7 @@ SC 删除
 | reply_uname_color			| str		| 直播弹幕回复 |202206-
 | reply_is_mystery			| bool		| 直播弹幕回复 |202206-
 | hit_combo					| num		| 0,1 +1弹幕 |202206-
+| esports_jump_url			| str		| |20240905
 #### DANMU_MSG__info__0__15__extra__emots
 | key 8				| type	| value	|
 |-|-|-|
@@ -2736,6 +2743,10 @@ content_segments__text=[
 ```json
 {"cmd":"ROOM_BLOCK_MSG","data":{"dmscore":x,"operator":y,"uid":123,"uname":"xxx"},"uid":"123","uname":"xxx"}
 {"cmd":"ROOM_BLOCK_MSG","data":{"block_expired":2145888000,"dmscore":90,"operator":2,"uid":xxx,"uname":"xxx","vaild_period":"永久"},"uid":xxx,"uname":"xxx"}
+{"cmd":"ROOM_BLOCK_MSG","data":{"block_expired":2145888000,"dmscore":45,"operator":1,"uid":xxx,"uname":"xxx","vaild_period":"仅本场直播有效"},"uid":xxx,"uname":"xxx"}
+{"cmd":"ROOM_BLOCK_MSG","data":{"block_expired":2145888000,"dmscore":45,"operator":1,"uid":xxx,"uname":"xxx","vaild_period":"永久"},"uid":xxx,"uname":"xxx"}
+{"cmd":"ROOM_BLOCK_MSG","data":{"block_expired":xxxxxxxxxx,"dmscore":45,"operator":1,"uid":xxx,"uname":"xxx","vaild_period":"7天有效"},"uid":xxx,"uname":"xxx"}
+{"cmd":"ROOM_BLOCK_MSG","data":{"block_expired":2145888000,"dmscore":180,"operator":2,"uid":xxx,"uname":"xxx","vaild_period":"永久"},"uid":xxx,"uname":"xxx"}
 ```
 ----
 ### AREA_RANK_CHANGED
@@ -5721,6 +5732,7 @@ role 0 1 2
 
 ```json
 {"cmd":"CHG_RANK_REFRESH","data":{"cmd":"CHG_RANK_REFRESH","rank_type":3,"rank_module":"area","room_id":xxx,"ruid":xxx,"need_refresh":true,"version":xxx}}
+{"cmd":"CHG_RANK_REFRESH","data":{"cmd":"CHG_RANK_REFRESH","rank_type":4,"rank_module":"area","room_id":xxx,"ruid":xxx,"need_refresh":true,"version":xxx}}
 ```
 ---
 ### USER_TOAST_MSG_V2
@@ -5839,6 +5851,21 @@ role 0 1 2
 {"cmd":"COMMON_ANIMATION","data":{"uid":xxx,"effect_id":xxx,"demarcation":xxx,"order_id":"240810171633xxxxxxxxxxxxx"}}
 ```
 ---
+### REVENUE_RANK_CHANGED
+[TOP](#直播弹幕)  
+文档更新：2024-09-01  
+| key		| type	| value	|
+|-|-|-|
+| cmd		| str	| "REVENUE_RANK_CHANGED" |
+| data		| obj	| |
+#### REVENUE_RANK_CHANGED__data
+| key		| type	| value	|
+|-|-|-|
+| data	| xxx	| |
+```json
+{"cmd":"REVENUE_RANK_CHANGED","data":{"conf_id":-20000,"rank_name":"xxx","uid":xxx,"rank":xxx,"icon_url_blue":"https://uat-i0.hdslb.com/bfs/live/18e2990a546d33368200f9058f3d9dbc4038eb5c.png","icon_url_pink":"https://uat-i0.hdslb.com/bfs/live/421c34a1451aa44c8dbfd7b55690d0979089ce6d.png","icon_url_grey":"https://uat-i0.hdslb.com/bfs/live/cb7444b1faf1d785df6265bfdc1fcfc993419b76.png","action_type":1,"timestamp":xxx,"msg_id":"ffffffff-ffff-4fff-ffff-ffffffffffff","jump_url_link":"https://live.bilibili.com/p/html/live-app-hotrank/index.html?clientType=3&ruid=xxx&conf_id=-20000&dailyRankType=3&is_live_half_webview=1&hybrid_rotate_d=1&is_cling_player=1&hybrid_half_ui=1,3,100p,70p,f4eefa,0,30,100,0,0;2,2,375,100p,f4eefa,0,30,100,0,0;3,3,100p,70p,f4eefa,0,30,100,0,0;4,2,375,100p,f4eefa,0,30,100,0,0;5,3,100p,70p,f4eefa,0,30,100,0,0;6,3,100p,70p,f4eefa,0,30,100,0,0;7,3,100p,70p,f4eefa,0,30,100,0,0;8,3,100p,70p,f4eefa,0,30,100,0,0#/area-rank","jump_url_pc":"https://live.bilibili.com/p/html/live-app-hotrank/index.html?clientType=4&ruid=xxx&conf_id=-20000&dailyRankType=3&pc_ui=338,465,f4eefa,0#/area-rank","jump_url_pink":"https://live.bilibili.com/p/html/live-app-hotrank/index.html?clientType=1&ruid=xxx&conf_id=-20000&dailyRankType=3&is_live_half_webview=1&hybrid_rotate_d=1&hybrid_half_ui=1,3,100p,70p,ffffff,0,30,100,12,0;2,2,375,100p,ffffff,0,30,100,0,0;3,3,100p,70p,ffffff,0,30,100,12,0;4,2,375,100p,ffffff,0,30,100,0,0;5,3,100p,70p,ffffff,0,30,100,0,0;6,3,100p,70p,ffffff,0,30,100,0,0;7,3,100p,70p,ffffff,0,30,100,0,0;8,3,100p,70p,ffffff,0,30,100,0,0#/area-rank","jump_url_web":"https://live.bilibili.com/p/html/live-app-hotrank/index.html?clientType=2&ruid=xxx&conf_id=-20000&dailyRankType=3#/area-rank"}}
+```
+---
 ### XXXXXXXXXXXX
 [TOP](#直播弹幕)  
 文档更新：2024-01-01  
@@ -5885,6 +5912,8 @@ for i in range(1,len(a)):print(str(a[i]-a[i-1])[0:4])
 // 
 ,\n?\x09{0,}"__typename":?"(EmbeddedEmote|VideoCommentMessageFragment|Badge|VideoCommentMessage|VideoComment|VideoCommentEdge|VideoCommentConnection|Game|User|Video|PageInfo|Channel)"
 "cursor":"[0-z]+",
+
+(,"fans_medal":\{"anchor_roomid":0,"guard_level":0,"icon_id":0,"is_lighted":0,"medal_color":0,"medal_color_border":0,"medal_color_end":0,"medal_color_start":0,"medal_level":0,"medal_name":"","score":0,"special":"","target_id":0\}|,"(dm_v2|guard_icon|honor_icon|name_color_str|special|spread_desc|spread_info|tail_text|uname_color|group_name|group_role_name|xxx)":""|,"(group_medal|guard_leader|official_info|origin_info|risk_ctrl_info|title|uhead_frame|fans_medal|medal|wealth|guard|xxx)":null|,"(guard_level|name_color|tail_icon|user_receive_count|group_op_type|xxx)":0|,\\"(anniversary_crowd|direction|hit_combo|pk_direction|quartet_direction|reply_mid|reply_type_enum)\\":0|,"guard_leader":\{"is_guard_leader":false\}|,"guard":\{"level":0,"expired_str":""\}|,"guard":\{"expired_str":"","level":0\}|,"(is_mystery|is_report)":false|"is_mystery":false,|,"official_info":\{"role":0,"title":"","desc":"","type":-1\}|,"official_info":\{"desc":"","role":0,"title":"","type":-1\}|,"title":\{"old_title_css_id":"","title_css_id":""\}|,"wealth":\{"level":0,"dm_icon_key":""\}|,\\"icon\\":null|,\\"(jump_to_url|main_state_dm_color|objective_state_dm_color|reply_uname_color|reply_uname|space_type|space_url|yeah_space_type|yeah_space_url|esports_jump_url)\\":\\"\\"|,\\"reply_is_mystery\\":false|,\\"show_reply\\":true|"contribution_v2":\{"grade":0,"rank_type":"","text":""\},|"contribution":\{"grade":0\},|"relation_tail":\{"tail_guide_text":"","tail_icon":"","tail_type":0\},|,"wealth":\{"dm_icon_key":"","level":0\}|,"group_medal":\{"is_lighted":0,"medal_id":0,"name":""\}|,"medal_info":\{"anchor_roomid":0,"anchor_uname":"","icon_id":0,"is_lighted":0,"medal_color":"","medal_color_border":0,"medal_color_end":0,"medal_color_start":0,"medal_level":0,"medal_name":"","target_id":0\})
 ```
 
 ### 粉丝勋章medal_info
@@ -5908,9 +5937,9 @@ for i in range(1,len(a)):print(str(a[i]-a[i-1])[0:4])
 ### PUBILC_uinfo
 文档更新：2024-01-28  
 | key						| type		| value	|
-|-|-|-|-|
+|-|-|-|
 | base						| obj		| |
-| uid						| str		| uid |
+| uid						| num/str	| uid |
 | medal						| null/obj	| |
 | wealth					| null/obj	| |
 | title						| null/obj	| 活动头衔 |
@@ -5919,31 +5948,31 @@ for i in range(1,len(a)):print(str(a[i]-a[i-1])[0:4])
 | guard_leader				| null/obj	| 舰队指挥官 |
 #### PUBLIC_uinfo__wealth
 | key						| type		| value	|
-|-|-|-|-|
+|-|-|-|
 | level						| num		| |
 | dm_icon_key				| str		| |
 #### PUBLIC_uinfo__title
 | key						| type		| value	|
-|-|-|-|-|
+|-|-|-|
 | old_title_css_id			| str		| |
 | title_css_id				| str		| |
 #### PUBLIC_uinfo__guard
 | key						| type		| value	|
-|-|-|-|-|
+|-|-|-|
 | expired_str				| str		| 过期时间 |
 | level						| num		| [大航海等级](#others) |
 #### PUBLIC_uinfo__guard_leader
 | key						| type		| value	|
-|-|-|-|-|
+|-|-|-|
 | is_guard_leader			| bool		| |
 #### PUBLIC_uinfo__uhead_frame
 | key						| type		| value	|
-|-|-|-|-|
+|-|-|-|
 | id						| num		| |
 | frame_img					| str		| |
 #### PUBLIC_uinfo__medal
 | key						| type		| value	|
-|-|-|-|-|
+|-|-|-|
 | name						| str		| 粉丝勋章称号 |
 | level						| num		| 粉丝勋章等级 |
 | color_start				| num		| int(RGB24) |
@@ -5966,7 +5995,7 @@ for i in range(1,len(a)):print(str(a[i]-a[i-1])[0:4])
 | user_receive_count		| num		| |
 #### PUBLIC_uinfo__base
 | key						| type		| value	|
-|-|-|-|-|
+|-|-|-|
 | face						| obj		| 头像(URL) |
 | is_mystery				| bool		| |
 | name						| str		| 昵称 |
@@ -5977,17 +6006,17 @@ for i in range(1,len(a)):print(str(a[i]-a[i-1])[0:4])
 | official_info				| obj		| 主站: 认证信息 |
 ##### PUBLIC_uinfo__base__origin_info
 | key						| type		| value	|
-|-|-|-|-|
+|-|-|-|
 | face						| obj		| 头像(URL) |
 | name						| str		| 昵称 |
 ##### PUBLIC_uinfo__base__risk_ctrl_info
 | key						| type		| value	|
-|-|-|-|-|
+|-|-|-|
 | face						| obj		| 头像(URL) |
 | name						| str		| 昵称 |
 ##### PUBLIC_uinfo__base__official_info
 | key						| type		| value	|
-|-|-|-|-|
+|-|-|-|
 | role						| num		| 0:无 7:个人认证 3:机构认证 |
 | title						| str		| 认证说明 |
 | desc						| str		| |
@@ -6032,7 +6061,7 @@ for i in range(1,len(a)):print(str(a[i]-a[i-1])[0:4])
 	},
 	"wealth":{"level":xxx,"dm_icon_key":""},
 	"title":{"old_title_css_id":"","title_css_id":""},
-	"guard":{"level":xxx,"expired_str":"2024-xx-xx 23:59:59"},
+	"guard":{"level":xxx,"expired_str":"20xx-xx-xx 23:59:59"},
 	"uhead_frame":null,
 	"uhead_frame":{"id":xxx,"frame_img":"https://i0.hdslb.com/bfs/live/xxx.png"},
 	"guard_leader":{"is_guard_leader":false}

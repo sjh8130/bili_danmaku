@@ -4,15 +4,12 @@ from collections import Counter
 
 def count_lines_in_file(file_path):
     with open(file_path, "r", encoding="utf-8") as file:
-        lines = file.readlines()
+        # lines = file.readlines()
+        # 使用Counter来统计每一行出现的次数
+        line_counts = Counter(file)
 
-    # 使用Counter来统计每一行出现的次数
-    line_counts = Counter(lines)
+    return {line.strip(): count for line, count in line_counts.items()}
 
-    # 转换为字典
-    line_counts_dict = {line.strip(): count for line, count in line_counts.items()}
-
-    return line_counts_dict
 
 
 def save_to_json(data, output_path):
