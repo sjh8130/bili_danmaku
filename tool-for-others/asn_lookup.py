@@ -396,9 +396,7 @@ def download_file(url: str, file_name: str, overwrite: bool) -> None:
             # file {} not exist, downloading...
             print(f"文件 {file_name} 不存在，正在下载...")
 
-        response = requests.get(
-            url, headers={"Accept-Encoding": "gzip, deflate, br, zstd"}
-        )
+        response = requests.get(url, headers={"Accept-Encoding": "gzip, deflate, bzip2, br, zstd"})
         if response.status_code == 200:
             with open(file_name, "wb") as file:
                 file.write(response.content)
@@ -583,15 +581,7 @@ if __name__ == "__main__":
                     j = json.dumps(ips, ensure_ascii=False, separators=(",", ":"))
                     open("Z:\\dump.json", "w", encoding="utf-8").write(j)
                     del j
-                case (
-                    "afrinic"
-                    | "apnic"
-                    | "arin"
-                    | "iana"
-                    | "lacnic"
-                    | "ripe-ncc"
-                    | "ripencc"
-                ):
+                case "afrinic" | "apnic" | "arin" | "iana" | "lacnic" | "ripe-ncc" | "ripencc":
                     query_2(query_string)
                 case "allocated" | "assigned" | "reserved" | "available":
                     query_3(query_string)

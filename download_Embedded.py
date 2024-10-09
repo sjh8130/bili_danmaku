@@ -11,7 +11,7 @@ ssl._create_default_https_context = ssl._create_unverified_context
 requests.packages.urllib3.disable_warnings()
 
 USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 Edg/120.0.0.0"
-x={"Accept-Encoding": "gzip, deflate, br, zstd","Host" : "api.bilibili.com","Connection":"keep-alive","Origin":"https://www.bilibili.com","Referer":"https://www.bilibili.com","User-Agent":USER_AGENT,}
+x={"Accept-Encoding": "gzip, deflate, bzip2, br, zstd","Host" : "api.bilibili.com","Connection":"keep-alive","Origin":"https://www.bilibili.com","Referer":"https://www.bilibili.com","User-Agent":USER_AGENT,}
 
 def v(b,x=x,d=0):
 	print(f"[NET] {b}")

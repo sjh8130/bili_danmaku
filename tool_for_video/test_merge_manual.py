@@ -42,9 +42,7 @@ IN_FILE_2 = argv[2].rsplit(".", 1)[-2] + SUFFIX
 OUT__FILE = "NUL"
 OUT__FILE = IN_FILE_1.rsplit(".")[-2] + "_OUT." + IN_FILE_1.rsplit(".")[-1]
 
-with open(IN_INFO_1, "r") as HASH_1, open(IN_INFO_2, "r") as HASH_2, io.open(
-    IN_FILE_1, "rb"
-) as FILE_1, io.open(IN_FILE_2, "rb") as FILE_2, io.open(OUT__FILE, "wb") as OUT_FI:
+with open(IN_INFO_1, "r") as HASH_1, open(IN_INFO_2, "r") as HASH_2, io.open(IN_FILE_1, "rb") as FILE_1, io.open(IN_FILE_2, "rb") as FILE_2, io.open(OUT__FILE, "wb") as OUT_FI:
     print_control = 0
     output_frames = 0
     output_file_size = 0
@@ -91,9 +89,7 @@ with open(IN_INFO_1, "r") as HASH_1, open(IN_INFO_2, "r") as HASH_2, io.open(
                 end="\r",
             )
         else:
-            if (k.__contains__("L") and i <= LEN_P1 - 1) or (
-                i < LEN_P1 and j == LEN_P2
-            ):
+            if (k.__contains__("L") and i <= LEN_P1 - 1) or (i < LEN_P1 and j == LEN_P2):
                 if k.__contains__("S"):
                     skip_count += 1
                     print(
@@ -148,7 +144,5 @@ with open(IN_INFO_1, "r") as HASH_1, open(IN_INFO_2, "r") as HASH_2, io.open(
     print("#\tFrames\t\tSize")
     print(f"A\t{LEN_P1}\t\t{os.stat(IN_FILE_1).st_size}")
     print(f"B\t{LEN_P2}\t\t{os.stat(IN_FILE_2).st_size}")
-    print(
-        f"Sum\t{LEN_P1+LEN_P2}\t\t{os.stat(IN_FILE_1).st_size+os.stat(IN_FILE_2).st_size}"
-    )
+    print(f"Sum\t{LEN_P1+LEN_P2}\t\t{os.stat(IN_FILE_1).st_size+os.stat(IN_FILE_2).st_size}")
     print(f"F\t{output_frames}\t\t{output_file_size}")

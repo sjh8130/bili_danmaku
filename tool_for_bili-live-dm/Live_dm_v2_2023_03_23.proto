@@ -28,15 +28,15 @@ message Dm {
     Room                    room            = 21;   // [3]    粉丝勋章
     Icon                    icon            = 22;   // [0][15].extra
     Reply                   reply           = 23;   //
-    bytes                   unknown24       = 24;   //
-    bytes                   unknown25       = 25;   //
-    bytes                   unknown26       = 26;   //
-    bytes                   unknown27       = 27;   //
-    bytes                   unknown28       = 28;   //
-    bytes                   unknown29       = 29;   //
-    bytes                   unknown30       = 30;   //
-    bytes                   unknown31       = 31;   //
-    bytes                   unknown32       = 32;   //
+    // bytes                   unknown24       = 24;   //
+    // bytes                   unknown25       = 25;   //
+    // bytes                   unknown26       = 26;   //
+    // bytes                   unknown27       = 27;   //
+    // bytes                   unknown28       = 28;   //
+    // bytes                   unknown29       = 29;   //
+    // bytes                   unknown30       = 30;   //
+    // bytes                   unknown31       = 31;   //
+    // bytes                   unknown32       = 32;   //
 }
 enum BizScene{                                      //11
     BizSceneNone                            = 0;    

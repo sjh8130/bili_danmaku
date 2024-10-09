@@ -1,39 +1,27 @@
-#!/dev/null
-from functools import lru_cache
+# -*- coding: utf-8 -*-
+
+_DATA = [b'F', b'c', b'w', b'A', b'P', b'N', b'K', b'T', b'M', b'u', b'g', b'3', b'G', b'V', b'5', b'L', b'j', b'7', b'E', b'J', b'n', b'H', b'p', b'W', b's', b'x', b'4', b't', b'b', b'8', b'h', b'a', b'Y', b'e', b'v', b'i', b'q', b'B', b'z', b'6', b'r', b'k', b'C', b'y', b'1', b'2', b'm', b'U', b'S', b'D', b'Q', b'X', b'9', b'R', b'd', b'o', b'Z', b'f']
+
+def BV2AV(b: str) -> int:
+    b = list(b)
+    b[3], b[9] = b[9], b[3]
+    b[4], b[7] = b[7], b[4]
+    b = b[3:]
+    tmp = 0
+    for i in b:
+        idx = _DATA.index(i.encode())
+        tmp = tmp * 58 + idx
+    return (tmp & 2251799813685247) ^ 23442827791579
 
 
-BV_AV_table = "fZodR9XQDSUm21yCkr6zBqiveYah8bt4xsWpHnJE7jL5VG3guMTKNPAwcF"
-BV_AV_base58_dic = {}
-for BV_AV_base58_i in range(58):
-    BV_AV_base58_dic[BV_AV_table[BV_AV_base58_i]] = BV_AV_base58_i
-s = [11, 10, 3, 8, 4, 6]
-BV_AV_xor = 177451812
-BV_AV_add = 8728348608
-
-
-@lru_cache
-def BV2AV(input_BV: str):
-    """
-    Text
-    """
-    result = 0
-    for i in range(6):
-        result += BV_AV_base58_dic[input_BV[s[i]]] * 58**i
-    aid = (result - BV_AV_add) ^ BV_AV_xor
-    if aid <= 0 or aid >= 29460791296:
-        print(f"[BV_to_AV]: {input_BV}")
-    return aid
-
-
-@lru_cache
-def AV2BV(input_AV: int):
-    """
-    Text
-    """
-    if input_AV >= 29460791296:
-        print(f"[AV_to_BV]: {input_AV}")
-    input_AV = (input_AV ^ BV_AV_xor) + BV_AV_add
-    result = list("BV1  4 1 7  ")
-    for i in range(6):
-        result[s[i]] = BV_AV_table[input_AV // 58**i % 58]
-    return "".join(result)
+def AV2BV(a: int) -> str:
+    b = [b"B", b"V", b"1", b"0", b"0", b"0", b"0", b"0", b"0", b"0", b"0", b"0"]
+    bv_idx = 12 - 1
+    tmp = (2251799813685248 | a) ^ 23442827791579
+    while int(tmp) != 0:
+        b[bv_idx] = _DATA[int(tmp % 58)]
+        tmp /= 58
+        bv_idx -= 1
+    b[3], b[9] = b[9], b[3]
+    b[4], b[7] = b[7], b[4]
+    return "".join([i.decode() for i in b])

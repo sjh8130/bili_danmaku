@@ -16,20 +16,14 @@ outPath = "Z:\\test.json"
 left_pos_cache = 0
 right_pos_cache = 0
 dm_proto = live_dm.Dm()
-with open(in_path, "r", 1048576, encoding="utf-8") as F_in, io.open(
-    outPath, "w", encoding="utf-8"
-) as F_out:
+with open(in_path, "r", 1048576, encoding="utf-8") as F_in, io.open(outPath, "w", encoding="utf-8") as F_out:
     for this_line in F_in.readlines():
         if this_line.find("dm_v2") == -1:
             continue
         right_pos_cache = len(this_line)
         for left_pos_cache in range(len(this_line)):
             try:
-                dm_proto.ParseFromString(
-                    b64decode(
-                        json.loads(this_line[left_pos_cache:right_pos_cache])["dm_v2"]
-                    )
-                )
+                dm_proto.ParseFromString(b64decode(json.loads(this_line[left_pos_cache:right_pos_cache])["dm_v2"]))
             except json.decoder.JSONDecodeError as err:
                 if err.msg == "Extra data":
                     left_pos_cache = err.pos
@@ -38,18 +32,10 @@ with open(in_path, "r", 1048576, encoding="utf-8") as F_in, io.open(
                 continue
             else:
                 break
-        if (
-            dm_proto.text.lstrip(" ").rstrip(" ").lstrip("　").rstrip("　").lower()
-            in FILTER_WORDS
-            or dm_proto.text.find("【") > 0
-            or dm_proto.text.find("】") > 0
-            or dm_proto.dm_type != live_dm.DmTypeNormal
-        ):
+        if dm_proto.text.lstrip(" ").rstrip(" ").lstrip("　").rstrip("　").lower() in FILTER_WORDS or dm_proto.text.find("【") > 0 or dm_proto.text.find("】") > 0 or dm_proto.dm_type != live_dm.DmTypeNormal:
             continue
         temp_json2 = MessageToDict(dm_proto)
-        temp_json2["text"] = (
-            temp_json2["text"].lstrip(" ").rstrip(" ").lstrip("　").rstrip("　")
-        )
+        temp_json2["text"] = temp_json2["text"].lstrip(" ").rstrip(" ").lstrip("　").rstrip("　")
         if 1:
             del temp_json2["dmid"]  # 1
             del temp_json2["mode"]  # 2
@@ -167,12 +153,7 @@ with open(in_path, "r", 1048576, encoding="utf-8") as F_in, io.open(
                 del temp_json2["reply"]
             except:
                 pass
-        F_out.write(
-            json.dumps(
-                temp_json2, ensure_ascii=False, indent=None, separators=(",", ":")
-            )
-            + "\n"
-        )
+        F_out.write(json.dumps(temp_json2, ensure_ascii=False, indent=None, separators=(",", ":")) + "\n")
     F_in.close()
     F_out.close()
 et = time.time()

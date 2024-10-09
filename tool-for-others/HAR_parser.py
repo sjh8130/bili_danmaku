@@ -17,15 +17,9 @@ for item in data["entries"]:
         jmp = 1
     if item["request"]["url"].startswith("https://i2.hdslb.com"):
         jmp = 1
-    if (
-        item["request"]["url"]
-        == "https://api.live.bilibili.com/relation/v1/Feed/heartBeat"
-    ):
+    if item["request"]["url"] == "https://api.live.bilibili.com/relation/v1/Feed/heartBeat":
         jmp = 1
-    if (
-        item["request"]["url"]
-        == "https://data.bilibili.com/v2/log/web?content_type=pbrequest&logid=021434&disable_compression=true"
-    ):
+    if item["request"]["url"] == "https://data.bilibili.com/v2/log/web?content_type=pbrequest&logid=021434&disable_compression=true":
         jmp = 1
     if item["request"]["url"].endswith(".css"):
         jmp = 1

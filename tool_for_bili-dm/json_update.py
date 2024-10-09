@@ -184,8 +184,4 @@ except KeyError:
 
 j1["info"] = j1_info
 with open(outputFile, "w", encoding="utf-8") as file_out:
-    file_out.write(
-        json.dumps(j1, ensure_ascii=False, separators=(",", ":")).replace(
-            '},{"id"', '},\n{"id"'
-        )
-    )
+    file_out.write(json.dumps(j1, ensure_ascii=False, separators=(",", ":")).replace('},{"id"', '},\n{"id"'))

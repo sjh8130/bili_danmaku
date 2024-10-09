@@ -4,11 +4,13 @@ import sys
 from filters import FILTER_WORDS, FILTER_USER_ID, FILTER_USER_CRC_STR_LOWER
 
 
-def main(in_paths, out_path):
+def main(in_paths: list[str], out_path: str):
     line: str
     left_pos = 0
     dm_text: str
     danmaku: dict
+    if not in_paths:
+        return
     try:
         with open(out_path, "r", encoding="utf-8") as file_io:
             final_write = json.load(file_io)
@@ -43,18 +45,7 @@ def main(in_paths, out_path):
                     continue
 
                 dm_text = danmaku["info"][1]
-                dm_text = (
-                    dm_text.replace("\u007f", "")
-                    .replace("\u00a0", "")
-                    .replace("\u2006", "")
-                    .replace("\u200b", "")
-                    .replace("\u200e", "")
-                    .replace("\u2060", "")
-                    .replace("\u2063", "")
-                    .replace("\u3000", "")
-                    .replace("\U000e0020", "")
-                    .strip()
-                )
+                dm_text = dm_text.replace("\u007f", "").replace("\u00a0", "").replace("\u2006", "").replace("\u200b", "").replace("\u200e", "").replace("\u2060", "").replace("\u2063", "").replace("\u3000", "").replace("\U000e0020", "").strip()
                 if dm_text in FILTER_WORDS or dm_text.lower() in FILTER_WORDS:
                     try:
                         del final_write[dm_text]
@@ -63,10 +54,7 @@ def main(in_paths, out_path):
                     continue
                 else:
                     try:
-                        if (
-                            json.loads(danmaku["info"][0][15]["extra"])["hit_combo"]
-                            == 1
-                        ):
+                        if json.loads(danmaku["info"][0][15]["extra"])["hit_combo"] == 1:
                             continue
                     except KeyError:
                         pass
