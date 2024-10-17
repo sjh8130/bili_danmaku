@@ -290,7 +290,6 @@ ISO3166_1 = [
     "za",
     "zm",
     "zw",
-] + [
     "xx",  # extra description
     "zz",  # iana
 ]

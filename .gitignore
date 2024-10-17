@@ -1,17 +1,27 @@
-*.json
-*.pyc
-*.xml
-*.bin
+# workspace
+.vscode
+
+# data
 *.7z
-*.json.gz
-*.tmp
-*.xls*
-x1.py
-x2.py
 *.bcc
-*.xz
+# ^^^ b-subtitle
+*.bin
+# ^^^ b-dm
+*.db
+*.json
+*.json.gz
+*.jsonl
 *.jsonl.gz
 *.tar
-.vscode
-*.jsonl
-*.db
+*.xls*
+*.xml
+*.xz
+
+# private
+x1.py
+x2.py
+X3_emoji.py
+
+# tmp
+*.pyc
+*.tmp
