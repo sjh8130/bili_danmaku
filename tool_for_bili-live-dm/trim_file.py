@@ -24,6 +24,6 @@ def trim_file(input_file_path: str):
                 output_file.write(date + line[ls:])
 
 
-item = sys.argv[1:]
-for i in item:
-    trim_file(i)
+files_to_process = sys.argv[1:]
+for file in files_to_process:
+    trim_file(file)
