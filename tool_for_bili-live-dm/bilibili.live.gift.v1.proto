@@ -1,0 +1,24 @@
+//https://s1.hdslb.com/bfs/static/blive/blfe-live-room/static/js/app.****.js
+// bilibili.live.gift.v1
+syntax = "proto3";
+package bilibili.live.gift.v1;
+
+message RiskCtrlInfo{
+	string	name = 1;
+	string	face = 2;
+}
+message AccountInfo{
+	string	name = 1;
+	string	face = 2;
+}
+message OfficialInfo{
+	int32 role = 1;
+	string title = 2;
+	string desc = 3;
+	int32 type = 4;
+}
+message GroupMedalBrief{
+	int64	medal_id = 1;
+	string	name = 2;
+	int64	is_lighted = 3;
+}
