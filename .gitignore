@@ -9,13 +9,17 @@
 # ^^^ b-dm
 *.db
 *.json
-*.json.gz
+*.json.*
 *.jsonl
-*.jsonl.gz
+*.jsonl.*
+*.jpg
+*.png
+*.psd
 *.tar
 *.xls*
 *.xml
 *.xz
+*.zip
 
 # private
 x1.py

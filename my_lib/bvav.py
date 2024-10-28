@@ -11,13 +11,13 @@ def BV2AV(b: str) -> int:
     for i in b:
         idx = _DATA.index(i.encode())
         tmp = tmp * 58 + idx
-    return (tmp & 2251799813685247) ^ 23442827791579
+    return (tmp & (2 << 50 - 1)) ^ 23442827791579
 
 
 def AV2BV(a: int) -> str:
     b = [b"B", b"V", b"1", b"0", b"0", b"0", b"0", b"0", b"0", b"0", b"0", b"0"]
-    bv_idx = 12 - 1
-    tmp = (2251799813685248 | a) ^ 23442827791579
+    bv_idx = 11
+    tmp = (2 << 50 | a) ^ 23442827791579
     while int(tmp) != 0:
         b[bv_idx] = _DATA[int(tmp % 58)]
         tmp /= 58

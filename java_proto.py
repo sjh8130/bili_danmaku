@@ -100,12 +100,11 @@ def combine_enum(s1):
     return ret_str
 
 
-def process(data):
+def process(data: list[str]):
     msg_type = ""
     name = ""
     s1 = []
     s2 = []
-    i: str
     for i in data:
         strs = i.rstrip(";").split(" ")
         if msg_type == "":

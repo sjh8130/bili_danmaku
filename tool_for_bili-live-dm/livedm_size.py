@@ -2,11 +2,11 @@ import json
 import time
 import sys
 
+from tqdm import tqdm
+
 
 def main(in_paths, out_path):
-    line: str
     left_pos = 0
-    l_line: dict
     if in_paths == []:
         return
     try:
@@ -19,19 +19,34 @@ def main(in_paths, out_path):
             final_write = {}
         else:
             raise e
+    pbar = tqdm(total=len(in_paths), ascii=True)
     for in_path in in_paths:
-        print(in_path)
+        # print(in_path)
         if in_path == out_path:
             continue
+        pbar.set_description(in_path)
+        is_err = False
+        lineno = 1
         with open(in_path, "r", encoding="utf-8") as file_in:
-            for line in file_in.readlines():
+            for line in file_in:
+                lineno += 1
                 left_pos = line.find("{")
-                l_line = json.loads(line[left_pos:-1])
+                try:
+                    l_line = json.loads(line[left_pos:])
+                except json.JSONDecodeError as e:
+                    print(lineno)
+                    if not is_err:
+                        print(in_path)
+                        is_err = True
+                finally:
+                    pass
                 cmd = l_line["cmd"]
                 try:
                     final_write[cmd] += 1
                 except KeyError:
                     final_write[cmd] = 1
+        pbar.update()
+    pbar.close()
     with open(out_path, "w", encoding="utf-8") as file_io:
         json.dump(final_write, file_io, ensure_ascii=False, indent="\t")
 

@@ -4,19 +4,19 @@ import sys
 import time
 
 
-def convert_srt_time(t):
+def _convert_srt_time(t):
     return f"{(t//3600000):02d}:{(t//60000%60):02d}:{(t//1000%60):02d},{(t%1000):03d}"
 
 
-def convert_lrc_time(t):
+def _convert_lrc_time(t):
     return f"[{(t//60000):02d}:{(t//1000%60):02d}.{(t%1000//10):02d}]"
 
 
-def convert_ass_time(time):
+def _convert_ass_time(time):
     return f"{(time//3600000):01d}:{(time//60000%60):02d}:{(time//1000%60):02d}.{(time%1000):03d}"[0:-1]
 
 
-def proc_karaoke(word):
+def _proc_ass_karaoke(word):
     karaoke_word = f"\x7b\\K{int((word[0]['end']-word[0]['start'])/10)}\x7d{word[0]['word']}"
     if word[0]["word"].isascii():
         karaoke_word += " "
@@ -29,14 +29,14 @@ def proc_karaoke(word):
     return karaoke_word
 
 
-def proc_ASS(item):
+def _proc_ASS(item):
     normal_line = ""
     karaoke_line = ""
 
-    normal_line = f"Dialogue: 0,{convert_ass_time(line_start)},{convert_ass_time(line_end)},{language},,0,0,0,,{item['text']}\n"
+    normal_line = f"Dialogue: 0,{_convert_ass_time(line_start)},{_convert_ass_time(line_end)},{language},,0,0,0,,{item['text']}\n"
     try:
         ...
-        # karaoke_line = f"Dialogue: 1,{convert_ass_time(line_start)},{convert_ass_time(line_end)},B,,0,0,0,,{proc_karaoke(item['words'])}\n".replace("{\k0}", "")
+        # karaoke_line = f"Dialogue: 1,{_convert_ass_time(line_start)},{_convert_ass_time(line_end)},B,,0,0,0,,{_proc_ass_karaoke(item['words'])}\n".replace("{\k0}", "")
     except KeyError:
         pass
     return normal_line + karaoke_line.replace(" \n", "\n").replace("  ", " ").replace(",,0,0,0,, ", ",,0,0,0,,")
@@ -81,10 +81,10 @@ for line in Loaded_JSON["segments"]:
     line_end = int(line["end"] * 1000)
     segment_text = line["text"].strip().replace("-->", "->")
 
-    srt_file += f"{srt_index}\n{convert_srt_time(line_start)} --> {convert_srt_time(line_end)}\n{segment_text}\n\n"
-    lrc_file += f"{convert_lrc_time(line_start)}{segment_text}\n"
+    srt_file += f"{srt_index}\n{_convert_srt_time(line_start)} --> {_convert_srt_time(line_end)}\n{segment_text}\n\n"
+    lrc_file += f"{_convert_lrc_time(line_start)}{segment_text}\n"
     txt_file += f"{segment_text}\n"
-    ass_file += proc_ASS(line)
+    ass_file += _proc_ASS(line)
 open(output_SRT, "w", encoding="utf-8").write(srt_file)
 open(output_ASS, "w", encoding="utf-8").write(ass_head + ass_file)
 # open(output_LRC, "w", encoding="utf-8").write(lrc_file)

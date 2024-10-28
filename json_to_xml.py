@@ -85,7 +85,7 @@ for this in data["elems"]:
         xml_cache_layer_1 += xml_cache_layer_2
         xml_cache_layer_2 = ""
         print(
-            f"\rProgress: {i}/{danmaku_count}, Time: {round(time.time()-start_time,3)}",
+            f"\rProgress: {i}/{danmaku_count}, Time: {round(time.time()-start_time,3)}:10",
             end="",
         )
 
@@ -95,4 +95,4 @@ write_file(
 )
 
 end_time = time.time()
-print(f"\r{danmaku_count}, 总计用时：{round(end_time-start_time, 4)}                     ")
+print(f"\r{danmaku_count=:10}, 总计用时：{round(end_time-start_time, 4):10}")
