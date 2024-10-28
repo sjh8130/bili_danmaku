@@ -4,7 +4,7 @@ import ipaddress
 import socket
 
 
-class ip:
+class IP:
     ip_addr: str
     region: str
     desc: str
@@ -20,7 +20,7 @@ class ip:
         return f"{self.ip_addr}\t{self.region}\t{self.desc}\t{self.status}"
 
 
-def init(overwrite=False) -> None:
+def _init(overwrite=False) -> None:
     PATH_BASE = "Z:\\"
     URL_BASE = "https://ftp.apnic.net/stats"
     URL = [
@@ -32,15 +32,15 @@ def init(overwrite=False) -> None:
         f"{URL_BASE}/afrinic/delegated-afrinic-latest",
     ]
     tld_url = "https://data.iana.org/TLD/tlds-alpha-by-domain.txt"
-    download_file(tld_url, PATH_BASE + "tlds-alpha-by-domain.txt", overwrite)
-    process_tld(PATH_BASE + "tlds-alpha-by-domain.txt")
+    _download_file(tld_url, PATH_BASE + "tlds-alpha-by-domain.txt", overwrite)
+    _process_tld(PATH_BASE + "tlds-alpha-by-domain.txt")
     for url in URL:
         file_name = PATH_BASE + url.split("/")[-1]
-        download_file(url, file_name, overwrite)
-        process_file(file_name)
+        _download_file(url, file_name, overwrite)
+        _process_file(file_name)
 
 
-ISO3166_1 = [
+_ISO3166_1 = [
     "ad",
     "ae",
     "af",
@@ -294,55 +294,54 @@ ISO3166_1 = [
     "zz",  # iana
 ]
 
-IPS = [
-    ip("0.0.0.0/8", "XX", "listening", "reserved"),
-    ip("10.0.0.0/8", "XX", "PRIVATE-A", "reserved"),
-    ip("127.0.0.0/8", "XX", "loopback", "reserved"),
-    ip("169.254.0.0/16", "XX", "LinkLocal", "reserved"),
-    ip("172.16.0.0/12", "XX", "PRIVATE-B", "reserved"),
-    ip("192.168.0.0/16", "XX", "PRIVATE-C", "reserved"),
-    ip("224.0.0.0/28", "XX", "Multicast", "reserved"),
-    ip("240.0.0.0/28", "XX", "Reserved-E", "reserved"),
-    ip("255.255.255.255/32", "XX", "Broadcast", "reserved"),
-    ip("2000::/3", "XX", "global", "reserved"),
-    ip("fe80::/10", "XX", "local", "reserved"),
-    ip("fc00::/7", "XX", "local", "reserved"),
-    ip("::1/128", "XX", "loopback", "reserved"),
-    ip("::/128", "XX", "listening", "reserved"),
-    ip("::/80", "XX", "ipv4-in-ipv6", "reserved"),
-    ip("173.245.48.0/20", "US", "Cloudflare", "allocated"),
-    ip("103.21.244.0/22", "US", "Cloudflare", "allocated"),
-    ip("103.22.200.0/22", "US", "Cloudflare", "allocated"),
-    ip("103.31.4.0/22", "US", "Cloudflare", "allocated"),
-    ip("141.101.64.0/18", "US", "Cloudflare", "allocated"),
-    ip("108.162.192.0/18", "US", "Cloudflare", "allocated"),
-    ip("190.93.240.0/20", "US", "Cloudflare", "allocated"),
-    ip("188.114.96.0/20", "US", "Cloudflare", "allocated"),
-    ip("197.234.240.0/22", "US", "Cloudflare", "allocated"),
-    ip("198.41.128.0/17", "US", "Cloudflare", "allocated"),
-    ip("162.158.0.0/15", "US", "Cloudflare", "allocated"),
-    ip("104.16.0.0/13", "US", "Cloudflare", "allocated"),
-    ip("104.24.0.0/14", "US", "Cloudflare", "allocated"),
-    ip("172.64.0.0/13", "US", "Cloudflare", "allocated"),
-    ip("131.0.72.0/22", "US", "Cloudflare", "allocated"),
-    ip("8.8.8.8/32", "US", "Google_DNS", "allocated"),
-    ip("8.8.4.4/32", "US", "Google_DNS", "allocated"),
-    ip("9.9.9.9/32", "US", "IBM_Quad9_DNS", "allocated"),
-    ip("2400:cb00::/32", "US", "Cloudflare", "allocated"),
-    ip("2606:4700::/32", "US", "Cloudflare", "allocated"),
-    ip("2803:f800::/32", "US", "Cloudflare", "allocated"),
-    ip("2405:b500::/32", "US", "Cloudflare", "allocated"),
-    ip("2405:8100::/32", "US", "Cloudflare", "allocated"),
-    ip("2a06:98c0::/29", "US", "Cloudflare", "allocated"),
-    ip("2c0f:f248::/32", "US", "Cloudflare", "allocated"),
-    ip("2001:4860:4860::8888/128", "US", "Google_DNS", "allocated"),
-    ip("2001:4860:4860::8844/128", "US", "Google_DNS", "allocated"),
+_IPS = [
+    IP("0.0.0.0/8", "XX", "listening", "reserved"),
+    IP("10.0.0.0/8", "XX", "PRIVATE-A", "reserved"),
+    IP("127.0.0.0/8", "XX", "loopback", "reserved"),
+    IP("169.254.0.0/16", "XX", "LinkLocal", "reserved"),
+    IP("172.16.0.0/12", "XX", "PRIVATE-B", "reserved"),
+    IP("192.168.0.0/16", "XX", "PRIVATE-C", "reserved"),
+    IP("224.0.0.0/28", "XX", "Multicast", "reserved"),
+    IP("240.0.0.0/28", "XX", "Reserved-E", "reserved"),
+    IP("255.255.255.255/32", "XX", "Broadcast", "reserved"),
+    IP("2000::/3", "XX", "global", "reserved"),
+    IP("fe80::/10", "XX", "local", "reserved"),
+    IP("fc00::/7", "XX", "local", "reserved"),
+    IP("::1/128", "XX", "loopback", "reserved"),
+    IP("::/128", "XX", "listening", "reserved"),
+    IP("::/80", "XX", "ipv4-in-ipv6", "reserved"),
+    IP("173.245.48.0/20", "US", "Cloudflare", "allocated"),
+    IP("103.21.244.0/22", "US", "Cloudflare", "allocated"),
+    IP("103.22.200.0/22", "US", "Cloudflare", "allocated"),
+    IP("103.31.4.0/22", "US", "Cloudflare", "allocated"),
+    IP("141.101.64.0/18", "US", "Cloudflare", "allocated"),
+    IP("108.162.192.0/18", "US", "Cloudflare", "allocated"),
+    IP("190.93.240.0/20", "US", "Cloudflare", "allocated"),
+    IP("188.114.96.0/20", "US", "Cloudflare", "allocated"),
+    IP("197.234.240.0/22", "US", "Cloudflare", "allocated"),
+    IP("198.41.128.0/17", "US", "Cloudflare", "allocated"),
+    IP("162.158.0.0/15", "US", "Cloudflare", "allocated"),
+    IP("104.16.0.0/13", "US", "Cloudflare", "allocated"),
+    IP("104.24.0.0/14", "US", "Cloudflare", "allocated"),
+    IP("172.64.0.0/13", "US", "Cloudflare", "allocated"),
+    IP("131.0.72.0/22", "US", "Cloudflare", "allocated"),
+    IP("8.8.8.8/32", "US", "Google_DNS", "allocated"),
+    IP("8.8.4.4/32", "US", "Google_DNS", "allocated"),
+    IP("9.9.9.9/32", "US", "IBM_Quad9_DNS", "allocated"),
+    IP("2400:cb00::/32", "US", "Cloudflare", "allocated"),
+    IP("2606:4700::/32", "US", "Cloudflare", "allocated"),
+    IP("2803:f800::/32", "US", "Cloudflare", "allocated"),
+    IP("2405:b500::/32", "US", "Cloudflare", "allocated"),
+    IP("2405:8100::/32", "US", "Cloudflare", "allocated"),
+    IP("2a06:98c0::/29", "US", "Cloudflare", "allocated"),
+    IP("2c0f:f248::/32", "US", "Cloudflare", "allocated"),
+    IP("2001:4860:4860::8888/128", "US", "Google_DNS", "allocated"),
+    IP("2001:4860:4860::8844/128", "US", "Google_DNS", "allocated"),
 ]
-ips = IPS
 
-tld = []
+_tld = []
 
-cidr_calc = {
+_CIDR_CALC = {
     "4294967296": "0",
     "2147483648": "1",
     "1073741824": "2",
@@ -379,7 +378,7 @@ cidr_calc = {
 }
 
 
-def download_file(url: str, file_name: str, overwrite: bool) -> None:
+def _download_file(url: str, file_name: str, overwrite: bool) -> None:
     # 检查文件是否存在
     if os.path.isfile(file_name) and (not overwrite):
         # file exist
@@ -402,13 +401,13 @@ def download_file(url: str, file_name: str, overwrite: bool) -> None:
         # print(f"文件 {file_name} 下载完成.")
 
 
-def process_file(file_name: str) -> None:
+def _process_file(file_name: str) -> None:
     """
     处理CIDR数据，返回IPv4和IPv6的字典。
 
     The version line:
     0       1        2      3       4         5       6
-    version|registry|serial|records|startdate|enddate|UTCoffset
+    version|registry|serial|records|start-date|end-date|UTCoffset
 
     The summary line:
     0        1 2    3 4     [5]
@@ -448,50 +447,49 @@ def process_file(file_name: str) -> None:
             if line[2] == "asn":
                 continue
             elif line[2] == "ipv4":
-                if line[4] in cidr_calc:
-                    cidr = f"{line[3]}/{cidr_calc[line[4]]}"
+                if line[4] in _CIDR_CALC:
+                    cidr = f"{line[3]}/{_CIDR_CALC[line[4]]}"
                 else:
                     cidr = f"{line[3]}+{line[4]}"
-                ips.append(ip(cidr, region, line[0], line[6]))
+                ips.append(IP(cidr, region, line[0], line[6]))
             elif line[2] == "ipv6":
                 cidr = f"{line[3]}/{line[4]}"
-                ips.append(ip(cidr, region, line[0], line[6]))
+                ips.append(IP(cidr, region, line[0], line[6]))
 
 
-# iana top-level domains
-def process_tld(file_name: str) -> None:
+def _process_tld(file_name: str) -> None:
+    """iana top-level domains"""
     with open(file_name, "r") as file:
-        tlds = file.readlines()
-    for i in tlds:
-        if i.startswith("#"):
-            continue
-        tld.append(f".{i.lower().strip()}")
+        for i in file:
+            if i.startswith("#"):
+                continue
+            _tld.append(f".{i.lower().strip()}")
 
 
-def query_0(d: str):
+def _query_ip(d: str):
     try:
         ipaddress.ip_network(d, strict=False)
         pass
     except ValueError:
         print("resolving " + d)
-        for i in resolve_dns(d):
+        for i in _resolve_dns(d):
             print("resolved " + i)
-            query_0(i)
+            _query_ip(i)
         print("done " + d)
         return
-    item: ip
+    item: IP
     for item in ips:
         if d == item.ip_addr:
             print(str.join(item))
         elif "/" in item.ip_addr:
-            if ip_in_range(d, item.ip_addr):
+            if _ip_in_range(d, item.ip_addr):
                 print(item)
         elif "+" in item.ip_addr:
-            if ip_in_custom_range(d, item.ip_addr):
+            if _ip_in_custom_range(d, item.ip_addr):
                 print(item)
 
 
-def resolve_dns(host):
+def _resolve_dns(host):
     try:
         ip_addresses = socket.getaddrinfo(host, None)
         return [addr[4][0] for addr in ip_addresses]
@@ -500,30 +498,30 @@ def resolve_dns(host):
         return []
 
 
-def query_1(d: str):
+def _query_region(d: str):
     for item in ips:
         if d == item.region:
             print(item)
 
 
-def query_2(d: str):
+def _query_desc(d: str):
     for item in ips:
         if d == item.desc:
             print(item)
 
 
-def query_3(d: str):
+def _query_status(d: str):
     for item in ips:
         if d == item.status:
             print(item)
 
 
-def list_all():
+def _list_all():
     for item in ips:
         print(item)
 
 
-def ip_in_range(ip: str, ipr: str) -> bool:
+def _ip_in_range(ip: str, ipr: str) -> bool:
     """
     检查IP地址是否在CIDR范围内。
     """
@@ -535,9 +533,9 @@ def ip_in_range(ip: str, ipr: str) -> bool:
         return False
 
 
-def ip_in_custom_range(ip: str, ip_range: str) -> bool:
+def _ip_in_custom_range(ip: str, ip_range: str) -> bool:
     if ":" in ip or "/" in ip:
-        return ip_in_range(ip, ip_range)
+        return _ip_in_range(ip, ip_range)
     # 解析自定义IP范围字符串
     start_ip_str, count_str = ip_range.split("+")
     try:
@@ -555,7 +553,8 @@ def ip_in_custom_range(ip: str, ip_range: str) -> bool:
 
 
 if __name__ == "__main__":
-    init()
+    ips = _IPS.copy()
+    _init()
     try:
         while True:
             # input ipv4 or ipv6 or domain, 'exit' to exit
@@ -566,7 +565,7 @@ if __name__ == "__main__":
                 case "exit":
                     raise KeyboardInterrupt
                 case "all":
-                    list_all()
+                    _list_all()
                 case "clear" | "cls":
                     if sys.platform == "win32":
                         os.system("cls")
@@ -574,24 +573,23 @@ if __name__ == "__main__":
                         os.system("clear")
                 case "len" | "len()" | "length":
                     print(len(ips))
-                case "dump":
+                case "dump" | "export" | "save":
                     import json
-
                     j = json.dumps(ips, ensure_ascii=False, separators=(",", ":"))
                     open("Z:\\dump.json", "w", encoding="utf-8").write(j)
                     del j
                 case "afrinic" | "apnic" | "arin" | "iana" | "lacnic" | "ripe-ncc" | "ripencc":
-                    query_2(query_string)
+                    _query_desc(query_string)
                 case "allocated" | "assigned" | "reserved" | "available":
-                    query_3(query_string)
+                    _query_status(query_string)
                 case "update":
-                    ips = IPS
-                    init(overwrite=True)
+                    ips = _IPS
+                    _init(overwrite=True)
                 case _:
-                    if query_string in ISO3166_1:
-                        query_1(query_string.upper())
+                    if query_string in _ISO3166_1:
+                        _query_region(query_string.upper())
                         continue
-                    query_0(query_string)
+                    _query_ip(query_string)
     except KeyboardInterrupt:
         # print("exit")
         exit(0)

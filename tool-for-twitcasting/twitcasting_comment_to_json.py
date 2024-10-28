@@ -13,36 +13,36 @@ ssl._create_default_https_context = ssl._create_unverified_context
 requests.packages.urllib3.disable_warnings()
 
 if "#" in sys.argv[1]:
-    user = sys.argv[1].split("#")[0]
-    movie_id = sys.argv[1].split("#")[1].split("_")[0]
+    _user = sys.argv[1].split("#")[0]
+    _movie_id = sys.argv[1].split("#")[1].split("_")[0]
 elif "twitcasting.tv" in sys.argv[1]:  # movie URL
-    user = sys.argv[1].split("/")[3]
-    movie_id = sys.argv[1].split("/")[5]
+    _user = sys.argv[1].split("/")[3]
+    _movie_id = sys.argv[1].split("/")[5]
 else:
-    user = sys.argv[1]
-    movie_id = sys.argv[2]
-page_count = 2
+    _user = sys.argv[1]
+    _movie_id = sys.argv[2]
+_page_count = 2
 
-TWITCASTING_URL_JP = "ja.twitcasting.tv"
-TWITCASTING_URL_EN = "en.twitcasting.tv"
-TWITCASTING_URL_GL = "twitcasting.tv"
-TWITCASTING_URL = TWITCASTING_URL_EN
-headers = {
+_TWITCASTING_URL_JP = "ja.twitcasting.tv"
+_TWITCASTING_URL_EN = "en.twitcasting.tv"
+_TWITCASTING_URL_GL = "twitcasting.tv"
+_TWITCASTING_URL = _TWITCASTING_URL_EN
+_headers = {
     "Accept-Encoding": "gzip, deflate, br, zstd",
     "Connection": "keep-alive",
-    "Host": TWITCASTING_URL,
+    "Host": _TWITCASTING_URL,
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36 Edg/109.0.1518.52",
 }
 
-session = requests.Session()
+_session = requests.Session()
 
 
-def downloader(page: int | str):
+def _downloader(page: int | str):
     retry_count = 0
-    url = f"https://{TWITCASTING_URL}/{user}/moviecomment/{movie_id}-{page}"
+    url = f"https://{_TWITCASTING_URL}/{_user}/moviecomment/{_movie_id}-{page}"
     while True:
         try:
-            response = session.get(url, headers=headers, verify=False, timeout=30)
+            response = _session.get(url, headers=_headers, verify=False, timeout=30)
             response.raise_for_status()
             return response.content
         except KeyboardInterrupt:
@@ -56,30 +56,30 @@ def downloader(page: int | str):
             raise
 
 
-out = {
+_out = {
     "comment": [],
     "info": {
-        "user": user,
-        "movie_id": int(movie_id),
+        "user": _user,
+        "movie_id": int(_movie_id),
         "title": "",
-        "url": f"https://{TWITCASTING_URL_GL}/{user}/movie/{movie_id}",
+        "url": f"https://{_TWITCASTING_URL_GL}/{_user}/movie/{_movie_id}",
     },
 }
-current_page = 0
-end = False
-while not end:
-    # a = open(f"twitcasting_{user}_{movie_id}_{page}.html", encoding="utf-8").read()
-    page = downloader(current_page)
+_current_page = 0
+_end = False
+while not _end:
+    # a = open(f"twitcasting_{_user}_{_movie_id}_{page}.html", encoding="utf-8").read()
+    page = _downloader(_current_page)
     if page == b"BREAK":
         break
     comments = list(bs4.BeautifulSoup(page, "lxml").select(".tw-comment-history-item", limit=999))
-    # out["info"]["title"] = str(bs4.BeautifulSoup(a, "lxml").title.contents[0]).replace(" Comment - TwitCasting", "").replace(" コメント - ツイキャス", "")
-    if current_page == 0:
-        out["info"]["title"] = str(bs4.BeautifulSoup(page, "lxml").select(".tw-basic-page-header-path", limit=1)[0].contents[3].contents[1].contents[0]).rstrip(" ")
-        page_count = int(bs4.BeautifulSoup(page, "lxml").select(".tw-pager", limit=1)[0].contents[-1].contents[0])
-        print(page_count)
+    # _out["info"]["title"] = str(bs4.BeautifulSoup(a, "lxml").title.contents[0]).replace(" Comment - TwitCasting", "").replace(" コメント - ツイキャス", "")
+    if _current_page == 0:
+        _out["info"]["title"] = str(bs4.BeautifulSoup(page, "lxml").select(".tw-basic-page-header-path", limit=1)[0].contents[3].contents[1].contents[0]).rstrip(" ")
+        _page_count = int(bs4.BeautifulSoup(page, "lxml").select(".tw-pager", limit=1)[0].contents[-1].contents[0])
+        print(_page_count)
     for comment in comments:
-        out["comment"].append(
+        _out["comment"].append(
             {
                 "type": "comment",
                 "id": int(comment.attrs["data-comment-id"]),
@@ -99,10 +99,10 @@ while not end:
                 },
             }
         )
-    current_page += 1
-    if page_count >= current_page:
-        end = True
-session.close()
-out_data = json.dumps(out, ensure_ascii=False, separators=(",", ":"), indent="\t").replace("\n\t\t\t\t", "").replace("\n\t\t\t", "").replace("\n\t\t}", "}")
+    _current_page += 1
+    if _page_count >= _current_page:
+        _end = True
+_session.close()
+out_data = json.dumps(_out, ensure_ascii=False, separators=(",", ":"), indent="\t").replace("\n\t\t\t\t", "").replace("\n\t\t\t", "").replace("\n\t\t}", "}")
 
-write_file(f"twitcasting_{user}_{movie_id}.json", out_data)
+write_file(f"twitcasting_{_user}_{_movie_id}.json", out_data)

@@ -30,7 +30,7 @@ def json2XML_CMD(this: dict):
     mid = str(this["mid"])
     command = str(this["command"])
     text = str(this["text"])
-    stime = str(this["stime"])
+    stime = int(this["stime"])
     ctime = str(this["ctime"])
     mtime = str(this["mtime"])
     extra = str(this["extra"])

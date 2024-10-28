@@ -1,14 +1,15 @@
 import json
 import time
 import sys
+
+from tqdm import tqdm
+
 from filters import FILTER_WORDS, FILTER_USER_ID, FILTER_USER_CRC_STR_LOWER
 
 
 def main(in_paths: list[str], out_path: str):
     line: str
     left_pos = 0
-    dm_text: str
-    danmaku: dict
     if not in_paths:
         return
     try:
@@ -21,31 +22,42 @@ def main(in_paths: list[str], out_path: str):
             final_write = {}
         else:
             raise e
+    pbar = tqdm(total=len(in_paths), ascii=True, unit="itm", position=1)
     for in_path in in_paths:
-        print(in_path)
+        is_err = False
+        lineno = 1
+        pbar.set_description(in_path)
         if in_path == out_path:
             continue
         with open(in_path, "r", encoding="utf-8") as file_in:
-            for line in file_in.readlines():
-                if "DANMU_MSG" not in line:
-                    continue
-                if line.find("DANMU_MSG:3:7:1:1:1:1") == 1:
-                    continue
+            for line in tqdm(file_in, ascii=True, unit="line", position=2):
+                # if "DANMU_MSG" not in line:
+                #     continue
+                # if line.find("DANMU_MSG:3:7:1:1:1:1") == 1:
+                #     continue
+                lineno += 1
                 left_pos = line.find("{")
-                danmaku = json.loads(line[left_pos:-1])
+                try:
+                    cmd: dict = json.loads(line[left_pos:])
+                except json.JSONDecodeError as e:
+                    print(lineno)
+                    if not is_err:
+                        print(in_path)
+                        is_err = True
+                if cmd["cmd"] != "DANMU_MSG":
+                    continue
 
-                if danmaku["info"][0][9] != 0:
+                if cmd["info"][0][9] != 0:
                     continue  # 1:节奏风暴 2:天选时刻 9:弹幕互动游戏
-                if danmaku["info"][0][12] != 0:
+                if cmd["info"][0][12] != 0:
                     continue  # 0:文本 1:表情包 2:语音
 
-                if danmaku["info"][0][7] in FILTER_USER_CRC_STR_LOWER:
+                if cmd["info"][0][7] in FILTER_USER_CRC_STR_LOWER:
                     continue
-                if danmaku["info"][2][0] in FILTER_USER_ID:
+                if cmd["info"][2][0] in FILTER_USER_ID:
                     continue
 
-                dm_text = danmaku["info"][1]
-                dm_text = dm_text.replace("\u007f", "").replace("\u00a0", "").replace("\u2006", "").replace("\u200b", "").replace("\u200e", "").replace("\u2060", "").replace("\u2063", "").replace("\u3000", "").replace("\U000e0020", "").strip()
+                dm_text: str = cmd["info"][1].replace("\u007f", "").replace("\u00a0", "").replace("\u2006", "").replace("\u200b", "").replace( "\u200e", "").replace("\u2060", "").replace("\u2063", "").replace("\u3000", "").replace("\U000e0020", "").strip()
                 if dm_text in FILTER_WORDS or dm_text.lower() in FILTER_WORDS:
                     try:
                         del final_write[dm_text]
@@ -54,7 +66,7 @@ def main(in_paths: list[str], out_path: str):
                     continue
                 else:
                     try:
-                        if json.loads(danmaku["info"][0][15]["extra"])["hit_combo"] == 1:
+                        if json.loads(cmd["info"][0][15]["extra"])["hit_combo"] == 1:
                             continue
                     except KeyError:
                         pass
@@ -62,6 +74,8 @@ def main(in_paths: list[str], out_path: str):
                         final_write[dm_text] += 1
                     except KeyError:
                         final_write[dm_text] = 1
+        pbar.update()
+    pbar.close()
     with open(out_path, "w", encoding="utf-8") as file_io:
         json.dump(final_write, file_io, ensure_ascii=False, indent="\t")
 

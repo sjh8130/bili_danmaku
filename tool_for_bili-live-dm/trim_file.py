@@ -1,14 +1,14 @@
 import sys
 
-skip_keywords = ["DM_INTERACTION", "LIKE_INFO_V3_CLICK", "LIKE_INFO_V3_UPDATE", "ONLINE_RANK_COUNT", "ONLINE_RANK_V2", "STOP_LIVE_ROOM_LIST", "WATCHED_CHANGE", "WIDGET_BANNER"]
+_SKIP_KEYWORDS = ["DM_INTERACTION", "LIKE_INFO_V3_CLICK", "LIKE_INFO_V3_UPDATE", "ONLINE_RANK_COUNT", "ONLINE_RANK_V2", "STOP_LIVE_ROOM_LIST", "WATCHED_CHANGE", "WIDGET_BANNER"]
 
 
-def trim_file(input_file_path: str):
+def _trim_file(input_file_path: str):
     print(input_file_path)
     # 读取文件内容
     with open(input_file_path, "r", encoding="utf-8") as input_file, open(input_file_path + "1", "a", 1048576, "utf-8") as output_file:
         for line in input_file.readlines():
-            if any(keyword in line for keyword in skip_keywords):
+            if any(keyword in line for keyword in _SKIP_KEYWORDS):
                 continue
 
             ls = line.find("{")
@@ -26,4 +26,4 @@ def trim_file(input_file_path: str):
 
 files_to_process = sys.argv[1:]
 for file in files_to_process:
-    trim_file(file)
+    _trim_file(file)
