@@ -4,28 +4,28 @@
 syntax = "proto3";
 package bilibiliDm.community.service.dm.live;
 message Dm {
-    string                  id_str          = 1;    // [0][15].extra.id_str 新idstr
-    int32                   mode            = 2;    // [0] [1] 弹幕类型
-    int32                   size            = 3;    // [0] [2] 弹幕字号
-    uint32                  color           = 4;    // [0] [3] 弹幕颜色
-    string                  uhash           = 5;    // [0] [7] 发送者midHash
-    string                  text            = 6;    // [1]     弹幕正文
-    int64                   date            = 7;    // [0] [4] 发送时间TimeStamp(ms)
+    string                  dmid            = 1;    // [0][15].extra.id_str 新idstr
+    int32                   mode            = 2;    // [0] [1]  弹幕类型
+    int32                   size            = 3;    // [0] [2]  弹幕字号
+    uint32                  color           = 4;    // [0] [3]  弹幕颜色
+    string                  uhash           = 5;    // [0] [7]  发送者midHash
+    string                  text            = 6;    // [1]      弹幕正文
+    int64                   date            = 7;    // [0] [4]  发送时间TimeStamp(ms)
     int32                   weight          = 8;    // 
     int64                   rnd             = 9;    // [0] [5]
     int64                   attr            = 10;   // 
     BizScene                biz_scene       = 11;   // 
-    Bubble                  bubble          = 12;   // [0][11] chatBubble
-    DmType                  dm_type         = 13;   // [0][12] DmType
-    // map<string,Emoticon>    emoticons       = 14;   // [0][15] 表情 repeated
-    repeated emots_temp     emoticons       = 14;   // [0][15] 表情 repeated
+    Bubble                  bubble          = 12;   // [0][11]  chatBubble
+    DmType                  dm_type         = 13;   // [0][12]  DmType
+ // map<string,Emoticon>    emoticons       = 14;   // [0][15]  表情 repeated
+    repeated emots_temp     emoticons       = 14;   // [0][15]  表情 repeated
     Voice                   voice           = 15;   // [0][14]
     string                  animation       = 16;   // 
-    Aggregation             aggregation     = 17;   // [0][16] 抽奖
+    Aggregation             aggregation     = 17;   // [0][16]  抽奖
     bool                    send_from_me    = 18;   // [0][15].extra
-    Check                   check           = 19;   // [9]   
-    User                    user            = 20;   // [2]    用户主站信息
-    Room                    room            = 21;   // [3]    粉丝勋章
+    Check                   check           = 19;   // [9]      
+    User                    user            = 20;   // [2]      用户主站信息
+    Room                    room            = 21;   // [3]      粉丝勋章
     Icon                    icon            = 22;   // [0][15].extra
     Reply                   reply           = 23;   //
     // bytes                   unknown24       = 24;   //
@@ -124,15 +124,15 @@ message Identify{                                   //20-14
 }
 message Medal{                                      //20-11
     //bilibiliDm.community.service.dm.live.Medal
-    int64       level                       = 1;    // [3][0] 粉丝勋章等级
-    string      name                        = 2;    // [3][1] 粉丝勋章称号
+    int64       level                       = 1;    // [3][0]   粉丝勋章等级
+    string      name                        = 2;    // [3][1]   粉丝勋章称号
     string      special                     = 3;    // [3][5]
     int64       color                       = 4;    // [3][4]
     int64       icon_id                     = 5;    // [3][6]
     int64       border_color                = 6;    // [3][8]
     int64       gradient_start_color        = 7;    // [3][7]
     int64       gradient_end_color          = 8;    // [3][9]
-    int64       privilege                   = 9;    // [3][10] 粉丝勋章 舰长等级
+    int64       privilege                   = 9;    // [3][10]  粉丝勋章 舰长等级
     int64       light                       = 10;   // [3][11]
 }
 message UserLevel{                                  //20-12
@@ -140,7 +140,7 @@ message UserLevel{                                  //20-12
     int64       level                       = 1;    // [4][0]
     int64       color                       = 2;    // [4][2]
     string      rank                        = 3;    // [4][3]
-    int64       online_rank                 = 4;    // [4][4] 高能榜实时排名(仅前三)
+    int64       online_rank                 = 4;    // [4][4]   高能榜实时排名(仅前三)
 }
 message Title{                                      //20-13
     //bilibiliDm.community.service.dm.live.Title

@@ -1,12 +1,14 @@
 #!/usr/bin/python3
+import io
+import json
 import os
 import ssl
-import requests
-import json
-import time
 import sys
 import tarfile
-import io
+import time
+
+import requests
+
 ssl._create_default_https_context = ssl._create_unverified_context
 requests.packages.urllib3.disable_warnings()
 

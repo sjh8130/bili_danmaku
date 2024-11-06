@@ -4,6 +4,8 @@ import re
 import ssl
 import sys
 import time
+
+from dataclasses import dataclass
 from typing import Optional
 
 import dm_pb2
@@ -25,22 +27,24 @@ SLEEP_TIME = 0.5
 UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 Edg/120.0.0.0"
 
 
-class Video:
+@dataclass
+class _Video:
     def __init__(self, avid: int, bvid: str, avid_n: str):
         self.avid = avid
         self.bvid = bvid
         self.avid_n = avid_n
 
 
-class VideoPart(Video):
-    def __init__(self, V: Video, cid: int, oid: Optional[int]):
+@dataclass
+class _VideoPart(_Video):
+    def __init__(self, V: _Video, cid: int, oid: Optional[int]):
         super().__init__(V.avid, V.bvid, V.avid_n)
         self.cid = cid if cid is not None else oid
         if oid is not None and cid is not None and cid != oid:
             raise ValueError("CID and OID must be the same or one must be None.")
 
 
-def downloader(url: str, headers: dict, session: requests.Session) -> bytes:
+def _downloader(url: str, headers: dict, session: requests.Session) -> bytes:
     url = url.replace("http://", "https://")
     for _ in range(RETRIES):
         time.sleep(SLEEP_TIME)
@@ -49,10 +53,12 @@ def downloader(url: str, headers: dict, session: requests.Session) -> bytes:
             return response.content
         except requests.RequestException as e:
             print(f"下载错误: {e}")
+    def to_dict():
+        return json.loads(response)
     raise Exception("下载失败")
 
 
-def get_danmaku(vp: VideoPart, segments: int, session: requests.Session) -> list[bytes]:
+def _get_danmaku(vp: _VideoPart, segments: int, session: requests.Session) -> list[bytes]:
     """
     获取弹幕
     """
@@ -61,6 +67,7 @@ def get_danmaku(vp: VideoPart, segments: int, session: requests.Session) -> list
         "Accept-Encoding": AE,
         "Accept": "application/json, text/plain, */*",
         "Connection": "keep-alive",
+        # "Cookie" : "",
         "Host": "api.bilibili.com",
         "Origin": "https://www.bilibili.com",
         "Referer": f"https://www.bilibili.com/video/{vp.bvid}/",
@@ -104,13 +111,13 @@ def get_danmaku(vp: VideoPart, segments: int, session: requests.Session) -> list
                 "web_location": "1315873",
             }
         url = "https://api.bilibili.com/x/v2/dm/wbi/web/seg.so?" + gen_w_rid(params)
-        file_content = downloader(url, headers, session)
+        file_content = _downloader(url, headers, session)
         danmakus.append(bytes(file_content))
         write_file(filename, file_content)
     return danmakus
 
 
-def GetSpecialDanmaku(vp: VideoPart, input: dm_pb2.DmWebViewReply, session: requests.Session) -> list[bytes]:
+def _get_special_danmaku(vp: _VideoPart, input: dm_pb2.DmWebViewReply, session: requests.Session) -> list[bytes]:
     """
     获取特殊弹幕
     """
@@ -124,17 +131,35 @@ def GetSpecialDanmaku(vp: VideoPart, input: dm_pb2.DmWebViewReply, session: requ
 
     bas_danmakus = []
     for url in input.special_dms:
-        bas_data = downloader(url, headers, session)
+        bas_data = _downloader(url, headers, session)
         filename = f"[{vp.bvid}]_[{vp.cid}]_[BAS]_[{url[27:67]}].bin"
         bas_danmakus.append(bas_data)
         write_file(filename, bas_data)
     return bas_danmakus
 
 
-def main(video: Video):
-    """
-    视频处理
-    """
+def _get_json(v: _Video, session: requests.Session):
+    headers = {
+        "Accept-Encoding": AE,
+        "Origin": "https://www.bilibili.com",
+        "Referer": f"https://www.bilibili.com/{v.bvid}",
+        "User-Agent": UA,
+        "Connection": "keep-alive",
+    }
+
+    html: str = session.get(f"", headers=headers)
+    soup = bs4.BeautifulSoup(html, "lxml")
+
+    json_dict: dict = None
+    for script in soup.find_all("script"):
+        if "window.__INITIAL_STATE__=" in str(script):
+            json_line = re.findall(r"window.__INITIAL_STATE__=(.*);", script.string)[0]
+            json_dict = json.loads(json_line)
+            break
+    return json_dict
+
+
+def _main(video: _Video):
     if video == None:
         return
     url_info_1n = f"https://api.bilibili.com/x/web-interface/view?bvid={video.bvid}"
@@ -148,8 +173,9 @@ def main(video: Video):
         "User-Agent": UA,
         "Connection": "keep-alive",
     }
+    video_info_0 = _get_json(video)
     # ================================ 视频信息1
-    video_info_1 = downloader(url_info_1n, headers, session)
+    video_info_1 = _downloader(url_info_1n, headers, session)
     video_info_1_load = json.loads(video_info_1)
     try:
         video_info_1_load["data"]["ugc_season"]["sections"] = []
@@ -157,7 +183,7 @@ def main(video: Video):
         pass
     write_file(f"[{video.bvid}]_[0]_[Video]_[INFO].json", video_info_1_load)
     # ================================ 视频信息2
-    video_info_2 = downloader(url_info_2n, headers, session)
+    video_info_2 = _downloader(url_info_2n, headers, session)
     video_info_2_load = json.loads(video_info_2)
     video_info_2_load["data"]["Related"] = []
     video_info_2_load["data"]["Reply"]["replies"] = []
@@ -167,7 +193,7 @@ def main(video: Video):
         pass
     write_file(f"[{video.bvid}]_[0]_[Video]_[INFO_2].json", video_info_2_load)
     # ================================ 视频信息3
-    video_info_3 = downloader(url_info_1e, headers, session)
+    video_info_3 = _downloader(url_info_1e, headers, session)
     video_info_3_load = json.loads(video_info_3)
     write_file(f"[{video.bvid}]_[0]_[Video]_[INFO_3].json", video_info_3_load)
     # ================================ 加载
@@ -180,7 +206,7 @@ def main(video: Video):
     # ================================ 字幕
     if json_info["subtitle"] != None:
         for subs in json_info["subtitle"]["list"]:
-            _data = downloader(subs["subtitle_url"], headers, session)
+            _data = _downloader(subs["subtitle_url"], headers, session)
             write_file(f"[{video.bvid}]_[Subtitle]_[{subs['id']}]_[{subs['lan']}].bcc", _data)
             del _data
     # ================================ 首映
@@ -194,18 +220,18 @@ def main(video: Video):
     for this in json_info["pages"]:
         part += 1
         oid = int(this["cid"])
-        vp = VideoPart(V=video, cid=oid)
+        vp = _VideoPart(V=video, cid=oid)
 
         segment_count = (int(this["duration"]) / 360).__ceil__() + 1
         v_url = f"https://api.bilibili.com/x/v2/dm/web/view?type=1&oid={vp.cid}&pid={vp.avid}&duration={this['']}"
-        extra_info_proto_binary = downloader(v_url, headers, session)
+        extra_info_proto_binary = _downloader(v_url, headers, session)
         write_file(f"[{video.bvid}]_[{vp.cid}]_[BAS]_[INFO].bin", extra_info_proto_binary)
 
         extra_info_proto = dm_pb2.DmWebViewReply()
         extra_info_proto.ParseFromString(extra_info_proto_binary)
         extra_info_json = MessageToDict(extra_info_proto)
 
-        danmaku_binary_list = get_danmaku(vp, segment_count, session)
+        danmaku_binary_list = _get_danmaku(vp, segment_count, session)
         danmaku_list = []
         danmakuColorful_list = []
         for dm_bin in danmaku_binary_list:
@@ -221,7 +247,7 @@ def main(video: Video):
         write_file(f"[{video.bvid}]_[{video.avid}].json", final_string)
 
 
-def process_args(vid: str):
+def _process_args(vid: str):
     if vid.find("https://www.bilibili.com/video/") == 0:
         vid = vid.lstrip("https://www.bilibili.com/video/")
     elif vid.find("http://www.bilibili.com/video/") == 0:
@@ -239,9 +265,9 @@ def process_args(vid: str):
         bvid = AV2BV(avid_n)
     else:
         raise Exception(vid)
-    return Video(avid, bvid, avid_n)
+    return _Video(avid, bvid, avid_n)
 
 
 if __name__ == "__main__":
     for i in sys.argv[1:]:
-        main(process_args(i))
+        _main(_process_args(i))
