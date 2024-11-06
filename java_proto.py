@@ -1,60 +1,78 @@
+#! /usr/bin/env python3
+# -*- coding: utf-8 -*-
+# mypy: ignore-errors
 import re
-from functools import lru_cache
+
+import string
+import sys
+
+from enum import StrEnum
+
+import pyperclip
 
 
-PFC = ["public", "final", "class"]
-PFC2 = ["public", "static", "final", "class"]
-PFU = ["public", "enum"]
-ITM = ["public", "static", "final", "int"]
-MSG = "message"
-ENUM = "enum"
-
-
-@lru_cache
-def camel_to_snake_improved(name):
-    # Convert camelCase to snake_case, including handling for numbers
+def camel_to_snake_improved(name: str) -> str:
+    """将 camelCase 格式的字符串转换为 snake_case 格式。"""
     a = re.sub("(.)([A-Z][a-z]+)", r"\1_\2", name)
     b = re.sub("([a-z0-9])([A-Z])", r"\1_\2", a)
     c = re.sub("([a-zA-Z])([0-9])", r"\1_\2", b)
     d = re.sub("([0-9])([A-Z])", r"\1_\2", c)
-    return d.lower()
+    # sys.stderr("\n")
+    # sys.stderr(f"{name= }" + "\n")
+    # sys.stderr(f"{a= }" + "\n")
+    # sys.stderr(f"{b= }" + "\n")
+    # sys.stderr(f"{c= }" + "\n")
+    # sys.stderr(f"{d= }" + "\n")
+    return [a, b, c, d, a.lower(), b.lower(), c.lower(), d.lower()]
 
 
-@lru_cache
-def get_type(a: str):
+def get_type(a: str) -> str:
+    """根据输入字符串返回相应的数据类型。"""
     match a:
-        case "String" | "StringValue":
+        case "String":
             return "string"
 
-        case "UInt32Value" | "UInt32Value" | "UInt32Value":
-            return "uint32"
-        case "UInt64Value" | "UInt64Value" | "UInt64Value":
-            return "uint64"
-
-        case "int" | "Integer" | "Int32Value":
+        case "int" | "Integer":
             return "int32"
-        case "long" | "Long" | "Int64Value":
+        case "long" | "Long":
             return "int64"
 
         case "Internal.IntList":
             return "repeated int32"
         case "Internal.LongList":
             return "repeated int64"
-
         case "Internal.FloatList":
             return "repeated float"
-        case "Internal.FloatList":
-            return "repeated float"
+        case "Internal.DoubleList":
+            return "repeated double"
+        case "Internal.StringList":
+            return "repeated string"
+        case "Internal.BytesList":
+            return "repeated bytes"
 
-        case "FloatValue":
-            return "float"
-        case "DoubleValue":
-            return "double"
-
-        case "boolean" | "BoolValue":
-            return "bool"
-        case "ByteString" | "BytesValue":
+        case "ByteString":
             return "bytes"
+        case "boolean":
+            return "bool"
+
+        case "StringValue":
+            return "google.protobuf.StringValue"
+        case "FloatValue":
+            return "google.protobuf.FloatValue"
+        case "DoubleValue":
+            return "google.protobuf.DoubleValue"
+        case "BoolValue":
+            return "google.protobuf.BoolValue"
+        case "BytesValue":
+            return "google.protobuf.BytesValue"
+        case "UInt32Value":
+            return "google.protobuf.UInt32Value"
+        case "UInt64Value":
+            return "google.protobuf.UInt64Value"
+        case "Int32Value":
+            return "google.protobuf.Int32Value"
+        case "Int64Value":
+            return "google.protobuf.Int64Value"
         case _:
             if a.startswith("Internal.ProtobufList"):
                 return "repeated " + get_type(a[22:-1])
@@ -65,18 +83,18 @@ def get_type(a: str):
                 return a
 
 
-def combine_msg(s1, s2):
-    sort_s1_l = []
-    form_s2 = []
+def combine_msg(list_1: list[list[str, int]], list_2: list[str]) -> str:
+    ids = []
+    form_s2: list[str] = []
     ret_str = ""
-    for i in s1:
-        sort_s1_l.append(i[1])
-    sort_s1_l = sorted(sort_s1_l)
-    for i in s2:
-        form_s2.append([camel_to_snake_improved(i[0]), get_type(i[1]), i[0]])
-    for i in sort_s1_l:
+    for i in list_1:
+        ids.append(i[1])
+    sorted_ids = sorted(ids)
+    for i in list_2:
+        form_s2.append([camel_to_snake_improved(i[0])[5], get_type(i[1]), i[0]])
+    for i in sorted_ids:
         ret_str += "    //\n    "
-        for j in s1:
+        for j in list_1:
             if j[1] == i:
                 for k in form_s2:
                     if j[0] == k[0]:
@@ -87,76 +105,157 @@ def combine_msg(s1, s2):
     return ret_str
 
 
-def combine_enum(s1):
-    sort_s1_l = []
+def combine_enum(list_1: list[list[str, int]]) -> str:
+    ids = []
     ret_str = ""
-    for i in s1:
-        sort_s1_l.append(i[1])
-    sort_s1_l = sorted(sort_s1_l)
-    for i in sort_s1_l:
-        for j in s1:
-            if i == j[1]:
-                ret_str += f"    {j[0][0:-6]} = {j[1]}; // \n"
+    for id in list_1:
+        ids.append(id[1])
+    ids = sorted(ids)
+    for id in ids:
+        for j in list_1:
+            if id == j[1] and id != -1:
+                ret_str += f"    {j[0][0:-6]} = {j[1]};\n"
+    for id in ids:
+        for j in list_1:
+            if id == j[1] and id == -1:
+                ret_str += f"    {j[0][0:-6]} = {j[1]};\n"
+                return ret_str
     return ret_str
 
 
+def snake_to_camel(name: str) -> str:
+    """将 snake_case 格式的字符串转换为 camelCase 格式。"""
+    return "".join(name.split("_"))
+
+
+def combine_rpc(list_1: list[list[str, int]], list_2: list[str, str, str]) -> str:
+    #                             ^    rpc_index*          ^    ^    rpc_name*
+    #                             rpc_name(CAMEL,UPPER)    |    rpc_reply*
+    #                                                      rpc_req*
+    index = []
+    ret_str = ""
+    for id in list_1:
+        index.append(id[1])
+    index = sorted(index)
+    for rpc_index in index:
+        for list1_idx in list_1:
+            if rpc_index == list1_idx[1]:
+                for rpc_req, rpc_reply, rpc_name in list_2:
+                    if rpc_name.lower() == snake_to_camel(list1_idx[0]).lower():
+                        ret_str += f"\n    //\n    rpc {rpc_name} ({rpc_req}) returns ({rpc_reply});"
+    return ret_str
+
+
+class MsgType(StrEnum):
+    enum = "enum"
+    message = "message"
+    service = "service"
+    none = ""
+
+
 def process(data: list[str]):
-    msg_type = ""
-    name = ""
-    s1 = []
-    s2 = []
+    E_L = ["", "", "", "", "", "", "", "", "", ""]
+    msg_type = MsgType.none
+    msg_name = ""
+    final_str = ""
+    list_1 = []
+    list_2 = []
     for i in data:
-        strs = i.rstrip(";").split(" ")
-        if msg_type == "":
-            if strs[0:3] == PFC:
-                msg_type = MSG
-                name = strs[3]
-            elif strs[0:4] == PFC2:
-                msg_type = MSG
-                name = strs[4]
-            elif strs[0:2] == PFU:
-                msg_type = ENUM
-                name = strs[2]
+        if i.startswith("/*"):
             continue
-        elif msg_type == MSG:
-            if strs[0:4] == ITM:
-                s1.append([strs[4][0:-13].lower(), int(strs[6])])
+        strs = i.strip().replace(", ", ",").rstrip(";").split(" ") + E_L
+        if msg_type == MsgType.none:
+            if strs[0:3] == ["public", "final", "class"] and strs[4] == "extends" and strs[6] == "implements":
+                msg_type = MsgType.message
+                msg_name = strs[3]
+            elif strs[0:4] == ["public", "static", "final", "class"]:
+                msg_type = MsgType.message
+                msg_name = strs[4]
+            elif strs[0:2] == ["public", "enum"]:
+                msg_type = MsgType.enum
+                msg_name = strs[2]
+            elif strs[0:3] == ["public", "final", "class"] and strs[3] in string.ascii_letters:
+                msg_type = MsgType.service
+            elif strs[0:4] == ["private", "static", "final", "int"] and strs[4].contains("METHODID_"):
+                msg_type = MsgType.service
+        elif msg_type == MsgType.message:
+            if strs[0:5] == ["public", "static", "final", "String", "SERVICE_NAME"]:
+                msg_type = MsgType.service
+                msg_name = strs[6][1:-1]
+                continue
+
+            if strs[0:4] == ["public", "static", "final", "int"]:
+                list_1.append([strs[4][0:-13].lower(), int(strs[6])])
             elif strs[0] == "private":
-                if len(strs) != 3 and strs[4] == "DEFAULT_INSTANCE":
-                    continue
-                elif strs[2] == "volatile":
-                    continue
+                if strs[0:3] == ["private", "static", "final"] and strs[4] == "DEFAULT_INSTANCE":
+                    msg_name = strs[3]
+                elif strs[0:3] == ["private", "static", "volatile"] and strs[4].startswith("PARSER"):
+                    ...
                 else:
-                    s2.append([strs[2].rstrip("_"), strs[1]])
-        elif msg_type == ENUM:
-            if strs[0:4] == ITM:
-                s1.append([strs[4], strs[6]])
-    print("=============")
-    print("\n//")
-    if msg_type == MSG:
-        combine_str = combine_msg(s1, s2)
-        print(f"{msg_type} {name} " + "{")
-        print(combine_str, end="")
-        print("}\n")
-    elif msg_type == ENUM:
-        combine_str = combine_enum(s1)
-        print(f"{msg_type} {name} " + "{")
-        print(combine_str, end="")
-        print("}\n")
+                    list_2.append([strs[2].rstrip("_"), strs[1]])
+        elif msg_type == MsgType.enum:
+            if strs[0:4] == ["public", "static", "final", "int"]:
+                list_1.append([strs[4], int(strs[6])])
+        elif msg_type == MsgType.service:
+            if strs[0:5] == ["public", "static", "final", "String", "SERVICE_NAME"]:
+                msg_name = strs[6][1:-1].split(".")[-1]
+            elif strs[0:4] == ["private", "static", "final", "int"]:
+                list_1.append([strs[4][9:], int(strs[6])])
+            elif strs[0:4] == ["private", "static", "volatile", "x0"]:
+                pass
+            elif strs[0:3] == ["private", "static", "volatile"] and strs[3].startswith("MethodDescriptor"):
+                list_2.append(strs[3][17:-1].split(",") + [strs[4][3:-6]])
+
+    if msg_type == MsgType.message:
+        final_str += f"""
+//
+{MsgType.message} {msg_name} \x7b
+{combine_msg(list_1, list_2)}\x7d
+"""
+    elif msg_type == MsgType.enum:
+        final_str += f"""
+//
+{MsgType.enum} {msg_name} \x7b
+{combine_enum(list_1)}\x7d
+"""
+    elif msg_type == MsgType.service:
+        final_str += f"""
+//
+{MsgType.service} {msg_name} \x7b{combine_rpc(list_1, list_2)}
+\x7d
+"""
+    if final_str:
+        print(final_str)
+        pyperclip.copy(final_str)
+    else:
+        sys.stderr.write("no data found\n")
 
 
 def main():
     in_strings: list[str] = []
+    paste = False
     while True:
+        paste = False
         a = input().replace(", ", ",").strip()
         if a == "clean":
-            in_strings = []
+            in_strings.clear()
         elif a == "/* compiled from: BL */":
             process(in_strings)
-            in_strings = []
+            in_strings.clear()
+        elif a.startswith("/* loaded from:"):
+            continue
+        elif a == "" and len(in_strings) == 0:
+            if not paste:
+                paste = True
+                process(pyperclip.paste().splitlines())
+                in_strings.clear()
         else:
             in_strings.append(a)
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except KeyboardInterrupt:
+        sys.stderr("exit")
+        pass

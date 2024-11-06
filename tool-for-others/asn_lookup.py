@@ -3,18 +3,14 @@ import sys
 import ipaddress
 import socket
 
+from dataclasses import dataclass
 
+@dataclass
 class IP:
-    ip_addr: str
-    region: str
-    desc: str
-    status: str
-
-    def __init__(self, ip_cidr, region, desc, status) -> None:
-        self.ip_addr = ip_cidr
-        self.region = region
-        self.desc = desc
-        self.status = status
+    ip_addr: str = ""
+    region: str = ""
+    desc: str = ""
+    status: str = ""
 
     def __str__(self) -> str:
         return f"{self.ip_addr}\t{self.region}\t{self.desc}\t{self.status}"

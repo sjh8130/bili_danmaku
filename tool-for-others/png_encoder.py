@@ -18,8 +18,8 @@ _IEND = b"\x00\x00\x00\x00IEND\xae\x42\x60\x82"
 # _IEND =  sign_chunk(b"IEND", b"")
 _NULL_SEPARATOR = b"\x00"
 
-logging.basicConfig(level=logging.INFO, format="%(levelname)s - %(message)s")
-logger = logging.getLogger()
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+logger = logging.getLogger("PNG_encoder")
 
 
 class _PNG_COLOR_TYPE(IntEnum):
