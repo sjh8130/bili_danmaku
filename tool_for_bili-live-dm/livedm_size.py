@@ -7,6 +7,7 @@ from tqdm import tqdm
 
 def main(in_paths, out_path):
     left_pos = 0
+    l_line = {}
     if in_paths == []:
         return
     try:
@@ -19,7 +20,7 @@ def main(in_paths, out_path):
             final_write = {}
         else:
             raise e
-    pbar = tqdm(total=len(in_paths), ascii=True)
+    pbar = tqdm(total=len(in_paths))
     for in_path in in_paths:
         # print(in_path)
         if in_path == out_path:

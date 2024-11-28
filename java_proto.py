@@ -11,7 +11,7 @@ from enum import StrEnum
 import pyperclip
 
 
-def camel_to_snake_improved(name: str) -> str:
+def camel_to_snake_improved(name: str) -> list[str]:
     """将 camelCase 格式的字符串转换为 snake_case 格式。"""
     a = re.sub("(.)([A-Z][a-z]+)", r"\1_\2", name)
     b = re.sub("([a-z0-9])([A-Z])", r"\1_\2", a)
@@ -26,7 +26,7 @@ def camel_to_snake_improved(name: str) -> str:
     return [a, b, c, d, a.lower(), b.lower(), c.lower(), d.lower()]
 
 
-def get_type(a: str) -> str:
+def get_protobuf_type(a: str) -> str:
     """根据输入字符串返回相应的数据类型。"""
     match a:
         case "String":
@@ -75,10 +75,10 @@ def get_type(a: str) -> str:
             return "google.protobuf.Int64Value"
         case _:
             if a.startswith("Internal.ProtobufList"):
-                return "repeated " + get_type(a[22:-1])
+                return "repeated " + get_protobuf_type(a[22:-1])
             elif a.startswith("MapFieldLite"):
                 b = a[13:-1].split(",")
-                return "map<" + get_type(b[0]) + ", " + get_type(b[1]) + ">"
+                return "map<" + get_protobuf_type(b[0]) + ", " + get_protobuf_type(b[1]) + ">"
             else:
                 return a
 
@@ -91,7 +91,7 @@ def combine_msg(list_1: list[list[str, int]], list_2: list[str]) -> str:
         ids.append(i[1])
     sorted_ids = sorted(ids)
     for i in list_2:
-        form_s2.append([camel_to_snake_improved(i[0])[5], get_type(i[1]), i[0]])
+        form_s2.append([camel_to_snake_improved(i[0])[5], get_protobuf_type(i[1]), i[0]])
     for i in sorted_ids:
         ret_str += "    //\n    "
         for j in list_1:
@@ -128,14 +128,14 @@ def snake_to_camel(name: str) -> str:
     return "".join(name.split("_"))
 
 
-def combine_rpc(list_1: list[list[str, int]], list_2: list[str, str, str]) -> str:
-    #                             ^    rpc_index*          ^    ^    rpc_name*
-    #                             rpc_name(CAMEL,UPPER)    |    rpc_reply*
-    #                                                      rpc_req*
+def combine_rpc(list_1: list[list[str | int]], list_2: list[str]) -> str:
+    #                             ^                         rpc_req*,rpc_reply*,rpc_name*
+    #                             rpc_name(CAMEL,UPPER),rpc_index*
     index = []
-    ret_str = ""
-    for id in list_1:
-        index.append(id[1])
+    ret_str: str = ""
+    idx: int
+    for idx in list_1:
+        index.append(idx[1])
     index = sorted(index)
     for rpc_index in index:
         for list1_idx in list_1:
@@ -163,7 +163,7 @@ def process(data: list[str]):
     for i in data:
         if i.startswith("/*"):
             continue
-        strs = i.strip().replace(", ", ",").rstrip(";").split(" ") + E_L
+        strs: list[str] = i.strip().replace(", ", ",").rstrip(";").split(" ") + E_L
         if msg_type == MsgType.none:
             if strs[0:3] == ["public", "final", "class"] and strs[4] == "extends" and strs[6] == "implements":
                 msg_type = MsgType.message
@@ -176,7 +176,7 @@ def process(data: list[str]):
                 msg_name = strs[2]
             elif strs[0:3] == ["public", "final", "class"] and strs[3] in string.ascii_letters:
                 msg_type = MsgType.service
-            elif strs[0:4] == ["private", "static", "final", "int"] and strs[4].contains("METHODID_"):
+            elif strs[0:4] == ["private", "static", "final", "int"] and strs[4].startswith("METHODID_"):
                 msg_type = MsgType.service
         elif msg_type == MsgType.message:
             if strs[0:5] == ["public", "static", "final", "String", "SERVICE_NAME"]:

@@ -223,7 +223,7 @@ message DanmakuElem {
     string content = 7;
     // 发送时间
     int64 ctime = 8;
-    // 权重 用于屏蔽等级 区间:[1,10]
+    // 权重 用于屏蔽等级 区间:[0,10]
     int32 weight = 9;
     // 动作
     string action = 10;
@@ -259,6 +259,8 @@ message DanmakuElem {
     int32 type = 25;
     // 视频cid
     int64 oid = 26;
+    //
+    int64 xxx27 = 27;
 }
 
 // 弹幕ai云屏蔽条目

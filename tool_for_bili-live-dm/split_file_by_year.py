@@ -15,7 +15,6 @@ def _get_date_from_timestamp(timestamp: int) -> datetime:
     return datetime.fromtimestamp(timestamp, tz=_tz)
 
 
-# 定义一个函数，用于按日分割文件
 def _split_file_by_day(input_file_path: str):
     # print(input_file_path)
 
@@ -43,17 +42,16 @@ def _split_file_by_day(input_file_path: str):
 
     # 为每一天创建新文件，并写入内容
     for date, lines_1 in tqdm.tqdm(lines_by_day.items(), desc=f"write:{os.path.basename(input_file_path)}"):
-        output_file_name = f"{base_name}-{date.strftime('%Y-%m-%d')}{ext}"
+        output_file_name = f"{base_name}-{date.strftime('%Y')}{ext}"
         output_file_path = os.path.join(directory, output_file_name)
         with open(output_file_path, "a", 1048576, "utf-8") as output_file:
             output_file.writelines(lines_1)
 
 
-if __name__ == "__main__":
-    # 调用函数，按日分割文件
-    item = sys.argv[1:]
-    b_name = item[0]
-    for i in item:
-        _split_file_by_day(i)
-    # split_file_by_day("Z://11.jsonl")
+# 调用函数，按日分割文件
+item = sys.argv[1:]
+b_name = item[0]
+for i in item:
+    _split_file_by_day(i)
+# split_file_by_day("Z://11.jsonl")
 # AI

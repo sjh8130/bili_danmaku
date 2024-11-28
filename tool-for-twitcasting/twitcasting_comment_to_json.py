@@ -10,7 +10,7 @@ import requests
 from my_lib.file_writer import write_file
 
 ssl._create_default_https_context = ssl._create_unverified_context
-requests.packages.urllib3.disable_warnings()
+requests.packages.urllib3.disable_warnings()  # type: ignore[attr-defined]
 
 if "#" in sys.argv[1]:
     _user = sys.argv[1].split("#")[0]
@@ -75,11 +75,11 @@ while not _end:
     comments = list(bs4.BeautifulSoup(page, "lxml").select(".tw-comment-history-item", limit=999))
     # _out["info"]["title"] = str(bs4.BeautifulSoup(a, "lxml").title.contents[0]).replace(" Comment - TwitCasting", "").replace(" コメント - ツイキャス", "")
     if _current_page == 0:
-        _out["info"]["title"] = str(bs4.BeautifulSoup(page, "lxml").select(".tw-basic-page-header-path", limit=1)[0].contents[3].contents[1].contents[0]).rstrip(" ")
-        _page_count = int(bs4.BeautifulSoup(page, "lxml").select(".tw-pager", limit=1)[0].contents[-1].contents[0])
+        _out["info"]["title"] = str(bs4.BeautifulSoup(page, "lxml").select(".tw-basic-page-header-path", limit=1)[0].contents[3].contents[1].contents[0]).rstrip(" ")  # type: ignore[index,attr-defined]
+        _page_count = int(bs4.BeautifulSoup(page, "lxml").select(".tw-pager", limit=1)[0].contents[-1].contents[0])  # type: ignore[attr-defined]
         print(_page_count)
     for comment in comments:
-        _out["comment"].append(
+        _out["comment"].append(  # type: ignore[attr-defined]
             {
                 "type": "comment",
                 "id": int(comment.attrs["data-comment-id"]),
