@@ -1,11 +1,11 @@
-import os
-import sys
+import dataclasses
 import ipaddress
+import os
 import socket
+import sys
 
-from dataclasses import dataclass
 
-@dataclass
+@dataclasses.dataclass
 class IP:
     ip_addr: str = ""
     region: str = ""
@@ -462,7 +462,7 @@ def _process_tld(file_name: str) -> None:
             _tld.append(f".{i.lower().strip()}")
 
 
-def _query_ip(d: str):
+def _query_ip(d: str) -> None:
     try:
         ipaddress.ip_network(d, strict=False)
         pass
@@ -476,7 +476,7 @@ def _query_ip(d: str):
     item: IP
     for item in ips:
         if d == item.ip_addr:
-            print(str.join(item))
+            print("".join(item.__str__()))
         elif "/" in item.ip_addr:
             if _ip_in_range(d, item.ip_addr):
                 print(item)
@@ -485,7 +485,7 @@ def _query_ip(d: str):
                 print(item)
 
 
-def _resolve_dns(host):
+def _resolve_dns(host) -> list[str]:
     try:
         ip_addresses = socket.getaddrinfo(host, None)
         return [addr[4][0] for addr in ip_addresses]
@@ -494,25 +494,25 @@ def _resolve_dns(host):
         return []
 
 
-def _query_region(d: str):
+def _query_region(d: str) -> None:
     for item in ips:
         if d == item.region:
             print(item)
 
 
-def _query_desc(d: str):
+def _query_desc(d: str) -> None:
     for item in ips:
         if d == item.desc:
             print(item)
 
 
-def _query_status(d: str):
+def _query_status(d: str) -> None:
     for item in ips:
         if d == item.status:
             print(item)
 
 
-def _list_all():
+def _list_all() -> None:
     for item in ips:
         print(item)
 
@@ -522,8 +522,8 @@ def _ip_in_range(ip: str, ipr: str) -> bool:
     检查IP地址是否在CIDR范围内。
     """
     try:
-        ip_network = ipaddress.ip_network(ipr, strict=False)
-        ip_address = ipaddress.ip_address(ip)
+        ip_network: ipaddress.IPv4Network | ipaddress.IPv6Network = ipaddress.ip_network(ipr, strict=False)
+        ip_address: ipaddress.IPv4Address | ipaddress.IPv6Address = ipaddress.ip_address(ip)
         return ip_address in ip_network
     except ValueError:
         return False

@@ -7,9 +7,7 @@ def _count_lines_in_file(file_path):
         # lines = file.readlines()
         # 使用Counter来统计每一行出现的次数
         line_counts = Counter(file)
-
     return {line.strip(): count for line, count in line_counts.items()}
-
 
 
 def _save_to_json(data, output_path):

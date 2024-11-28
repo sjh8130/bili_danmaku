@@ -22,6 +22,8 @@ if sys.argv[3].__eq__("A"):
     SUFFIX = ".aac"
 elif sys.argv[3].__eq__("V"):
     SUFFIX = ".264"
+else:
+    SUFFIX = ".XXX"
 IN_INFO_1 = sys.argv[1].rsplit(".", 1)[-2] + sys.argv[3] + ".json"
 IN_INFO_2 = sys.argv[2].rsplit(".", 1)[-2] + sys.argv[3] + ".json"
 IN_FILE_1 = sys.argv[1].rsplit(".", 1)[-2] + SUFFIX

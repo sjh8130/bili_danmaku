@@ -39,7 +39,7 @@ if count == 0:
     print("No Data")
     sys.exit()
 for this in itm.elems:
-    cache_3 += proto_to_xml(this, extra_data=True, enable_weight=True)
+    cache_3 += proto_to_xml(this)
     i += 1
     if i % SPLIT_3RD_SIZE == 0:
         cache_1 += cache_2

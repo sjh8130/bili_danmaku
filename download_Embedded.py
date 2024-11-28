@@ -28,7 +28,7 @@ def o(b,c,x=x):
 	d=v(b,x)
 	e=tarfile.TarInfo(c)
 	e.size=len(d)
-	e.mtime=time.time().__trunc__()
+	e.mtime=time.time().__floor__()
 	a.addfile(tarinfo=e,fileobj=io.BytesIO(d))
 	return d
 
@@ -65,13 +65,13 @@ def p():
 			j["info"]["danmaku_count"]=0
 			j["info"]["danmaku_web_reported"]=b["stat"]["danmaku"]
 			j["info"]["danmaku_proto_reported"]=0
-			j["info"]["File_Create_Time"]=time.time().__trunc__()
+			j["info"]["File_Create_Time"]=time.time().__floor__()
 			j["info"]["File_Create_Time_Start"]=0
 			j["info"]["is_live_record"]=False
 			k=bytes(json.dumps(j,ensure_ascii=False,separators=(",",":")),encoding="utf-8")
 			l=tarfile.TarInfo(f"{r}_{f}.json")
 			l.size=len(k)
-			l.mtime=time.time().__trunc__()
+			l.mtime=j["info"]["File_Create_Time"]
 			a.addfile(tarinfo=l,fileobj=io.BytesIO(k))
 		a.close()
 
@@ -81,8 +81,8 @@ def q():
 	except Exception as e:
 		print(e)
 		a="{\"code\":0,\"data\":{\"archives\":[{\"aid\":"+str(s)+",\"pubdate\":1,\"bvid\":\"BV0000000000\"}]}}"
-		print("ERR "+time.time().__trunc__().__str__())
-	if json.loads(a)["code"]!=0:print(f"[NET]:Error {json.loads(a)['code']} {time.time().__trunc__()}")
+		print("ERR "+time.time().__floor__().__str__())
+	if json.loads(a)["code"]!=0:print(f"[NET]:Error {json.loads(a)['code']} {time.time().__floor__()}")
 	return a
 
 if __name__=="__main__":
@@ -101,7 +101,7 @@ if __name__=="__main__":
 			if u==0:u=1
 			elif t==0:u=0
 			else:
-				print(f"{int(time.time().__trunc__())}:{t['bvid']}")
+				print(f"{int(time.time().__floor__())}:{t['bvid']}")
 				r=t["bvid"]
 				p()
 				os.system("/root/aliyunpan/aliyunpan upload /root/work /")

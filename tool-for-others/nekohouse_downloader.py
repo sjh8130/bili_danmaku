@@ -1,3 +1,4 @@
+import dataclasses
 import datetime
 import json
 import logging
@@ -6,8 +7,6 @@ import ssl
 import sys
 import time
 
-from dataclasses import dataclass
-
 import bs4
 import lxml
 import re
@@ -15,7 +14,7 @@ import requests
 
 # Setup SSL and logging
 ssl._create_default_https_context = ssl._create_unverified_context
-requests.packages.urllib3.disable_warnings()
+requests.packages.urllib3.disable_warnings()  # type: ignore[attr-defined]
 
 AE = "gzip, deflate, br, zstd"
 UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36 Edg/109.0.1518.52"
@@ -25,43 +24,27 @@ logger = logging.getLogger("nekohouse-downloader")
 logger.setLevel(logging.ERROR)
 
 
-@dataclass
+@dataclasses.dataclass
 class Post:
-    def __init__(
-        self,
-        platform="",
-        user_id="",
-        username="",
-        post_id="",
-        title="",
-        pub_time=0.0,
-        thumb="",
-        content="",
-        items=None,
-    ):
-        if items is None:
-            items = []
-        self.platform = platform
-        self.user_id = user_id
-        self.username = username
-        self.post_id = post_id
-        self.title = title
-        self.pub_time = pub_time
-        self.thumb = thumb
-        self.content = content
-        self.items = items
+    content: str = ""
+    items: list = dataclasses.field(default_factory=list)
+    platform: str = ""
+    post_id: str = ""
+    pub_time: float = 0.0
+    thumb: str = ""
+    title: str = ""
+    user_id: str = ""
+    username: str = ""
 
 
-@dataclass
+@dataclasses.dataclass
 class UserPage:
-    def __init__(self, total=0, posts=None):
-        if posts is None:
-            posts = []
-        self.total = total
-        self.posts = posts
+    total: int = 0
+    posts: list[Post] = dataclasses.field(default_factory=list)
 
 
 def _escape_html(s: str) -> str:
+    return re.sub(r"[<>\"&']", "_", s)
     return s.replace("<", "&lt;").replace(">", "&gt;").replace('"', "&quot;").replace("&", "&amp;").strip()
 
 
@@ -110,13 +93,13 @@ def _get_user_page(pl: str, user_id: str, pn: int) -> UserPage:
     response = session.get(url, headers=headers, verify=False)
     soup = bs4.BeautifulSoup(response.content, "lxml")
 
-    total = int(soup.select(".paginator")[0].small.contents[0].strip().split(" ")[-1])
+    total = int(soup.select(".paginator")[0].small.contents[0].strip().split(" ")[-1])  # type: ignore[union-attr]
     posts = []
     for itm in soup.select(".post-card.post-card--preview.post-card--scrape"):
-        post_id = itm.a["href"].split("/")[-1]
-        pub_time = time.mktime(time.strptime(itm.footer.time["datetime"], "%Y-%m-%d %H:%M:%S%z"))
+        post_id = itm.a["href"].split("/")[-1]  # type: ignore[union-attr,index]
+        pub_time = time.mktime(time.strptime(itm.footer.time["datetime"], "%Y-%m-%d %H:%M:%S%z"))  # type: ignore[arg-type,union-attr,index]
         thumb = "https://nekohouse.su" + itm.select(".post-card__image")[0].attrs["src"]
-        title = itm.header.text.strip()
+        title = itm.header.text.strip()  # type: ignore[union-attr]
         posts.append(
             Post(
                 platform=pl,
@@ -151,7 +134,7 @@ def _aria2_downloader(path: str, url: str):
     session.post("http://127.0.0.1:6800/jsonrpc", json=param)
 
 
-def _get_users(p, u):
+def _get_users(p, u) -> tuple[str, str]:
     U = "https://nekohouse.su/api/creators"
     F = "Z:\\creators"
     H = {
@@ -161,7 +144,7 @@ def _get_users(p, u):
         "Referer": f"https://nekohouse.su/",
         "User-Agent": UA,
     }
-
+    data: list[dict]
     if not os.path.exists(F):
         response = session.get(U, headers=H, verify=False)
         data = response.json()
@@ -173,7 +156,7 @@ def _get_users(p, u):
 
     for itm in data:
         if (u == itm["name"] or u == itm["user_id"]) and p == itm["service"]:
-            return itm["user_id"], itm["name"]
+            return itm.get("user_id", ""), itm.get("name", "")
     return "", ""
 
 
@@ -189,19 +172,33 @@ def main():
     argv = sys.argv
     if len(argv) == 1:
         print(f"{argv[0]} <service> <user_id/user_name> [max_pn] [base_path] ")
+        print(f"{argv[0]} <url> [max_pn] [base_path] ")
         return
-    service = argv[1]
-    user_id, user_name = _get_users(service, argv[2])
-    try:
-        max_pn = argv[3]
-    except:
-        max_pn = -1
+    if argv[1].startswith("https"):
+        _t = [_ for _ in argv[1].split("/") if _]
+        service = _t[2]
+        user_id, user_name = _get_users(service, _t[4])
+        del _t
+        try:
+            max_pn = int(argv[2])
+        except:
+            max_pn = -1
 
-    try:
-        base_path = argv[4] + f"/{service}[{user_name}]"
-    except:
-        base_path = os.path.abspath(".") + f"/[{service}]{user_name}"
-
+        try:
+            base_path = argv[3] + f"/{service}[{user_name}]"
+        except:
+            base_path = os.path.abspath(".") + f"/[{service}]{user_name}"
+    else:
+        service = argv[1]
+        try:
+            max_pn = int(argv[3])
+        except:
+            max_pn = -1
+        user_id, user_name = _get_users(service, argv[2])
+        try:
+            base_path = argv[4] + f"/{service}[{user_name}]"
+        except:
+            base_path = os.path.abspath(".") + f"/[{service}]{user_name}"
     item_count = 2
     page_num = 0
     try:

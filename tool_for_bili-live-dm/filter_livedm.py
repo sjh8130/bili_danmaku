@@ -21,16 +21,18 @@ def main(in_paths: list[str], out_path: str):
         if e.args[0] == "Expecting value: line 1 column 1 (char 0)":
             final_write = {}
         else:
-            raise e
-    pbar = tqdm(total=len(in_paths), ascii=True, unit="itm", position=1)
+            raise
+    len_i = len(in_paths)
+    p_i = 1
     for in_path in in_paths:
+        f_s = f"{p_i}/{len_i}"
+        p_i += 1
         is_err = False
         lineno = 1
-        pbar.set_description(in_path)
         if in_path == out_path:
             continue
         with open(in_path, "r", encoding="utf-8") as file_in:
-            for line in tqdm(file_in, ascii=True, unit="line", position=2):
+            for line in tqdm(file_in.readlines(), unit="line", bar_format="{desc}{percentage:3.0f}%|{bar}| {n_fmt}->{total_fmt} ", desc=f"{f_s:8} {in_path} "):
                 # if "DANMU_MSG" not in line:
                 #     continue
                 # if line.find("DANMU_MSG:3:7:1:1:1:1") == 1:
@@ -57,7 +59,7 @@ def main(in_paths: list[str], out_path: str):
                 if cmd["info"][2][0] in FILTER_USER_ID:
                     continue
 
-                dm_text: str = cmd["info"][1].replace("\u007f", "").replace("\u00a0", "").replace("\u2006", "").replace("\u200b", "").replace( "\u200e", "").replace("\u2060", "").replace("\u2063", "").replace("\u3000", "").replace("\U000e0020", "").strip()
+                dm_text: str = cmd["info"][1].replace("\u007f", "").replace("\u00a0", "").replace("\u2006", "").replace("\u200b", "").replace("\u200e", "").replace("\u2060", "").replace("\u2063", "").replace("\u3000", "").replace("\U000e0020", "").strip()
                 if dm_text in FILTER_WORDS or dm_text.lower() in FILTER_WORDS:
                     try:
                         del final_write[dm_text]
@@ -74,8 +76,6 @@ def main(in_paths: list[str], out_path: str):
                         final_write[dm_text] += 1
                     except KeyError:
                         final_write[dm_text] = 1
-        pbar.update()
-    pbar.close()
     with open(out_path, "w", encoding="utf-8") as file_io:
         json.dump(final_write, file_io, ensure_ascii=False, indent="\t")
 

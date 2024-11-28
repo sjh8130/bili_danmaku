@@ -6,7 +6,7 @@ import time
 import requests
 
 ssl._create_default_https_context = ssl._create_unverified_context
-requests.packages.urllib3.disable_warnings()
+requests.packages.urllib3.disable_warnings()  # type: ignore[attr-defined]
 
 mixinKeyEncTab = [
     46,

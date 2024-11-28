@@ -85,7 +85,7 @@ def main(in_paths: list[str], output_dir: str):
 
     if not in_paths:
         return
-    pbar = tqdm(total=len(in_paths), ascii=True, unit="itm", position=1)
+    pbar = tqdm(total=len(in_paths), unit="itm", position=1)
     for in_path in in_paths:
         is_err = False
         lineno = 1
@@ -97,7 +97,7 @@ def main(in_paths: list[str], output_dir: str):
             continue  # 避免读取输出目录内的文件
 
         with open(in_path, "r", encoding="utf-8") as file_in:
-            for line in tqdm(file_in.readlines(), ascii=True, unit="line", position=2, desc=in_path):
+            for line in tqdm(file_in.readlines(), unit="line", position=2, desc=in_path):
                 lineno += 1
                 left_pos = line.find("{")  # 找到 JSON 部分的起点
 

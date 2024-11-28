@@ -5,10 +5,10 @@ import ssl
 import time
 
 import requests
-import brotli
+import brotli  # type: ignore[import-untyped]
 
 ssl._create_default_https_context = ssl._create_unverified_context
-requests.packages.urllib3.disable_warnings()
+requests.packages.urllib3.disable_warnings()  # type: ignore[attr-defined]
 
 _headers = {
     "Accept-Encoding": "gzip, deflate, bzip2, br, zstd",
@@ -34,16 +34,18 @@ def _downloader(pn: int | str, item_id: int | str, ps: int | str):
                 timeout=20,
             )
             time.sleep(2)
-            content = response.content
-            print(f"{item_id=:<8}{pn=:<4}{len(content):<8}{retries=:<4}", end=" ")
-            if content != _b:
-                return content
+            if isinstance(response.content, bytes):
+                content = response.content
+                print(f"{item_id=:<8}{pn=:<4}{len(content):<8}{retries=:<4}", end=" ")
+                if content != _b:
+                    return content
         except requests.exceptions.Timeout:
             retries += 1
         if retries == 3:
             # raise Exception("请求超时次数达到上限")
-            return _a
+            ...
         retries += 1
+    return _a
 
 
 def _get_data(item_id: int | str, base_path: str) -> int:
@@ -52,6 +54,8 @@ def _get_data(item_id: int | str, base_path: str) -> int:
     run = True
     not_found = False
     pn = 1
+    issuer_name = "ERROR!"
+    item_name = "ERROR!"
     while run:
         data = _downloader(pn, item_id, ps)
         if data == _a:

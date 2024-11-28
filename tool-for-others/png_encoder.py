@@ -175,7 +175,7 @@ def create_plte(palette: list[tuple[int, int, int]]):
     return sign_chunk(_CHUNK_TYPE.PLTE, data)
 
 
-def compress_xdat(image_data: bytes, width: int, height: int, bit_depth: int, color_type: _PNG_COLOR_TYPE, chunk_size: int, compression_level: _ZLIB_COMPRESSION_LEVEL, fdat: int = 0):
+def compress_xdat(image_data: bytes, width: int, height: int, bit_depth: int, color_type: _PNG_COLOR_TYPE, chunk_size: int, compression_level: _ZLIB_COMPRESSION_LEVEL | int, fdat: int = 0):
     if width > _BRD_S32 or height > _BRD_S32:
         raise ValueError("Invalid image size")
     if width <= 0 or height <= 0:
@@ -198,11 +198,15 @@ def compress_xdat(image_data: bytes, width: int, height: int, bit_depth: int, co
                 row_size = width
             elif bit_depth == 16:
                 row_size = 2 * width
+            else:
+                row_size = -1
         case 2:
             if bit_depth == 8:
                 row_size = 3 * width
             elif bit_depth == 16:
                 row_size = 6 * width
+            else:
+                row_size = -1
         case 3:
             if bit_depth == 1:
                 row_size = math.ceil(width / 8)
@@ -212,19 +216,26 @@ def compress_xdat(image_data: bytes, width: int, height: int, bit_depth: int, co
                 row_size = math.ceil(width / 2)
             elif bit_depth == 8:
                 row_size = width
+            else:
+                row_size = -1
         case 4:
             if bit_depth == 8:
                 row_size = 2 * width
             elif bit_depth == 16:
                 row_size = 4 * width
+            else:
+                row_size = -1
         case 6:
             if bit_depth == 8:
                 row_size = 4 * width
             elif bit_depth == 16:
                 row_size = 8 * width
+            else:
+                row_size = -1
         case _:
             row_size = -1
-            raise
+    if row_size == -1:
+        raise ValueError()
     filtered_data = bytearray()
 
     for y in range(height):
@@ -371,7 +382,7 @@ def create_png(
     loop_times: int = 1,
     bit_depth: int = 8,
     color_type: _PNG_COLOR_TYPE = _PNG_COLOR_TYPE.RGB32,
-    compression_level: _ZLIB_COMPRESSION_LEVEL = _ZLIB_COMPRESSION_LEVEL.COMPRESSION_LEVEL_9,
+    compression_level: _ZLIB_COMPRESSION_LEVEL | int = _ZLIB_COMPRESSION_LEVEL.COMPRESSION_LEVEL_9,
 ):
     if width > _BRD_S32 or height > _BRD_S32:
         raise ValueError("Invalid image size")
@@ -451,11 +462,11 @@ def encode_tile_image_to_apng(path_in, path_out, tile_width, tile_height, chunk_
         if fc == frame_cont:
             break
 
-    r = create_png(tile_width, tile_height, image_data=frames, chunk_size=chunk_size, apng=True, num_frames=fc, delay_num=1, delay_den=fps, loop_times=0, bit_depth=8, color_type=_PNG_COLOR_TYPE.RGB24, compression_level=9)
+    r = create_png(tile_width, tile_height, image_data=frames, chunk_size=chunk_size, apng=True, num_frames=fc, delay_num=1, delay_den=fps, loop_times=0, bit_depth=8, color_type=_PNG_COLOR_TYPE.RGB24, compression_level=_ZLIB_COMPRESSION_LEVEL.COMPRESSION_LEVEL_9)
     write(path_out, r)
 
 
-def recompress_png(png_path, chunk_size=1048576, compression_level=9):
+def recompress_png(png_path, chunk_size=1048576, compression_level=_ZLIB_COMPRESSION_LEVEL.COMPRESSION_LEVEL_9):
     image = Image.open(png_path)
     width, height = image.size
     bit_depth = image.mode.count("1") * 1 + image.mode.count("L") * 8 + image.mode.count("P") * 8 + image.mode.count("RGB") * 8 + image.mode.count("RGBA") * 8
@@ -479,8 +490,12 @@ def recompress_png(png_path, chunk_size=1048576, compression_level=9):
 
 
 def write(path, data):
-    if not isinstance(data, bytes):
+    if not (isinstance(data, bytes) or isinstance(data, str)):
         raise TypeError
+    if isinstance(data, str):
+        with open(path, "w", encoding="utf-8") as fp:
+            fp.write(data)
+        return
     with open(path, "wb") as fp:
         fp.write(data)
 
