@@ -4,7 +4,6 @@ import time
 from google.protobuf.json_format import MessageToDict
 from base64 import b64decode
 
-# import Live_dm_v2_pb2 as live_dm
 import Live_dm_v2_2023_03_23_pb2 as live_dm
 import sys
 from filters import FILTER_WORDS

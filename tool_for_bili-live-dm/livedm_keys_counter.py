@@ -7,7 +7,7 @@ from typing import Any
 
 raise Exception("未完成")
 
-result: dict[str, Any] = {}
+result: dict = {}
 
 
 def analyze_structure(data: Any, parent_key: str = "", depth=1, cmd_type=""):
