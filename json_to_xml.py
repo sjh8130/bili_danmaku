@@ -24,7 +24,8 @@ with open(in_path, "rb") as file_in:
         tmp1 = str(gzip.open(in_path, "rb").read(), encoding="utf-8")
         data = json.loads(tmp1)
         del tmp1
-
+    else:
+        raise
 out_path = in_path.rstrip(".gz").rstrip(".json").rstrip(".bin") + ".xml"
 
 SPLIT_2ND_SIZE = 4000
@@ -75,7 +76,6 @@ if danmaku_count == 0 and commandDms_count == 0:
 if commandDms_count > 0:
     for this in data["commandDms"]:
         xml_cache_layer_1 += json2XML_CMD(this)
-    del this
 for this in data["elems"]:
     xml_cache_layer_3 += json2XML(this)
     i += 1

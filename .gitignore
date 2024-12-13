@@ -1,15 +1,15 @@
 # workspace
 .vscode
+.mypy_cache
 
 # data
 *.7z
 *.bcc
-# ^^^ b-subtitle
 *.bin
-# ^^^ b-dm
 *.db
 *.json
 *.json.*
+*.json5
 *.jsonl
 *.jsonl.*
 *.jpg

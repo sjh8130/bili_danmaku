@@ -10,9 +10,10 @@ import tqdm
 _tz = timezone(timedelta(hours=8))
 
 
-@lru_cache(1000)
+@lru_cache(10000)
 def _get_date_from_timestamp(timestamp: int) -> datetime:
-    return datetime.fromtimestamp(timestamp, tz=_tz)
+    _a = datetime.fromtimestamp(timestamp, tz=_tz)
+    return datetime(year=_a.year, month=0, day=0, hour=0, minute=0, second=0, microsecond=0, tzinfo=_tz)
 
 
 def _split_file_by_day(input_file_path: str):

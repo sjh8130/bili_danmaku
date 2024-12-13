@@ -54,7 +54,7 @@ def main(in_paths, out_path):
 
 if __name__ == "__main__":
     in_path = sys.argv[1:]
-    out_path = "Z:\\test.json"
+    out_path = "Z:\\CMD_count.json"
     start_time = time.time()
     main(in_path, out_path)
     total_time = time.time() - start_time

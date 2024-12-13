@@ -7689,7 +7689,8 @@ FILTER_WORDS: list[str] = [
     "",
 ]
 # 屏蔽用户
-FILTER_USER_ID = [
+FILTER_MID: list[int] = [
+    159653093,
     11953357,
     3546646270970114,
     3546650729515089,
@@ -7699,30 +7700,49 @@ FILTER_USER_ID = [
     3546637756533267,
 ]
 # string
-FILTER_USER_STR = [str(_) for _ in FILTER_USER_ID]
-FILTER_USER_CRC_STR = [
-    "b6da28c0",
-    "ed7e94c1",
-    "555cc48b",
-    "c7c66d83",
-    "2498c998",
+FILTER_MID_STR: list[str] = [str(x) for x in FILTER_MID]
+FILTER_MID_HASH: list[str] = [
     "14361d12",
+    "2498c998",
+    "555cc48b",
     "8cbfafa0",
+    "b6da28c0",
+    "c7c66d83",
+    "e3d6f092",
+    "ed7e94c1",
     "fd54a4d6",
 ]
-FILTER_USER_CRC_STR_LOWER = [_.lower() for _ in FILTER_USER_CRC_STR]
-FILTER_USER_CRC_STR_UPPER = [_.upper() for _ in FILTER_USER_CRC_STR]
-FILTER_USER_CRC_DEC = [int(_, 16) for _ in FILTER_USER_CRC_STR]
-FILTER_USER_CRC_DEC_STR = [str(int(_, 16)) for _ in FILTER_USER_CRC_STR]
+FILTER_MID_HASH_STR_LOWER: list[str] = [x.lower() for x in FILTER_MID_HASH]
+FILTER_MID_HASH_STR_UPPER: list[str] = [x.upper() for x in FILTER_MID_HASH]
+FILTER_MID_HASH_DEC: list[int] = [int(x, 16) for x in FILTER_MID_HASH]
+FILTER_MID_HASH_DEC_STR: list[str] = [str(x) for x in FILTER_MID_HASH_DEC]
+FILTER_MID_ALL = list(set(FILTER_MID+FILTER_MID_HASH_DEC))+list(set(FILTER_MID_STR+FILTER_MID_HASH+FILTER_MID_HASH_STR_LOWER+FILTER_MID_HASH_STR_UPPER+FILTER_MID_HASH_DEC_STR))
+# import json
+
+# def is_filter_word(word: str) -> bool:
+#     return word in FILTER_WORDS
+
+# def filter_raw_dm(raw_dm: dict, filter_user_id: bool, filter_user_crc: bool) -> bool:
+#     if isinstance(raw_dm, str):
+#         raw_dm = json.loads(raw_dm)
+#     if isinstance(raw_dm, dict):
+#         pass
+#     else:
+#         return False
+#     if raw_dm.get("cmd", "") != "DANMU_MSG":
+#         return False
+#     return False
+
 if __name__ == "__main__":
     from time import sleep
 
     sleep(1)
     print(FILTER_WORDS)
-    print(FILTER_USER_ID)
-    print(FILTER_USER_STR)
-    print(FILTER_USER_CRC_STR_LOWER)
-    print(FILTER_USER_CRC_STR_UPPER)
-    print(FILTER_USER_CRC_DEC)
-    print(FILTER_USER_CRC_DEC_STR)
+    print(FILTER_MID)
+    print(FILTER_MID_STR)
+    print(FILTER_MID_HASH_STR_LOWER)
+    print(FILTER_MID_HASH_STR_UPPER)
+    print(FILTER_MID_HASH_DEC)
+    print(FILTER_MID_HASH_DEC_STR)
+    print(FILTER_MID_ALL)
     sleep(10)

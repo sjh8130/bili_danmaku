@@ -83,7 +83,7 @@ def get_protobuf_type(a: str) -> str:
                 return a
 
 
-def combine_msg(list_1: list[list[str, int]], list_2: list[str]) -> str:
+def combine_msg(list_1: list[tuple[str, int]], list_2: list[str]) -> str:
     ids = []
     form_s2: list[str] = []
     ret_str = ""
@@ -105,7 +105,7 @@ def combine_msg(list_1: list[list[str, int]], list_2: list[str]) -> str:
     return ret_str
 
 
-def combine_enum(list_1: list[list[str, int]]) -> str:
+def combine_enum(list_1: list[tuple[str, int]]) -> str:
     ids = []
     ret_str = ""
     for id in list_1:
@@ -128,14 +128,14 @@ def snake_to_camel(name: str) -> str:
     return "".join(name.split("_"))
 
 
-def combine_rpc(list_1: list[list[str | int]], list_2: list[str]) -> str:
-    #                             ^                         rpc_req*,rpc_reply*,rpc_name*
+def combine_rpc(list_1: list[tuple[str, int]], list_2: tuple[str, str, str]) -> str:
+    #                              ^                         rpc_req*,rpc_reply*,rpc_name*
     #                             rpc_name(CAMEL,UPPER),rpc_index*
     index = []
     ret_str: str = ""
     idx: int
-    for idx in list_1:
-        index.append(idx[1])
+    for _, idx in list_1:
+        index.append(idx)
     index = sorted(index)
     for rpc_index in index:
         for list1_idx in list_1:
