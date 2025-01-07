@@ -7,13 +7,16 @@ import sys
 
 @dataclasses.dataclass
 class IP:
-    ip_addr: str = ""
+    ip_cidr: str = ""
+
     region: str = ""
+    """ISO 3166-1"""
     desc: str = ""
+
     status: str = ""
 
     def __str__(self) -> str:
-        return f"{self.ip_addr}\t{self.region}\t{self.desc}\t{self.status}"
+        return f"{self.ip_cidr}\t{self.region}\t{self.desc}\t{self.status}"
 
 
 def _init(overwrite=False) -> None:
@@ -290,7 +293,7 @@ _ISO3166_1 = [
     "zz",  # iana
 ]
 
-_IPS = [
+_IPS_DEFAULT = [
     IP("0.0.0.0/8", "XX", "listening", "reserved"),
     IP("10.0.0.0/8", "XX", "PRIVATE-A", "reserved"),
     IP("127.0.0.0/8", "XX", "loopback", "reserved"),
@@ -334,8 +337,10 @@ _IPS = [
     IP("2001:4860:4860::8888/128", "US", "Google_DNS", "allocated"),
     IP("2001:4860:4860::8844/128", "US", "Google_DNS", "allocated"),
 ]
+ips: list[IP] = []
 
 _tld = []
+"""iana top-level domains"""
 
 _CIDR_CALC = {
     "4294967296": "0",
@@ -371,6 +376,39 @@ _CIDR_CALC = {
     "4": "30",
     "2": "31",
     "1": "32",
+    4294967296: "0",
+    2147483648: "1",
+    1073741824: "2",
+    536870912: "3",
+    268435456: "4",
+    134217728: "5",
+    67108864: "6",
+    33554432: "7",
+    16777216: "8",
+    8388608: "9",
+    4194304: "10",
+    2097152: "11",
+    1048576: "12",
+    524288: "13",
+    262144: "14",
+    131072: "15",
+    65536: "16",
+    32768: "17",
+    16384: "18",
+    8192: "19",
+    4096: "20",
+    2048: "21",
+    1024: "22",
+    512: "23",
+    256: "24",
+    128: "25",
+    64: "26",
+    32: "27",
+    16: "28",
+    8: "29",
+    4: "30",
+    2: "31",
+    1: "32",
 }
 
 
@@ -454,7 +492,6 @@ def _process_file(file_name: str) -> None:
 
 
 def _process_tld(file_name: str) -> None:
-    """iana top-level domains"""
     with open(file_name, "r") as file:
         for i in file:
             if i.startswith("#"):
@@ -473,16 +510,16 @@ def _query_ip(d: str) -> None:
             _query_ip(i)
         print("done " + d)
         return
-    item: IP
-    for item in ips:
-        if d == item.ip_addr:
-            print("".join(item.__str__()))
-        elif "/" in item.ip_addr:
-            if _ip_in_range(d, item.ip_addr):
-                print(item)
-        elif "+" in item.ip_addr:
-            if _ip_in_custom_range(d, item.ip_addr):
-                print(item)
+    ip: IP
+    for ip in ips:
+        if d == ip.ip_cidr:
+            print("".join(ip.__str__()))
+        elif "/" in ip.ip_cidr:
+            if _ip_in_range(d, ip.ip_cidr):
+                print(ip)
+        elif "+" in ip.ip_cidr:
+            if _ip_in_custom_range(d, ip.ip_cidr):
+                print(ip)
 
 
 def _resolve_dns(host) -> list[str]:
@@ -495,26 +532,26 @@ def _resolve_dns(host) -> list[str]:
 
 
 def _query_region(d: str) -> None:
-    for item in ips:
-        if d == item.region:
-            print(item)
+    for ip in ips:
+        if d == ip.region:
+            print(ip)
 
 
 def _query_desc(d: str) -> None:
-    for item in ips:
-        if d == item.desc:
-            print(item)
+    for ip in ips:
+        if d == ip.desc:
+            print(ip)
 
 
 def _query_status(d: str) -> None:
-    for item in ips:
-        if d == item.status:
-            print(item)
+    for ip in ips:
+        if d == ip.status:
+            print(ip)
 
 
 def _list_all() -> None:
-    for item in ips:
-        print(item)
+    for ip in ips:
+        print(ip)
 
 
 def _ip_in_range(ip: str, ipr: str) -> bool:
@@ -549,7 +586,7 @@ def _ip_in_custom_range(ip: str, ip_range: str) -> bool:
 
 
 if __name__ == "__main__":
-    ips = _IPS.copy()
+    ips[:] = _IPS_DEFAULT
     _init()
     try:
         while True:
@@ -571,6 +608,7 @@ if __name__ == "__main__":
                     print(len(ips))
                 case "dump" | "export" | "save":
                     import json
+
                     j = json.dumps(ips, ensure_ascii=False, separators=(",", ":"))
                     open("Z:\\dump.json", "w", encoding="utf-8").write(j)
                     del j
@@ -579,7 +617,8 @@ if __name__ == "__main__":
                 case "allocated" | "assigned" | "reserved" | "available":
                     _query_status(query_string)
                 case "update":
-                    ips = _IPS
+                    ips.clear()
+                    ips[:] = _IPS_DEFAULT
                     _init(overwrite=True)
                 case _:
                     if query_string in _ISO3166_1:

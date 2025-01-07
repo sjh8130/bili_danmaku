@@ -55,9 +55,6 @@ def _downloader(url: str, headers: dict, session: requests.Session) -> bytes:
 
 
 def _get_danmaku(vp: _VideoPart, duration: int | float, session: requests.Session) -> list[bytes]:
-    """
-    获取弹幕
-    """
     seg = (duration / 360).__ceil__() + 1
     danmakus: list[bytes] = []
     _HEADERS = {
@@ -114,9 +111,6 @@ def _get_danmaku(vp: _VideoPart, duration: int | float, session: requests.Sessio
 
 
 def _get_special_danmaku(vp: _VideoPart, input: dm_pb2.DmWebViewReply, session: requests.Session) -> list[bytes]:
-    """
-    获取特殊弹幕
-    """
     _HEADERS = {
         "Accept-Encoding": AE,
         "Origin": "https://www.bilibili.com",

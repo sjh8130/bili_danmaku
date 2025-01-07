@@ -438,7 +438,7 @@ posY_2 = Math.round(posY / 375 * 100)
 | ANCHOR_LOTTERY_ACTIVITY				| [❌](#ANCHOR_LOTTERY_ACTIVITY)				| |
 | ANCHOR_NORMAL_NOTIFY					| [✅](#ANCHOR_NORMAL_NOTIFY)				|
 | AREA_RANK_CHANGED						| [✅](#AREA_RANK_CHANGED)					| ~~主播: 直播分区更改~~ |
-| BAINIAN2020							| [❔](#BAINIAN2020)							| |
+| BAINIAN2020							| [❌](#BAINIAN2020)							| |
 | BENEFIT_CARD_CLEAN					| [✅](#BENEFIT_CARD_CLEAN)					| |
 | BENEFIT_STATUS						| [✅](#BENEFIT_STATUS)						| |
 | BIG_R_WELCOME							| [❌](#BIG_R_WELCOME)						| |
@@ -464,8 +464,6 @@ posY_2 = Math.round(posY / 375 * 100)
 | DANMU_GIFT_LOTTERY_END				| [❌](#DANMU_GIFT_LOTTERY_END)				| |
 | DANMU_GIFT_LOTTERY_START				| [❌](#DANMU_GIFT_LOTTERY_START)			| |
 | DANMU_MSG								| [✅](#DANMU_MSG)							| 弹幕 |
-| DANMU_MSG:3:7:1:1:1:1					| [✅](#DANMU_MSG)							| 弹幕: |
-| DANMU_MSG:4:0:2:2:2:0					| [✅](#DANMU_MSG)							| 弹幕: |
 | DANMU_TAG_CHANGE						| [❌](#DANMU_TAG_CHANGE)					| |
 | DM_INTERACTION						| [✅](#DM_INTERACTION)						| 互动弹幕（投票、他们都在说） |
 | EFFECT_DANMAKU_MSG					| [❌](#EFFECT_DANMAKU_MSG)					| |
@@ -488,11 +486,12 @@ posY_2 = Math.round(posY / 375 * 100)
 | GUARD_LEADER_NOTICE					| [✅](#GUARD_LEADER_NOTICE)					| 舰队指挥官 |
 | GUARD_LOTTERY_START					| [❌](#GUARD_LOTTERY_START)					| |
 | GUARD_WINDOWS_OPEN					| [❌](#GUARD_WINDOWS_OPEN)					| |
+| HAS_GUARD_PILOT						| [❌](#HAS_GUARD_PILOT)						| |
 | HOT_BUY_NUM							| [✅](#HOT_BUY_NUM)							| 移动端: 购物 |
-| HOT_RANK_CHANGED						| [✅🗑](#HOT_RANK_CHANGED)					| [热门榜功能下线公告] |
-| HOT_RANK_CHANGED_V2					| [✅🗑](#HOT_RANK_CHANGED_V2)				| [热门榜功能下线公告] |
-| HOT_RANK_SETTLEMENT					| [✅🗑](#HOT_RANK_SETTLEMENT)				| [热门榜功能下线公告] |
-| HOT_RANK_SETTLEMENT_V2				| [✅🗑](#HOT_RANK_SETTLEMENT_V2)			| [热门榜功能下线公告] |
+| HOT_RANK_CHANGED						| [⚠](#HOT_RANK_CHANGED)					| [热门榜功能下线公告] |
+| HOT_RANK_CHANGED_V2					| [⚠](#HOT_RANK_CHANGED_V2)					| [热门榜功能下线公告] |
+| HOT_RANK_SETTLEMENT					| [⚠](#HOT_RANK_SETTLEMENT)					| [热门榜功能下线公告] |
+| HOT_RANK_SETTLEMENT_V2				| [⚠](#HOT_RANK_SETTLEMENT_V2)				| [热门榜功能下线公告] |
 | HOT_ROOM_NOTIFY						| [✅](#HOT_ROOM_NOTIFY)						| |
 | HOUR_RANK_AWARDS 						| [❌](#HOUR_RANK_AWARDS)					| |
 | INTERACT_JOIN							| [✅](#INTERACT_JOIN)						| |
@@ -508,13 +507,13 @@ posY_2 = Math.round(posY / 375 * 100)
 | LIKE_SO_HOT 							| [❌](#LIKE_SO_HOT)							| |
 | LITTLE_MESSAGE_BOX					| [✅](#LITTLE_MESSAGE_BOX)					| 提示弹窗，仅用户本人 |
 | LITTLE_TIPS 							| [✅](#LITTLE_TIPS)							| 提示弹窗，仅用户本人 |
-| LIVE									| [✅](#LIVE)								| 开始直播/主播断流重连 |
+| LIVE									| [✅](#LIVE)								| 开播/主播断流重连 |
 | LIVE_ANCHOR_SWITCH_UPDATE				| [❌](#LIVE_ANCHOR_SWITCH_UPDATE)			| |
 | LIVE_ANI_RES_UPDATE					| [✅](#LIVE_ANI_RES_UPDATE)					| |
-| LIVE_INTERACT_GAME_STATE_CHANGE		| [✅](#LIVE_INTERACT_GAME_STATE_CHANGE)		| 游戏|
-| LIVE_INTERACTIVE_GAME					| [✅](#LIVE_INTERACTIVE_GAME)				| 游戏|
+| LIVE_INTERACT_GAME_STATE_CHANGE		| [✅](#LIVE_INTERACT_GAME_STATE_CHANGE)		| 游戏 |
+| LIVE_INTERACTIVE_GAME					| [✅](#LIVE_INTERACTIVE_GAME)				| 游戏 |
 | LIVE_INTERNAL_ROOM_LOGIN				| [❌](#LIVE_INTERNAL_ROOM_LOGIN)			| |
-| LIVE_MULTI_VIEW_CHANGE				| [✅](#LIVE_MULTI_VIEW_CHANGE)				| 直播多视角|
+| LIVE_MULTI_VIEW_CHANGE				| [✅](#LIVE_MULTI_VIEW_CHANGE)				| 直播多视角 |
 | LIVE_MULTI_VIEW_EVENT_CHANGE			| [✅](#LIVE_MULTI_VIEW_EVENT_CHANGE)		| 直播多视角 |
 | LIVE_MULTI_VIEW_NEW_INFO				| [✅](#LIVE_MULTI_VIEW_NEW_INFO)			| 直播多视角 |
 | LIVE_OPEN_PLATFORM_CLOUD_GAME			| [❌](#LIVE_OPEN_PLATFORM_CLOUD_GAME)		| |
@@ -541,6 +540,7 @@ posY_2 = Math.round(posY / 375 * 100)
 | MULTI_VOICE_OWNER_LEAVE				| [✅](#MULTI_VOICE_OWNER_LEAVE)				| |
 | MULTI_VOICE_PK_HAT_STATUS				| [✅](#MULTI_VOICE_PK_HAT_STATUS)			| |
 | MULTI_VOICE_PK_STATUS					| [✅](#MULTI_VOICE_PK_STATUS)				| |
+| MULTI_VOICE_PK_STATUS_V2				| [❌](#MULTI_VOICE_PK_STATUS_V2)			| |
 | MULTI_VOICE_SEND_EMOJI				| [❌](#MULTI_VOICE_SEND_EMOJI)				| |
 | MULTI_VOICE_STATUS_SYNC				| [❌](#MULTI_VOICE_STATUS_SYNC)				| |
 | MULTI_VOICE_STATUS_SYNC_ANCHOR		| [✅](#MULTI_VOICE_STATUS_SYNC_ANCHOR)		| |
@@ -555,8 +555,10 @@ posY_2 = Math.round(posY / 375 * 100)
 | ONLINE_RANK_TOP3						| [✅](#ONLINE_RANK_TOP3)					| 高能榜: 高能用户前三恭喜 |
 | ONLINE_RANK_V2						| [✅](#ONLINE_RANK_V2)						| 高能榜: 高能用户TOP7 |
 | OTHER_SLICE_LOADING_RESULT			| [✅](#OTHER_SLICE_LOADING_RESULT)			| |
+| OTHER_SLICE_SETTING_CHANGED			| [❌](#OTHER_SLICE_SETTING_CHANGED)			| |
 | PANEL_INTERACTIVE_NOTIFY_CHANGE		| [✅](#PANEL_INTERACTIVE_NOTIFY_CHANGE)		| |
 | PK_AGAIN								| [❌](#PK_PRT_1)							| PK |
+| PK_AUDIENCE							| [❌](#PK_AUDIENCE)							| |
 | PK_BATTLE_ABNORMAL					| [❌](#PK_BATTLE_ABNORMAL)					| PK |
 | PK_BATTLE_CRIT						| [✅](#PK_PRT_2)							| PK |
 | PK_BATTLE_END							| [✅](#PK_PRT_2)							| PK |
@@ -600,6 +602,7 @@ posY_2 = Math.round(posY / 375 * 100)
 | PLAY_TICKETS_NOTIFY					| [❌](#PLAY_TICKETS_NOTIFY)					| |
 | PLAY_TOGETHER							| [❌](#PLAY_TOGETHER)						| |
 | PLAYTOGETHER_ICON_CHANGE				| [✅](#PLAYTOGETHER_ICON_CHANGE)			| |
+| PLAYTOGETHER_ORDER_VOICE_DISPATCH		| [❌](#PLAYTOGETHER_ORDER_VOICE_DISPATCH)	| |
 | PLAYTOGETHER_SERVICE_CARD_CHANGE		| [❌](#PLAYTOGETHER_SERVICE_CARD_CHANGE)	| |
 | POPULAR_RANK_CHANGED					| [✅](#POPULAR_RANK_CHANGED)				| 排行榜 |
 | POPULAR_RANK_GUIDE_CARD				| [✅](#POPULAR_RANK_GUIDE_CARD)				| 排行榜 |
@@ -616,6 +619,7 @@ posY_2 = Math.round(posY / 375 * 100)
 | RAFFLE_START							| [❌](#TV_START)							| |
 | RANK_CHANGED							| [✅](#RANK_CHANGED)						| |
 | RANK_REM								| [✅](#RANK_REM)							| |
+| RECALL_DANMU_MSG						| [✅](#RECALL_DANMU_MSG)					| |
 | RECOMMEND_CARD						| [✅](#RECOMMEND_CARD)						| 商品推销(移动端) |
 | RED_POCKET_START						| [❌](#RED_POCKET_START)					| |
 | REDIRECT_EMPTY_PAGE					| [❌](#REDIRECT_EMPTY_PAGE)					| |
@@ -647,7 +651,7 @@ posY_2 = Math.round(posY / 375 * 100)
 | RUN_UP_DOWN_GUIDE						| [❌](#RUN_UP_DOWN_GUIDE)					| |
 | SEND_GIFT								| [✅](#SEND_GIFT)							| 送礼物 |
 | SEND_GIFT_V2							| [✅](#SEND_GIFT_V2)						| 送礼物(LPL) |
-| SEND_TOP								| [🚫](#SEND_TOP)							| |
+| SEND_TOP								| [❌](#SEND_TOP)							| |
 | SHOPPING_BUBBLES_STYLE				| [✅](#SHOPPING_BUBBLES_STYLE)				| ?购物车 |
 | SHOPPING_CART_ITEM					| [❌](#SHOPPING_CART_ITEM)					| |
 | SHOPPING_CART_SHOW					| [✅](#SHOPPING_CART_SHOW)					| ?购物车 |
@@ -665,6 +669,7 @@ posY_2 = Math.round(posY / 375 * 100)
 | SUPER_CHAT_MESSAGE_DELETE				| [✅](#SUPER_CHAT_MESSAGE_DELETE)			| SuperChat 删除 |
 | SUPER_CHAT_MESSAGE_JPN				| [✅](#SUPER_CHAT_MESSAGE_JPN)				| SuperChat 日本語 |
 | SUPER_VIP_CONNECT_DIG_V2				| [❌](#SUPER_VIP_CONNECT_DIG_V2)			| |
+| SWITCH_CONFIG_BUBBLE					| [❌](#SWITCH_CONFIG_BUBBLE)				| |
 | SYS_MSG								| [✅](#SYS_MSG)								| |
 | THERMAL_STORM_DANMU_BEGIN				| [❌](#THERMAL_STORM_DANMU_BEGIN)			| |
 | THERMAL_STORM_DANMU_CANCEL			| [❌](#THERMAL_STORM_DANMU_CANCEL)			| |
@@ -675,8 +680,11 @@ posY_2 = Math.round(posY / 375 * 100)
 | TV_END								| [❌](#TV_END)								| |
 | TV_START								| [❌](#TV_START)							| |
 | UNIVERSAL_EVENT_GIFT					| [✅](#UNIVERSAL_EVENT_GIFT)				| |
+| UNIVERSAL_EVENT_GIFT_V2				| [❌](#UNIVERSAL_EVENT_GIFT_V2)				| |
+| UNIVERSAL_INTERACT_INVITATION			| [❌](#UNIVERSAL_INTERACT_INVITATION)		| |
 | UNIVERSAL_INTERACT_JOIN				| [❌](#UNIVERSAL_INTERACT_JOIN)				| |
 | UNIVERSAL_INTERACT_LEAVE				| [❌](#UNIVERSAL_INTERACT_LEAVE)			| |
+| UNIVERSAL_INTERACT_OPERATION			| [❌](#UNIVERSAL_INTERACT_OPERATION)		| |
 | USER_INFO_UPDATE						| [✅](#USER_INFO_UPDATE)					| |
 | USER_PANEL_RED_ALARM					| [✅](#USER_PANEL_RED_ALARM)				| |
 | USER_START_PROPHET					| [❌](#USER_START_PROPHET)					| |
@@ -703,7 +711,7 @@ posY_2 = Math.round(posY / 375 * 100)
 | WEALTH_NOTIFY							| [✅](#WEALTH_NOTIFY)						| |
 | WEB_REPORT_CONTROL					| [❌](#WEB_REPORT_CONTROL)					| |
 | WIDGET_BANNER							| [✅](#WIDGET_BANNER)						| |
-| WIDGET_GIFT_STAR_KNIGHT				| [?](#WIDGET_GIFT_STAR_KNIGHT)				| |
+| WIDGET_GIFT_STAR_KNIGHT				| [❌](#WIDGET_GIFT_STAR_KNIGHT)				| |
 | WIDGET_GIFT_STAR_PROCESS				| [✅](#WIDGET_GIFT_STAR_PROCESS)			| 礼物星球 |
 | WIDGET_WISH_INFO						| [✅](#WIDGET_WISH_INFO)					| 礼物星球 |
 | WIDGET_WISH_LIST						| [✅](#WIDGET_WISH_LIST)					| |
@@ -1922,7 +1930,7 @@ SC 删除
 ----
 ### ANCHOR_LOT_START
 [TOP](#直播弹幕)
-文档更新：2024-11-01
+文档更新：2025-01-01
 抽奖(天选时刻)开始
 | key		| type	| value	|
 |-|-|-|
@@ -1976,18 +1984,21 @@ SC 删除
 {
 	"cmd":"ANCHOR_LOT_START",
 	"data":{
-		"asset_icon":"https://i0.hdslb.com/bfs/live/627ee2d9e71c682810e7dc4400d5ae2713442c02.png",
-		"asset_icon_webp":"https://i0.hdslb.com/bfs/live/b47453a0d42f30673b6d030159a96d07905d677a.webp",
-		"award_image":"","award_name":"PS5轻薄版1台","award_num":1,"award_type":0,
-		"break_up_time":0,"cur_gift_num":0,"current_time":xxxxxxxxxx,
-		"danmu":"2023游戏区年 度盘点冲冲冲！","danmu_new":[{"danmu":"2023游戏区年度盘点冲冲冲！","danmu_view":"","reject":false}],"danmu_type":0,
+		"asset_icon":"https://i0.hdslb.com/bfs/live/cde7d1a68c0d10c6aa283c4c24b968578fa45d75.png",
+		"asset_icon_webp":"https://i0.hdslb.com/bfs/live/19b8a1b80f71af777ec615b329549224941b7b6c.webp",
+		"award_image":"http://i0.hdslb.com/bfs/live/xxx.xxx","award_name":"xxx","award_num":1,"award_type":0,
+		"break_up_time":0,"cur_gift_num":0,"current_time":xxx,
+		"danmu":"名至实归，强烈推荐","danmu_new":[{"danmu":"名至实归，强烈推荐","danmu_view":"","reject":false}],"danmu_type":0,
 		"gift_id":0,"gift_name":"","gift_num":1,"gift_price":0,
-		"goaway_time":180,"goods_id":-99998,"id":5708694,"is_broadcast":1,"join_type":0,"lot_status":0,"max_time":300,
+		"goaway_time":180,"goods_id":-99998,"id":xxx,"is_broadcast":1,"join_type":0,"lot_status":0,"max_time":xxx,
 		"require_text":"关注主播","require_type":1,"require_value":0,
-		"room_id":xxx,"send_gift_ensure":0,"show_panel":1,"start_dont_popup":0,"status":1,"time":299,
+		"room_id":xxx,"send_gift_ensure":0,"show_panel":1,"start_dont_popup":0,"status":1,"time":xxx,
 		"url":"xxx",
-		"web_url":"xxx"
-	}
+		"web_url":"https://live.bilibili.com/p/html/live-lottery/anchor-join.html"
+	},
+	"msg_id":"xxx:xxx:xxx",
+	"p_is_ack":true,
+	"send_time":xxx
 }
 ```
 ----
@@ -2004,12 +2015,12 @@ SC 删除
 |-|-|-|
 | id		| num	| 抽奖id |
 ```json
-{"cmd":"ANCHOR_LOT_END","data":{"id":12345}}
+{"cmd":"ANCHOR_LOT_END","data":{"id":xxx},"msg_id":"xxx:xxx:xxx","p_is_ack":true,"send_time":xxx}
 ```
 ----
 ### ANCHOR_LOT_AWARD
 [TOP](#直播弹幕)
-文档更新：2024-11-01
+文档更新：2025-01-01
 抽奖(天选时刻) 中奖名单
 | key		| type	| value	|
 |-|-|-|
@@ -2033,7 +2044,7 @@ SC 删除
 #### ANCHOR_LOT_AWARD__data__award_users
 | key 8			| type	| value	|
 |-|-|-|
-| color			| num	| 直播观众等级_颜色 num(RGB24) |
+| ~~color~~		| num	| 直播观众等级_颜色 num(RGB24) |
 | face			| num	| 头像URL |
 | is_mystery	| bool	| |
 | level			| num	| 直播观众等级UL |
@@ -2046,21 +2057,22 @@ SC 删除
 	"cmd":"ANCHOR_LOT_AWARD",
 	"data":{
 		"award_dont_popup":1,
-		"award_image":"",
-		"award_name":"GIFT",
-		"award_num":1,
+		"award_image":"xxx",
+		"award_name":"xxx",
+		"award_num":xxx,
 		"award_type":0,
 		"award_users":[
-			{"uid":12345,"uname":"xxx","face":"xxx","level":xxx,"color":9999,"num":1,"is_mystery":false,"uinfo":{"key":"value"}},
-			{"key":"value"},
-			{"uid":12345,"uname":"xxx","face":"xxx","level":xxx,"color":9999,"num":1,"is_mystery":false,"uinfo":{"key":"value"}}
+			{"face":"xxx","level":0,"num":0,"uid":xxx,"uinfo":xxx,"uname":"xxx"}
 		],
-		"id":12345,
+		"id":xxx,
 		"lot_status":2,
 		"url":"xxx",
 		"web_url":"https://live.xxx.com/p/html/live-lottery/anchor-join.html"
-	}
-}
+	},
+	"msg_id":"xxx:xxx:xxx",
+	"p_is_ack":true,
+	"send_time":xxx
+}}
 ////////////////
 {
 	"cmd":"ANCHOR_LOT_AWARD",
@@ -4856,7 +4868,7 @@ role 0 1 2
 | expire	| str	| UTC+8 |
 | roomid	| num	| |
 ```json
-{"cmd":"ROOM_LOCK","expire":"yyyy-mm-dd hh:mm:ss","roomid":xxx}
+{"cmd":"ROOM_LOCK","expire":"yyyy-mm-dd hh:mm:ss","msg_id":"xxx:1000:1000","p_is_ack":true,"p_msg_type":1,"roomid":xxx,"send_time":xxx}
 ```
 ---
 ### OFFICIAL_ROOM_EVENT
@@ -6268,9 +6280,28 @@ TODO!
 {"cmd":"ANCHOR_LOT_NOTICE","data":{"lottery_card":{"show_time":30,"button_text":"去发奖","icon":"https://i0.hdslb.com/bfs/live/95970204111233f181fc28622502aaf1a9359b9a.png","title":"发天选有助于人气累积"},"notice_type":1}}
 ```
 ---
+### RECALL_DANMU_MSG
+[TOP](#直播弹幕)
+文档更新：2025-01-01
+| key		| type	| value	|
+|-|-|-|
+| cmd		| str	| "RECALL_DANMU_MSG" |
+| data		| obj	| |
+#### RECALL_DANMU_MSG__data
+| key			| type	| value	|
+|-|-|-|
+| recall_type	| num	| |
+| data			| num	| |
+```json
+{"cmd":"RECALL_DANMU_MSG","data":{"recall_type":2,"target_id":xxx}}
+```
+```ts
+enum recall_type={NOTHING:0,DANMAKU:1,USER:2,ALL:3}
+```
+---
 ### XXXXXXXXXXXX
 [TOP](#直播弹幕)
-文档更新：2024-11-01
+文档更新：2025-01-01
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "XXXXXXXXXXXX" |
