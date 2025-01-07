@@ -18,7 +18,7 @@ with open(in_path, "rb") as file_in:
         data = json.load(file_in)
     elif preload == b"\xeb\xbb\xbf":
         data = json.load(file_in)
-    elif preload[0:2] == b"\x1f\x8b":
+    elif preload[:2] == b"\x1f\x8b":
         import gzip
 
         tmp1 = str(gzip.open(in_path, "rb").read(), encoding="utf-8")

@@ -9,7 +9,7 @@ def process_brec_xml_to_jsonl(file_path):
 
     if preload.find(b"encoding="):
         file = open(file_path, "rb").read()
-    elif preload[0:2] == b"\xef\xbb\xbf":
+    elif preload[:2] == b"\xef\xbb\xbf":
         file = open(file_path, "r", encoding="utf-8").read()[2:]
     else:
         file = open(file_path, "r", encoding="utf-8").read()

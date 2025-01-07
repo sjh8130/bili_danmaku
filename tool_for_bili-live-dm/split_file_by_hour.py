@@ -9,5 +9,5 @@ if __name__ == "__main__":
     item = sys.argv[1:]
     b_name = item[0]
     for i in item:
-        split_file_by_time(i, b_name, SPLIT_SEL.DAY)
+        split_file_by_time(i, b_name, SPLIT_SEL.H)
     print(time.time() - st)

@@ -26,61 +26,71 @@ def camel_to_snake_improved(name: str) -> list[str]:
     return [a, b, c, d, a.lower(), b.lower(), c.lower(), d.lower()]
 
 
+PROTO_DICT = {
+    "StringValue": "google.protobuf.StringValue",
+    "FloatValue": "google.protobuf.FloatValue",
+    "DoubleValue": "google.protobuf.DoubleValue",
+    "BoolValue": "google.protobuf.BoolValue",
+    "BytesValue": "google.protobuf.BytesValue",
+    "UInt32Value": "google.protobuf.UInt32Value",
+    "UInt64Value": "google.protobuf.UInt64Value",
+    "Int32Value": "google.protobuf.Int32Value",
+    "Int64Value": "google.protobuf.Int64Value",
+    "Any": "google.protobuf.Any",
+    "Api": "google.protobuf.Api",
+    "BoolValue": "google.protobuf.BoolValue",
+    "BytesValue": "google.protobuf.BytesValue",
+    "DoubleValue": "google.protobuf.DoubleValue",
+    "Duration": "google.protobuf.Duration",
+    "Empty": "google.protobuf.Empty",
+    "Enum": "google.protobuf.Enum",
+    "EnumValue": "google.protobuf.EnumValue",
+    "Field": "google.protobuf.Field",
+    "FieldMask": "google.protobuf.FieldMask",
+    "FloatValue": "google.protobuf.FloatValue",
+    "Int32Value": "google.protobuf.Int32Value",
+    "Int64Value": "google.protobuf.Int64Value",
+    "ListValue": "google.protobuf.ListValue",
+    "Method": "google.protobuf.Method",
+    "Mixin": "google.protobuf.Mixin",
+    "NullValue": "google.protobuf.NullValue",
+    "Option": "google.protobuf.Option",
+    "SourceContext": "google.protobuf.SourceContext",
+    "StringValue": "google.protobuf.StringValue",
+    "Struct": "google.protobuf.Struct",
+    "Syntax": "google.protobuf.Syntax",
+    "Timestamp": "google.protobuf.Timestamp",
+    "Type": "google.protobuf.Type",
+    "UInt32Value": "google.protobuf.UInt32Value",
+    "UInt64Value": "google.protobuf.UInt64Value",
+    "Value": "google.protobuf.Value",
+    "String": "string",
+    "int": "int32",
+    "Integer": "int32",
+    "long": "int64",
+    "Long": "int64",
+    "Internal.IntList": "repeated int32",
+    "Internal.LongList": "repeated int64",
+    "Internal.FloatList": "repeated float",
+    "Internal.DoubleList": "repeated double",
+    "Internal.StringList": "repeated string",
+    "Internal.BytesList": "repeated bytes",
+    "ByteString": "bytes",
+    "boolean": "bool",
+}
+
+
 def get_protobuf_type(a: str) -> str:
     """根据输入字符串返回相应的数据类型。"""
-    match a:
-        case "String":
-            return "string"
-
-        case "int" | "Integer":
-            return "int32"
-        case "long" | "Long":
-            return "int64"
-
-        case "Internal.IntList":
-            return "repeated int32"
-        case "Internal.LongList":
-            return "repeated int64"
-        case "Internal.FloatList":
-            return "repeated float"
-        case "Internal.DoubleList":
-            return "repeated double"
-        case "Internal.StringList":
-            return "repeated string"
-        case "Internal.BytesList":
-            return "repeated bytes"
-
-        case "ByteString":
-            return "bytes"
-        case "boolean":
-            return "bool"
-
-        case "StringValue":
-            return "google.protobuf.StringValue"
-        case "FloatValue":
-            return "google.protobuf.FloatValue"
-        case "DoubleValue":
-            return "google.protobuf.DoubleValue"
-        case "BoolValue":
-            return "google.protobuf.BoolValue"
-        case "BytesValue":
-            return "google.protobuf.BytesValue"
-        case "UInt32Value":
-            return "google.protobuf.UInt32Value"
-        case "UInt64Value":
-            return "google.protobuf.UInt64Value"
-        case "Int32Value":
-            return "google.protobuf.Int32Value"
-        case "Int64Value":
-            return "google.protobuf.Int64Value"
-        case _:
-            if a.startswith("Internal.ProtobufList"):
-                return "repeated " + get_protobuf_type(a[22:-1])
-            elif a.startswith("MapFieldLite"):
-                b = a[13:-1].split(",")
-                return "map<" + get_protobuf_type(b[0]) + ", " + get_protobuf_type(b[1]) + ">"
-            else:
-                return a
+    if a in PROTO_DICT:
+        return PROTO_DICT[a]
+    if a.startswith("Internal.ProtobufList"):
+        return "repeated {0}".format(get_protobuf_type(a[22:-1]))
+    elif a.startswith("MapFieldLite"):
+        b = a[13:-1].split(",")
+        return "map<{0}, {1}>".format(get_protobuf_type(b[0]), get_protobuf_type(b[1]))
+    else:
+        return a
 
 
 def combine_msg(list_1: list[tuple[str, int]], list_2: list[str]) -> str:
@@ -165,45 +175,45 @@ def process(data: list[str]):
             continue
         strs: list[str] = i.strip().replace(", ", ",").rstrip(";").split(" ") + E_L
         if msg_type == MsgType.none:
-            if strs[0:3] == ["public", "final", "class"] and strs[4] == "extends" and strs[6] == "implements":
+            if strs[:3] == ["public", "final", "class"] and strs[4] == "extends" and strs[6] == "implements":
                 msg_type = MsgType.message
                 msg_name = strs[3]
-            elif strs[0:4] == ["public", "static", "final", "class"]:
+            elif strs[:4] == ["public", "static", "final", "class"]:
                 msg_type = MsgType.message
                 msg_name = strs[4]
-            elif strs[0:2] == ["public", "enum"]:
+            elif strs[:2] == ["public", "enum"]:
                 msg_type = MsgType.enum
                 msg_name = strs[2]
-            elif strs[0:3] == ["public", "final", "class"] and strs[3] in string.ascii_letters:
+            elif strs[:3] == ["public", "final", "class"] and strs[3] in string.ascii_letters:
                 msg_type = MsgType.service
-            elif strs[0:4] == ["private", "static", "final", "int"] and strs[4].startswith("METHODID_"):
+            elif strs[:4] == ["private", "static", "final", "int"] and strs[4].startswith("METHODID_"):
                 msg_type = MsgType.service
         elif msg_type == MsgType.message:
-            if strs[0:5] == ["public", "static", "final", "String", "SERVICE_NAME"]:
+            if strs[:5] == ["public", "static", "final", "String", "SERVICE_NAME"]:
                 msg_type = MsgType.service
                 msg_name = strs[6][1:-1]
                 continue
 
-            if strs[0:4] == ["public", "static", "final", "int"]:
+            if strs[:4] == ["public", "static", "final", "int"]:
                 list_1.append([strs[4][0:-13].lower(), int(strs[6])])
             elif strs[0] == "private":
-                if strs[0:3] == ["private", "static", "final"] and strs[4] == "DEFAULT_INSTANCE":
+                if strs[:3] == ["private", "static", "final"] and strs[4] == "DEFAULT_INSTANCE":
                     msg_name = strs[3]
-                elif strs[0:3] == ["private", "static", "volatile"] and strs[4].startswith("PARSER"):
+                elif strs[:3] == ["private", "static", "volatile"] and strs[4].startswith("PARSER"):
                     ...
                 else:
                     list_2.append([strs[2].rstrip("_"), strs[1]])
         elif msg_type == MsgType.enum:
-            if strs[0:4] == ["public", "static", "final", "int"]:
+            if strs[:4] == ["public", "static", "final", "int"]:
                 list_1.append([strs[4], int(strs[6])])
         elif msg_type == MsgType.service:
-            if strs[0:5] == ["public", "static", "final", "String", "SERVICE_NAME"]:
+            if strs[:5] == ["public", "static", "final", "String", "SERVICE_NAME"]:
                 msg_name = strs[6][1:-1].split(".")[-1]
-            elif strs[0:4] == ["private", "static", "final", "int"]:
+            elif strs[:4] == ["private", "static", "final", "int"]:
                 list_1.append([strs[4][9:], int(strs[6])])
-            elif strs[0:4] == ["private", "static", "volatile", "x0"]:
+            elif strs[:4] == ["private", "static", "volatile", "x0"]:
                 pass
-            elif strs[0:3] == ["private", "static", "volatile"] and strs[3].startswith("MethodDescriptor"):
+            elif strs[:3] == ["private", "static", "volatile"] and strs[3].startswith("MethodDescriptor"):
                 list_2.append(strs[3][17:-1].split(",") + [strs[4][3:-6]])
 
     if msg_type == MsgType.message:
