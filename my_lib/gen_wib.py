@@ -1,8 +1,9 @@
+import ssl
+import time
+import urllib.parse
 from functools import lru_cache, reduce
 from hashlib import md5
-import ssl
-import urllib.parse
-import time
+
 import requests
 
 ssl._create_default_https_context = ssl._create_unverified_context

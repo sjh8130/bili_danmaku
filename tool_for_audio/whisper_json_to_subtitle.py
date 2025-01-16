@@ -12,8 +12,8 @@ def _convert_lrc_time(t):
     return f"[{(t//60000):02d}:{(t//1000%60):02d}.{(t%1000//10):02d}]"
 
 
-def _convert_ass_time(time):
-    return f"{(time//3600000):01d}:{(time//60000%60):02d}:{(time//1000%60):02d}.{(time%1000):03d}"[0:-1]
+def _convert_ass_time(_time):
+    return f"{(_time//3600000):01d}:{(_time//60000%60):02d}:{(_time//1000%60):02d}.{(_time%1000):03d}"[0:-1]
 
 
 def _proc_ass_karaoke(word):
@@ -32,7 +32,6 @@ def _proc_ass_karaoke(word):
 def _proc_ASS(item):
     normal_line = ""
     karaoke_line = ""
-
     normal_line = f"Dialogue: 0,{_convert_ass_time(line_start)},{_convert_ass_time(line_end)},{language},,0,0,0,,{item['text']}\n"
     try:
         ...
@@ -43,13 +42,11 @@ def _proc_ASS(item):
 
 
 input_File = sys.argv[1]
-
 output_SRT = input_File.rsplit(".", 1)[-2] + "_P.srt"
 output_ASS = input_File.rsplit(".", 1)[-2] + "_P.ass"
 output_LRC = input_File.rsplit(".", 1)[-2] + "_P.lrc"
 output_TXT = input_File.rsplit(".", 1)[-2] + "_P.txt"
 input_File = open(input_File, "r", encoding="utf-8").read()
-
 Loaded_JSON = json.loads(input_File)
 srt_index = 0
 try:
@@ -74,13 +71,11 @@ Style: B,Arial,60,&H00FFFFFF,&H0000FFFF,&H00000000,&H00000000,0,0,0,0,100,100,0,
 [Events]
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 """
-
 for line in Loaded_JSON["segments"]:
     srt_index += 1
     line_start = int(line["start"] * 1000)
     line_end = int(line["end"] * 1000)
     segment_text = line["text"].strip().replace("-->", "->")
-
     srt_file += f"{srt_index}\n{_convert_srt_time(line_start)} --> {_convert_srt_time(line_end)}\n{segment_text}\n\n"
     lrc_file += f"{_convert_lrc_time(line_start)}{segment_text}\n"
     txt_file += f"{segment_text}\n"

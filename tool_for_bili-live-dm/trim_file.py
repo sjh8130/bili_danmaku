@@ -10,7 +10,6 @@ def _trim_file(input_file_path: str):
         for line in input_file.readlines():
             if any(keyword in line for keyword in _SKIP_KEYWORDS):
                 continue
-
             ls = line.find("{")
             if ls == 0:
                 output_file.write(line)
@@ -20,7 +19,7 @@ def _trim_file(input_file_path: str):
                     date = str(float(date_raw) * 1000)[:13]
                 else:
                     date = date_raw[0:13]
-                # output_file.write(date+"\n")
+                # output_file.write(date + "\n")
                 output_file.write(date + line[ls:])
 
 

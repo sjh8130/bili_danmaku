@@ -3,22 +3,19 @@ import datetime
 import json
 import logging
 import os
+import re
 import ssl
 import sys
 import time
 
 import bs4
 import lxml
-import re
 import requests
 
-# Setup SSL and logging
 ssl._create_default_https_context = ssl._create_unverified_context
 requests.packages.urllib3.disable_warnings()  # type: ignore[attr-defined]
-
 AE = "gzip, deflate, br, zstd"
 UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36 Edg/109.0.1518.52"
-
 logging.basicConfig(format="%(asctime)s %(message)s", level=logging.INFO, datefmt="%Y-%m-%d %H:%M:%S")
 logger = logging.getLogger("nekohouse-downloader")
 logger.setLevel(logging.ERROR)
@@ -61,19 +58,15 @@ def _get_posts_page(p: Post) -> Post:
         "Referer": f"https://nekohouse.su/{p.platform}/user/{p.user_id}",
         "User-Agent": UA,
     }
-
     logger.info(f"[getPostsPage] {p.platform} {p.user_id} {p.post_id}")
     response = session.get(url, headers=headers, verify=False)
     soup = bs4.BeautifulSoup(response.content, "lxml")
-
     # Extract the post content
     content_tag = soup.select_one("div.scrape__content")
     p.content = content_tag.decode_contents().strip() if content_tag else ""
-
     # Extract additional items (like media attachments)
     attachment_links = soup.select("a.scrape__attachment-link, div.fileThumb")
     p.items = ["https://nekohouse.su" + itm.attrs["href"] for itm in attachment_links]
-
     return p
 
 
@@ -88,11 +81,9 @@ def _get_user_page(pl: str, user_id: str, pn: int) -> UserPage:
         "Referer": f"https://nekohouse.su/{pl}/user/{user_id}",
         "User-Agent": UA,
     }
-
     logger.info(f"[getUserPage] {pl} {user_id} {pn}")
     response = session.get(url, headers=headers, verify=False)
     soup = bs4.BeautifulSoup(response.content, "lxml")
-
     total = int(soup.select(".paginator")[0].small.contents[0].strip().split(" ")[-1])  # type: ignore[union-attr]
     posts = []
     for itm in soup.select(".post-card.post-card--preview.post-card--scrape"):
@@ -110,7 +101,6 @@ def _get_user_page(pl: str, user_id: str, pn: int) -> UserPage:
                 title=title,
             )
         )
-
     return UserPage(total=total, posts=posts)
 
 
@@ -141,7 +131,7 @@ def _get_users(p, u) -> tuple[str, str]:
         "Accept-Encoding": AE,
         "Connection": "keep-alive",
         "Host": "nekohouse.su",
-        "Referer": f"https://nekohouse.su/",
+        "Referer": "https://nekohouse.su/",
         "User-Agent": UA,
     }
     data: list[dict]
@@ -153,11 +143,10 @@ def _get_users(p, u) -> tuple[str, str]:
     else:
         with open(F, "r", encoding="utf-8") as fp:
             data = json.load(fp)
-
     for itm in data:
         if (u == itm["name"] or u == itm["user_id"]) and p == itm["service"]:
-            return itm.get("user_id", ""), itm.get("name", "")
-    return "", ""
+            return (itm.get("user_id", ""), itm.get("name", ""))
+    return ("", "")
 
 
 def _get_posts_file(bp: str, p: Post):
@@ -181,23 +170,22 @@ def main():
         del _t
         try:
             max_pn = int(argv[2])
-        except:
+        except IndexError:
             max_pn = -1
-
         try:
             base_path = argv[3] + f"/{service}[{user_name}]"
-        except:
+        except IndexError:
             base_path = os.path.abspath(".") + f"/[{service}]{user_name}"
     else:
         service = argv[1]
         try:
             max_pn = int(argv[3])
-        except:
+        except IndexError:
             max_pn = -1
         user_id, user_name = _get_users(service, argv[2])
         try:
             base_path = argv[4] + f"/{service}[{user_name}]"
-        except:
+        except IndexError:
             base_path = os.path.abspath(".") + f"/[{service}]{user_name}"
     item_count = 2
     page_num = 0

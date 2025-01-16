@@ -8,11 +8,9 @@ import sys
 @dataclasses.dataclass
 class IP:
     ip_cidr: str = ""
-
     region: str = ""
     """ISO 3166-1"""
     desc: str = ""
-
     status: str = ""
 
     def __str__(self) -> str:
@@ -292,7 +290,6 @@ _ISO3166_1 = [
     "xx",  # extra description
     "zz",  # iana
 ]
-
 _IPS_DEFAULT = [
     IP("0.0.0.0/8", "XX", "listening", "reserved"),
     IP("10.0.0.0/8", "XX", "PRIVATE-A", "reserved"),
@@ -338,10 +335,8 @@ _IPS_DEFAULT = [
     IP("2001:4860:4860::8844/128", "US", "Google_DNS", "allocated"),
 ]
 ips: list[IP] = []
-
 _tld = []
 """iana top-level domains"""
-
 _CIDR_CALC = {
     "4294967296": "0",
     "2147483648": "1",
@@ -427,7 +422,6 @@ def _download_file(url: str, file_name: str, overwrite: bool) -> None:
         else:
             # file {} not exist, downloading...
             print(f"文件 {file_name} 不存在，正在下载...")
-
         response = requests.get(url, headers={"Accept-Encoding": "gzip, deflate, bzip2, br, zstd"})
         if response.status_code == 200:
             with open(file_name, "wb") as file:
@@ -438,19 +432,15 @@ def _download_file(url: str, file_name: str, overwrite: bool) -> None:
 def _process_file(file_name: str) -> None:
     """
     处理CIDR数据，返回IPv4和IPv6的字典。
-
     The version line:
     0       1        2      3       4         5       6
     version|registry|serial|records|start-date|end-date|UTCoffset
-
     The summary line:
     0        1 2    3 4     [5]
     registry|*|type|*|count|summary
-
     Record format:
     0        1  2    3     4     5    6       7
     registry|cc|type|start|value|date|status[|extensions...]
-
     """
     import csv
 
@@ -577,10 +567,8 @@ def _ip_in_custom_range(ip: str, ip_range: str) -> bool:
         return False
     count = int(count_str)
     end_ip = start_ip + count - 1
-
     # 将给定的IP地址转换为整数表示
     ip_int = int(ipaddress.IPv4Address(ip))
-
     # 检查IP地址是否在范围内
     return start_ip <= ip_int <= end_ip
 

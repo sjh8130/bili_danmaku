@@ -1,5 +1,4 @@
 # /dev/null
-
 import time
 from zlib import crc32
 
@@ -21,7 +20,6 @@ def json2XML_CMD(this: dict):
         dmid_2 = dmid_1
     elif dmid_1 != "0" and dmid_2 != "0" and dmid_1 != dmid_2:
         raise ValueError("dmid_1 != oid")
-
     # commandDms 2
     oid = str(this.get("oid", _ERR_STR))
     cid = str(this.get("cid", _ERR_STR))
@@ -33,18 +31,16 @@ def json2XML_CMD(this: dict):
         oid = cid
     elif cid != "0" and oid != "0" and cid != oid:
         raise ValueError("cid != oid")
-
     mid = str(this.get("mid", "0"))
     command = str(this.get("command", ""))
     text = str(this.get("text", ""))
     stime = int(this.get("stime", "0"))
     ctime = str(this.get("ctime", "0"))
-    mtime = str(this.get("mtime", "0"))
+    # mtime = str(this.get("mtime", "0"))
     extra = str(this.get("extra", ""))
-
     format_time = format(stime / 1000, ".5f")
     format_ctime = time.mktime(time.strptime(ctime + "+0800", "%Y-%m-%d %H:%M:%S%z")).__floor__().__str__()
-    format_mtime = time.mktime(time.strptime(mtime + "+0800", "%Y-%m-%d %H:%M:%S%z")).__floor__().__str__()
+    # format_mtime = time.mktime(time.strptime(mtime + "+0800", "%Y-%m-%d %H:%M:%S%z")).__floor__().__str__()
     midHash = hex(crc32(mid.encode()))[2:].lstrip("0")
     return f'\t<d p="{format_time},1,25,16777215,{format_ctime},999,{midHash},{dmid_2},11">{text}</d><!-- SPECIAL: {command}{extra} -->\n'
 

@@ -1,6 +1,5 @@
-import os
 import json
-
+import os
 from hashlib import md5
 
 path = "G:\\xxx"

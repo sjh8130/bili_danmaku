@@ -1,8 +1,7 @@
 import sys
 import time
 
-
-from split_file_base import split_file_by_time, SPLIT_SEL
+from split_file_base import SPLIT_SEL, split_file_by_time
 
 if __name__ == "__main__":
     st = time.time()

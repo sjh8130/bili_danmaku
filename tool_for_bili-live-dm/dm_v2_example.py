@@ -1,13 +1,12 @@
 import io
 import json
+import sys
 import time
-from google.protobuf.json_format import MessageToDict
 from base64 import b64decode
 
 import Live_dm_v2_2023_03_23_pb2 as live_dm
-import sys
 from filters import FILTER_WORDS
-
+from google.protobuf.json_format import MessageToDict
 
 st = time.time()
 in_path = sys.argv[1]
@@ -46,42 +45,34 @@ with open(in_path, "r", 1048576, encoding="utf-8") as F_in, io.open(outPath, "w"
                 del temp_json2["ctime"]  # 7
             except:
                 pass
-
             try:
                 del temp_json2["dmType"]  # 8
             except:
                 pass
-
             try:
                 del temp_json2["rnd"]  # 9
             except:
                 pass
-
-            # # try: del temp_json2["type"]	# 11
-            # # except: pass
-
+            try:
+                del temp_json2["type"]  # 11
+            except:
+                pass
             try:
                 del temp_json2["bizScene"]  # 11
             except:
                 pass
-
             del temp_json2["bubble"]  # 12
-
             try:
                 del temp_json2["emoticons"]  # 14
             except:
                 pass
-
             del temp_json2["aggregation"]  # 17
-
             del temp_json2["check"]  # 19
             del temp_json2["room"]  # 21
-
             try:
                 del temp_json2["icon"]  # 22
             except:
                 pass
-
             del temp_json2["user"]["uid"]
             del temp_json2["user"]["name"]
             try:
@@ -124,34 +115,16 @@ with open(in_path, "r", 1048576, encoding="utf-8") as F_in, io.open(outPath, "w"
             except:
                 pass
             del temp_json2["user"]["medal"]
-
-            try:
-                del temp_json2["user"]["level"]["level"]
-            except:
-                pass
-            try:
-                del temp_json2["user"]["level"]["attr"]
-            except:
-                pass
-            try:
-                del temp_json2["user"]["level"]["onlineRank"]
-            except:
-                pass
+            del temp_json2["user"]["level"]["level"]
+            del temp_json2["user"]["level"]["attr"]
+            del temp_json2["user"]["level"]["onlineRank"]
             del temp_json2["user"]["level"]["color"]
             del temp_json2["user"]["level"]
-
             del temp_json2["user"]["title"]
             del temp_json2["user"]["identify"]
-            try:
-                del temp_json2["user"]["wealth"]
-            except:
-                pass
+            del temp_json2["user"]["wealth"]
             del temp_json2["user"]
-
-            try:
-                del temp_json2["reply"]
-            except:
-                pass
+            del temp_json2["reply"]
         F_out.write(json.dumps(temp_json2, ensure_ascii=False, indent=None, separators=(",", ":")) + "\n")
     F_in.close()
     F_out.close()

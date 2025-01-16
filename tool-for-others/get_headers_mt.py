@@ -1,8 +1,8 @@
-import requests
 import concurrent.futures
-import socket
 import math
+import socket
 
+import requests
 import requests.adapters
 
 
@@ -11,13 +11,11 @@ class HostHeaderSSLAdapter(requests.adapters.HTTPAdapter):
         super().__init__()
         self.resolved_ip = resolved_ip
 
-    def send(self, request, **kwargs):
+    def send(self, request, **kwargs):  # type:ignore
         from urllib.parse import urlparse
 
         connection_pool_kwargs = self.poolmanager.connection_pool_kw
-
         result = urlparse(request.url)
-
         if result.scheme == "https" and self.resolved_ip:
             request.url = request.url.replace(
                 "https://" + result.hostname,
@@ -29,7 +27,6 @@ class HostHeaderSSLAdapter(requests.adapters.HTTPAdapter):
         else:
             # theses headers from a previous request may have been left
             connection_pool_kwargs.pop("assert_hostname", None)
-
         return super(HostHeaderSSLAdapter, self).send(request, **kwargs)
 
 
@@ -59,10 +56,8 @@ def scrape_urls(start, end, ip_address, base, trd):
 def main(base_url: str, target):
     domain = base_url.split("/")[1]
     ip_addresses = resolve_dns(domain)
-
     num_ips = len(ip_addresses)
     print(f"Resolved {domain} to {num_ips} IP address(es)")
-
     num_threads = num_ips  # You can adjust the number of threads as needed
     chunk_size = math.ceil((target + 1) / num_threads)
     chunks = [(i * chunk_size, min((i + 1) * chunk_size, target + 1)) for i in range(num_threads)]
@@ -80,7 +75,6 @@ def main(base_url: str, target):
                     xx,
                 )
             )
-
         # Wait for all futures to complete
         for future in concurrent.futures.as_completed(futures):
             try:

@@ -1,11 +1,10 @@
 #!/usr/bin/python3
-from google.protobuf.json_format import MessageToDict
-
 import json
 import sys
 
-import dm_pb2
+from google.protobuf.json_format import MessageToDict
 
+import dm_pb2
 from my_lib.file_writer import write_file
 
 if __name__ == "__main__":
