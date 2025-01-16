@@ -6,14 +6,12 @@ from lxml import etree
 
 def process_brec_xml_to_jsonl(file_path):
     preload = open(file_path, "rb").read(512)
-
     if preload.find(b"encoding="):
         file = open(file_path, "rb").read()
     elif preload[:2] == b"\xef\xbb\xbf":
         file = open(file_path, "r", encoding="utf-8").read()[2:]
     else:
         file = open(file_path, "r", encoding="utf-8").read()
-
     tree = etree.XML(file)
     dmks = tree.findall(".//d")
     gifts = tree.findall(".//gift")

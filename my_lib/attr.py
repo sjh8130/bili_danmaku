@@ -1,7 +1,6 @@
 #!/dev/null
 from functools import lru_cache
 
-
 _ATTR_MAP = {
     2**0: "[保护]",
     2**1: "[直播]",
@@ -45,10 +44,8 @@ def danmaku_attr_type(attr: int):
     if attr == 0:
         return "DM "
     o = ""
-
     # 使用位运算和循环来检查每个属性
     for bit, label in _ATTR_MAP.items():
         if attr & bit:  # 如果该位为1
             o += label
-
     return o

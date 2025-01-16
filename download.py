@@ -6,18 +6,17 @@ import ssl
 import sys
 import time
 
-import dm_pb2
-from my_lib.bvav import BV2AV, AV2BV
-from my_lib.gen_wib import gen_w_rid
-from my_lib.file_writer import write_file
-
-from google.protobuf.json_format import MessageToDict
 import bs4
 import requests
+from google.protobuf.json_format import MessageToDict
+
+import dm_pb2
+from my_lib.bvav import AV2BV, BV2AV
+from my_lib.file_writer import write_file
+from my_lib.gen_wib import gen_w_rid
 
 ssl._create_default_https_context = ssl._create_unverified_context
 requests.packages.urllib3.disable_warnings()  # type: ignore[attr-defined]
-
 AE = "gzip, deflate, bzip2, br, zstd"
 MAX_RETRIES = 2
 RETRY_SIZE = 2048
@@ -67,7 +66,6 @@ def _get_danmaku(vp: _VideoPart, duration: int | float, session: requests.Sessio
         "Referer": f"https://www.bilibili.com/video/{vp.bvid}/",
         "User-Agent": UA,
     }
-
     for segment in range(seg):
         filename = f"[{vp.bvid}]_[{vp.cid}]_[Danmaku]_[{segment}].bin"
         if segment == 0:
@@ -118,7 +116,6 @@ def _get_special_danmaku(vp: _VideoPart, input: dm_pb2.DmWebViewReply, session: 
         "User-Agent": UA,
         "Connection": "keep-alive",
     }
-
     bas_danmakus = []
     for url in input.special_dms:
         bas_data = _downloader(url, _HEADERS, session)
@@ -136,10 +133,8 @@ def _get_json(v: _Video, session: requests.Session):
         "User-Agent": UA,
         "Connection": "keep-alive",
     }
-
     html: str = str(_downloader(f"", _HEADERS, session), encoding="utf-8")
     soup = bs4.BeautifulSoup(html, "lxml")
-
     json_dict: dict = {}
     for script in soup.find_all("script"):
         if "window.__INITIAL_STATE__=" in str(script):
@@ -211,15 +206,12 @@ def _main(video: _Video):
         part += 1
         oid = int(this["cid"])
         vp = _VideoPart(V=video, cid=oid, oid=oid)
-
         v_url = f"https://api.bilibili.com/x/v2/dm/web/view?type=1&oid={vp.cid}&pid={vp.avid}&duration={this['']}"
         extra_info_proto_binary = _downloader(v_url, headers, session)
         write_file(f"[{video.bvid}]_[{vp.cid}]_[BAS]_[INFO].bin", extra_info_proto_binary)
-
         extra_info_proto = dm_pb2.DmWebViewReply()
         extra_info_proto.ParseFromString(extra_info_proto_binary)
         extra_info_json = MessageToDict(extra_info_proto)
-
         danmaku_binary_list = _get_danmaku(vp, this["duration"], session)
         danmaku_list = []
         danmakuColorful_list = []

@@ -1,6 +1,6 @@
 import json
-import time
 import sys
+import time
 
 from tqdm import tqdm
 
@@ -34,7 +34,7 @@ def main(in_paths, out_path):
                 left_pos = line.find("{")
                 try:
                     l_line = json.loads(line[left_pos:])
-                except json.JSONDecodeError as e:
+                except json.JSONDecodeError:
                     print(lineno)
                     if not is_err:
                         print(in_path)

@@ -1,9 +1,8 @@
+import os
+import re
 from datetime import datetime, timedelta, timezone
 from enum import IntEnum
 from functools import lru_cache
-import os
-import re
-
 
 _TZ = timezone(timedelta(hours=8))
 

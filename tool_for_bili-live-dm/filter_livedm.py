@@ -1,10 +1,9 @@
 import json
-import time
 import sys
+import time
 
+from filters import FILTER_MID, FILTER_MID_HASH_STR_LOWER, FILTER_WORDS
 from tqdm import tqdm
-
-from filters import FILTER_WORDS, FILTER_MID, FILTER_MID_HASH_STR_LOWER
 
 
 def main(in_paths: list[str], out_path: str):
@@ -41,7 +40,7 @@ def main(in_paths: list[str], out_path: str):
                 left_pos = line.find("{")
                 try:
                     cmd: dict = json.loads(line[left_pos:])
-                except json.JSONDecodeError as e:
+                except json.JSONDecodeError:
                     print(lineno)
                     if not is_err:
                         print(in_path)
@@ -49,22 +48,19 @@ def main(in_paths: list[str], out_path: str):
                     continue
                 if cmd["cmd"] != "DANMU_MSG":
                     continue
-
                 if cmd["info"][0][9] != 0:
                     continue  # 1:节奏风暴 2:天选时刻 9:弹幕互动游戏
                 if cmd["info"][0][12] != 0:
                     continue  # 0:文本 1:表情包 2:语音
-
                 if cmd["info"][0][7] in FILTER_MID_HASH_STR_LOWER:
                     continue
                 if cmd["info"][2][0] in FILTER_MID:
                     continue
-
                 dm_text: str = cmd["info"][1].replace("\u007f", "").replace("\u00a0", "").replace("\u2006", "").replace("\u200b", "").replace("\u200e", "").replace("\u2060", "").replace("\u2063", "").replace("\u3000", "").replace("\U000e0020", "").strip()
                 if dm_text in FILTER_WORDS or dm_text.lower() in FILTER_WORDS:
                     try:
                         del final_write[dm_text]
-                    except:
+                    except KeyError:
                         pass
                     continue
                 else:

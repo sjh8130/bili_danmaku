@@ -525,8 +525,8 @@ posY_2 = Math.round(posY / 375 * 100)
 | LIVE_ROOM_TOAST_MESSAGE				| [✅](#LIVE_ROOM_TOAST_MESSAGE)				| PK|
 | LOG_IN_NOTICE							| [✅](#LOG_IN_NOTICE)						| 游客保护 |
 | LOL_ACTIVITY							| [❌](#LOL_ACTIVITY)						| |
-| LOL_PLAYER_GRADE						| [❌](#LOL_PLAYER_GRADE)					| |
-| LPL_REALTIME_STATUS_CHANGED			| [❌](#LPL_REALTIME_STATUS_CHANGED)			| |
+| LOL_PLAYER_GRADE						| [✅](#LOL_PLAYER_GRADE)					| |
+| LPL_REALTIME_STATUS_CHANGED			| [✅](#LPL_REALTIME_STATUS_CHANGED)			| |
 | MATCH_TEAM_GIFT_RANK					| [❌](#MATCH_TEAM_GIFT_RANK)				| |
 | MESSAGEBOX_USER_GAIN_MEDAL			| [✅](#MESSAGEBOX_USER_GAIN_MEDAL)			| 获得粉丝牌 |
 | MESSAGEBOX_USER_MEDAL_CHANGE			| [✅](#MESSAGEBOX_USER_MEDAL_CHANGE)		| 粉丝牌升级 |
@@ -550,12 +550,12 @@ posY_2 = Math.round(posY / 375 * 100)
 | NOTICE_MSG							| [✅](#NOTICE_MSG)							| 滚动横幅 |
 | OBS_SHIELD_STATUS_UPDATE				| [✅](#OBS_SHIELD_STATUS_UPDATE)			| |
 | OFFICIAL_ROOM_EVENT					| [✅](#OFFICIAL_ROOM_EVENT)					| |
-| ON_COMMON_CARD_UPDATE					| [❌](#ON_COMMON_CARD_UPDATE)				| |
+| ON_COMMON_CARD_UPDATE					| [✅](#ON_COMMON_CARD_UPDATE)				| |
 | ONLINE_RANK_COUNT						| [✅](#ONLINE_RANK_COUNT)					| 状态栏: 在线观众 |
 | ONLINE_RANK_TOP3						| [✅](#ONLINE_RANK_TOP3)					| 高能榜: 高能用户前三恭喜 |
 | ONLINE_RANK_V2						| [✅](#ONLINE_RANK_V2)						| 高能榜: 高能用户TOP7 |
 | OTHER_SLICE_LOADING_RESULT			| [✅](#OTHER_SLICE_LOADING_RESULT)			| |
-| OTHER_SLICE_SETTING_CHANGED			| [❌](#OTHER_SLICE_SETTING_CHANGED)			| |
+| OTHER_SLICE_SETTING_CHANGED			| [✅](#OTHER_SLICE_SETTING_CHANGED)			| |
 | PANEL_INTERACTIVE_NOTIFY_CHANGE		| [✅](#PANEL_INTERACTIVE_NOTIFY_CHANGE)		| |
 | PK_AGAIN								| [❌](#PK_PRT_1)							| PK |
 | PK_AUDIENCE							| [❌](#PK_AUDIENCE)							| |
@@ -751,19 +751,26 @@ posY_2 = Math.round(posY / 375 * 100)
 {"cmd":"WARNING","roomid":12345,"msg":"xxx"}
 "****涉及引战"
 "分区错误，直播该游戏请移至xxx分区直播"
+"禁止宣传第三方平台"
 "禁止宣传平台外交易"
 "禁止在直播间内展示平台外的评论、弹幕内容，请立即调整"
 "禁止直播违禁游戏，请立即更换"
 "图片内容不适宜，请立即调整"
 "违反直播分区规范，请立即更换至游戏区"
 "未按要求遮挡好友申请通知，请查看游戏直播注意事项"
+"虚拟主播形象涉及低俗内容"
+"虚拟主播形象涉及低俗违规，请至社区公约查看相关规范；常见违规内容，如：着装不雅/暴露、存在低俗元素等"
 "因版权原因，请立即调整"
+"直播该游戏，请转移至对应的游戏分区，虚拟主播请转移至虚拟Gamer分区进行直播"
+"直播该游戏，请转移至对应的游戏分区进行直播"
 "直播该游戏请移至虚拟APEX、APEX英雄分区直播"
+"直播该游戏请移至虚拟APEX或APEX英雄分区直播"
+"直播间画面涉及低俗内容，如：文字信息涉及低俗诱导、画面涉及低俗图片/低俗形象、画面涉及低俗物品等"
+"直播间涉及版权侵权，如：播放无授权的影视节目、演唱会、歌曲、赛事、录播盗播他人直播或作品等内容"
 "直播视角不适宜"
 "直播中请勿聚焦/突出敏感部位（如胸/臀/腿等部位）"
 "直播中涉及低俗内容"
 "直播中涉及低俗语音，如：低俗诱导打赏、低俗语聊、使用诱惑/挑逗性质的声音等"
-"虚拟主播形象涉及低俗违规，请至社区公约查看相关规范；常见违规内容，如：着装不雅/暴露、存在低俗元素等"
 ```
 ----
 ### LIVE
@@ -866,11 +873,11 @@ posY_2 = Math.round(posY / 375 * 100)
 | price					| num		| 礼物价格,RMB×1000 |
 | rcost					| num		| ?用户总消费(包括金/银) |
 | receive_user_info		| obj		| 接收者(主播)用户信息 |
-| receiver_uinfo		| obj		| 接收者(主播)用户信息 [uinfo](#public_uinfo) |
+| receiver_uinfo		| obj		| 接收者(主播)用户信息 [uinfo](#PUBLIC_uinfo) |
 | remain				| num		| 包裹剩余数量 |
 | rnd					| str		| rnd=tid |
 | send_master			| null/?	| |
-| sender_uinfo			| obj		| 发送者 用户信息 [uinfo](#public_uinfo) |
+| sender_uinfo			| obj		| 发送者 用户信息 [uinfo](#PUBLIC_uinfo) |
 | silver				| num		| 0 |
 | super					| num		| 0 |
 | super_batch_gift_num	| num		| 0 |
@@ -1046,7 +1053,7 @@ posY_2 = Math.round(posY / 375 * 100)
 | uname			| str	| 昵称 |
 | rank			| num	| 排名(1-7) |
 | guard_level	| num	| [大航海等级](#others) |
-| uinfo			| obj	| [uinfo](#public_uinfo) |
+| uinfo			| obj	| [uinfo](#PUBLIC_uinfo) |
 ```json
 {
 	"cmd":"ONLINE_RANK_V2",
@@ -1151,7 +1158,7 @@ posY_2 = Math.round(posY / 375 * 100)
 | timestamp			| num		| TimeStamp(秒 s 10) |
 | trigger_time		| num		| TimeStamp(纳秒 ns 19) |
 | uid				| num		| 用户uid |
-| uinfo				| obj		| 用户信息 [uinfo](#public_uinfo) |
+| uinfo				| obj		| 用户信息 [uinfo](#PUBLIC_uinfo) |
 | uname				| str		| 用户昵称 |
 | uname_color		| str		| "" |
 #### INTERACT_WORD__data__contribution
@@ -1283,7 +1290,7 @@ Link = 6
 | msg_type			| num		| 6 |
 | show_area			| num		| 0 / 1(30s) |
 | uid				| num		| uid |
-| uinfo				| null/obj	| [uinfo](#public_uinfo) |
+| uinfo				| null/obj	| [uinfo](#PUBLIC_uinfo) |
 | uname				| str		| 昵称 |
 | uname_color		| str		| "" |
 ```json
@@ -1390,7 +1397,7 @@ Link = 6
 | wealthy_info				| null/obj	| |
 | new_style					| num		| |
 | is_mystery				| bool		| |
-| uinfo						| obj		| [uinfo](#public_uinfo) |
+| uinfo						| obj		| [uinfo](#PUBLIC_uinfo) |
 | full_cartoon_id			| num		| |
 | priority_level			| num		| |
 ```json
@@ -1693,7 +1700,7 @@ f"<%{USERNAME}%> 来了"
 | trans_mark				| num		| 是否翻译 |
 | ts						| num		| TimeStamp(秒) |
 | uid						| num		| uid |
-| uinfo						| obj		| [uinfo](#public_uinfo) |
+| uinfo						| obj		| [uinfo](#PUBLIC_uinfo) |
 | user_info					| obj		| |
 #### SUPER_CHAT_MESSAGE__data__gift
 | key						| type		| value	|
@@ -2050,7 +2057,7 @@ SC 删除
 | level			| num	| 直播观众等级UL |
 | num			| num	| 数量 |
 | uid			| num	| uid |
-| uinfo			| obj	| [uinfo](#public_uinfo) |
+| uinfo			| obj	| [uinfo](#PUBLIC_uinfo) |
 | uname			| num	| 昵称 |
 ```json
 {
@@ -2284,7 +2291,7 @@ voiceConfig
 | mode				| num	| 0 / 3000:LPL |
 | show_player_type	| num	| 0 |
 | extra				| str	| [json](#DANMU_MSG__info__0_15__extra) |
-| user				| obj	| [uinfo](#public_uinfo) |
+| user				| obj	| [uinfo](#PUBLIC_uinfo) |
 #### DANMU_MSG__info__0__15__extra
 | key 34					| type		| value	| 备注	|
 |-|-|-|-|
@@ -2404,6 +2411,8 @@ voiceConfig
 "麦上发言不当，请调整上麦门槛，再次违规将封禁直播间"
 "违反直播规范"
 "未持有相关许可，不允许直播相关内容"
+"未持有新闻发布许可，不允许直播时政类内容"
+"因版权原因，请立即调整"
 "游戏中玩家昵称违反直播规范"
 "游戏中玩家信息违反直播规范"
 "直播互动区含有违规信息，不支持展示互动信息"
@@ -2755,7 +2764,7 @@ content_segments__text=[
 | wealth_level	| num		| |
 | group_medal	| null/xxx	| |
 | is_mystery	| bool		| |
-| sender_info	| obj		| [uinfo](#public_uinfo) |
+| sender_info	| obj		| [uinfo](#PUBLIC_uinfo) |
 | gift_icon		| str		| |
 | rp_type		| num		| |
 ```json
@@ -2795,7 +2804,7 @@ content_segments__text=[
 | wait_num_v2			| num		| 队列数量 |
 | is_mystery			| bool		| |
 | rp_type				| num		| |
-| sender_uinfo			| obj		| [uinfo](#public_uinfo) |
+| sender_uinfo			| obj		| [uinfo](#PUBLIC_uinfo) |
 | icon_url				| str		| |
 | animation_icon_url	| str		| |
 #### POPULARITY_RED_POCKET_START__data__awards
@@ -2887,12 +2896,12 @@ content_segments__text=[
 [TOP](#直播弹幕)
 文档更新：2024-11-01
 用户封禁
-| key		| type	| value	|
+| key		| type		| value	|
 |-|-|-|
-| cmd		| str	| "ROOM_BLOCK_MSG" |
-| data		| obj	| |
-| uid		| str	| |
-| uname		| str	| 昵称 |
+| cmd		| str		| "ROOM_BLOCK_MSG" |
+| data		| obj		| |
+| uid		| str/num	| |
+| uname		| str		| 昵称 |
 #### ROOM_BLOCK_MSG__data
 | key		| type	| value	|
 |-|-|-|
@@ -3237,7 +3246,7 @@ timestamp: N×5
 ### PLAY_TAG
 [TOP](#直播弹幕)
 文档更新：2024-11-01
-比赛 事件(开始,First Blood,击败,Double Kill,大龙,小龙,推塔,结束)
+比赛事件
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "PLAY_TAG" |
@@ -3809,6 +3818,15 @@ RANK_REM_RANK_NEW
 | up_uid				| num	| 主播uid |
 ```json
 {"cmd":"MESSAGEBOX_USER_GAIN_MEDAL","data":{"day_limit":1500,"fan_name":"xxx","guard_level":0,"highlight_color":16478873,"intimacy":xxx,"is_lighted":1,"is_received":1,"is_wear":0,"medal_color":xxx,"medal_color_border":xxx,"medal_color_end":xxx,"medal_color_start":xxx,"medal_id":xxx,"medal_level":3,"medal_name":"xxx","msg_content":"获得xxx点亲密度\n你的粉丝勋章达到xxx级","msg_title":"恭喜你获得【xxx】的粉丝勋章~","next_intimacy":xxx,"normal_color":xxx,"toast":"成功入团并关注主播，得1级大礼包","today_feed":xxx,"type":3,"uid":xxx,"up_uid":xxx}}
+"恭喜你获得【xxx】的粉丝勋章~": 228,
+"欢迎萌新~": 12,
+"恭喜你获得【123456789ab...】的粉丝勋章~": 385,
+"恭喜你获得【123456789...】的粉丝勋章~": 1
+
+"成功入团并关注主播，得1级大礼包": 615,
+"恭喜您加入xxx的粉丝团，并获得1级大礼包": 7,
+"恭喜您加入xxxxxxxx...的粉丝团，并获得1级大礼包": 4
+
 ```
 ----
 ### COMBO_SEND
@@ -3841,10 +3859,10 @@ RANK_REM_RANK_NEW
 | name_color		| str		| |
 | r_uname			| str		| 昵称 |
 | receive_user_info	| obj		| |
-| receiver_uinfo	| obj		| [uinfo](#public_uinfo) |
+| receiver_uinfo	| obj		| [uinfo](#PUBLIC_uinfo) |
 | ruid				| num		| |
 | send_master		| null/ 	| |
-| sender_uinfo		| obj		| [uinfo](#public_uinfo) |
+| sender_uinfo		| obj		| [uinfo](#PUBLIC_uinfo) |
 | total_num			| num		| |
 | uid				| num		| |
 | uname				| str		| 昵称 |
@@ -5714,8 +5732,8 @@ role 0 1 2
 #### USER_TOAST_MSG_V2__data
 | key				| type	| value |
 |-|-|-|
-| sender_uinfo		| obj	| [uinfo](#public_uinfo) base |
-| receiver_uinfo	| obj	| [uinfo](#public_uinfo) base |
+| sender_uinfo		| obj	| [uinfo](#PUBLIC_uinfo) base |
+| receiver_uinfo	| obj	| [uinfo](#PUBLIC_uinfo) base |
 | guard_info		| obj	| |
 | group_guard_info	| null	| |
 | pay_info			| obj	| |
@@ -6297,6 +6315,21 @@ TODO!
 ```
 ```ts
 enum recall_type={NOTHING:0,DANMAKU:1,USER:2,ALL:3}
+```
+---
+### OTHER_SLICE_SETTING_CHANGED
+[TOP](#直播弹幕)
+文档更新：2025-01-01
+| key		| type	| value	|
+|-|-|-|
+| cmd		| str	| "OTHER_SLICE_SETTING_CHANGED" |
+| data		| obj	| |
+#### OTHER_SLICE_SETTING_CHANGED__data__data
+| key		| type	| value	|
+|-|-|-|
+| data	| xxx	| |
+```json
+{"cmd":"OTHER_SLICE_SETTING_CHANGED","data":{"data":{"uid":xxx,"allow_other_edit":1}}}
 ```
 ---
 ### XXXXXXXXXXXX

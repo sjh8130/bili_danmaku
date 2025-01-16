@@ -2,10 +2,8 @@
 # -*- coding: utf-8 -*-
 # mypy: ignore-errors
 import re
-
 import string
 import sys
-
 from enum import StrEnum
 
 import pyperclip
@@ -193,7 +191,6 @@ def process(data: list[str]):
                 msg_type = MsgType.service
                 msg_name = strs[6][1:-1]
                 continue
-
             if strs[:4] == ["public", "static", "final", "int"]:
                 list_1.append([strs[4][0:-13].lower(), int(strs[6])])
             elif strs[0] == "private":
@@ -215,7 +212,6 @@ def process(data: list[str]):
                 pass
             elif strs[:3] == ["private", "static", "volatile"] and strs[3].startswith("MethodDescriptor"):
                 list_2.append(strs[3][17:-1].split(",") + [strs[4][3:-6]])
-
     if msg_type == MsgType.message:
         final_str += f"""
 //
