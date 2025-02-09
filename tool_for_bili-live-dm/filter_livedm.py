@@ -1,4 +1,5 @@
 import json
+import os
 import sys
 import time
 
@@ -31,7 +32,7 @@ def main(in_paths: list[str], out_path: str):
         if in_path == out_path:
             continue
         with open(in_path, "r", encoding="utf-8") as file_in:
-            for line in tqdm(file_in.readlines(), unit="line", bar_format="{desc}{percentage:3.0f}%|{bar}| {n_fmt}->{total_fmt} ", desc=f"{f_s:8} {in_path} "):
+            for line in tqdm(file_in.readlines(), unit="line", bar_format="{desc}{percentage:3.0f}%|{bar}| {n_fmt}->{total_fmt} ", desc=f"{f_s:8} {os.path.basename(in_path)} "):
                 # if "DANMU_MSG" not in line:
                 #     continue
                 # if line.find("DANMU_MSG:3:7:1:1:1:1") == 1:
@@ -48,10 +49,10 @@ def main(in_paths: list[str], out_path: str):
                     continue
                 if cmd["cmd"] != "DANMU_MSG":
                     continue
-                if cmd["info"][0][9] != 0:
-                    continue  # 1:节奏风暴 2:天选时刻 9:弹幕互动游戏
-                if cmd["info"][0][12] != 0:
-                    continue  # 0:文本 1:表情包 2:语音
+                # if cmd["info"][0][9] != 0:
+                #     continue  # 1:节奏风暴 2:天选时刻 9:弹幕互动游戏
+                # if cmd["info"][0][12] != 0:
+                #     continue  # 0:文本 1:表情包 2:语音
                 if cmd["info"][0][7] in FILTER_MID_HASH_STR_LOWER:
                     continue
                 if cmd["info"][2][0] in FILTER_MID:
@@ -65,7 +66,7 @@ def main(in_paths: list[str], out_path: str):
                     continue
                 else:
                     try:
-                        if json.loads(cmd["info"][0][15]["extra"])["hit_combo"] == 1:
+                        if cmd["info"][0][15]["extra"].find('"hit_combo":1') >= 1:
                             continue
                     except KeyError:
                         pass
@@ -74,7 +75,7 @@ def main(in_paths: list[str], out_path: str):
                     except KeyError:
                         final_write[dm_text] = 1
     with open(out_path, "w", encoding="utf-8") as file_io:
-        json.dump(final_write, file_io, ensure_ascii=False, indent="\t")
+        json.dump(final_write, file_io, ensure_ascii=False, indent="\t", sort_keys=True)
 
 
 if __name__ == "__main__":

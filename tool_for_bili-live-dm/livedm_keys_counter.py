@@ -4,21 +4,32 @@ import sys
 import time
 
 import livedm_keys_counter_lib
+from tqdm import tqdm
+
+
+def main():
+    p1 = "livedm_keys.json"
+    if True and os.path.exists(os.path.join(output_dir, p1)):
+        with open(os.path.join(output_dir, p1), "r", encoding="utf-8") as fp:
+            livedm_keys_counter_lib.result.update(json.load(fp))
+    for path in tqdm(paths, leave=False):
+        if not os.path.exists(output_dir):
+            os.makedirs(output_dir)
+        if path == output_dir:
+            continue
+        livedm_keys_counter_lib.p_main(path)
+    with open(os.path.join(output_dir, p1), "w", encoding="utf-8") as fp:
+        json.dump(livedm_keys_counter_lib.result, fp, ensure_ascii=False, indent="\t", sort_keys=True)
+
 
 if __name__ == "__main__":
-    in_path = sys.argv[1:]
+    paths = sys.argv[1:]
     if os.name == "nt":
         output_dir = "Z:\\"
     else:
         output_dir = "/mnt/z/"
-    # if os.path.exists(os.path.join(output_dir, "result.json")):
-    #     with open(os.path.join(output_dir, "result.json"), "r", encoding="utf-8") as fp:
-    #         livedm_keys_counter_lib.result.update(json.load(fp))
     start_time = time.time()
-    livedm_keys_counter_lib.main(in_path, output_dir)
-    with open(os.path.join(output_dir, "result.json"), "w", encoding="utf-8") as fp:
-        json.dump(livedm_keys_counter_lib.result, fp, ensure_ascii=False, indent="\t")
+    main()
     total_time = time.time() - start_time
     print(f"处理完成，耗时：{total_time:.3f}秒")
-    # print("TIME ", (os.stat(in_path[0]).st_size / 1024**2) / total_time)
-    # time.sleep(10)
+    time.sleep(10)

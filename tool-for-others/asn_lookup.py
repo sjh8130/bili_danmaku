@@ -37,7 +37,7 @@ def _init(overwrite=False) -> None:
         _process_file(file_name)
 
 
-_ISO3166_1 = [
+_ISO3166_1: set[str] = {
     "ad",
     "ae",
     "af",
@@ -289,55 +289,57 @@ _ISO3166_1 = [
     "zw",
     "xx",  # extra description
     "zz",  # iana
-]
-_IPS_DEFAULT = [
-    IP("0.0.0.0/8", "XX", "listening", "reserved"),
-    IP("10.0.0.0/8", "XX", "PRIVATE-A", "reserved"),
-    IP("127.0.0.0/8", "XX", "loopback", "reserved"),
-    IP("169.254.0.0/16", "XX", "LinkLocal", "reserved"),
-    IP("172.16.0.0/12", "XX", "PRIVATE-B", "reserved"),
-    IP("192.168.0.0/16", "XX", "PRIVATE-C", "reserved"),
-    IP("224.0.0.0/28", "XX", "Multicast", "reserved"),
-    IP("240.0.0.0/28", "XX", "Reserved-E", "reserved"),
-    IP("255.255.255.255/32", "XX", "Broadcast", "reserved"),
-    IP("2000::/3", "XX", "global", "reserved"),
-    IP("fe80::/10", "XX", "local", "reserved"),
-    IP("fc00::/7", "XX", "local", "reserved"),
-    IP("::1/128", "XX", "loopback", "reserved"),
-    IP("::/128", "XX", "listening", "reserved"),
-    IP("::/80", "XX", "ipv4-in-ipv6", "reserved"),
-    IP("173.245.48.0/20", "US", "Cloudflare", "allocated"),
-    IP("103.21.244.0/22", "US", "Cloudflare", "allocated"),
-    IP("103.22.200.0/22", "US", "Cloudflare", "allocated"),
-    IP("103.31.4.0/22", "US", "Cloudflare", "allocated"),
-    IP("141.101.64.0/18", "US", "Cloudflare", "allocated"),
-    IP("108.162.192.0/18", "US", "Cloudflare", "allocated"),
-    IP("190.93.240.0/20", "US", "Cloudflare", "allocated"),
-    IP("188.114.96.0/20", "US", "Cloudflare", "allocated"),
-    IP("197.234.240.0/22", "US", "Cloudflare", "allocated"),
-    IP("198.41.128.0/17", "US", "Cloudflare", "allocated"),
-    IP("162.158.0.0/15", "US", "Cloudflare", "allocated"),
-    IP("104.16.0.0/13", "US", "Cloudflare", "allocated"),
-    IP("104.24.0.0/14", "US", "Cloudflare", "allocated"),
-    IP("172.64.0.0/13", "US", "Cloudflare", "allocated"),
-    IP("131.0.72.0/22", "US", "Cloudflare", "allocated"),
-    IP("8.8.8.8/32", "US", "Google_DNS", "allocated"),
-    IP("8.8.4.4/32", "US", "Google_DNS", "allocated"),
-    IP("9.9.9.9/32", "US", "IBM_Quad9_DNS", "allocated"),
-    IP("2400:cb00::/32", "US", "Cloudflare", "allocated"),
-    IP("2606:4700::/32", "US", "Cloudflare", "allocated"),
-    IP("2803:f800::/32", "US", "Cloudflare", "allocated"),
-    IP("2405:b500::/32", "US", "Cloudflare", "allocated"),
-    IP("2405:8100::/32", "US", "Cloudflare", "allocated"),
-    IP("2a06:98c0::/29", "US", "Cloudflare", "allocated"),
-    IP("2c0f:f248::/32", "US", "Cloudflare", "allocated"),
-    IP("2001:4860:4860::8888/128", "US", "Google_DNS", "allocated"),
-    IP("2001:4860:4860::8844/128", "US", "Google_DNS", "allocated"),
-]
-ips: list[IP] = []
-_tld = []
+}
+_IPS_DEFAULT = set(
+    [
+        IP("0.0.0.0/8", "XX", "listening", "reserved"),
+        IP("10.0.0.0/8", "XX", "PRIVATE-A", "reserved"),
+        IP("127.0.0.0/8", "XX", "loopback", "reserved"),
+        IP("169.254.0.0/16", "XX", "LinkLocal", "reserved"),
+        IP("172.16.0.0/12", "XX", "PRIVATE-B", "reserved"),
+        IP("192.168.0.0/16", "XX", "PRIVATE-C", "reserved"),
+        IP("224.0.0.0/28", "XX", "Multicast", "reserved"),
+        IP("240.0.0.0/28", "XX", "Reserved-E", "reserved"),
+        IP("255.255.255.255/32", "XX", "Broadcast", "reserved"),
+        IP("2000::/3", "XX", "global", "reserved"),
+        IP("fe80::/10", "XX", "local", "reserved"),
+        IP("fc00::/7", "XX", "local", "reserved"),
+        IP("::1/128", "XX", "loopback", "reserved"),
+        IP("::/128", "XX", "listening", "reserved"),
+        IP("::/80", "XX", "ipv4-in-ipv6", "reserved"),
+        IP("173.245.48.0/20", "US", "Cloudflare", "allocated"),
+        IP("103.21.244.0/22", "US", "Cloudflare", "allocated"),
+        IP("103.22.200.0/22", "US", "Cloudflare", "allocated"),
+        IP("103.31.4.0/22", "US", "Cloudflare", "allocated"),
+        IP("141.101.64.0/18", "US", "Cloudflare", "allocated"),
+        IP("108.162.192.0/18", "US", "Cloudflare", "allocated"),
+        IP("190.93.240.0/20", "US", "Cloudflare", "allocated"),
+        IP("188.114.96.0/20", "US", "Cloudflare", "allocated"),
+        IP("197.234.240.0/22", "US", "Cloudflare", "allocated"),
+        IP("198.41.128.0/17", "US", "Cloudflare", "allocated"),
+        IP("162.158.0.0/15", "US", "Cloudflare", "allocated"),
+        IP("104.16.0.0/13", "US", "Cloudflare", "allocated"),
+        IP("104.24.0.0/14", "US", "Cloudflare", "allocated"),
+        IP("172.64.0.0/13", "US", "Cloudflare", "allocated"),
+        IP("131.0.72.0/22", "US", "Cloudflare", "allocated"),
+        IP("8.8.8.8/32", "US", "Google_DNS", "allocated"),
+        IP("8.8.4.4/32", "US", "Google_DNS", "allocated"),
+        IP("9.9.9.9/32", "US", "IBM_Quad9_DNS", "allocated"),
+        IP("2400:cb00::/32", "US", "Cloudflare", "allocated"),
+        IP("2606:4700::/32", "US", "Cloudflare", "allocated"),
+        IP("2803:f800::/32", "US", "Cloudflare", "allocated"),
+        IP("2405:b500::/32", "US", "Cloudflare", "allocated"),
+        IP("2405:8100::/32", "US", "Cloudflare", "allocated"),
+        IP("2a06:98c0::/29", "US", "Cloudflare", "allocated"),
+        IP("2c0f:f248::/32", "US", "Cloudflare", "allocated"),
+        IP("2001:4860:4860::8888/128", "US", "Google_DNS", "allocated"),
+        IP("2001:4860:4860::8844/128", "US", "Google_DNS", "allocated"),
+    ]
+)
+ips: set[IP] = set()
+_tld = set()
 """iana top-level domains"""
-_CIDR_CALC = {
+_CIDR_CALC: dict[str | int, str] = {
     "4294967296": "0",
     "2147483648": "1",
     "1073741824": "2",
@@ -466,7 +468,7 @@ def _process_file(file_name: str) -> None:
                 region = line[1]
             if line[5] == "summary":
                 continue
-            if line[3] in ["", "\t"]:
+            if line[3] in {"", "\t"}:
                 continue
             if line[2] == "asn":
                 continue
@@ -475,10 +477,10 @@ def _process_file(file_name: str) -> None:
                     cidr = f"{line[3]}/{_CIDR_CALC[line[4]]}"
                 else:
                     cidr = f"{line[3]}+{line[4]}"
-                ips.append(IP(cidr, region, line[0], line[6]))
+                ips.add(IP(cidr, region, line[0], line[6]))
             elif line[2] == "ipv6":
                 cidr = f"{line[3]}/{line[4]}"
-                ips.append(IP(cidr, region, line[0], line[6]))
+                ips.add(IP(cidr, region, line[0], line[6]))
 
 
 def _process_tld(file_name: str) -> None:
@@ -486,7 +488,7 @@ def _process_tld(file_name: str) -> None:
         for i in file:
             if i.startswith("#"):
                 continue
-            _tld.append(f".{i.lower().strip()}")
+            _tld.add(f".{i.lower().strip()}")
 
 
 def _query_ip(d: str) -> None:
@@ -574,7 +576,7 @@ def _ip_in_custom_range(ip: str, ip_range: str) -> bool:
 
 
 if __name__ == "__main__":
-    ips[:] = _IPS_DEFAULT
+    ips = _IPS_DEFAULT.copy()
     _init()
     try:
         while True:
@@ -597,7 +599,7 @@ if __name__ == "__main__":
                 case "dump" | "export" | "save":
                     import json
 
-                    j = json.dumps(ips, ensure_ascii=False, separators=(",", ":"))
+                    j = json.dumps(ips, ensure_ascii=False, separators=(",", ":"), sort_keys=True)
                     open("Z:\\dump.json", "w", encoding="utf-8").write(j)
                     del j
                 case "afrinic" | "apnic" | "arin" | "iana" | "lacnic" | "ripe-ncc" | "ripencc":
@@ -606,7 +608,7 @@ if __name__ == "__main__":
                     _query_status(query_string)
                 case "update":
                     ips.clear()
-                    ips[:] = _IPS_DEFAULT
+                    ips = _IPS_DEFAULT.copy()
                     _init(overwrite=True)
                 case _:
                     if query_string in _ISO3166_1:

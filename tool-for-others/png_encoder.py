@@ -1,51 +1,78 @@
-import logging
 import math
-import os
 import struct
 import sys
+import time
+from typing import Generator
 import zlib
-
 from enum import IntEnum, StrEnum
 
+from loguru import logger
 from PIL import Image
+
+logger.bind(user="PNG")
+log = logger
 
 # PNG signature
 _PNG_SIGNATURE = b"\x89PNG\x0d\x0a\x1a\x0a"
 _BRD_S32 = 2**32 - 1
 _BRD_S16 = 2**16 - 1
 _BRD_S8 = 2**8 - 1
-_IEND = b"\x00\x00\x00\x00IEND\xae\x42\x60\x82"
-# _IEND =  sign_chunk(b"IEND", b"")
 _NULL_SEPARATOR = b"\x00"
-
-logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
-logger = logging.getLogger("PNG_encoder")
 
 
 class _PNG_COLOR_TYPE(IntEnum):
     GRAY = 0
-    GREYSCALE = GRAY
-    Greyscale = GRAY
+    G = GRAY
+    GRAYSCALE = GRAY
+    GrayScale = GRAY
+    Grayscale = GRAY
+    grayscale = GRAY
+
     TRUECOLOR = 2
+    TrueColor = TRUECOLOR
+    Truecolor = TRUECOLOR
+    truecolor = TRUECOLOR
     RGB = TRUECOLOR
     RGB24 = TRUECOLOR
     RGB48 = TRUECOLOR
-    Truecolor = TRUECOLOR
+    rgb = TRUECOLOR
+    rgb24 = TRUECOLOR
+    rgb48 = TRUECOLOR
+
     INDEXED_COLOR = 3
     PALETTE = INDEXED_COLOR
-    GREYSCALE_WITH_ALPHA = 4
-    GRAY_A = GREYSCALE_WITH_ALPHA
-    GRAY_ALPHA = GREYSCALE_WITH_ALPHA
-    GREYSCALE_ALPHA = GREYSCALE_WITH_ALPHA
-    Greyscale_with_alpha = GREYSCALE_WITH_ALPHA
+    palette = INDEXED_COLOR
+    Palette = INDEXED_COLOR
+
+    GRAYSCALE_WITH_ALPHA = 4
+    GA = GRAYSCALE_WITH_ALPHA
+    GRAY_A = GRAYSCALE_WITH_ALPHA
+    GRAY_ALPHA = GRAYSCALE_WITH_ALPHA
+    GRAYSCALE_ALPHA = GRAYSCALE_WITH_ALPHA
+    Grayscale_with_alpha = GRAYSCALE_WITH_ALPHA
+    GrayscaleWithAlpha = GRAYSCALE_WITH_ALPHA
+
     TRUECOLOR_WITH_ALPHA = 6
+    TRUECOLORWITHALPHA = TRUECOLOR_WITH_ALPHA
+    truecolorwithalpha = TRUECOLOR_WITH_ALPHA
+    truecolorWithAlpha = TRUECOLOR_WITH_ALPHA
+    TruecolorWithAlpha = TRUECOLOR_WITH_ALPHA
+    TrueColorWithAlpha = TRUECOLOR_WITH_ALPHA
+    Truecolor_with_alpha = TRUECOLOR_WITH_ALPHA
+    truecolor_with_alpha = TRUECOLOR_WITH_ALPHA
     RGBA = TRUECOLOR_WITH_ALPHA
+    RGBA32 = TRUECOLOR_WITH_ALPHA
+    RGBA64 = TRUECOLOR_WITH_ALPHA
     RGB32 = TRUECOLOR_WITH_ALPHA
     RGB64 = TRUECOLOR_WITH_ALPHA
-    Truecolor_with_alpha = TRUECOLOR_WITH_ALPHA
+    rgba = TRUECOLOR_WITH_ALPHA
+    rgb32 = TRUECOLOR_WITH_ALPHA
+    rgb64 = TRUECOLOR_WITH_ALPHA
+    rgba32 = TRUECOLOR_WITH_ALPHA
+    rgba64 = TRUECOLOR_WITH_ALPHA
 
 
-_ALLOWED_DEPTH_LIST = {
+_ALLOWED_DEPTH_LIST: dict[_PNG_COLOR_TYPE, list[int]] = {
     _PNG_COLOR_TYPE.GRAY: [1, 2, 4, 8, 16],
     _PNG_COLOR_TYPE.TRUECOLOR: [8, 16],
     _PNG_COLOR_TYPE.INDEXED_COLOR: [1, 2, 4, 8, 16],
@@ -54,19 +81,21 @@ _ALLOWED_DEPTH_LIST = {
 }
 
 
-class _APNG_DISPOSE_OP(IntEnum):
-    APNG_DISPOSE_OP_NONE = 0
-    APNG_DISPOSE_OP_BACKGROUND = 1
-    APNG_DISPOSE_OP_PREVIOUS = 2
+class Disposal(IntEnum):
+    OP_NONE = 0
+    OP_BACKGROUND = 1
+    OP_PREVIOUS = 2
 
 
-class _APNG_BLEND_OP(IntEnum):
-    APNG_BLEND_OP_SOURCE = 0
-    APNG_BLEND_OP_OVER = 1
+class Blend(IntEnum):
+    OP_SOURCE = 0
+    OP_OVER = 1
 
 
 class _ZLIB_COMPRESSION_LEVEL(IntEnum):
+    COPY = 0
     COMPRESSION_LEVEL_NONE = 0
+    COMPRESSION_LEVEL_0 = 0
     COMPRESSION_LEVEL_1 = 1
     COMPRESSION_LEVEL_2 = 2
     COMPRESSION_LEVEL_3 = 3
@@ -103,19 +132,19 @@ class _CHUNK_TYPE(StrEnum):
     iCCP = "iCCP"  # Embedded ICC profile
     sBIT = "sBIT"  # Significant bits
     sRGB = "sRGB"  # Standard RGB color space
-    cICP = "cICP"  # Coding-independent code points for video signal type identification
-    mDCv = "mDCv"  # Mastering Display Color Volume
-    cLLi = "cLLi"  # Content Light Level Information
+    cICP = "cICP"  # Coding-independent code points for video signal type identification***
+    mDCv = "mDCv"  # Mastering Display Color Volume***
+    cLLi = "cLLi"  # Content Light Level Information***
     # Textual information
     iTXt = "iTXt"
     tEXt = "tEXt"
     zTXt = "zTXt"
     # Miscellaneous information
-    bKGD = "bKGD"  # Background color
-    hIST = "hIST"
+    bKGD = "bKGD"  # Background color***
+    hIST = "hIST"  # ***
     pHYs = "pHYs"
-    sPLT = "sPLT"
-    eXIf = "eXIf"
+    sPLT = "sPLT"  # ***
+    eXIf = "eXIf"  # ***
     # Time information
     tIME = "tIME"
     # Animation information
@@ -124,250 +153,159 @@ class _CHUNK_TYPE(StrEnum):
     fdAT = "fdAT"
 
 
-def sign_chunk(chunk_type: bytes | str, data: bytes) -> bytes:
-    if isinstance(chunk_type, str):
-        chunk_type = chunk_type.encode()
-    chunk_length = len(data)
-    chunk_crc = struct.pack(">I", zlib.crc32(chunk_type + data) & 0xFFFFFFFF)
-    logger.debug(f"chunk_type={str(chunk_type,'utf-8')}, {chunk_length=}")
-    return struct.pack(">I", chunk_length) + chunk_type + data + chunk_crc
+class P1:
+    compression_level = _ZLIB_COMPRESSION_LEVEL.COMPRESSION_LEVEL_9
+    apng_seq = 0
 
+    def __init__(self, compression_level) -> None:
+        self.compression_level = compression_level
 
-def create_ihdr(
-    width: int,
-    height: int,
-    bit_depth: int,
-    color_type: _PNG_COLOR_TYPE,
-    compression_method: int = 0,
-    filter_method: int = 0,
-    interlace_method: int = 0,
-):
-    if bit_depth not in _ALLOWED_DEPTH_LIST[color_type]:
-        raise ValueError("Invalid bit depth for color type")
-    if compression_method != 0:
-        raise ValueError("Invalid compression method")
-    if filter_method != 0:
-        raise ValueError("Invalid filter method")
-    if interlace_method != 0:
-        raise ValueError("Invalid interlace method")
-    if width > _BRD_S32 or height > _BRD_S32:
-        raise ValueError("Invalid image size")
-    if width <= 0 or height <= 0:
-        raise ValueError("Invalid image size")
+    def _sign(self, chunk_type: bytes | str, data: bytes, /) -> bytes:
+        if isinstance(chunk_type, str):
+            chunk_type = chunk_type.encode()
+        chunk_length = len(data)
+        chunk_crc = struct.pack(">I", zlib.crc32(chunk_type + data, 0) & 0xFFFFFFFF)
+        logger.debug(f"chunk_type={str(chunk_type,'utf-8')}, {chunk_length=}")
+        return struct.pack(">I", chunk_length) + chunk_type + data + chunk_crc
 
-    data = struct.pack(
-        ">IIBBBBB",
-        width,
-        height,
-        bit_depth,
-        color_type,
-        compression_method,
-        filter_method,
-        interlace_method,
-    )
-    return sign_chunk(_CHUNK_TYPE.IHDR, data)
+    def IHDR(self, width: int, height: int, bit_depth: int, color_type: _PNG_COLOR_TYPE, compression_method: int = 0, filter_method: int = 0, interlace_method: int = 0):
+        data = struct.pack(">IIBBBBB", width, height, bit_depth, color_type, compression_method, filter_method, interlace_method)
+        return self._sign(_CHUNK_TYPE.IHDR, data)
 
+    def PLTE(self, palette: list[tuple[int, int, int]]):
+        data = b""
+        for color in palette:
+            data += struct.pack(">BBB", color[0], color[1], color[2])
+        return self._sign(_CHUNK_TYPE.PLTE, data)
 
-def create_plte(palette: list[tuple[int, int, int]]):
-    data = b""
-    for color in palette:
-        data += struct.pack(">BBB", color[0], color[1], color[2])
-    return sign_chunk(_CHUNK_TYPE.PLTE, data)
-
-
-def compress_xdat(image_data: bytes, width: int, height: int, bit_depth: int, color_type: _PNG_COLOR_TYPE, chunk_size: int, compression_level: _ZLIB_COMPRESSION_LEVEL | int, fdat: int = 0):
-    if width > _BRD_S32 or height > _BRD_S32:
-        raise ValueError("Invalid image size")
-    if width <= 0 or height <= 0:
-        raise ValueError("Invalid image size")
-    if bit_depth not in _ALLOWED_DEPTH_LIST[color_type]:
-        raise ValueError("Invalid bit depth for color type")
-    if compression_level < 0 or compression_level > 9:
-        raise ValueError("Invalid compression level")
-
-    compressor = zlib.compressobj(compression_level)
-    match color_type:
-        case 0:
-            if bit_depth == 1:
-                row_size = math.ceil(width / 8)
-            elif bit_depth == 2:
-                row_size = math.ceil(width / 4)
-            elif bit_depth == 4:
-                row_size = math.ceil(width / 2)
-            elif bit_depth == 8:
-                row_size = width
-            elif bit_depth == 16:
-                row_size = 2 * width
-            else:
+    def XDAT(self, image_data: bytes, width: int, height: int, bit_depth: int, color_type: _PNG_COLOR_TYPE, chunk_size: int, apng: bool = False) -> Generator[bytes]:
+        compressor = zlib.compressobj(self.compression_level, wbits=15, memLevel=9)
+        match color_type:
+            case 0:
+                if bit_depth == 1:
+                    row_size = math.ceil(width / 8)
+                elif bit_depth == 2:
+                    row_size = math.ceil(width / 4)
+                elif bit_depth == 4:
+                    row_size = math.ceil(width / 2)
+                elif bit_depth == 8:
+                    row_size = width
+                elif bit_depth == 16:
+                    row_size = 2 * width
+                else:
+                    row_size = -1
+            case 2:
+                if bit_depth == 8:
+                    row_size = 3 * width
+                elif bit_depth == 16:
+                    row_size = 6 * width
+                else:
+                    row_size = -1
+            case 3:
+                if bit_depth == 1:
+                    row_size = math.ceil(width / 8)
+                elif bit_depth == 2:
+                    row_size = math.ceil(width / 4)
+                elif bit_depth == 4:
+                    row_size = math.ceil(width / 2)
+                elif bit_depth == 8:
+                    row_size = width
+                else:
+                    row_size = -1
+            case 4:
+                if bit_depth == 8:
+                    row_size = 2 * width
+                elif bit_depth == 16:
+                    row_size = 4 * width
+                else:
+                    row_size = -1
+            case 6:
+                if bit_depth == 8:
+                    row_size = 4 * width
+                elif bit_depth == 16:
+                    row_size = 8 * width
+                else:
+                    row_size = -1
+            case _:
                 row_size = -1
-        case 2:
-            if bit_depth == 8:
-                row_size = 3 * width
-            elif bit_depth == 16:
-                row_size = 6 * width
+        if row_size == -1:
+            raise ValueError()
+        filtered_data = bytearray()
+        for y in range(height):
+            row_start = y * row_size
+            row_end = row_start + row_size
+            row = image_data[row_start:row_end]
+            filtered_data.append(0)
+            filtered_data.extend(row)
+        compressed_data = zlib.compress(filtered_data)
+        compressor.flush()
+        for i in range(0, len(compressed_data), chunk_size):
+            chunk_data = compressed_data[i : i + chunk_size]
+            if apng:
+                yield self._sign(_CHUNK_TYPE.fdAT, struct.pack(">I", self.apng_seq) + chunk_data)
+                self.apng_seq += 1
             else:
-                row_size = -1
-        case 3:
-            if bit_depth == 1:
-                row_size = math.ceil(width / 8)
-            elif bit_depth == 2:
-                row_size = math.ceil(width / 4)
-            elif bit_depth == 4:
-                row_size = math.ceil(width / 2)
-            elif bit_depth == 8:
-                row_size = width
-            else:
-                row_size = -1
-        case 4:
-            if bit_depth == 8:
-                row_size = 2 * width
-            elif bit_depth == 16:
-                row_size = 4 * width
-            else:
-                row_size = -1
-        case 6:
-            if bit_depth == 8:
-                row_size = 4 * width
-            elif bit_depth == 16:
-                row_size = 8 * width
-            else:
-                row_size = -1
-        case _:
-            row_size = -1
-    if row_size == -1:
-        raise ValueError()
-    filtered_data = bytearray()
+                yield self._sign(_CHUNK_TYPE.IDAT, chunk_data)
 
-    for y in range(height):
-        row_start = y * row_size
-        row_end = row_start + row_size
-        row = image_data[row_start:row_end]
+    def IEND(self):
+        return self._sign(b"IEND", b"")
 
-        filtered_data.append(0)
-        filtered_data.extend(row)
+    def tRNS(self, transparency: list[int]):
+        return self._sign(_CHUNK_TYPE.tRNS, bytes(bytearray(transparency)))
 
-    compressed_data = zlib.compress(filtered_data)
-    compressor.flush()
+    def gAMA(self, gamma: float):
+        data = struct.pack(">I", int(gamma * 100000))
+        return self._sign(_CHUNK_TYPE.gAMA, data)
 
-    for i in range(0, len(compressed_data), chunk_size):
-        chunk_data = compressed_data[i : i + chunk_size]
-        if fdat:
-            yield sign_chunk(_CHUNK_TYPE.fdAT, struct.pack(">I", fdat) + chunk_data)
+    def iCCP(self, profile_name: str, profile_data: bytes):
+        data = profile_name.encode() + b"\x00" + profile_data
+        return self._sign(_CHUNK_TYPE.iCCP, data)
+
+    def sRGB(self, rendering_intent: _SRGB_RENDERING_INTENT = _SRGB_RENDERING_INTENT.SRGB_RENDERING_INTENT_PERCEPTUAL):
+        data = struct.pack(">B", rendering_intent)
+        return self._sign(_CHUNK_TYPE.sRGB, data)
+
+    def acTL(self, num_frames: int, num_plays: int):
+        data = struct.pack(">II", num_frames, num_plays)
+        return self._sign(_CHUNK_TYPE.acTL, data)
+
+    def fcTL(self, width: int, height: int, x_offset: int, y_offset: int, delay_num: int = 1, delay_den: int = 30, dispose_op: Disposal = Disposal.OP_NONE, blend_op: Blend = Blend.OP_SOURCE):
+        data = struct.pack(">IiiiiHHBB", self.apng_seq, width, height, x_offset, y_offset, delay_num, delay_den, dispose_op, blend_op)
+        self.apng_seq += 1
+        return self._sign(_CHUNK_TYPE.fcTL, data)
+
+    def tEXt(self, keyword: str, text: str) -> bytes:
+        data = keyword.encode() + _NULL_SEPARATOR + text.encode()
+        return self._sign(_CHUNK_TYPE.tEXt, data)
+
+    def zTXt(self, keyword: str, text: str) -> bytes:
+        data = keyword.encode() + _NULL_SEPARATOR + b"\x00" + zlib.compress(text.encode(), _ZLIB_COMPRESSION_LEVEL.COMPRESSION_LEVEL_9)
+        return self._sign(_CHUNK_TYPE.zTXt, data)
+
+    def iTXt(self, keyword: str, text: str, language_tag: str = "", translated_keyword: str = "", compression_flag: bool = False) -> bytes:
+        t1 = text.encode()
+        if compression_flag:
+            _text: bytes = zlib.compress(t1, _ZLIB_COMPRESSION_LEVEL.COMPRESSION_LEVEL_9)
+            compression_method = 0
         else:
-            yield sign_chunk(_CHUNK_TYPE.IDAT, chunk_data)
+            _text = t1
+            compression_method = 1
+        data = keyword.encode() + _NULL_SEPARATOR + _text + struct.pack(">?B", compression_flag, compression_method) + language_tag.encode() + _NULL_SEPARATOR + translated_keyword.encode() + _NULL_SEPARATOR + text.encode()
+        return self._sign(_CHUNK_TYPE.iTXt, data)
 
+    def pHYs(self, pixels_per_unit_x: int, pixels_per_unit_y: int, unit: _PHYS_UNIT = _PHYS_UNIT.PHYS_UNIT_METER):
+        data = struct.pack(">IIB", pixels_per_unit_x, pixels_per_unit_y, unit)
+        return self._sign(_CHUNK_TYPE.pHYs, data)
 
-def create_trns(transparency: list[int]):
-    data = b""
-    for alpha in transparency:
-        data += struct.pack(">B", alpha)
-    return sign_chunk(_CHUNK_TYPE.tRNS, data)
+    def tIME(self, year: int, month: int, day: int, hour: int, minute: int, second: int):
+        data = struct.pack(">HBBBBB", year, month, day, hour, minute, second)
+        return self._sign(_CHUNK_TYPE.tIME, data)
 
-
-def create_gama(gamma: float):
-    data = struct.pack(">I", int(gamma * 100000))
-    return sign_chunk(_CHUNK_TYPE.gAMA, data)
-
-
-def create_iccp(profile_name: str, profile_data: bytes):
-    data = profile_name.encode() + b"\x00" + profile_data
-    return sign_chunk(_CHUNK_TYPE.iCCP, data)
-
-
-def create_srgb(rendering_intent: _SRGB_RENDERING_INTENT = _SRGB_RENDERING_INTENT.SRGB_RENDERING_INTENT_PERCEPTUAL):
-    data = struct.pack(">B", rendering_intent)
-    return sign_chunk(_CHUNK_TYPE.sRGB, data)
-
-
-def create_actl(num_frames: int, num_plays: int):
-    if num_frames < 1 or num_frames > _BRD_S32:
-        raise ValueError("Invalid number of frames")
-    if num_plays < 0 or num_plays > _BRD_S16:
-        raise ValueError("Invalid number of plays")
-
-    data = struct.pack(">II", num_frames, num_plays)
-    return sign_chunk(_CHUNK_TYPE.acTL, data)
-
-
-def create_fctl(
-    seq: int,
-    width: int,
-    height: int,
-    x_offset: int,
-    y_offset: int,
-    delay_num: int = 1,
-    delay_den: int = 30,
-    dispose_op: _APNG_DISPOSE_OP = _APNG_DISPOSE_OP.APNG_DISPOSE_OP_NONE,
-    blend_op: _APNG_BLEND_OP = _APNG_BLEND_OP.APNG_BLEND_OP_SOURCE,
-):
-    if width > _BRD_S32 or height > _BRD_S32:
-        raise ValueError("Invalid image size")
-    if width <= 0 or height <= 0:
-        raise ValueError("Invalid image size")
-    if delay_num <= 0 or delay_den <= 0:
-        raise ValueError("Invalid delay")
-    if seq < 0 or seq > _BRD_S16:
-        raise ValueError("Invalid sequence number")
-    if x_offset < 0 or x_offset > _BRD_S32:
-        raise ValueError("Invalid x offset")
-    if y_offset < 0 or y_offset > _BRD_S32:
-        raise ValueError("Invalid y offset")
-    if dispose_op not in [0, 1, 2]:
-        raise ValueError("Invalid dispose operation")
-    if blend_op not in [0, 1]:
-        raise ValueError("Invalid blend operation")
-    data = struct.pack(
-        ">IiiiiHHBB",
-        seq,
-        width,
-        height,
-        x_offset,
-        y_offset,
-        delay_num,
-        delay_den,
-        dispose_op,
-        blend_op,
-    )
-    return sign_chunk(_CHUNK_TYPE.fcTL, data)
-
-
-def create_text(keyword: str, text: str) -> bytes:
-    data = keyword.encode() + _NULL_SEPARATOR + text.encode()
-    return sign_chunk(_CHUNK_TYPE.tEXt, data)
-
-
-def create_ztxt(keyword: str, text: str) -> bytes:
-    data = keyword.encode() + _NULL_SEPARATOR + b"\x00" + zlib.compress(text.encode(), _ZLIB_COMPRESSION_LEVEL.COMPRESSION_LEVEL_9)
-    return sign_chunk(_CHUNK_TYPE.zTXt, data)
-
-
-def cerate_itxt(keyword: str, text: str, language_tag: str = "", translated_keyword: str = "", compression_flag: bool = False) -> bytes:
-    t1 = text.encode()
-    if compression_flag:
-        _text: bytes = zlib.compress(t1, _ZLIB_COMPRESSION_LEVEL.COMPRESSION_LEVEL_9)
-        compression_method = 0
-    else:
-        _text = t1
-        compression_method = 1
-    data = keyword.encode() + _NULL_SEPARATOR + _text + struct.pack(">?B", compression_flag, compression_method) + language_tag.encode() + _NULL_SEPARATOR + translated_keyword.encode() + _NULL_SEPARATOR + text.encode()
-    return sign_chunk(_CHUNK_TYPE.iTXt, data)
-
-
-def create_phys(pixels_per_unit_x: int, pixels_per_unit_y: int, unit: _PHYS_UNIT = _PHYS_UNIT.PHYS_UNIT_METER):
-    data = struct.pack(">IIB", pixels_per_unit_x, pixels_per_unit_y, unit)
-    return sign_chunk(_CHUNK_TYPE.pHYs, data)
-
-
-def create_time(year: int, month: int, day: int, hour: int, minute: int, second: int):
-    data = struct.pack(">HBBBBB", year, month, day, hour, minute, second)
-    return sign_chunk(_CHUNK_TYPE.tIME, data)
-
-
-def create_sbit(significant_bits: list[int]):
-    data = b""
-    for bit in significant_bits:
-        data += struct.pack(">B", bit)
-    return sign_chunk(_CHUNK_TYPE.sBIT, data)
+    def sBIT(self, significant_bits: list[int]):
+        data = b""
+        for bit in significant_bits:
+            data += struct.pack(">B", bit)
+        return self._sign(_CHUNK_TYPE.sBIT, data)
 
 
 def create_png(
@@ -384,76 +322,42 @@ def create_png(
     color_type: _PNG_COLOR_TYPE = _PNG_COLOR_TYPE.RGB32,
     compression_level: _ZLIB_COMPRESSION_LEVEL | int = _ZLIB_COMPRESSION_LEVEL.COMPRESSION_LEVEL_9,
 ):
-    if width > _BRD_S32 or height > _BRD_S32:
-        raise ValueError("Invalid image size")
-    if width <= 0 or height <= 0:
-        raise ValueError("Invalid image size")
-    if bit_depth not in _ALLOWED_DEPTH_LIST[color_type]:
-        raise ValueError("Invalid bit depth for color type")
-    if compression_level < 0 or compression_level > 9:
-        raise ValueError("Invalid compression level")
     if apng and num_frames == -1:
         num_frames = len(image_data)
-    if apng and num_frames != len(image_data):
-        raise ValueError("Invalid number of frames")
-    if apng and delay_num <= 0 or delay_den <= 0:
-        raise ValueError("Invalid delay")
-    if apng and loop_times < 0 or loop_times > _BRD_S16:
-        raise ValueError("Invalid loop times")
-
+    x = P1(compression_level)
     png_data: bytes = b""
     png_data += bytes(_PNG_SIGNATURE)
-    png_data += create_ihdr(width, height, bit_depth, color_type)
-    png_data += create_text("Software", "SJH8130:png_encoder")
+    png_data += x.IHDR(width, height, bit_depth, color_type)
+    png_data += x.tEXt("Software", "SJH8130:png_encoder")
     if apng:
-        png_data += create_actl(num_frames, loop_times)
+        png_data += x.acTL(num_frames, loop_times)
         if num_frames == -1:
             num_frames = len(image_data)
-
-    for chunk in compress_xdat(image_data[0], width, height, bit_depth, color_type, chunk_size, compression_level, 0):
+    for chunk in x.XDAT(image_data[0], width, height, bit_depth, color_type, chunk_size):
         png_data += chunk
-
-    seq_num = 0
-    if apng and False:
-        png_data += create_fctl(
-            seq_num,
-            width,
-            height,
-            0,
-            0,
-            delay_num,
-            delay_den,
-        )
-        seq_num += 1
-
+    if apng and 0:
+        png_data += x.fcTL(width, height, 0, 0, delay_num, delay_den)
     if apng:
         for idx in range(0, num_frames):
-            png_data += create_fctl(seq_num, width, height, 0, 0, delay_num, delay_den)
-            seq_num += 1
-
-            for chunk in compress_xdat(image_data[idx], width, height, bit_depth, color_type, chunk_size, compression_level, seq_num):
+            png_data += x.fcTL(width, height, 0, 0, delay_num, delay_den)
+            for chunk in x.XDAT(image_data[idx], width, height, bit_depth, color_type, chunk_size, True):
                 png_data += chunk
-                seq_num += 1
-
-    png_data += _IEND
-
+    png_data += x.IEND()
     return png_data
 
 
 def encode_tile_image_to_apng(path_in, path_out, tile_width, tile_height, chunk_size=1048576, frame_cont=-1, fps=30):
     logger.info(f"{path_in=},{path_out=}")
-    image = Image.open(path_in).convert("RGB")
-
+    image = Image.open(path_in).convert("RGBA")
     frames: list[bytes] = []
     fc = 0
     vertical_frames = image.height // tile_height
     horizontal_frames = image.width // tile_width
-
     for v in range(vertical_frames):
         for h in range(horizontal_frames):
             box = (h * tile_width, v * tile_height, (h + 1) * tile_width, (v + 1) * tile_height)
             tile = image.crop(box)
-            # tile.save(f"Z:\\{fc+1}.png")
+            tile.save(f"Z:\\{fc+1}.png")
             frame_data = tile.tobytes()
             frames.append(frame_data)
             fc += 1
@@ -461,36 +365,70 @@ def encode_tile_image_to_apng(path_in, path_out, tile_width, tile_height, chunk_
                 break
         if fc == frame_cont:
             break
-
-    r = create_png(tile_width, tile_height, image_data=frames, chunk_size=chunk_size, apng=True, num_frames=fc, delay_num=1, delay_den=fps, loop_times=0, bit_depth=8, color_type=_PNG_COLOR_TYPE.RGB24, compression_level=_ZLIB_COMPRESSION_LEVEL.COMPRESSION_LEVEL_9)
+    r = create_png(tile_width, tile_height, image_data=frames, chunk_size=chunk_size, apng=True, num_frames=fc, delay_num=1, delay_den=fps, loop_times=0, bit_depth=8, color_type=_PNG_COLOR_TYPE.RGB32, compression_level=_ZLIB_COMPRESSION_LEVEL.COMPRESSION_LEVEL_9)
     write(path_out, r)
 
 
 def recompress_png(png_path, chunk_size=1048576, compression_level=_ZLIB_COMPRESSION_LEVEL.COMPRESSION_LEVEL_9):
     image = Image.open(png_path)
+    log.debug(image)
     width, height = image.size
-    bit_depth = image.mode.count("1") * 1 + image.mode.count("L") * 8 + image.mode.count("P") * 8 + image.mode.count("RGB") * 8 + image.mode.count("RGBA") * 8
     match image.mode:
-        case "1" | "P":
-            color_type = _PNG_COLOR_TYPE.INDEXED_COLOR
-            color_type = _PNG_COLOR_TYPE.INDEXED_COLOR
+        case "1":
+            color_type = _PNG_COLOR_TYPE.GRAY
+            bit_depth = 1
+        case "L;2":
+            color_type = _PNG_COLOR_TYPE.GRAY
+            bit_depth = 2
+        case "L;4":
+            color_type = _PNG_COLOR_TYPE.GRAY
+            bit_depth = 4
         case "L":
             color_type = _PNG_COLOR_TYPE.GRAY
+            bit_depth = 8
+        case "I;16B":
+            color_type = _PNG_COLOR_TYPE.GRAY
+            bit_depth = 16
+        case "P;1":
+            color_type = _PNG_COLOR_TYPE.INDEXED_COLOR
+            bit_depth = 1
+        case "P;2":
+            color_type = _PNG_COLOR_TYPE.INDEXED_COLOR
+            bit_depth = 2
+        case "P;4":
+            color_type = _PNG_COLOR_TYPE.INDEXED_COLOR
+            bit_depth = 4
+        case "P":
+            color_type = _PNG_COLOR_TYPE.INDEXED_COLOR
+            bit_depth = 8
         case "LA":
-            color_type = _PNG_COLOR_TYPE.GREYSCALE_WITH_ALPHA
+            color_type = _PNG_COLOR_TYPE.GRAYSCALE_WITH_ALPHA
+            bit_depth = 16
+        case "LA;16B":
+            color_type = _PNG_COLOR_TYPE.GRAYSCALE_WITH_ALPHA
+            bit_depth = 32
         case "RGB":
             color_type = _PNG_COLOR_TYPE.TRUECOLOR
+            bit_depth = 24
+        case "RGB;16B":
+            color_type = _PNG_COLOR_TYPE.TRUECOLOR
+            bit_depth = 48
         case "RGBA":
             color_type = _PNG_COLOR_TYPE.TRUECOLOR_WITH_ALPHA
+            bit_depth = 32
+        case "RGBA;16B":
+            color_type = _PNG_COLOR_TYPE.TRUECOLOR_WITH_ALPHA
+            bit_depth = 64
         case _:
             color_type = -1
+            bit_depth = -1
             raise
     r = create_png(width, height, image_data=[image.tobytes()], chunk_size=chunk_size, apng=False, num_frames=1, delay_num=1, delay_den=1, loop_times=1, bit_depth=bit_depth, color_type=color_type, compression_level=compression_level)
     write(png_path, r)
 
 
 def write(path, data):
-    if not (isinstance(data, bytes) or isinstance(data, str)):
+    if not (isinstance(data, (bytes, str))):
         raise TypeError
     if isinstance(data, str):
         with open(path, "w", encoding="utf-8") as fp:
@@ -501,9 +439,6 @@ def write(path, data):
 
 
 if __name__ == "__main__":
-    po = "Z:\\"
-    xx = [
-    ]
     for p_in in xx:
         pb = os.path.basename(p_in)
         encode_tile_image_to_apng(p_in, os.path.join(po, "A_" + pb), tile_width=256, tile_height=256, frame_cont=120, fps=30)

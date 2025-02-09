@@ -126,6 +126,7 @@ def _get_special_danmaku(vp: _VideoPart, input: dm_pb2.DmWebViewReply, session: 
 
 
 def _get_json(v: _Video, session: requests.Session):
+    raise Exception("TODO")
     _HEADERS = {
         "Accept-Encoding": AE,
         "Origin": "https://www.bilibili.com",
@@ -133,7 +134,7 @@ def _get_json(v: _Video, session: requests.Session):
         "User-Agent": UA,
         "Connection": "keep-alive",
     }
-    html: str = str(_downloader(f"", _HEADERS, session), encoding="utf-8")
+    html: str = str(_downloader("", _HEADERS, session), encoding="utf-8")
     soup = bs4.BeautifulSoup(html, "lxml")
     json_dict: dict = {}
     for script in soup.find_all("script"):
@@ -145,7 +146,7 @@ def _get_json(v: _Video, session: requests.Session):
 
 
 def _main(video: _Video):
-    if video == None:
+    if video is None:
         return
     url_info_1n = f"https://api.bilibili.com/x/web-interface/view?bvid={video.bvid}"
     url_info_1e = "https://api.bilibili.com/x/web-interface/wbi/view?" + gen_w_rid({"aid": video.avid_n})
@@ -158,7 +159,7 @@ def _main(video: _Video):
         "User-Agent": UA,
         "Connection": "keep-alive",
     }
-    video_info_0 = _get_json(video, session)
+    # video_info_0 = _get_json(video, session)
     # ================================ 视频信息1
     video_info_1 = _downloader(url_info_1n, headers, session)
     video_info_1_load = json.loads(video_info_1)
@@ -189,7 +190,7 @@ def _main(video: _Video):
     if json_info["aid"] != video.bvid:
         print(f"[avid]: avid mismatch av{json_info['aid']}|{video.bvid}")
     # ================================ 字幕
-    if json_info["subtitle"] != None:
+    if json_info["subtitle"] is not None:
         for subs in json_info["subtitle"]["list"]:
             _data = _downloader(subs["subtitle_url"], headers, session)
             write_file(f"[{video.bvid}]_[Subtitle]_[{subs['id']}]_[{subs['lan']}].bcc", _data)
@@ -211,7 +212,7 @@ def _main(video: _Video):
         write_file(f"[{video.bvid}]_[{vp.cid}]_[BAS]_[INFO].bin", extra_info_proto_binary)
         extra_info_proto = dm_pb2.DmWebViewReply()
         extra_info_proto.ParseFromString(extra_info_proto_binary)
-        extra_info_json = MessageToDict(extra_info_proto)
+        # extra_info_json = MessageToDict(extra_info_proto)
         danmaku_binary_list = _get_danmaku(vp, this["duration"], session)
         danmaku_list = []
         danmakuColorful_list = []
