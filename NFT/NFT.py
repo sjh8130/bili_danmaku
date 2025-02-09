@@ -6,11 +6,14 @@ import time
 
 import requests
 import brotli  # type: ignore[import-untyped]
+import requests
+from loguru import logger
 
+log = logger.bind(user="NFT")
 ssl._create_default_https_context = ssl._create_unverified_context
 requests.packages.urllib3.disable_warnings()  # type: ignore[attr-defined]
 
-_headers = {
+_HEADERS = {
     "Accept-Encoding": "gzip, deflate, bzip2, br, zstd",
     "Origin": "https://www.bilibili.com",
     "Referer": "https://www.bilibili.com",
@@ -23,29 +26,28 @@ _b = brotli.decompress(_b)
 _C: bytes = b'{"code":12006047,"message":"12006047","ttl":1,"data":null}'
 
 
-def _downloader(pn: int | str, item_id: int | str, ps: int | str) -> tuple[int, bytes]:
+def _downloader(pn: int | str, item_id: int | str, ps: int | str) -> bytes:
     retries = 0
     while retries < 3:
         try:
             response = session.get(
                 f"https://baselabs.bilibili.com/x/gallery/nft/collect/list?ps={ps}&pn={pn}&item_id={item_id}",
-                headers=_headers,
+                headers=_HEADERS,
                 verify=False,
                 timeout=20,
             )
             time.sleep(2)
             if isinstance(response.content, bytes):
-                content = response.content
-                print(f"{item_id=:<8}{pn=:<4}{len(content):<8}{retries=:<4}", end=" ")
-                if content != _b:
-                    return content
+                print(f"{item_id=:<8}{pn=:<4}{len(response.content):<8}{retries=:<4}", end=" ")
+                if response.content != _b:
+                    return response.content
         except requests.exceptions.Timeout:
             retries += 1
         if retries == 3:
             # raise Exception("请求超时次数达到上限")
             ...
         retries += 1
-    return _a
+    return _A
 
 
 def _get_data(item_id: int | str, base_path: str) -> int:
@@ -58,7 +60,7 @@ def _get_data(item_id: int | str, base_path: str) -> int:
     item_name = "ERROR!"
     while run:
         data = _downloader(pn, item_id, ps)
-        if data == _a:
+        if data == _A:
             print(f"[NFT]{item_id}:未找到该收藏品", end="\r")
             run = False
             if pn == 1:

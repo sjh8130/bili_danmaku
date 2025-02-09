@@ -43,76 +43,76 @@ with open(in_path, "r", 1048576, encoding="utf-8") as F_in, io.open(outPath, "w"
             del temp_json2["date"]  # 6
             try:
                 del temp_json2["ctime"]  # 7
-            except:
+            except KeyError:
                 pass
             try:
                 del temp_json2["dmType"]  # 8
-            except:
+            except KeyError:
                 pass
             try:
                 del temp_json2["rnd"]  # 9
-            except:
+            except KeyError:
                 pass
             try:
                 del temp_json2["type"]  # 11
-            except:
+            except KeyError:
                 pass
             try:
                 del temp_json2["bizScene"]  # 11
-            except:
+            except KeyError:
                 pass
             del temp_json2["bubble"]  # 12
             try:
                 del temp_json2["emoticons"]  # 14
-            except:
+            except KeyError:
                 pass
             del temp_json2["aggregation"]  # 17
             del temp_json2["check"]  # 19
             del temp_json2["room"]  # 21
             try:
                 del temp_json2["icon"]  # 22
-            except:
+            except KeyError:
                 pass
             del temp_json2["user"]["uid"]
             del temp_json2["user"]["name"]
             try:
                 del temp_json2["user"]["nameColor"]
-            except:
+            except KeyError:
                 pass
             try:
                 del temp_json2["user"]["face"]
-            except:
+            except KeyError:
                 pass
             del temp_json2["user"]["level"]["rank"]
             del temp_json2["user"]["mobileVerify"]
             del temp_json2["user"]["rank"]
             try:
                 del temp_json2["user"]["medal"]["name"]
-            except:
+            except KeyError:
                 pass
             try:
                 del temp_json2["user"]["medal"]["level"]
-            except:
+            except KeyError:
                 pass
             try:
                 del temp_json2["user"]["medal"]["light"]
-            except:
+            except KeyError:
                 pass
             try:
                 del temp_json2["user"]["medal"]["color"]
-            except:
+            except KeyError:
                 pass
             try:
                 del temp_json2["user"]["medal"]["borderColor"]
-            except:
+            except KeyError:
                 pass
             try:
                 del temp_json2["user"]["medal"]["gradientStartColor"]
-            except:
+            except KeyError:
                 pass
             try:
                 del temp_json2["user"]["medal"]["gradientEndColor"]
-            except:
+            except KeyError:
                 pass
             del temp_json2["user"]["medal"]
             del temp_json2["user"]["level"]["level"]

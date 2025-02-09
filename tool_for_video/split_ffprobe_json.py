@@ -2,6 +2,8 @@ import json
 import sys
 
 file_name = sys.argv[1]
+with open(file_name, "r", encoding="utf-8") as f:
+    data: dict = json.load(f)
 
 
 def get_file_name_base(file_name: str):
@@ -13,15 +15,12 @@ def get_file_name_base(file_name: str):
 
 
 file_name_base = get_file_name_base(file_name)
+packets = [i for i in data.get("packets_and_frames", []) if i["type"] == "packet"]
+frames = [i for i in data.get("packets_and_frames", []) if i["type"] == "frame"]
 
-with open(file_name, "r", encoding="utf-8") as f:
-    data = json.load(f)
 
 if not data:
     exit()
-
-packets = [i for i in data.get("packets_and_frames", []) if i["type"] == "packet"]
-frames = [i for i in data.get("packets_and_frames", []) if i["type"] == "frame"]
 
 
 def write_json_file(file_name, data_dict):

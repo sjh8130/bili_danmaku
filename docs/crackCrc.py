@@ -260,7 +260,6 @@ crc_table = [
     1510334235,
     755167117,
 ]
-count = 0
 
 
 def crc32(string):
@@ -309,6 +308,7 @@ def deep_check(i, index):
 
 
 def main(string):
+    count = 0
     index = [0 for x in range(4)]
     i = 0
     ht = int(f"0x{string}", 16) ^ 0xFFFFFFFF
@@ -321,7 +321,7 @@ def main(string):
         if lastindex == index[3]:
             deepCheckData = deep_check(i, index)
             if deepCheckData[0]:
-                count + 1
+                count += 1
                 print(f"{i}{deepCheckData[1]}")
                 # break
         if count == 3:
@@ -330,7 +330,6 @@ def main(string):
 
 
 # 2147483648
-
 if __name__ == "__main__":
     start_time = time.time()
     main(sys.argv[1])

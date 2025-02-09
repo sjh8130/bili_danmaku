@@ -72,6 +72,7 @@ message SendGiftBroadcast {
         int64   gift_tip_price              = 7;
     }
     message BroadCastGiftInfo{
+        // JS:GiftMaterialSnapShot, JAVA:BroadCastGiftInfo
         string img_basic = 1;
         string webp = 2;
         int64 effect_id = 3;
@@ -161,6 +162,7 @@ message SendGiftBroadcast {
         OfficialInfo    official_info       = 7;
     }
     message UserInfoMedal{                  //15.3
+        // JS:Medal, JAVA:UserInfoMedal
         string          name                    = 1;
         int64           level                   = 2;
         int64           color_start             = 3;
