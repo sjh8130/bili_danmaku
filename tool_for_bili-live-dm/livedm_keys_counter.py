@@ -19,7 +19,13 @@ def main():
             continue
         livedm_keys_counter_lib.p_main(path)
     with open(os.path.join(output_dir, p1), "w", encoding="utf-8") as fp:
-        json.dump(livedm_keys_counter_lib.result, fp, ensure_ascii=False, indent="\t", sort_keys=True)
+        json.dump(
+            livedm_keys_counter_lib.result,
+            fp,
+            ensure_ascii=False,
+            indent="\t",
+            sort_keys=True,
+        )
 
 
 if __name__ == "__main__":

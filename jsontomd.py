@@ -2,7 +2,7 @@ import json
 
 try:
     import pyperclip
-except:
+except ImportError:
     pass
 # 读取json数据
 f = input("input:")

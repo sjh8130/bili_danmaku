@@ -1,14 +1,18 @@
 import math
 import struct
-import sys
 import time
-from typing import Generator
 import zlib
-from enum import IntEnum, StrEnum
+from enum import IntEnum, StrEnum, auto
+from typing import Generator, NamedTuple
 
 from loguru import logger
 from PIL import Image
+from tqdm import trange
 
+try:
+    import oxipng
+except ImportError:
+    oxipng = False
 logger.bind(user="PNG")
 log = logger
 
@@ -105,6 +109,12 @@ class _ZLIB_COMPRESSION_LEVEL(IntEnum):
     COMPRESSION_LEVEL_7 = 7
     COMPRESSION_LEVEL_8 = 8
     COMPRESSION_LEVEL_9 = 9
+    Z_BEST_SPEED = zlib.Z_BEST_SPEED
+    Z_NO_COMPRESSION = zlib.Z_NO_COMPRESSION
+    Z_BEST_COMPRESSION = zlib.Z_BEST_COMPRESSION
+    X_BRUTE = auto()
+    X_OXIPNG = auto()
+    COMPRESSION_LEVEL_MAX = auto()
 
 
 class _SRGB_RENDERING_INTENT(IntEnum):
@@ -120,37 +130,75 @@ class _PHYS_UNIT(IntEnum):
 
 
 class _CHUNK_TYPE(StrEnum):
+    """https://www.w3.org/TR/png-3/#11Chunks"""
+
     # Critical chunks
-    IHDR = "IHDR"  # Image header
-    PLTE = "PLTE"  # color Palette
-    IDAT = "IDAT"  # Image data
-    IEND = "IEND"  # Image trailer
-    tRNS = "tRNS"  # Transparency
+    IHDR = "IHDR"
+    """Image header"""
+    PLTE = "PLTE"
+    """Palette"""
+    IDAT = "IDAT"
+    """Image data"""
+    IEND = "IEND"
+    """Image trailer"""
+    tRNS = "tRNS"
+    """Transparency"""
     # Color space information
-    cHRM = "cHRM"  # Primary chromaticities and white point
-    gAMA = "gAMA"  # Image gamma
-    iCCP = "iCCP"  # Embedded ICC profile
-    sBIT = "sBIT"  # Significant bits
-    sRGB = "sRGB"  # Standard RGB color space
-    cICP = "cICP"  # Coding-independent code points for video signal type identification***
-    mDCv = "mDCv"  # Mastering Display Color Volume***
-    cLLi = "cLLi"  # Content Light Level Information***
+    cHRM = "cHRM"
+    """Primary chromaticities and white point"""
+    gAMA = "gAMA"
+    """Image gamma"""
+    iCCP = "iCCP"
+    """Embedded ICC profile"""
+    sBIT = "sBIT"
+    """Significant bits"""
+    sRGB = "sRGB"
+    """Standard RGB color space"""
+    cICP = "cICP"
+    """Coding-independent code points for video signal type identification***"""
+    mDCv = "mDCv"
+    """Mastering Display Color Volume***"""
+    cLLi = "cLLi"
+    """Content Light Level Information***"""
     # Textual information
     iTXt = "iTXt"
+    """International textual data"""
     tEXt = "tEXt"
+    """Textual data"""
     zTXt = "zTXt"
+    """Compressed textual data"""
     # Miscellaneous information
-    bKGD = "bKGD"  # Background color***
+    bKGD = "bKGD"
+    """Background color***"""
     hIST = "hIST"  # ***
+    """Image histogram"""
     pHYs = "pHYs"
+    """Physical pixel dimensions"""
     sPLT = "sPLT"  # ***
+    """Suggested palette"""
     eXIf = "eXIf"  # ***
+    """Exchangeable Image File (Exif) Profile"""
     # Time information
     tIME = "tIME"
+    """Image last-modification time"""
     # Animation information
     acTL = "acTL"
+    """Animation Control Chunk"""
     fcTL = "fcTL"
+    """Frame Control Chunk"""
     fdAT = "fdAT"
+    """Frame Data Chunk"""
+
+
+def validate(who, value, left, right) -> bool:
+
+    return bool()
+
+
+class Palette(NamedTuple):
+    r: int | bytes
+    g: int | bytes
+    b: int | bytes
 
 
 class P1:
@@ -168,17 +216,46 @@ class P1:
         logger.debug(f"chunk_type={str(chunk_type,'utf-8')}, {chunk_length=}")
         return struct.pack(">I", chunk_length) + chunk_type + data + chunk_crc
 
-    def IHDR(self, width: int, height: int, bit_depth: int, color_type: _PNG_COLOR_TYPE, compression_method: int = 0, filter_method: int = 0, interlace_method: int = 0):
-        data = struct.pack(">IIBBBBB", width, height, bit_depth, color_type, compression_method, filter_method, interlace_method)
+    def IHDR(
+        self,
+        width: int,
+        height: int,
+        bit_depth: int,
+        color_type: _PNG_COLOR_TYPE,
+        compression_method: int = 0,
+        filter_method: int = 0,
+        interlace_method: int = 0,
+    ):
+        data = struct.pack(
+            ">IIBBBBB",
+            width,
+            height,
+            bit_depth,
+            color_type,
+            compression_method,
+            filter_method,
+            interlace_method,
+        )
         return self._sign(_CHUNK_TYPE.IHDR, data)
 
-    def PLTE(self, palette: list[tuple[int, int, int]]):
+    def PLTE(self, palette: list[Palette]):
+        if 0 >= len(palette) > 256:
+            raise ValueError()
         data = b""
         for color in palette:
             data += struct.pack(">BBB", color[0], color[1], color[2])
         return self._sign(_CHUNK_TYPE.PLTE, data)
 
-    def XDAT(self, image_data: bytes, width: int, height: int, bit_depth: int, color_type: _PNG_COLOR_TYPE, chunk_size: int, apng: bool = False) -> Generator[bytes]:
+    def XDAT(
+        self,
+        image_data: bytes,
+        width: int,
+        height: int,
+        bit_depth: int,
+        color_type: _PNG_COLOR_TYPE,
+        chunk_size: int,
+        apng: bool = False,
+    ) -> Generator[bytes]:
         compressor = zlib.compressobj(self.compression_level, wbits=15, memLevel=9)
         match color_type:
             case 0:
@@ -242,7 +319,9 @@ class P1:
         for i in range(0, len(compressed_data), chunk_size):
             chunk_data = compressed_data[i : i + chunk_size]
             if apng:
-                yield self._sign(_CHUNK_TYPE.fdAT, struct.pack(">I", self.apng_seq) + chunk_data)
+                yield self._sign(
+                    _CHUNK_TYPE.fdAT, struct.pack(">I", self.apng_seq) + chunk_data
+                )
                 self.apng_seq += 1
             else:
                 yield self._sign(_CHUNK_TYPE.IDAT, chunk_data)
@@ -261,7 +340,10 @@ class P1:
         data = profile_name.encode() + b"\x00" + profile_data
         return self._sign(_CHUNK_TYPE.iCCP, data)
 
-    def sRGB(self, rendering_intent: _SRGB_RENDERING_INTENT = _SRGB_RENDERING_INTENT.SRGB_RENDERING_INTENT_PERCEPTUAL):
+    def sRGB(
+        self,
+        rendering_intent: _SRGB_RENDERING_INTENT = _SRGB_RENDERING_INTENT.SRGB_RENDERING_INTENT_PERCEPTUAL,
+    ):
         data = struct.pack(">B", rendering_intent)
         return self._sign(_CHUNK_TYPE.sRGB, data)
 
@@ -269,8 +351,29 @@ class P1:
         data = struct.pack(">II", num_frames, num_plays)
         return self._sign(_CHUNK_TYPE.acTL, data)
 
-    def fcTL(self, width: int, height: int, x_offset: int, y_offset: int, delay_num: int = 1, delay_den: int = 30, dispose_op: Disposal = Disposal.OP_NONE, blend_op: Blend = Blend.OP_SOURCE):
-        data = struct.pack(">IiiiiHHBB", self.apng_seq, width, height, x_offset, y_offset, delay_num, delay_den, dispose_op, blend_op)
+    def fcTL(
+        self,
+        width: int,
+        height: int,
+        x_offset: int,
+        y_offset: int,
+        delay_num: int = 1,
+        delay_den: int = 30,
+        dispose_op: Disposal = Disposal.OP_NONE,
+        blend_op: Blend = Blend.OP_SOURCE,
+    ):
+        data = struct.pack(
+            ">IiiiiHHBB",
+            self.apng_seq,
+            width,
+            height,
+            x_offset,
+            y_offset,
+            delay_num,
+            delay_den,
+            dispose_op,
+            blend_op,
+        )
         self.apng_seq += 1
         return self._sign(_CHUNK_TYPE.fcTL, data)
 
@@ -279,25 +382,56 @@ class P1:
         return self._sign(_CHUNK_TYPE.tEXt, data)
 
     def zTXt(self, keyword: str, text: str) -> bytes:
-        data = keyword.encode() + _NULL_SEPARATOR + b"\x00" + zlib.compress(text.encode(), _ZLIB_COMPRESSION_LEVEL.COMPRESSION_LEVEL_9)
+        data = (
+            keyword.encode()
+            + _NULL_SEPARATOR
+            + b"\x00"
+            + zlib.compress(text.encode(), _ZLIB_COMPRESSION_LEVEL.COMPRESSION_LEVEL_9)
+        )
         return self._sign(_CHUNK_TYPE.zTXt, data)
 
-    def iTXt(self, keyword: str, text: str, language_tag: str = "", translated_keyword: str = "", compression_flag: bool = False) -> bytes:
+    def iTXt(
+        self,
+        keyword: str,
+        text: str,
+        language_tag: str = "",
+        translated_keyword: str = "",
+        compression_flag: bool = False,
+    ) -> bytes:
         t1 = text.encode()
         if compression_flag:
-            _text: bytes = zlib.compress(t1, _ZLIB_COMPRESSION_LEVEL.COMPRESSION_LEVEL_9)
+            _text: bytes = zlib.compress(
+                t1, _ZLIB_COMPRESSION_LEVEL.COMPRESSION_LEVEL_9
+            )
             compression_method = 0
         else:
             _text = t1
             compression_method = 1
-        data = keyword.encode() + _NULL_SEPARATOR + _text + struct.pack(">?B", compression_flag, compression_method) + language_tag.encode() + _NULL_SEPARATOR + translated_keyword.encode() + _NULL_SEPARATOR + text.encode()
+        data = (
+            keyword.encode()
+            + _NULL_SEPARATOR
+            + _text
+            + struct.pack(">?B", compression_flag, compression_method)
+            + language_tag.encode()
+            + _NULL_SEPARATOR
+            + translated_keyword.encode()
+            + _NULL_SEPARATOR
+            + text.encode()
+        )
         return self._sign(_CHUNK_TYPE.iTXt, data)
 
-    def pHYs(self, pixels_per_unit_x: int, pixels_per_unit_y: int, unit: _PHYS_UNIT = _PHYS_UNIT.PHYS_UNIT_METER):
+    def pHYs(
+        self,
+        pixels_per_unit_x: int,
+        pixels_per_unit_y: int,
+        unit: _PHYS_UNIT = _PHYS_UNIT.PHYS_UNIT_METER,
+    ):
         data = struct.pack(">IIB", pixels_per_unit_x, pixels_per_unit_y, unit)
         return self._sign(_CHUNK_TYPE.pHYs, data)
 
-    def tIME(self, year: int, month: int, day: int, hour: int, minute: int, second: int):
+    def tIME(
+        self, year: int, month: int, day: int, hour: int, minute: int, second: int
+    ):
         data = struct.pack(">HBBBBB", year, month, day, hour, minute, second)
         return self._sign(_CHUNK_TYPE.tIME, data)
 
@@ -320,7 +454,9 @@ def create_png(
     loop_times: int = 1,
     bit_depth: int = 8,
     color_type: _PNG_COLOR_TYPE = _PNG_COLOR_TYPE.RGB32,
-    compression_level: _ZLIB_COMPRESSION_LEVEL | int = _ZLIB_COMPRESSION_LEVEL.COMPRESSION_LEVEL_9,
+    compression_level: (
+        _ZLIB_COMPRESSION_LEVEL | int
+    ) = _ZLIB_COMPRESSION_LEVEL.COMPRESSION_LEVEL_9,
 ):
     if apng and num_frames == -1:
         num_frames = len(image_data)
@@ -333,20 +469,32 @@ def create_png(
         png_data += x.acTL(num_frames, loop_times)
         if num_frames == -1:
             num_frames = len(image_data)
-    for chunk in x.XDAT(image_data[0], width, height, bit_depth, color_type, chunk_size):
+    for chunk in x.XDAT(
+        image_data[0], width, height, bit_depth, color_type, chunk_size
+    ):
         png_data += chunk
     if apng and 0:
         png_data += x.fcTL(width, height, 0, 0, delay_num, delay_den)
     if apng:
-        for idx in range(0, num_frames):
+        for idx in trange(0, num_frames):
             png_data += x.fcTL(width, height, 0, 0, delay_num, delay_den)
-            for chunk in x.XDAT(image_data[idx], width, height, bit_depth, color_type, chunk_size, True):
+            for chunk in x.XDAT(
+                image_data[idx], width, height, bit_depth, color_type, chunk_size, True
+            ):
                 png_data += chunk
     png_data += x.IEND()
     return png_data
 
 
-def encode_tile_image_to_apng(path_in, path_out, tile_width, tile_height, chunk_size=1048576, frame_cont=-1, fps=30):
+def encode_tile_image_to_apng(
+    path_in,
+    path_out,
+    tile_width,
+    tile_height,
+    chunk_size=1048576,
+    frame_cont=-1,
+    fps=30,
+):
     logger.info(f"{path_in=},{path_out=}")
     image = Image.open(path_in).convert("RGBA")
     frames: list[bytes] = []
@@ -355,7 +503,12 @@ def encode_tile_image_to_apng(path_in, path_out, tile_width, tile_height, chunk_
     horizontal_frames = image.width // tile_width
     for v in range(vertical_frames):
         for h in range(horizontal_frames):
-            box = (h * tile_width, v * tile_height, (h + 1) * tile_width, (v + 1) * tile_height)
+            box = (
+                h * tile_width,
+                v * tile_height,
+                (h + 1) * tile_width,
+                (v + 1) * tile_height,
+            )
             tile = image.crop(box)
             tile.save(f"Z:\\{fc+1}.png")
             frame_data = tile.tobytes()
@@ -365,11 +518,28 @@ def encode_tile_image_to_apng(path_in, path_out, tile_width, tile_height, chunk_
                 break
         if fc == frame_cont:
             break
-    r = create_png(tile_width, tile_height, image_data=frames, chunk_size=chunk_size, apng=True, num_frames=fc, delay_num=1, delay_den=fps, loop_times=0, bit_depth=8, color_type=_PNG_COLOR_TYPE.RGB32, compression_level=_ZLIB_COMPRESSION_LEVEL.COMPRESSION_LEVEL_9)
+    r = create_png(
+        tile_width,
+        tile_height,
+        image_data=frames,
+        chunk_size=chunk_size,
+        apng=True,
+        num_frames=fc,
+        delay_num=1,
+        delay_den=fps,
+        loop_times=0,
+        bit_depth=8,
+        color_type=_PNG_COLOR_TYPE.RGB32,
+        compression_level=_ZLIB_COMPRESSION_LEVEL.COMPRESSION_LEVEL_9,
+    )
     write(path_out, r)
 
 
-def recompress_png(png_path, chunk_size=1048576, compression_level=_ZLIB_COMPRESSION_LEVEL.COMPRESSION_LEVEL_9):
+def recompress_png(
+    png_path,
+    chunk_size=1048576,
+    compression_level=_ZLIB_COMPRESSION_LEVEL.COMPRESSION_LEVEL_9,
+):
     image = Image.open(png_path)
     log.debug(image)
     width, height = image.size
@@ -423,7 +593,20 @@ def recompress_png(png_path, chunk_size=1048576, compression_level=_ZLIB_COMPRES
             color_type = -1
             bit_depth = -1
             raise
-    r = create_png(width, height, image_data=[image.tobytes()], chunk_size=chunk_size, apng=False, num_frames=1, delay_num=1, delay_den=1, loop_times=1, bit_depth=bit_depth, color_type=color_type, compression_level=compression_level)
+    r = create_png(
+        width,
+        height,
+        image_data=[image.tobytes()],
+        chunk_size=chunk_size,
+        apng=False,
+        num_frames=1,
+        delay_num=1,
+        delay_den=1,
+        loop_times=1,
+        bit_depth=bit_depth,
+        color_type=color_type,
+        compression_level=compression_level,
+    )
     write(png_path, r)
 
 
@@ -439,9 +622,10 @@ def write(path, data):
 
 
 if __name__ == "__main__":
-    for p_in in xx:
-        pb = os.path.basename(p_in)
-        encode_tile_image_to_apng(p_in, os.path.join(po, "A_" + pb), tile_width=256, tile_height=256, frame_cont=120, fps=30)
-    # os.system("ffmpeg -r 30 -i Z:\\%d.png -compression_level 9 -plays 0 Z:\\2.apng")
-    # for img in sys.argv[1:]:
-    #     recompress_png(img, chunk_size=1048576, compression_level=9)
+    try:
+        raise
+    except KeyboardInterrupt:
+        print()
+    except Exception as e:
+        log.exception(e)
+    time.sleep(10)

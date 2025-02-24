@@ -90,7 +90,10 @@ def encWbi(params: dict, img_key: str, sub_key: str):
     params["wts"] = curr_time  # 添加 wts 字段
     params = dict(sorted(params.items()))  # 按照 key 重排参数
     # 过滤 value 中的 "!'()*" 字符
-    params = {k: "".join(filter(lambda chr: chr not in "!'()*", str(v))) for k, v in params.items()}
+    params = {
+        k: "".join(filter(lambda chr: chr not in "!'()*", str(v)))
+        for k, v in params.items()
+    }
     query = urllib.parse.urlencode(params)  # 序列化参数
     wbi_sign = md5((query + mixin_key).encode()).hexdigest()  # 计算 w_rid
     params["w_rid"] = wbi_sign
@@ -100,8 +103,12 @@ def encWbi(params: dict, img_key: str, sub_key: str):
 @lru_cache
 def getWbiKeys() -> tuple[str, str]:
     "获取最新的 img_key 和 sub_key"
-    headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36"}
-    resp = requests.get("https://api.bilibili.com/x/web-interface/nav", headers=headers, verify=False)
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36 Edg/133.0.0.0"
+    }
+    resp = requests.get(
+        "https://api.bilibili.com/x/web-interface/nav", headers=headers, verify=False
+    )
     resp.raise_for_status()
     json_content = resp.json()
     img_url: str = json_content["data"]["wbi_img"]["img_url"]

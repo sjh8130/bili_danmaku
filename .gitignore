@@ -27,5 +27,9 @@ x2.py
 X3_emoji.py
 
 # tmp
+*.exp
+*.lib
+*.obj
 *.pyc
+*.pyd
 *.tmp

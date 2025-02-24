@@ -60,7 +60,10 @@ def main(base_url: str, target):
     print(f"Resolved {domain} to {num_ips} IP address(es)")
     num_threads = num_ips  # You can adjust the number of threads as needed
     chunk_size = math.ceil((target + 1) / num_threads)
-    chunks = [(i * chunk_size, min((i + 1) * chunk_size, target + 1)) for i in range(num_threads)]
+    chunks = [
+        (i * chunk_size, min((i + 1) * chunk_size, target + 1))
+        for i in range(num_threads)
+    ]
     print(chunks)
     with concurrent.futures.ThreadPoolExecutor(max_workers=num_threads) as executor:
         futures = []

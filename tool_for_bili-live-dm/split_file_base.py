@@ -27,37 +27,91 @@ class SPLIT_SEL(IntEnum):
 @lru_cache(10000)
 def _s0(timestamp: int) -> datetime:
     _a = datetime.fromtimestamp(timestamp, tz=_TZ)
-    return datetime(year=_a.year, month=1, day=1, hour=0, minute=0, second=0, microsecond=0, tzinfo=_TZ)
+    return datetime(
+        year=_a.year,
+        month=1,
+        day=1,
+        hour=0,
+        minute=0,
+        second=0,
+        microsecond=0,
+        tzinfo=_TZ,
+    )
 
 
 @lru_cache(10000)
 def _s1(timestamp: int) -> datetime:
     _a = datetime.fromtimestamp(timestamp, tz=_TZ)
-    return datetime(year=_a.year, month=_a.month, day=1, hour=0, minute=0, second=0, microsecond=0, tzinfo=_TZ)
+    return datetime(
+        year=_a.year,
+        month=_a.month,
+        day=1,
+        hour=0,
+        minute=0,
+        second=0,
+        microsecond=0,
+        tzinfo=_TZ,
+    )
 
 
 @lru_cache(10000)
 def _s2(timestamp: int) -> datetime:
     _a = datetime.fromtimestamp(timestamp, tz=_TZ)
-    return datetime(year=_a.year, month=_a.month, day=_a.day, hour=0, minute=0, second=0, microsecond=0, tzinfo=_TZ)
+    return datetime(
+        year=_a.year,
+        month=_a.month,
+        day=_a.day,
+        hour=0,
+        minute=0,
+        second=0,
+        microsecond=0,
+        tzinfo=_TZ,
+    )
 
 
 @lru_cache(10000)
 def _s3(timestamp: int) -> datetime:
     _a = datetime.fromtimestamp(timestamp, tz=_TZ)
-    return datetime(year=_a.year, month=_a.month, day=_a.day, hour=_a.hour, minute=0, second=0, microsecond=0, tzinfo=_TZ)
+    return datetime(
+        year=_a.year,
+        month=_a.month,
+        day=_a.day,
+        hour=_a.hour,
+        minute=0,
+        second=0,
+        microsecond=0,
+        tzinfo=_TZ,
+    )
 
 
 @lru_cache(10000)
 def _s4(timestamp: int) -> datetime:
     _a = datetime.fromtimestamp(timestamp, tz=_TZ)
-    return datetime(year=_a.year, month=_a.month, day=_a.day, hour=_a.hour, minute=_a.minute, second=0, microsecond=0, tzinfo=_TZ)
+    return datetime(
+        year=_a.year,
+        month=_a.month,
+        day=_a.day,
+        hour=_a.hour,
+        minute=_a.minute,
+        second=0,
+        microsecond=0,
+        tzinfo=_TZ,
+    )
 
 
 @lru_cache(10000)
 def _s5(timestamp: int) -> datetime:
     _a = datetime.fromtimestamp(timestamp, tz=_TZ)
-    return datetime(year=_a.year, month=_a.month, day=_a.day, hour=_a.hour, minute=_a.minute, second=_a.second, microsecond=0, tzinfo=_TZ)
+    return datetime(
+        year=_a.year,
+        month=_a.month,
+        day=_a.day,
+        hour=_a.hour,
+        minute=_a.minute,
+        second=_a.second,
+        microsecond=0,
+        tzinfo=_TZ,
+    )
 
 
 @lru_cache(10000)

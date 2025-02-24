@@ -8,9 +8,11 @@ from enum import StrEnum
 
 import pyperclip
 
+E_L = ["", "", "", "", "", "", "", "", "", ""]
 
-def camel_to_snake_improved(name: str) -> list[str]:
-    """将 camelCase 格式的字符串转换为 snake_case 格式。"""
+
+def c2s(name: str) -> list[str]:
+    """camelCase to snake_case"""
     a = re.sub("(.)([A-Z][a-z]+)", r"\1_\2", name)
     b = re.sub("([a-z0-9])([A-Z])", r"\1_\2", a)
     c = re.sub("([a-zA-Z])([0-9])", r"\1_\2", b)
@@ -93,13 +95,13 @@ def get_protobuf_type(a: str) -> str:
 
 def combine_msg(list_1: list[tuple[str, int]], list_2: list[str]) -> str:
     ids = []
-    form_s2: list[str] = []
+    form_s2: list[list[str]] = []
     ret_str = ""
     for i in list_1:
         ids.append(i[1])
     sorted_ids = sorted(ids)
     for i in list_2:
-        form_s2.append([camel_to_snake_improved(i[0])[5], get_protobuf_type(i[1]), i[0]])
+        form_s2.append([c2s(i[0])[5], get_protobuf_type(i[1]), i[0]])
     for i in sorted_ids:
         ret_str += "    //\n    "
         for j in list_1:
@@ -162,7 +164,6 @@ class MsgType(StrEnum):
 
 
 def process(data: list[str]):
-    E_L = ["", "", "", "", "", "", "", "", "", ""]
     msg_type = MsgType.none
     msg_name = ""
     final_str = ""
@@ -173,7 +174,11 @@ def process(data: list[str]):
             continue
         strs: list[str] = i.strip().replace(", ", ",").rstrip(";").split(" ") + E_L
         if msg_type == MsgType.none:
-            if strs[:3] == ["public", "final", "class"] and strs[4] == "extends" and strs[6] == "implements":
+            if (
+                strs[:3] == ["public", "final", "class"]
+                and strs[4] == "extends"
+                and strs[6] == "implements"
+            ):
                 msg_type = MsgType.message
                 msg_name = strs[3]
             elif strs[:4] == ["public", "static", "final", "class"]:
@@ -182,9 +187,14 @@ def process(data: list[str]):
             elif strs[:2] == ["public", "enum"]:
                 msg_type = MsgType.enum
                 msg_name = strs[2]
-            elif strs[:3] == ["public", "final", "class"] and strs[3] in string.ascii_letters:
+            elif (
+                strs[:3] == ["public", "final", "class"]
+                and strs[3] in string.ascii_letters
+            ):
                 msg_type = MsgType.service
-            elif strs[:4] == ["private", "static", "final", "int"] and strs[4].startswith("METHODID_"):
+            elif strs[:4] == ["private", "static", "final", "int"] and strs[
+                4
+            ].startswith("METHODID_"):
                 msg_type = MsgType.service
         elif msg_type == MsgType.message:
             if strs[:5] == ["public", "static", "final", "String", "SERVICE_NAME"]:
@@ -194,9 +204,14 @@ def process(data: list[str]):
             if strs[:4] == ["public", "static", "final", "int"]:
                 list_1.append([strs[4][0:-13].lower(), int(strs[6])])
             elif strs[0] == "private":
-                if strs[:3] == ["private", "static", "final"] and strs[4] == "DEFAULT_INSTANCE":
+                if (
+                    strs[:3] == ["private", "static", "final"]
+                    and strs[4] == "DEFAULT_INSTANCE"
+                ):
                     msg_name = strs[3]
-                elif strs[:3] == ["private", "static", "volatile"] and strs[4].startswith("PARSER"):
+                elif strs[:3] == ["private", "static", "volatile"] and strs[
+                    4
+                ].startswith("PARSER"):
                     ...
                 else:
                     list_2.append([strs[2].rstrip("_"), strs[1]])
@@ -210,7 +225,9 @@ def process(data: list[str]):
                 list_1.append([strs[4][9:], int(strs[6])])
             elif strs[:4] == ["private", "static", "volatile", "x0"]:
                 pass
-            elif strs[:3] == ["private", "static", "volatile"] and strs[3].startswith("MethodDescriptor"):
+            elif strs[:3] == ["private", "static", "volatile"] and strs[3].startswith(
+                "MethodDescriptor"
+            ):
                 list_2.append(strs[3][17:-1].split(",") + [strs[4][3:-6]])
     if msg_type == MsgType.message:
         final_str += f"""
@@ -263,5 +280,4 @@ if __name__ == "__main__":
     try:
         main()
     except KeyboardInterrupt:
-        sys.stderr("exit")
         pass

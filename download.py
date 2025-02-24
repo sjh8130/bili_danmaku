@@ -20,8 +20,8 @@ requests.packages.urllib3.disable_warnings()  # type: ignore[attr-defined]
 AE = "gzip, deflate, bzip2, br, zstd"
 MAX_RETRIES = 2
 RETRY_SIZE = 2048
-SLEEP_TIME = 0.5
-UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 Edg/120.0.0.0"
+SLEEP_TIME = 1.0
+UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36 Edg/133.0.0.0"
 
 
 @dataclasses.dataclass
@@ -53,7 +53,11 @@ def _downloader(url: str, headers: dict, session: requests.Session) -> bytes:
     raise Exception("下载失败")
 
 
-def _get_danmaku(vp: _VideoPart, duration: int | float, session: requests.Session) -> list[bytes]:
+def _get_danmaku(
+    vp: _VideoPart,
+    duration: int | float,
+    session: requests.Session,
+) -> list[bytes]:
     seg = (duration / 360).__ceil__() + 1
     danmakus: list[bytes] = []
     _HEADERS = {
@@ -108,7 +112,11 @@ def _get_danmaku(vp: _VideoPart, duration: int | float, session: requests.Sessio
     return danmakus
 
 
-def _get_special_danmaku(vp: _VideoPart, input: dm_pb2.DmWebViewReply, session: requests.Session) -> list[bytes]:
+def _get_special_danmaku(
+    vp: _VideoPart,
+    input: dm_pb2.DmWebViewReply,
+    session: requests.Session,
+) -> list[bytes]:
     _HEADERS = {
         "Accept-Encoding": AE,
         "Origin": "https://www.bilibili.com",
@@ -149,8 +157,12 @@ def _main(video: _Video):
     if video is None:
         return
     url_info_1n = f"https://api.bilibili.com/x/web-interface/view?bvid={video.bvid}"
-    url_info_1e = "https://api.bilibili.com/x/web-interface/wbi/view?" + gen_w_rid({"aid": video.avid_n})
-    url_info_2n = f"https://api.bilibili.com/x/web-interface/view/detail?bvid={video.bvid}"
+    url_info_1e = "https://api.bilibili.com/x/web-interface/wbi/view?" + gen_w_rid(
+        {"aid": video.avid_n}
+    )
+    url_info_2n = (
+        f"https://api.bilibili.com/x/web-interface/view/detail?bvid={video.bvid}"
+    )
     session = requests.Session()
     headers = {
         "Accept-Encoding": AE,
@@ -193,7 +205,9 @@ def _main(video: _Video):
     if json_info["subtitle"] is not None:
         for subs in json_info["subtitle"]["list"]:
             _data = _downloader(subs["subtitle_url"], headers, session)
-            write_file(f"[{video.bvid}]_[Subtitle]_[{subs['id']}]_[{subs['lan']}].bcc", _data)
+            write_file(
+                f"[{video.bvid}]_[Subtitle]_[{subs['id']}]_[{subs['lan']}].bcc", _data
+            )
             del _data
     # ================================ 首映
     try:
@@ -209,7 +223,9 @@ def _main(video: _Video):
         vp = _VideoPart(V=video, cid=oid, oid=oid)
         v_url = f"https://api.bilibili.com/x/v2/dm/web/view?type=1&oid={vp.cid}&pid={vp.avid}&duration={this['']}"
         extra_info_proto_binary = _downloader(v_url, headers, session)
-        write_file(f"[{video.bvid}]_[{vp.cid}]_[BAS]_[INFO].bin", extra_info_proto_binary)
+        write_file(
+            f"[{video.bvid}]_[{vp.cid}]_[BAS]_[INFO].bin", extra_info_proto_binary
+        )
         extra_info_proto = dm_pb2.DmWebViewReply()
         extra_info_proto.ParseFromString(extra_info_proto_binary)
         # extra_info_json = MessageToDict(extra_info_proto)
@@ -225,7 +241,9 @@ def _main(video: _Video):
             for dmc in dms_j["colorfulSrc"]:
                 danmakuColorful_list.append(dmc)
         final_json = {"elems": danmaku_list, "colorfulSrc": danmakuColorful_list}
-        final_string = json.dumps(final_json, ensure_ascii=False, separators=(",", ":")).replace('{"id":', '\n\t{"id":')
+        final_string = json.dumps(
+            final_json, ensure_ascii=False, separators=(",", ":")
+        ).replace('{"id":', '\n\t{"id":')
         write_file(f"[{video.bvid}]_[{video.avid}].json", final_string)
 
 

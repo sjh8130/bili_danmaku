@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 import json
 import sys
-import time
 
 
 def _convert_srt_time(t):
@@ -17,7 +16,9 @@ def _convert_ass_time(_time):
 
 
 def _proc_ass_karaoke(word):
-    karaoke_word = f"\x7b\\K{int((word[0]['end']-word[0]['start'])/10)}\x7d{word[0]['word']}"
+    karaoke_word = (
+        f"\x7b\\K{int((word[0]['end']-word[0]['start'])/10)}\x7d{word[0]['word']}"
+    )
     if word[0]["word"].isascii():
         karaoke_word += " "
     for timed_chars in range(len(word)):
@@ -34,11 +35,18 @@ def _proc_ASS(item):
     karaoke_line = ""
     normal_line = f"Dialogue: 0,{_convert_ass_time(line_start)},{_convert_ass_time(line_end)},{language},,0,0,0,,{item['text']}\n"
     try:
-        ...
-        # karaoke_line = f"Dialogue: 1,{_convert_ass_time(line_start)},{_convert_ass_time(line_end)},B,,0,0,0,,{_proc_ass_karaoke(item['words'])}\n".replace("{\k0}", "")
+        karaoke_line = (
+            f"Dialogue: 1,{_convert_ass_time(line_start)},{_convert_ass_time(line_end)},B,,0,0,0,,{_proc_ass_karaoke(item['words'])}\n".replace(
+                "{\\k0}", ""
+            )
+            if False
+            else ""
+        )
     except KeyError:
         pass
-    return normal_line + karaoke_line.replace(" \n", "\n").replace("  ", " ").replace(",,0,0,0,, ", ",,0,0,0,,")
+    return normal_line + karaoke_line.replace(" \n", "\n").replace("  ", " ").replace(
+        ",,0,0,0,, ", ",,0,0,0,,"
+    )
 
 
 input_File = sys.argv[1]

@@ -9841,10 +9841,10 @@ FILTER_MID_HASH: list[str] = [
     "07e0ffa1",
     "14361d12",
     "2498c998",
-    "a6c2ec15",
     "36969a96",
     "555cc48b",
     "8cbfafa0",
+    "a6c2ec15",
     "b6da28c0",
     "c7c66d83",
     "c839b7bd",
@@ -9856,7 +9856,15 @@ FILTER_MID_HASH_STR_LOWER: list[str] = [x.lower() for x in FILTER_MID_HASH]
 FILTER_MID_HASH_STR_UPPER: list[str] = [x.upper() for x in FILTER_MID_HASH]
 FILTER_MID_HASH_DEC: list[int] = [int(x, 16) for x in FILTER_MID_HASH]
 FILTER_MID_HASH_DEC_STR: list[str] = [str(x) for x in FILTER_MID_HASH_DEC]
-FILTER_MID_ALL = set(FILTER_MID + FILTER_MID_HASH_DEC + FILTER_MID_STR + FILTER_MID_HASH + FILTER_MID_HASH_STR_LOWER + FILTER_MID_HASH_STR_UPPER + FILTER_MID_HASH_DEC_STR)
+FILTER_MID_ALL = frozenset(
+    FILTER_MID
+    + FILTER_MID_HASH_DEC
+    + FILTER_MID_STR
+    + FILTER_MID_HASH
+    + FILTER_MID_HASH_STR_LOWER
+    + FILTER_MID_HASH_STR_UPPER
+    + FILTER_MID_HASH_DEC_STR
+)
 # import json
 
 # def is_filter_word(word: str) -> bool:

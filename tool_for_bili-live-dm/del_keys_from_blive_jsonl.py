@@ -53,7 +53,9 @@ class OPR(StrEnum):
     NIS = auto()
 
 
-def _del_keys(item_0: dict, key_0: str, value_0, opr: OPR, r=True, cmd="", target_key=""):
+def _del_keys(
+    item_0: dict, key_0: str, value_0, opr: OPR, r=True, cmd="", target_key=""
+):
     cmd = item_0["cmd"] if cmd == "" else cmd
     final_key: str = f"{cmd}{target_key}"
     # print("_del_keys", final_key)
@@ -101,14 +103,33 @@ def _del_keys(item_0: dict, key_0: str, value_0, opr: OPR, r=True, cmd="", targe
             _del_keys(item_0[key_1], key_0, value_0, opr, r, cmd, _tk)
         elif isinstance(item_0[key_1], list):
             for index_1, item_l1 in enumerate(item_0[key_1]):
-                _tk = f"{target_key}[IDX]" if _SW2 and final_key in DONT_CARE_INDEX_LIST else f"{target_key}[{index_1}]"
+                _tk = (
+                    f"{target_key}[IDX]"
+                    if _SW2 and final_key in DONT_CARE_INDEX_LIST
+                    else f"{target_key}[{index_1}]"
+                )
                 if f"{cmd}.{key_1}{_tk}" in STR_LIST:
-                    item_0[key_1][index_1] = _del_keys(json.dumps(json.loads(item_l1), ensure_ascii=False, separators=(",", ":")), key_0, r, cmd, _tk)  # type:ignore[reportArgumentType]
+                    item_0[key_1][index_1] = _del_keys(
+                        json.dumps(
+                            json.loads(item_l1),
+                            ensure_ascii=False,
+                            separators=(",", ":"),
+                        ),
+                        key_0,
+                        r,
+                        cmd,
+                        _tk,
+                    )  # type:ignore[reportArgumentType]
 
 
 def _deduplicate(in_path: str):
-    with open(in_path, "r", 1048576, encoding="utf-8") as input_file, open(in_path + "x_cleaned", "a", 10485760, "utf-8") as output_file:
-        for line in tqdm(input_file.readlines(), leave=False, desc=f"{os.path.basename(in_path)}"):
+    with (
+        open(in_path, "r", 1048576, encoding="utf-8") as input_file,
+        open(in_path + "x_cleaned", "a", 10485760, "utf-8") as output_file,
+    ):
+        for line in tqdm(
+            input_file.readlines(), leave=False, desc=f"{os.path.basename(in_path)}"
+        ):
             ls = line.find("{")
             date_raw = line[:ls]
             if "." in date_raw:
@@ -116,18 +137,37 @@ def _deduplicate(in_path: str):
             else:
                 date = date_raw[:13] if ls else ""
             itm: dict = json.loads(line[ls:])
-            _del_keys(itm, "contribution_v2", {"grade": 0, "rank_type": "", "text": ""}, OPR.EQ)
+            _del_keys(
+                itm,
+                "contribution_v2",
+                {"grade": 0, "rank_type": "", "text": ""},
+                OPR.EQ,
+            )
             _del_keys(itm, "contribution", {"grade": 0}, OPR.EQ)
             _del_keys(itm, "danmaku_style", {"background_color": None}, OPR.EQ)
             _del_keys(itm, "danmu", {"area": 0}, OPR.EQ)
             _del_keys(itm, "face_effect_v2", {"id": 0, "type": 0}, OPR.EQ)
-            _del_keys(itm, "group_medal", {"is_lighted": 0, "medal_id": 0, "name": ""}, OPR.EQ)
+            _del_keys(
+                itm, "group_medal", {"is_lighted": 0, "medal_id": 0, "name": ""}, OPR.EQ
+            )
             _del_keys(itm, "guard_leader", {"is_guard_leader": False}, OPR.EQ)
             _del_keys(itm, "guard", {"level": 0, "expired_str": ""}, OPR.EQ)
             _del_keys(itm, "identities", [1], OPR.EQ)
-            _del_keys(itm, "official_info", {"role": 0, "title": "", "desc": "", "type": -1}, OPR.EQ)
-            _del_keys(itm, "relation_tail", {"tail_guide_text": "", "tail_icon": "", "tail_type": 0}, OPR.EQ)
-            _del_keys(itm, "title", {"old_title_css_id": "", "title_css_id": ""}, OPR.EQ)
+            _del_keys(
+                itm,
+                "official_info",
+                {"role": 0, "title": "", "desc": "", "type": -1},
+                OPR.EQ,
+            )
+            _del_keys(
+                itm,
+                "relation_tail",
+                {"tail_guide_text": "", "tail_icon": "", "tail_type": 0},
+                OPR.EQ,
+            )
+            _del_keys(
+                itm, "title", {"old_title_css_id": "", "title_css_id": ""}, OPR.EQ
+            )
             _del_keys(itm, "wealth", {"dm_icon_key": "", "level": 0}, OPR.EQ)
             _del_keys(itm, "show_reply", True, OPR.EQ)
             _del_keys(itm, "anchor_roomid", _FALSE_CMP, OPR.IN)
@@ -263,7 +303,9 @@ def _deduplicate(in_path: str):
             _del_keys(itm, "dmscore", 0, opr=OPR.ANY)
             _del_keys(itm, "recommend_score", 0, opr=OPR.ANY)
             _del_keys(itm, "user_hash", 0, opr=OPR.ANY)
-            output_file.write(date + json.dumps(itm, ensure_ascii=False, separators=(",", ":")) + "\n")
+            output_file.write(
+                date + json.dumps(itm, ensure_ascii=False, separators=(",", ":")) + "\n"
+            )
 
 
 if __name__ == "__main__":

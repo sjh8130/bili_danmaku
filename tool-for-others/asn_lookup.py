@@ -16,6 +16,9 @@ class IP:
     def __str__(self) -> str:
         return f"{self.ip_cidr}\t{self.region}\t{self.desc}\t{self.status}"
 
+    def __hash__(self):
+        return hash(self.ip_cidr + self.region)
+
 
 def _init(overwrite=False) -> None:
     PATH_BASE = "Z:\\"
@@ -292,44 +295,68 @@ _ISO3166_1: set[str] = {
 }
 _IPS_DEFAULT = set(
     [
-        IP("0.0.0.0/8", "XX", "listening", "reserved"),
-        IP("10.0.0.0/8", "XX", "PRIVATE-A", "reserved"),
-        IP("127.0.0.0/8", "XX", "loopback", "reserved"),
-        IP("169.254.0.0/16", "XX", "LinkLocal", "reserved"),
-        IP("172.16.0.0/12", "XX", "PRIVATE-B", "reserved"),
-        IP("192.168.0.0/16", "XX", "PRIVATE-C", "reserved"),
+        IP("0.0.0.0/8", "XX", "[IANA]This network", "reserved"),
+        IP("0.0.0.0/32", "XX", "[IANA]This host on this network", "reserved"),
+        IP("10.0.0.0/8", "XX", "[IANA]Private-Use", "reserved"),
+        IP("100.64.0.0/10", "XX", "[IANA]Shared Address Space", "reserved"),
+        IP("127.0.0.0/8", "XX", "[IANA]Loopback", "reserved"),
+        IP("169.254.0.0/16", "XX", "[IANA]Link Local", "reserved"),
+        IP("172.16.0.0/12", "XX", "[IANA]Private-Use", "reserved"),
+        IP("192.0.0.0/24", "XX", "[IANA]IETF Protocol Assignments", "reserved"),
+        IP("192.0.0.0/29", "XX", "[IANA]IPv4 Service Continuity Prefix", "reserved"),
+        IP("192.0.0.8/32", "XX", "[IANA]IPv4 dummy address", "reserved"),
+        IP("192.0.0.9/32", "XX", "[IANA]Port Control Protocol Anycast", "reserved"),
+        IP(
+            "192.0.0.10/32",
+            "XX",
+            "[IANA]Traversal Using Relays around NAT Anycast",
+            "reserved",
+        ),
+        IP("192.0.0.170/32", "XX", "[IANA]NAT64/DNS64 Discovery", "reserved"),
+        IP("192.0.0.171/32", "XX", "[IANA]NAT64/DNS64 Discovery", "reserved"),
+        IP("192.0.2.0/24", "XX", "[IANA]Documentation (TEST-NET-1)", "reserved"),
+        IP("192.31.196.0/24", "XX", "[IANA]AS112-v4", "reserved"),
+        IP("192.52.193.0/24", "XX", "[IANA]AMT", "reserved"),
+        IP("192.88.99.0/24", "XX", "[IANA]Deprecated (6to4 Relay Anycast)", "reserved"),
+        IP("192.168.0.0/16", "XX", "[IANA]Private-Use", "reserved"),
+        IP(
+            "192.175.48.0/24", "XX", "[IANA]Direct Delegation AS112 Service", "reserved"
+        ),
+        IP("198.18.0.0/15", "XX", "[IANA]Benchmarking", "reserved"),
+        IP("198.51.100.0/24", "XX", "[IANA]Documentation (TEST-NET-2)", "reserved"),
+        IP("203.0.113.0/24", "XX", "[IANA]Documentation (TEST-NET-3)", "reserved"),
+        IP("240.0.0.0/4", "XX", "[IANA]Reserved", "reserved"),
+        IP("255.255.255.255/32", "XX", "[IANA]Limited Broadcast", "reserved"),
         IP("224.0.0.0/28", "XX", "Multicast", "reserved"),
-        IP("240.0.0.0/28", "XX", "Reserved-E", "reserved"),
-        IP("255.255.255.255/32", "XX", "Broadcast", "reserved"),
         IP("2000::/3", "XX", "global", "reserved"),
         IP("fe80::/10", "XX", "local", "reserved"),
         IP("fc00::/7", "XX", "local", "reserved"),
         IP("::1/128", "XX", "loopback", "reserved"),
         IP("::/128", "XX", "listening", "reserved"),
         IP("::/80", "XX", "ipv4-in-ipv6", "reserved"),
-        IP("173.245.48.0/20", "US", "Cloudflare", "allocated"),
         IP("103.21.244.0/22", "US", "Cloudflare", "allocated"),
         IP("103.22.200.0/22", "US", "Cloudflare", "allocated"),
         IP("103.31.4.0/22", "US", "Cloudflare", "allocated"),
-        IP("141.101.64.0/18", "US", "Cloudflare", "allocated"),
-        IP("108.162.192.0/18", "US", "Cloudflare", "allocated"),
-        IP("190.93.240.0/20", "US", "Cloudflare", "allocated"),
-        IP("188.114.96.0/20", "US", "Cloudflare", "allocated"),
-        IP("197.234.240.0/22", "US", "Cloudflare", "allocated"),
-        IP("198.41.128.0/17", "US", "Cloudflare", "allocated"),
-        IP("162.158.0.0/15", "US", "Cloudflare", "allocated"),
         IP("104.16.0.0/13", "US", "Cloudflare", "allocated"),
         IP("104.24.0.0/14", "US", "Cloudflare", "allocated"),
-        IP("172.64.0.0/13", "US", "Cloudflare", "allocated"),
+        IP("108.162.192.0/18", "US", "Cloudflare", "allocated"),
         IP("131.0.72.0/22", "US", "Cloudflare", "allocated"),
+        IP("141.101.64.0/18", "US", "Cloudflare", "allocated"),
+        IP("162.158.0.0/15", "US", "Cloudflare", "allocated"),
+        IP("172.64.0.0/13", "US", "Cloudflare", "allocated"),
+        IP("173.245.48.0/20", "US", "Cloudflare", "allocated"),
+        IP("188.114.96.0/20", "US", "Cloudflare", "allocated"),
+        IP("190.93.240.0/20", "US", "Cloudflare", "allocated"),
+        IP("197.234.240.0/22", "US", "Cloudflare", "allocated"),
+        IP("198.41.128.0/17", "US", "Cloudflare", "allocated"),
         IP("8.8.8.8/32", "US", "Google_DNS", "allocated"),
         IP("8.8.4.4/32", "US", "Google_DNS", "allocated"),
         IP("9.9.9.9/32", "US", "IBM_Quad9_DNS", "allocated"),
         IP("2400:cb00::/32", "US", "Cloudflare", "allocated"),
+        IP("2405:8100::/32", "US", "Cloudflare", "allocated"),
+        IP("2405:b500::/32", "US", "Cloudflare", "allocated"),
         IP("2606:4700::/32", "US", "Cloudflare", "allocated"),
         IP("2803:f800::/32", "US", "Cloudflare", "allocated"),
-        IP("2405:b500::/32", "US", "Cloudflare", "allocated"),
-        IP("2405:8100::/32", "US", "Cloudflare", "allocated"),
         IP("2a06:98c0::/29", "US", "Cloudflare", "allocated"),
         IP("2c0f:f248::/32", "US", "Cloudflare", "allocated"),
         IP("2001:4860:4860::8888/128", "US", "Google_DNS", "allocated"),
@@ -424,7 +451,9 @@ def _download_file(url: str, file_name: str, overwrite: bool) -> None:
         else:
             # file {} not exist, downloading...
             print(f"文件 {file_name} 不存在，正在下载...")
-        response = requests.get(url, headers={"Accept-Encoding": "gzip, deflate, bzip2, br, zstd"})
+        response = requests.get(
+            url, headers={"Accept-Encoding": "gzip, deflate, bzip2, br, zstd"}
+        )
         if response.status_code == 200:
             with open(file_name, "wb") as file:
                 file.write(response.content)
@@ -517,7 +546,7 @@ def _query_ip(d: str) -> None:
 def _resolve_dns(host) -> list[str]:
     try:
         ip_addresses = socket.getaddrinfo(host, None)
-        return [addr[4][0] for addr in ip_addresses]
+        return [str(addr[4][0]) for addr in ip_addresses]
     except socket.gaierror as e:
         print(f"Failed to resolve DNS for {host}: {e}")
         return []
@@ -551,8 +580,12 @@ def _ip_in_range(ip: str, ipr: str) -> bool:
     检查IP地址是否在CIDR范围内。
     """
     try:
-        ip_network: ipaddress.IPv4Network | ipaddress.IPv6Network = ipaddress.ip_network(ipr, strict=False)
-        ip_address: ipaddress.IPv4Address | ipaddress.IPv6Address = ipaddress.ip_address(ip)
+        ip_network: ipaddress.IPv4Network | ipaddress.IPv6Network = (
+            ipaddress.ip_network(ipr, strict=False)
+        )
+        ip_address: ipaddress.IPv4Address | ipaddress.IPv6Address = (
+            ipaddress.ip_address(ip)
+        )
         return ip_address in ip_network
     except ValueError:
         return False
@@ -586,7 +619,7 @@ if __name__ == "__main__":
                 case "":
                     continue
                 case "exit":
-                    raise KeyboardInterrupt
+                    raise SystemExit(0)
                 case "all":
                     _list_all()
                 case "clear" | "cls":
@@ -599,10 +632,20 @@ if __name__ == "__main__":
                 case "dump" | "export" | "save":
                     import json
 
-                    j = json.dumps(ips, ensure_ascii=False, separators=(",", ":"), sort_keys=True)
+                    j = json.dumps(
+                        ips, ensure_ascii=False, separators=(",", ":"), sort_keys=True
+                    )
                     open("Z:\\dump.json", "w", encoding="utf-8").write(j)
                     del j
-                case "afrinic" | "apnic" | "arin" | "iana" | "lacnic" | "ripe-ncc" | "ripencc":
+                case (
+                    "afrinic"
+                    | "apnic"
+                    | "arin"
+                    | "iana"
+                    | "lacnic"
+                    | "ripe-ncc"
+                    | "ripencc"
+                ):
                     _query_desc(query_string)
                 case "allocated" | "assigned" | "reserved" | "available":
                     _query_status(query_string)
@@ -613,8 +656,8 @@ if __name__ == "__main__":
                 case _:
                     if query_string in _ISO3166_1:
                         _query_region(query_string.upper())
-                        continue
-                    _query_ip(query_string)
+                    elif True or ":" in query_string or "." in query_string:
+                        _query_ip(query_string)
     except KeyboardInterrupt:
         # print("exit")
         exit(0)

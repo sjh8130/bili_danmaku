@@ -15,8 +15,10 @@ import requests
 ssl._create_default_https_context = ssl._create_unverified_context
 requests.packages.urllib3.disable_warnings()  # type: ignore[attr-defined]
 AE = "gzip, deflate, br, zstd"
-UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36 Edg/109.0.1518.52"
-logging.basicConfig(format="%(asctime)s %(message)s", level=logging.INFO, datefmt="%Y-%m-%d %H:%M:%S")
+UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36 Edg/133.0.0.0"
+logging.basicConfig(
+    format="%(asctime)s %(message)s", level=logging.INFO, datefmt="%Y-%m-%d %H:%M:%S"
+)
 logger = logging.getLogger("nekohouse-downloader")
 logger.setLevel(logging.ERROR)
 
@@ -42,7 +44,13 @@ class UserPage:
 
 def _escape_html(s: str) -> str:
     return re.sub(r"[<>\"&']", "_", s)
-    return s.replace("<", "&lt;").replace(">", "&gt;").replace('"', "&quot;").replace("&", "&amp;").strip()
+    return (
+        s.replace("<", "&lt;")
+        .replace(">", "&gt;")
+        .replace('"', "&quot;")
+        .replace("&", "&amp;")
+        .strip()
+    )
 
 
 def _escape_path(s: str) -> str:
