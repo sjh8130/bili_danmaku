@@ -32,7 +32,12 @@ def main(in_paths: list[str], out_path: str):
         if in_path == out_path:
             continue
         with open(in_path, "r", encoding="utf-8") as file_in:
-            for line in tqdm(file_in.readlines(), unit="line", bar_format="{desc}{percentage:3.0f}%|{bar}| {n_fmt}->{total_fmt} ", desc=f"{f_s:8} {os.path.basename(in_path)} "):
+            for line in tqdm(
+                file_in.readlines(),
+                unit="line",
+                bar_format="{desc}{percentage:3.0f}%|{bar}| {n_fmt}->{total_fmt} ",
+                desc=f"{f_s:8} {os.path.basename(in_path)} ",
+            ):
                 # if "DANMU_MSG" not in line:
                 #     continue
                 # if line.find("DANMU_MSG:3:7:1:1:1:1") == 1:
@@ -57,7 +62,19 @@ def main(in_paths: list[str], out_path: str):
                     continue
                 if cmd["info"][2][0] in FILTER_MID:
                     continue
-                dm_text: str = cmd["info"][1].replace("\u007f", "").replace("\u00a0", "").replace("\u2006", "").replace("\u200b", "").replace("\u200e", "").replace("\u2060", "").replace("\u2063", "").replace("\u3000", "").replace("\U000e0020", "").strip()
+                dm_text: str = (
+                    cmd["info"][1]
+                    .replace("\u007f", "")
+                    .replace("\u00a0", "")
+                    .replace("\u2006", "")
+                    .replace("\u200b", "")
+                    .replace("\u200e", "")
+                    .replace("\u2060", "")
+                    .replace("\u2063", "")
+                    .replace("\u3000", "")
+                    .replace("\U000e0020", "")
+                    .strip()
+                )
                 if dm_text in FILTER_WORDS or dm_text.lower() in FILTER_WORDS:
                     try:
                         del final_write[dm_text]

@@ -39,7 +39,11 @@ def json2XML_CMD(this: dict):
     # mtime = str(this.get("mtime", "0"))
     extra = str(this.get("extra", ""))
     format_time = format(stime / 1000, ".5f")
-    format_ctime = time.mktime(time.strptime(ctime + "+0800", "%Y-%m-%d %H:%M:%S%z")).__floor__().__str__()
+    format_ctime = (
+        time.mktime(time.strptime(ctime + "+0800", "%Y-%m-%d %H:%M:%S%z"))
+        .__floor__()
+        .__str__()
+    )
     # format_mtime = time.mktime(time.strptime(mtime + "+0800", "%Y-%m-%d %H:%M:%S%z")).__floor__().__str__()
     midHash = hex(crc32(mid.encode()))[2:].lstrip("0")
     return f'\t<d p="{format_time},1,25,16777215,{format_ctime},999,{midHash},{dmid_2},11">{text}</d><!-- SPECIAL: {command}{extra} -->\n'
@@ -124,4 +128,10 @@ def json2XML(this: dict):
 def escape_html(s: str) -> str:
     if s == "":
         return s
-    return s.replace("<", "&lt;").replace(">", "&gt;").replace('"', "&quot;").replace("&", "&amp;").strip()
+    return (
+        s.replace("<", "&lt;")
+        .replace(">", "&gt;")
+        .replace('"', "&quot;")
+        .replace("&", "&amp;")
+        .strip()
+    )

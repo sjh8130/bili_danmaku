@@ -2,7 +2,7 @@ import json
 import sys
 
 a = json.loads(open(sys.argv[1], "r", encoding="utf-8").read())
-if a == {}:
+if not a:
     exit()
 preload = 0
 switch = False
@@ -13,7 +13,9 @@ for i in a["packets"]:
         switch = True
     preload += 1
 if switch:
-    with open(sys.argv[1].rsplit(".", 1)[-2] + "V.txt", "w") as FILE_1, open(sys.argv[1].rsplit(".", 1)[-2] + "A.txt", "w") as FILE_2:
+    with open(sys.argv[1].rsplit(".", 1)[-2] + "V.txt", "w") as FILE_1, open(
+        sys.argv[1].rsplit(".", 1)[-2] + "A.txt", "w"
+    ) as FILE_2:
         for i in a["packets"]:
             if i["stream_index"] == 0:
                 FILE_1.write(i["data_hash"] + "\n")

@@ -11,7 +11,9 @@ def write_file(filename: str, data: str | bytes | dict, _gzip: bool = False) -> 
     elif isinstance(data, dict):
         import json
 
-        _data = _data = json.dumps(data, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
+        _data = _data = json.dumps(
+            data, ensure_ascii=False, separators=(",", ":")
+        ).encode("utf-8")
     else:
         _data = data
     if _gzip:
