@@ -6,13 +6,18 @@ from typing import Any
 
 from tqdm import tqdm
 
+try:
+    import simdjson
+except ImportError:
+    simdjson = json
+
 _cmd_count: dict[str, int] = {}
 
 
 def _p1():
     try:
         with open(_out_path, "r", encoding="utf-8") as file_io:
-            _cmd_count.update(json.load(file_io))
+            _cmd_count.update(simdjson.load(file_io))
     except FileNotFoundError:
         pass
     except json.JSONDecodeError as e:

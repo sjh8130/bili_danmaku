@@ -3,6 +3,11 @@ import io
 import json
 import sys
 import time
+
+try:
+    import simdjson
+except ImportError:
+    simdjson = json
 import Live_dm_v2_2023_03_23_pb2 as live_dm
 from filters import FILTER_WORDS
 from google.protobuf.json_format import MessageToDict
@@ -23,7 +28,7 @@ with open(in_path, "r", 1048576, encoding="utf-8") as F_in, io.open(
         try:
             dm_proto.ParseFromString(
                 binascii.a2b_base64(
-                    json.loads(line[line.find("{") : right_pos_cache])["dm_v2"]
+                    simdjson.loads(line[line.find("{") : right_pos_cache])["dm_v2"]
                 )
             )
         except json.decoder.JSONDecodeError as err:

@@ -9865,21 +9865,6 @@ FILTER_MID_ALL = frozenset(
     + FILTER_MID_HASH_STR_UPPER
     + FILTER_MID_HASH_DEC_STR
 )
-# import json
-
-# def is_filter_word(word: str) -> bool:
-#     return word in FILTER_WORDS
-
-# def filter_raw_dm(raw_dm: dict, filter_user_id: bool, filter_user_crc: bool) -> bool:
-#     if isinstance(raw_dm, str):
-#         raw_dm = json.loads(raw_dm)
-#     if isinstance(raw_dm, dict):
-#         pass
-#     else:
-#         return False
-#     if raw_dm.get("cmd", "") != "DANMU_MSG":
-#         return False
-#     return False
 
 if __name__ == "__main__":
     from time import sleep

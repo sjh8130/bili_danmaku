@@ -4,8 +4,12 @@ import os
 from pathlib import Path
 from types import NoneType
 
-import json5
 from tqdm import tqdm
+
+try:
+    import simdjson
+except ImportError:
+    simdjson = json
 
 result: dict[str, dict[str, dict]] = {}
 SW1: bool = False
@@ -16,7 +20,7 @@ STR_LIST = set()
 SW3: bool = False
 try:
     with open("livedm_keys_not_interest.json") as fp:
-        _D1: dict[str, list[str]] = json5.load(fp)
+        _D1: dict[str, list[str]] = json.load(fp)
 except FileNotFoundError:
     pass
 else:
@@ -41,7 +45,7 @@ def _a(cmd: str, item: int | str | list | dict | bool | NoneType, tk="", /):
     fk: str = f"{cmd}{tk}"
     _typ: str = type(item).__name__
     if SW3 and fk in STR_LIST:
-        item = json.loads(item)  # type:ignore[reportArgumentType]
+        item = simdjson.loads(item)  # type:ignore[reportArgumentType]
         _typ = "str_dict"
     if result.get(fk) is None:
         result[fk] = {"type": {}}
@@ -79,8 +83,8 @@ def p_main(in_path: str | Path):
             file_in.readlines(), leave=False, desc=f"{os.path.basename(in_path)}"
         ):
             try:
-                item: dict = json.loads(line[line.find("{") :])
-            except json.JSONDecodeError:
+                item: dict = simdjson.loads(line[line.find("{") :])
+            except Exception:
                 continue
             _a(item["cmd"], item)
     return result
