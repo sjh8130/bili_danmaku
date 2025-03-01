@@ -3,6 +3,11 @@ import os
 import sys
 import time
 
+try:
+    import simdjson
+except ImportError:
+    simdjson = json
+
 import livedm_keys_counter_lib
 from tqdm import tqdm
 
@@ -11,7 +16,7 @@ def main():
     p1 = "livedm_keys.json"
     if True and os.path.exists(os.path.join(output_dir, p1)):
         with open(os.path.join(output_dir, p1), "r", encoding="utf-8") as fp:
-            livedm_keys_counter_lib.result.update(json.load(fp))
+            livedm_keys_counter_lib.result.update(simdjson.load(fp))
     for path in tqdm(paths, leave=False):
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)

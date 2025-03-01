@@ -4,6 +4,11 @@ import os
 import sys
 import time
 
+try:
+    import simdjson
+except ImportError:
+    simdjson = json
+
 from my_lib.file_writer import write_file
 from my_lib.json2xml import json2XML, json2XML_CMD
 
@@ -13,14 +18,14 @@ with open(in_path, "rb") as fl:
     preload = fl.read(4)
 with open(in_path, "rb") as file_in:
     if preload == b'{"el':
-        data = json.load(file_in)
+        data = simdjson.load(file_in)
     elif preload == b"\xeb\xbb\xbf":
-        data = json.load(file_in)
+        data = simdjson.load(file_in)
     elif preload[:2] == b"\x1f\x8b":
         import gzip
 
         tmp1 = str(gzip.open(in_path, "rb").read(), encoding="utf-8")
-        data = json.loads(tmp1)
+        data = simdjson.loads(tmp1)
         del tmp1
     else:
         raise

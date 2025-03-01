@@ -1,6 +1,12 @@
 import json
 import sys
 
+try:
+    import simdjson
+except ImportError:
+    simdjson = json
+
+
 # _SKIP_KEYWORDS = ["STOP_LIVE_ROOM_LIST", "LIKE_INFO_V3_CLICK", "LIKE_INFO_V3_UPDATE", "ONLINE_RANK_COUNT", "ONLINE_RANK_V2", "OTHER_SLICE_LOADING_RESULT", "HOT_ROOM_NOTIFY", "DM_INTERACTION", "WATCHED_CHANGE", "WIDGET_BANNER", "NOTICE_MSG", "GUARD_HONOR_THOUSAND"]
 _SKIP_KEYWORDS = []
 
@@ -18,7 +24,7 @@ def _trim_file(in_path: str):
                 date = (date_raw.replace(".", "") + "0000000000000")[:13] if ls else ""
             else:
                 date = date_raw[:13] if ls else ""
-            x = json.loads(line[ls:])
+            x = simdjson.loads(line[ls:])
             if x["cmd"] in _SKIP_KEYWORDS:
                 continue
             out_file.write(

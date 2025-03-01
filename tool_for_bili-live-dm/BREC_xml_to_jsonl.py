@@ -3,6 +3,11 @@ import os
 import sys
 import time
 
+try:
+    import simdjson
+except ImportError:
+    simdjson = json
+
 from lxml import etree
 from tqdm import tqdm
 
@@ -26,7 +31,7 @@ def process_brec_xml_to_jsonl(file_path: str | os.PathLike):
         encoding="utf-8",
     ) as fp:
         for dm in tqdm(dmks, leave=False):
-            dm_info = json.loads(dm.attrib["raw"])
+            dm_info = simdjson.loads(dm.attrib["raw"])
             fp.write(str(dm_info[0][4]))
             fp.write(
                 json.dumps(
@@ -39,7 +44,7 @@ def process_brec_xml_to_jsonl(file_path: str | os.PathLike):
             # print(i.attrib["raw"])
             # b = 1
         for gift in tqdm(gifts, leave=False):
-            gift_data = json.loads(gift.attrib["raw"])
+            gift_data = simdjson.loads(gift.attrib["raw"])
             fp.write(
                 str(int(gift_data["timestamp"] * 1000))
                 + json.dumps(

@@ -1,5 +1,6 @@
 #!/dev/null
 import gzip
+import json
 
 
 def write_file(filename: str, data: str | bytes | dict, _gzip: bool = False) -> None:
@@ -9,7 +10,6 @@ def write_file(filename: str, data: str | bytes | dict, _gzip: bool = False) -> 
     if isinstance(data, str):
         _data = data.encode("utf-8")
     elif isinstance(data, dict):
-        import json
 
         _data = _data = json.dumps(
             data, ensure_ascii=False, separators=(",", ":")

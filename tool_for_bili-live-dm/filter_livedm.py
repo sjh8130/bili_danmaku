@@ -3,6 +3,11 @@ import os
 import sys
 import time
 
+try:
+    import simdjson
+except ImportError:
+    simdjson = json
+
 from filters import FILTER_MID, FILTER_MID_HASH_STR_LOWER, FILTER_WORDS
 from tqdm import tqdm
 
@@ -14,7 +19,7 @@ def main(in_paths: list[str], out_path: str):
         return
     try:
         with open(out_path, "r", encoding="utf-8") as file_io:
-            final_write = json.load(file_io)
+            final_write = simdjson.load(file_io)
     except FileNotFoundError:
         final_write = {}
     except json.JSONDecodeError as e:
@@ -45,7 +50,7 @@ def main(in_paths: list[str], out_path: str):
                 lineno += 1
                 left_pos = line.find("{")
                 try:
-                    cmd: dict = json.loads(line[left_pos:])
+                    cmd: dict = simdjson.loads(line[left_pos:])
                 except json.JSONDecodeError:
                     print(lineno)
                     if not is_err:
@@ -63,7 +68,7 @@ def main(in_paths: list[str], out_path: str):
                 if cmd["info"][2][0] in FILTER_MID:
                     continue
                 dm_text: str = (
-                    cmd["info"][1]
+                    str(cmd["info"][1])
                     .replace("\u007f", "")
                     .replace("\u00a0", "")
                     .replace("\u2006", "")

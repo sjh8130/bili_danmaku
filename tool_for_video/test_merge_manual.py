@@ -4,6 +4,10 @@ import json
 import os
 import sys
 
+try:
+    import simdjson
+except ImportError:
+    simdjson = json
 
 @dataclasses.dataclass
 class FFProbeFilePackets:
@@ -78,9 +82,7 @@ def _main():
             argv[2] = input("file 2 : ").strip('"')
             argv[3] = input("suffix : ").strip()
     elif len(sys.argv) == 4:
-        argv[1] = sys.argv[1]
-        argv[2] = sys.argv[2]
-        argv[3] = sys.argv[3]
+        argv = sys.argv
     else:
         print(sys.argv)
     if argv[3].__eq__("A"):
@@ -99,8 +101,8 @@ def _main():
     out_path = os.path.splitext(IN_FILE_1)[0] + "_OUT" + SUFFIX
 
     with open(IN_INFO_1, "r") as HASH_1, open(IN_INFO_2, "r") as HASH_2:
-        PACKETS_1 = FFProbeFile(json.load(HASH_1)["packets"])
-        PACKETS_2 = FFProbeFile(json.load(HASH_2)["packets"])
+        PACKETS_1 = FFProbeFile(simdjson.load(HASH_1)["packets"])
+        PACKETS_2 = FFProbeFile(simdjson.load(HASH_2)["packets"])
         LEN_1 = len(PACKETS_1)
         LEN_2 = len(PACKETS_2)
     with io.open(IN_FILE_1, "rb") as FILE_1, io.open(

@@ -22,9 +22,6 @@
 *.zip
 
 # private
-x1.py
-x2.py
-X3_emoji.py
 
 # tmp
 *.exp

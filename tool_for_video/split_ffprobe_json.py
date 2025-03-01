@@ -1,9 +1,14 @@
 import json
 import sys
 
+try:
+    import simdjson
+except ImportError:
+    simdjson = json
+
 file_name = sys.argv[1]
 with open(file_name, "r", encoding="utf-8") as f:
-    data: dict = json.load(f)
+    data: dict = simdjson.load(f)
 
 
 def get_file_name_base(file_name: str):

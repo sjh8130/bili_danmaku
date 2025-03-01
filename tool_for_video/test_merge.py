@@ -3,6 +3,11 @@ import json
 import os
 import sys
 
+try:
+    import simdjson
+except ImportError:
+    simdjson = json
+
 """
 修视频？
 使用ffmpeg计算的hash来修复视频文件
@@ -40,8 +45,8 @@ with open(IN_INFO_1, "r") as HASH_L, open(IN_INFO_2, "r") as HASH_R, io.open(
     print_control = 0
     output_frames = 0
     output_F_size = 0
-    PKT_L = json.load(HASH_L)["packets"]
-    PKT_R = json.load(HASH_R)["packets"]
+    PKT_L = simdjson.load(HASH_L)["packets"]
+    PKT_R = simdjson.load(HASH_R)["packets"]
     HASH_L.close()
     HASH_R.close()
     OUT_L = "========        "  # 输出文件1

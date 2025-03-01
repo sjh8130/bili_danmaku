@@ -1,5 +1,6 @@
 import dataclasses
 import ipaddress
+import json
 import os
 import socket
 import sys
@@ -630,8 +631,6 @@ if __name__ == "__main__":
                 case "len" | "len()" | "length":
                     print(len(ips))
                 case "dump" | "export" | "save":
-                    import json
-
                     j = json.dumps(
                         ips, ensure_ascii=False, separators=(",", ":"), sort_keys=True
                     )
