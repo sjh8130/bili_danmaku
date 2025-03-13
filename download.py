@@ -1,12 +1,10 @@
 #!/usr/bin/python3
 import dataclasses
 import json
-import re
 import ssl
 import sys
 import time
 
-import bs4
 import requests
 from google.protobuf.json_format import MessageToDict
 
@@ -17,11 +15,14 @@ from my_lib.gen_wib import gen_w_rid
 
 ssl._create_default_https_context = ssl._create_unverified_context
 requests.packages.urllib3.disable_warnings()  # type: ignore[attr-defined]
-AE = "gzip, deflate, bzip2, br, zstd"
 MAX_RETRIES = 2
 RETRY_SIZE = 2048
 SLEEP_TIME = 1.0
-UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36 Edg/133.0.0.0"
+with open("config.json", "r", -1, "utf-8") as fp:
+    config = json.load(fp)
+del fp
+UA: str = config["ua"]
+AE = config["ae"]
 
 
 @dataclasses.dataclass
@@ -131,26 +132,6 @@ def _get_special_danmaku(
         bas_danmakus.append(bas_data)
         write_file(filename, bas_data)
     return bas_danmakus
-
-
-def _get_json(v: _Video, session: requests.Session):
-    raise Exception("TODO")
-    _HEADERS = {
-        "Accept-Encoding": AE,
-        "Origin": "https://www.bilibili.com",
-        "Referer": f"https://www.bilibili.com/{v.bvid}",
-        "User-Agent": UA,
-        "Connection": "keep-alive",
-    }
-    html: str = str(_downloader("", _HEADERS, session), encoding="utf-8")
-    soup = bs4.BeautifulSoup(html, "lxml")
-    json_dict: dict = {}
-    for script in soup.find_all("script"):
-        if "window.__INITIAL_STATE__=" in str(script):
-            json_line = re.findall(r"window.__INITIAL_STATE__=(.*);", script.string)[0]
-            json_dict = json.loads(json_line)
-            break
-    return json_dict
 
 
 def _main(video: _Video):

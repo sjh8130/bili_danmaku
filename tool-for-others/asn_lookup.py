@@ -438,10 +438,9 @@ _CIDR_CALC: dict[str | int, str] = {
 
 
 def _download_file(url: str, file_name: str, overwrite: bool) -> None:
-    # 检查文件是否存在
     if os.path.isfile(file_name) and (not overwrite):
-        # file exist
-        print(f"文件 {file_name} 已存在.")
+        # file {} exist
+        # print(f"文件 {file_name} 已存在.")
         pass
     else:
         import requests

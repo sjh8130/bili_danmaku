@@ -14,8 +14,11 @@ import requests
 
 ssl._create_default_https_context = ssl._create_unverified_context
 requests.packages.urllib3.disable_warnings()  # type: ignore[attr-defined]
-AE = "gzip, deflate, br, zstd"
-UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36 Edg/133.0.0.0"
+with open("config.json", "r", -1, "utf-8") as fp:
+    config = json.load(fp)
+del fp
+AE = config["ae"]
+UA = config["ua"]
 logging.basicConfig(
     format="%(asctime)s %(message)s", level=logging.INFO, datefmt="%Y-%m-%d %H:%M:%S"
 )
@@ -68,7 +71,7 @@ def _get_posts_page(p: Post) -> Post:
     }
     logger.info(f"[getPostsPage] {p.platform} {p.user_id} {p.post_id}")
     response = session.get(url, headers=headers, verify=False)
-    soup = bs4.BeautifulSoup(response.content, "lxml")
+    soup = bs4.BeautifulSoup(response.content, ["lxml"])
     # Extract the post content
     content_tag = soup.select_one("div.scrape__content")
     p.content = content_tag.decode_contents().strip() if content_tag else ""

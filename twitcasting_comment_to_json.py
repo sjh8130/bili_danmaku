@@ -11,6 +11,9 @@ from my_lib.file_writer import write_file
 
 ssl._create_default_https_context = ssl._create_unverified_context
 requests.packages.urllib3.disable_warnings()  # type: ignore[attr-defined]
+with open("config.json", "r", -1, "utf-8") as fp:
+    config = json.load(fp)
+del fp
 
 _TWITCASTING_URL_JP = "ja.twitcasting.tv"
 _TWITCASTING_URL_EN = "en.twitcasting.tv"
@@ -35,10 +38,10 @@ def _downloader(
             response = session.get(
                 url=url,
                 headers={
-                    "Accept-Encoding": "gzip, deflate, br, zstd",
+                    "Accept-Encoding": config["ae"],
                     "Connection": "keep-alive",
                     "Host": host,
-                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36 Edg/133.0.0.0",
+                    "User-Agent": config["ua"],
                 },
                 verify=False,
                 timeout=30,
