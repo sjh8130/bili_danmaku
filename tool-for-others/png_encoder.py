@@ -2,19 +2,29 @@ import math
 import struct
 import time
 import zlib
-from enum import IntEnum, StrEnum, auto
-from typing import Generator, NamedTuple
+from enum import IntEnum, StrEnum
+from typing import NamedTuple
 
-from loguru import logger
 from PIL import Image
 from tqdm import trange
 
 try:
+    from loguru import logger
+
+    logger.bind(user="PNG")
+except ImportError:
+    import logging
+
+    logging.basicConfig(
+        format="%(asctime)s %(message)s",
+        level=logging.INFO,
+        datefmt="%Y-%m-%d %H:%M:%S",
+    )
+    logger = logging.getLogger("PNG")
+try:
     import oxipng
 except ImportError:
     oxipng = False
-logger.bind(user="PNG")
-log = logger
 
 # PNG signature
 _PNG_SIGNATURE = b"\x89PNG\x0d\x0a\x1a\x0a"
@@ -24,7 +34,7 @@ _BRD_S8 = 2**8 - 1
 _NULL_SEPARATOR = b"\x00"
 
 
-class _PNG_COLOR_TYPE(IntEnum):
+class COLOR_TYPE(IntEnum):
     GRAY = 0
     G = GRAY
     GRAYSCALE = GRAY
@@ -76,12 +86,12 @@ class _PNG_COLOR_TYPE(IntEnum):
     rgba64 = TRUECOLOR_WITH_ALPHA
 
 
-_ALLOWED_DEPTH_LIST: dict[_PNG_COLOR_TYPE, list[int]] = {
-    _PNG_COLOR_TYPE.GRAY: [1, 2, 4, 8, 16],
-    _PNG_COLOR_TYPE.TRUECOLOR: [8, 16],
-    _PNG_COLOR_TYPE.INDEXED_COLOR: [1, 2, 4, 8, 16],
-    _PNG_COLOR_TYPE.GRAY_ALPHA: [8, 16],
-    _PNG_COLOR_TYPE.TRUECOLOR_WITH_ALPHA: [8, 16],
+_ALLOWED_DEPTH_LIST: dict[COLOR_TYPE, list[int]] = {
+    COLOR_TYPE.GRAY: [1, 2, 4, 8, 16],
+    COLOR_TYPE.TRUECOLOR: [8, 16],
+    COLOR_TYPE.INDEXED_COLOR: [1, 2, 4, 8, 16],
+    COLOR_TYPE.GRAY_ALPHA: [8, 16],
+    COLOR_TYPE.TRUECOLOR_WITH_ALPHA: [8, 16],
 }
 
 
@@ -96,25 +106,24 @@ class Blend(IntEnum):
     OP_OVER = 1
 
 
-class _ZLIB_COMPRESSION_LEVEL(IntEnum):
+class COMPRESSION_LEVEL(IntEnum):
     COPY = 0
-    COMPRESSION_LEVEL_NONE = 0
-    COMPRESSION_LEVEL_0 = 0
-    COMPRESSION_LEVEL_1 = 1
-    COMPRESSION_LEVEL_2 = 2
-    COMPRESSION_LEVEL_3 = 3
-    COMPRESSION_LEVEL_4 = 4
-    COMPRESSION_LEVEL_5 = 5
-    COMPRESSION_LEVEL_6 = 6
-    COMPRESSION_LEVEL_7 = 7
-    COMPRESSION_LEVEL_8 = 8
-    COMPRESSION_LEVEL_9 = 9
+    NONE = 0
+    LV_0 = 0
+    LV_1 = 1
+    LV_2 = 2
+    LV_3 = 3
+    LV_4 = 4
+    LV_5 = 5
+    LV_6 = 6
+    LV_7 = 7
+    LV_8 = 8
+    LV_9 = 9
     Z_BEST_SPEED = zlib.Z_BEST_SPEED
     Z_NO_COMPRESSION = zlib.Z_NO_COMPRESSION
     Z_BEST_COMPRESSION = zlib.Z_BEST_COMPRESSION
-    X_BRUTE = auto()
-    X_OXIPNG = auto()
-    COMPRESSION_LEVEL_MAX = auto()
+    X_OXIPNG = 233
+    MAX = zlib.Z_BEST_COMPRESSION
 
 
 class _SRGB_RENDERING_INTENT(IntEnum):
@@ -202,7 +211,7 @@ class Palette(NamedTuple):
 
 
 class P1:
-    compression_level = _ZLIB_COMPRESSION_LEVEL.COMPRESSION_LEVEL_9
+    compression_level = COMPRESSION_LEVEL.LV_9
     apng_seq = 0
 
     def __init__(self, compression_level) -> None:
@@ -221,7 +230,7 @@ class P1:
         width: int,
         height: int,
         bit_depth: int,
-        color_type: _PNG_COLOR_TYPE,
+        color_type: COLOR_TYPE,
         compression_method: int = 0,
         filter_method: int = 0,
         interlace_method: int = 0,
@@ -252,10 +261,10 @@ class P1:
         width: int,
         height: int,
         bit_depth: int,
-        color_type: _PNG_COLOR_TYPE,
+        color_type: COLOR_TYPE,
         chunk_size: int,
         apng: bool = False,
-    ) -> Generator[bytes]:
+    ):
         compressor = zlib.compressobj(self.compression_level, wbits=15, memLevel=9)
         match color_type:
             case 0:
@@ -386,7 +395,7 @@ class P1:
             keyword.encode()
             + _NULL_SEPARATOR
             + b"\x00"
-            + zlib.compress(text.encode(), _ZLIB_COMPRESSION_LEVEL.COMPRESSION_LEVEL_9)
+            + zlib.compress(text.encode(), COMPRESSION_LEVEL.LV_9)
         )
         return self._sign(_CHUNK_TYPE.zTXt, data)
 
@@ -400,9 +409,7 @@ class P1:
     ) -> bytes:
         t1 = text.encode()
         if compression_flag:
-            _text: bytes = zlib.compress(
-                t1, _ZLIB_COMPRESSION_LEVEL.COMPRESSION_LEVEL_9
-            )
+            _text: bytes = zlib.compress(t1, COMPRESSION_LEVEL.LV_9)
             compression_method = 0
         else:
             _text = t1
@@ -453,14 +460,12 @@ def create_png(
     delay_den: int = 30,
     loop_times: int = 1,
     bit_depth: int = 8,
-    color_type: _PNG_COLOR_TYPE = _PNG_COLOR_TYPE.RGB32,
-    compression_level: (
-        _ZLIB_COMPRESSION_LEVEL | int
-    ) = _ZLIB_COMPRESSION_LEVEL.COMPRESSION_LEVEL_9,
+    color_type: COLOR_TYPE = COLOR_TYPE.RGB32,
+    compression_level: COMPRESSION_LEVEL | int = COMPRESSION_LEVEL.LV_9,
 ):
     if apng and num_frames == -1:
         num_frames = len(image_data)
-    x = P1(compression_level)
+    x = P1(min(compression_level, COMPRESSION_LEVEL.LV_9))
     png_data: bytes = b""
     png_data += bytes(_PNG_SIGNATURE)
     png_data += x.IHDR(width, height, bit_depth, color_type)
@@ -483,6 +488,18 @@ def create_png(
             ):
                 png_data += chunk
     png_data += x.IEND()
+    if oxipng is not False and compression_level == COMPRESSION_LEVEL.X_OXIPNG:
+        del x
+        before = len(png_data)
+        png_data = oxipng.optimize_from_memory(
+            png_data,
+            level=6,
+            optimize_alpha=True,
+            bit_depth_reduction=False,
+            deflate=oxipng.Deflaters.zopfli(255),
+        )
+        after = len(png_data)
+        logger.info(f"{before:,} -> {after:,} {(after/before):.2f}%")
     return png_data
 
 
@@ -494,9 +511,12 @@ def encode_tile_image_to_apng(
     chunk_size=1048576,
     frame_cont=-1,
     fps=30,
+    remove_alpha=False,
 ):
+    if path_in == path_out:
+        raise Exception(f"{path_in}=={path_out}::{path_in=}{path_out=}")
     logger.info(f"{path_in=},{path_out=}")
-    image = Image.open(path_in).convert("RGBA")
+    image = Image.open(path_in).convert("RGB" if remove_alpha else "RGBA")
     frames: list[bytes] = []
     fc = 0
     vertical_frames = image.height // tile_height
@@ -510,7 +530,7 @@ def encode_tile_image_to_apng(
                 (v + 1) * tile_height,
             )
             tile = image.crop(box)
-            tile.save(f"Z:\\{fc+1}.png")
+            # tile.save(f"Z:\\{fc+1}.png")
             frame_data = tile.tobytes()
             frames.append(frame_data)
             fc += 1
@@ -529,8 +549,8 @@ def encode_tile_image_to_apng(
         delay_den=fps,
         loop_times=0,
         bit_depth=8,
-        color_type=_PNG_COLOR_TYPE.RGB32,
-        compression_level=_ZLIB_COMPRESSION_LEVEL.COMPRESSION_LEVEL_9,
+        color_type=COLOR_TYPE.RGB24 if remove_alpha else COLOR_TYPE.RGBA32,
+        compression_level=COMPRESSION_LEVEL.X_OXIPNG,
     )
     write(path_out, r)
 
@@ -538,56 +558,56 @@ def encode_tile_image_to_apng(
 def recompress_png(
     png_path,
     chunk_size=1048576,
-    compression_level=_ZLIB_COMPRESSION_LEVEL.COMPRESSION_LEVEL_9,
+    compression_level=COMPRESSION_LEVEL.LV_9,
 ):
     image = Image.open(png_path)
-    log.debug(image)
+    logger.debug(image)
     width, height = image.size
     match image.mode:
         case "1":
-            color_type = _PNG_COLOR_TYPE.GRAY
+            color_type = COLOR_TYPE.GRAY
             bit_depth = 1
         case "L;2":
-            color_type = _PNG_COLOR_TYPE.GRAY
+            color_type = COLOR_TYPE.GRAY
             bit_depth = 2
         case "L;4":
-            color_type = _PNG_COLOR_TYPE.GRAY
+            color_type = COLOR_TYPE.GRAY
             bit_depth = 4
         case "L":
-            color_type = _PNG_COLOR_TYPE.GRAY
+            color_type = COLOR_TYPE.GRAY
             bit_depth = 8
         case "I;16B":
-            color_type = _PNG_COLOR_TYPE.GRAY
+            color_type = COLOR_TYPE.GRAY
             bit_depth = 16
         case "P;1":
-            color_type = _PNG_COLOR_TYPE.INDEXED_COLOR
+            color_type = COLOR_TYPE.INDEXED_COLOR
             bit_depth = 1
         case "P;2":
-            color_type = _PNG_COLOR_TYPE.INDEXED_COLOR
+            color_type = COLOR_TYPE.INDEXED_COLOR
             bit_depth = 2
         case "P;4":
-            color_type = _PNG_COLOR_TYPE.INDEXED_COLOR
+            color_type = COLOR_TYPE.INDEXED_COLOR
             bit_depth = 4
         case "P":
-            color_type = _PNG_COLOR_TYPE.INDEXED_COLOR
+            color_type = COLOR_TYPE.INDEXED_COLOR
             bit_depth = 8
         case "LA":
-            color_type = _PNG_COLOR_TYPE.GRAYSCALE_WITH_ALPHA
+            color_type = COLOR_TYPE.GRAYSCALE_WITH_ALPHA
             bit_depth = 16
         case "LA;16B":
-            color_type = _PNG_COLOR_TYPE.GRAYSCALE_WITH_ALPHA
+            color_type = COLOR_TYPE.GRAYSCALE_WITH_ALPHA
             bit_depth = 32
         case "RGB":
-            color_type = _PNG_COLOR_TYPE.TRUECOLOR
+            color_type = COLOR_TYPE.TRUECOLOR
             bit_depth = 24
         case "RGB;16B":
-            color_type = _PNG_COLOR_TYPE.TRUECOLOR
+            color_type = COLOR_TYPE.TRUECOLOR
             bit_depth = 48
         case "RGBA":
-            color_type = _PNG_COLOR_TYPE.TRUECOLOR_WITH_ALPHA
+            color_type = COLOR_TYPE.TRUECOLOR_WITH_ALPHA
             bit_depth = 32
         case "RGBA;16B":
-            color_type = _PNG_COLOR_TYPE.TRUECOLOR_WITH_ALPHA
+            color_type = COLOR_TYPE.TRUECOLOR_WITH_ALPHA
             bit_depth = 64
         case _:
             color_type = -1
@@ -623,9 +643,16 @@ def write(path, data):
 
 if __name__ == "__main__":
     try:
-        raise
+        encode_tile_image_to_apng(
+            r"ヾ(≧▽≦*)o",
+            r"φ(*￣0￣)",
+            256,
+            256,
+            frame_cont=120,
+            remove_alpha=True,
+        )
     except KeyboardInterrupt:
         print()
     except Exception as e:
-        log.exception(e)
+        logger.exception(e)
     time.sleep(10)

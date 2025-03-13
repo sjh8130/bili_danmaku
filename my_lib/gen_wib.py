@@ -1,3 +1,4 @@
+import json
 import ssl
 import time
 import urllib.parse
@@ -8,6 +9,9 @@ import requests
 
 ssl._create_default_https_context = ssl._create_unverified_context
 requests.packages.urllib3.disable_warnings()  # type: ignore[attr-defined]
+with open("..\\config.json", "r", -1, "utf-8") as fp:
+    config = json.load(fp)
+del fp
 
 mixinKeyEncTab = [
     46,
@@ -103,9 +107,7 @@ def encWbi(params: dict, img_key: str, sub_key: str):
 @lru_cache
 def getWbiKeys() -> tuple[str, str]:
     "获取最新的 img_key 和 sub_key"
-    headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36 Edg/133.0.0.0"
-    }
+    headers = {"User-Agent": config["ua"]}
     resp = requests.get(
         "https://api.bilibili.com/x/web-interface/nav", headers=headers, verify=False
     )

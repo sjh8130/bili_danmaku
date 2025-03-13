@@ -19,10 +19,10 @@
 | 12	| string	| idStr			| 弹幕ID |
 | 13	| uint32	| attr			| 弹幕属性位 |
 | 14	| uint64	| ~~usermid~~	| ~~发送者mid~~ |
-| 15	| uint  	| *likes*		| 点赞数量 |
+| 15	| uint  	| likes			| 点赞数量 |
 | 16	| uint  	| *test16*		| 弹幕回复，默认为 0 |
 | 17	| uint  	| *test17*		| 弹幕回复，默认为 0 |
-| 18	| uint  	| *reply_count*	| 弹幕回复数量 |
+| 18	| uint  	| reply_count	| 弹幕回复数量 |
 | 19	| ?			| *test19*		| ? |
 | 20	| string	| *test20*		| 弹幕回复，默认为str:"0" |
 | 21	| string	| *test21*		| 弹幕回复，默认为str:"0" |
@@ -31,6 +31,7 @@
 | 24	| uint  	| colorful		| 彩色弹幕 |
 | 25	| uint32	| type			| ? |
 | 26	| uint64	| oid			| 视频cid |
+| 27	| uint64	| *test27*		| |
 
 ### Danmaku__animation
 | key				| type	| value		| |
@@ -616,7 +617,7 @@ posY_2 = Math.round(posY / 375 * 100)
 | POPULARITY_RED_POCKET_V2_WINNER_LIST	| [✅](#POPULARITY_RED_POCKET_WINNER_LIST)	| 人气红包 抽奖结果 |
 | POPULARITY_RED_POCKET_WINNER_LIST		| [✅](#POPULARITY_RED_POCKET_WINNER_LIST)	| 人气红包 抽奖结果 |
 | PREPARING								| [✅](#PREPARING)							| 结束直播 |
-| RADIO_BACKGROUND						| [❌](#RADIO_BACKGROUND)					| |
+| RADIO_BACKGROUND						| [✅](#RADIO_BACKGROUND)					| |
 | RAFFLE_END							| [❌](#TV_END)								| |
 | RAFFLE_START							| [❌](#TV_START)							| |
 | RANK_CHANGED							| [✅](#RANK_CHANGED)						| |
@@ -6288,6 +6289,21 @@ enum recall_type={NOTHING:0,DANMAKU:1,USER:2,ALL:3}
 ```json
 {"cmd":"UNIVERSAL_EVENT_GIFT_V2","data":{"biz_session_id":"xxx","interact_channel_id":"xxx","interact_template":{"template_id":"multi_conn_grid","show_interact_ui":false,"layout_id":"left1_right1"},"members":[{"uid":xxx,"uname":"xxx","face":"xxx","position":0,"join_time":xxx,"link_id":"xxx","gender":1,"room_id":xxx,"fans_num":0,"display_name":"本房主播","biz_extra_data":{"multi_conn":{"price":xxx,"price_text":"xxx"}}},{"uid":xxx,"uname":"xxx","face":"xxx","position":1,"join_time":xxx,"link_id":"xxx","gender":0,"room_id":xxx,"fans_num":0,"display_name":"xxx","biz_extra_data":{"multi_conn":{"price":xxx,"price_text":"xxx"}}}],"stream_control":null,"version":xxx,"session_status":1,"business_label":"universal_multi_conn","invoking_time":2,"members_version":xxx,"room_status":1,"system_time_unix":xxx,"room_owner":xxx,"session_start_at":"xxx-xxx-xxx xxx:xxx:xxx","session_start_at_ts":xxx,"room_start_at":"xxx-xxx-xxx xxx:xxx:xxx","room_start_at_ts":xxx,"trace_id":"xxx","biz_extra_data":{"multi_conn":{"show_score":1,"support_full_zoom":2}},"channel_users":[xxx,xxx]}}
 {"cmd":"UNIVERSAL_EVENT_GIFT_V2","data":{"biz_session_id":"xxx","interact_channel_id":"xxx","interact_template":{"template_id":"multi_conn_grid","show_interact_ui":true,"layout_id":"left1_right1"},"members":[{"uid":xxx,"uname":"xxx","face":"xxx","position":0,"join_time":xxx,"link_id":"xxx","gender":1,"room_id":xxx,"fans_num":0,"display_name":"本房主播","biz_extra_data":{"multi_conn":{"price":xxx,"price_text":"xxx"}}},{"uid":xxx,"uname":"xxx","face":"xxx","position":1,"join_time":xxx,"link_id":"xxx","gender":0,"room_id":xxx,"fans_num":0,"display_name":"xxx","biz_extra_data":{"multi_conn":{"price":xxx,"price_text":"xxx"}}}],"stream_control":null,"version":xxx,"session_status":1,"business_label":"universal_multi_conn","invoking_time":2,"members_version":xxx,"room_status":1,"system_time_unix":xxx,"room_owner":xxx,"session_start_at":"xxx-xxx-xxx xxx:xxx:xxx","session_start_at_ts":xxx,"room_start_at":"xxx-xxx-xxx xxx:xxx:xxx","room_start_at_ts":xxx,"trace_id":"xxx","biz_extra_data":{"multi_conn":{"show_score":1,"support_full_zoom":1}},"channel_users":[xxx,xxx]}}
+```
+---
+### RADIO_BACKGROUND
+[TOP](#直播弹幕)
+文档更新：2025-01-01
+| key		| type	| value	|
+|-|-|-|
+| cmd		| str	| "RADIO_BACKGROUND" |
+| data		| obj	| |
+#### RADIO_BACKGROUND__data
+| key		| type	| value	|
+|-|-|-|
+| data	| xxx	| |
+```json
+{"cmd":"RADIO_BACKGROUND","data":{"background_url":"https://i0.hdslb.com/bfs/live/5712fbec7dcda4a9509a47001172aab352782dc2.png","background_type":0,"video_url":""}}
 ```
 ---
 ### XXXXXXXXXXXX
