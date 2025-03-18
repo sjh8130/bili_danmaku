@@ -101,9 +101,7 @@ def _L() -> None:
             else:
                 for i in json.loads(h)["data"]["packages"]:
                     _K(g, i)
-                    f.write(
-                        f"{time.strftime('%Y-%m-%d %H:%M:%S',time.localtime()):<32}{g:<12}{i['text']:20}"
-                    )
+                    f.write(f"{time.strftime('%Y-%m-%d %H:%M:%S',time.localtime()):<32}{g:<12}{i['text']:20}")
 
 
 def _M() -> None:

@@ -451,9 +451,7 @@ def _download_file(url: str, file_name: str, overwrite: bool) -> None:
         else:
             # file {} not exist, downloading...
             print(f"文件 {file_name} 不存在，正在下载...")
-        response = requests.get(
-            url, headers={"Accept-Encoding": "gzip, deflate, bzip2, br, zstd"}
-        )
+        response = requests.get(url, headers={"Accept-Encoding": "gzip, deflate, bzip2, br, zstd"})
         if response.status_code == 200:
             with open(file_name, "wb") as file:
                 file.write(response.content)
@@ -580,12 +578,8 @@ def _ip_in_range(ip: str, ipr: str) -> bool:
     检查IP地址是否在CIDR范围内。
     """
     try:
-        ip_network: ipaddress.IPv4Network | ipaddress.IPv6Network = (
-            ipaddress.ip_network(ipr, strict=False)
-        )
-        ip_address: ipaddress.IPv4Address | ipaddress.IPv6Address = (
-            ipaddress.ip_address(ip)
-        )
+        ip_network: ipaddress.IPv4Network | ipaddress.IPv6Network = ipaddress.ip_network(ipr, strict=False)
+        ip_address: ipaddress.IPv4Address | ipaddress.IPv6Address = ipaddress.ip_address(ip)
         return ip_address in ip_network
     except ValueError:
         return False
@@ -630,20 +624,10 @@ if __name__ == "__main__":
                 case "len" | "len()" | "length":
                     print(len(ips))
                 case "dump" | "export" | "save":
-                    j = json.dumps(
-                        ips, ensure_ascii=False, separators=(",", ":"), sort_keys=True
-                    )
+                    j = json.dumps(ips, ensure_ascii=False, separators=(",", ":"), sort_keys=True)
                     open("Z:\\dump.json", "w", encoding="utf-8").write(j)
                     del j
-                case (
-                    "afrinic"
-                    | "apnic"
-                    | "arin"
-                    | "iana"
-                    | "lacnic"
-                    | "ripe-ncc"
-                    | "ripencc"
-                ):
+                case "afrinic" | "apnic" | "arin" | "iana" | "lacnic" | "ripe-ncc" | "ripencc":
                     _query_desc(query_string)
                 case "allocated" | "assigned" | "reserved" | "available":
                     _query_status(query_string)

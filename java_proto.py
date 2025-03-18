@@ -174,11 +174,7 @@ def process(data: list[str]):
             continue
         strs: list[str] = i.strip().replace(", ", ",").rstrip(";").split(" ") + E_L
         if msg_type == MsgType.none:
-            if (
-                strs[:3] == ["public", "final", "class"]
-                and strs[4] == "extends"
-                and strs[6] == "implements"
-            ):
+            if strs[:3] == ["public", "final", "class"] and strs[4] == "extends" and strs[6] == "implements":
                 msg_type = MsgType.message
                 msg_name = strs[3]
             elif strs[:4] == ["public", "static", "final", "class"]:
@@ -187,14 +183,9 @@ def process(data: list[str]):
             elif strs[:2] == ["public", "enum"]:
                 msg_type = MsgType.enum
                 msg_name = strs[2]
-            elif (
-                strs[:3] == ["public", "final", "class"]
-                and strs[3] in string.ascii_letters
-            ):
+            elif strs[:3] == ["public", "final", "class"] and strs[3] in string.ascii_letters:
                 msg_type = MsgType.service
-            elif strs[:4] == ["private", "static", "final", "int"] and strs[
-                4
-            ].startswith("METHODID_"):
+            elif strs[:4] == ["private", "static", "final", "int"] and strs[4].startswith("METHODID_"):
                 msg_type = MsgType.service
         elif msg_type == MsgType.message:
             if strs[:5] == ["public", "static", "final", "String", "SERVICE_NAME"]:
@@ -204,14 +195,9 @@ def process(data: list[str]):
             if strs[:4] == ["public", "static", "final", "int"]:
                 list_1.append([strs[4][0:-13].lower(), int(strs[6])])
             elif strs[0] == "private":
-                if (
-                    strs[:3] == ["private", "static", "final"]
-                    and strs[4] == "DEFAULT_INSTANCE"
-                ):
+                if strs[:3] == ["private", "static", "final"] and strs[4] == "DEFAULT_INSTANCE":
                     msg_name = strs[3]
-                elif strs[:3] == ["private", "static", "volatile"] and strs[
-                    4
-                ].startswith("PARSER"):
+                elif strs[:3] == ["private", "static", "volatile"] and strs[4].startswith("PARSER"):
                     ...
                 else:
                     list_2.append([strs[2].rstrip("_"), strs[1]])
@@ -225,9 +211,7 @@ def process(data: list[str]):
                 list_1.append([strs[4][9:], int(strs[6])])
             elif strs[:4] == ["private", "static", "volatile", "x0"]:
                 pass
-            elif strs[:3] == ["private", "static", "volatile"] and strs[3].startswith(
-                "MethodDescriptor"
-            ):
+            elif strs[:3] == ["private", "static", "volatile"] and strs[3].startswith("MethodDescriptor"):
                 list_2.append(strs[3][17:-1].split(",") + [strs[4][3:-6]])
     if msg_type == MsgType.message:
         final_str += f"""

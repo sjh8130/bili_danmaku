@@ -19,9 +19,7 @@ with open("config.json", "r", -1, "utf-8") as fp:
 del fp
 AE = config["ae"]
 UA = config["ua"]
-logging.basicConfig(
-    format="%(asctime)s %(message)s", level=logging.INFO, datefmt="%Y-%m-%d %H:%M:%S"
-)
+logging.basicConfig(format="%(asctime)s %(message)s", level=logging.INFO, datefmt="%Y-%m-%d %H:%M:%S")
 logger = logging.getLogger("nekohouse-downloader")
 logger.setLevel(logging.ERROR)
 
@@ -47,13 +45,7 @@ class UserPage:
 
 def _escape_html(s: str) -> str:
     return re.sub(r"[<>\"&']", "_", s)
-    return (
-        s.replace("<", "&lt;")
-        .replace(">", "&gt;")
-        .replace('"', "&quot;")
-        .replace("&", "&amp;")
-        .strip()
-    )
+    return s.replace("<", "&lt;").replace(">", "&gt;").replace('"', "&quot;").replace("&", "&amp;").strip()
 
 
 def _escape_path(s: str) -> str:

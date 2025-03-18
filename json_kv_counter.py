@@ -32,11 +32,7 @@ def _a(item: int | str | list | dict | bool | NoneType, target_key="root"):
             _a(value, tk2)
     elif isinstance(item, list):
         for index, list_item in enumerate(item):
-            tk2 = (
-                f"{target_key}[X]"
-                if target_key in DONT_CARE_INDEX_LIST
-                else f"{target_key}[{index}]"
-            )
+            tk2 = f"{target_key}[X]" if target_key in DONT_CARE_INDEX_LIST else f"{target_key}[{index}]"
             _a(list_item, tk2)
     if isinstance(item, (dict, list)):
         return

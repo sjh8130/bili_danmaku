@@ -9,6 +9,7 @@ try:
 except ImportError:
     simdjson = json
 
+
 @dataclasses.dataclass
 class FFProbeFilePackets:
     codec_type: str = ""
@@ -105,9 +106,11 @@ def _main():
         PACKETS_2 = FFProbeFile(simdjson.load(HASH_2)["packets"])
         LEN_1 = len(PACKETS_1)
         LEN_2 = len(PACKETS_2)
-    with io.open(IN_FILE_1, "rb") as FILE_1, io.open(
-        IN_FILE_2, "rb"
-    ) as FILE_2, io.open(out_path, "wb") as OUT_FI:
+    with (
+        io.open(IN_FILE_1, "rb") as FILE_1,
+        io.open(IN_FILE_2, "rb") as FILE_2,
+        io.open(out_path, "wb") as OUT_FI,
+    ):
         print_control = 0
         w_f = 0
         w_f_s = 0
