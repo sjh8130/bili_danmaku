@@ -83,10 +83,7 @@ for this in data["elems"]:
         )
 write_file(
     out_path,
-    xml_cache_layer_1
-    + xml_cache_layer_2
-    + xml_cache_layer_3
-    + f"</i>\n<!-- Create Time: {last_modified_time} -->",
+    xml_cache_layer_1 + xml_cache_layer_2 + xml_cache_layer_3 + f"</i>\n<!-- Create Time: {last_modified_time} -->",
 )
 end_time = time.time()
 print(f"\r{danmaku_count=:10}, 总计用时：{round(end_time-start_time, 4):10}")

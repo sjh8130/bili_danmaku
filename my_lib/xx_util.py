@@ -42,19 +42,13 @@ def sort_p6_emoji(ld: list[dict], /) -> list[dict]:
     for i in range(len(ld)):
         if isinstance(ld[i].get("properties"), dict):
             if isinstance(ld[i]["properties"].get("item_ids"), str):
-                ld[i]["properties"]["item_ids"] = sort_str_list(
-                    ld[i]["properties"]["item_ids"]
-                )
+                ld[i]["properties"]["item_ids"] = sort_str_list(ld[i]["properties"]["item_ids"])
         ld[i]["items"] = sort_list_dict(ld[i]["items"])
     return ld
 
 
 def del_keys(d: dict, k: str, v=None, operator: OPR = OPR.EQ, recursive=True):
-    if (
-        isinstance(d, dict)
-        and k in d
-        and (type(d[k]) is type(v) or operator in (OPR.IN, OPR.ANY))
-    ):
+    if isinstance(d, dict) and k in d and (type(d[k]) is type(v) or operator in (OPR.IN, OPR.ANY)):
         match operator:
             case OPR.EQ:
                 if d[k] == v:
@@ -63,7 +57,7 @@ def del_keys(d: dict, k: str, v=None, operator: OPR = OPR.EQ, recursive=True):
                 if d[k] in v:  # type: ignore
                     d.pop(k)
             case OPR.ANY:
-                d.pop(k)
+                d.pop(k, None)
             case OPR.GT:
                 if isinstance(d[k], (int, float)) and d[k] > v:
                     del d[k]

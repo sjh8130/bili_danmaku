@@ -76,9 +76,7 @@ def _deduplicate_it(itm: dict[str, dict], has_timestamp: bool) -> bool:
             if not (data.get("uid", 0) == 0 and check_username(data["uname"])):
                 id_2 = f"""{cmd}${data["roomid"]}${data["score"]}${data["timestamp"]}${data["trigger_time"]}$0${data["uname"][0]}***${msg_id}"""
         case "SEND_GIFT":
-            id_1 = (
-                f"""{cmd}${data["rnd"]}${data.get("uid", 0)}${data["uname"]}${msg_id}"""
-            )
+            id_1 = f"""{cmd}${data["rnd"]}${data.get("uid", 0)}${data["uname"]}${msg_id}"""
             if not (data.get("uid", 0) == 0 and check_username(data["uname"])):
                 id_2 = f"""{cmd}${data["rnd"]}$0${data["uname"][0]}***${msg_id}"""
         case "COMBO_SEND":
@@ -95,22 +93,16 @@ def _deduplicate_it(itm: dict[str, dict], has_timestamp: bool) -> bool:
             id_1 = f"""{cmd}${data["start_time"]}${data["end_time"]}${data["ruid"]}${data.get("uid", 0)}${msg_id}"""
         case "SUPER_CHAT_MESSAGE":
             id_1 = f"""{cmd}${data["id"]}${data.get("uid", 0)}${data["user_info"]["uname"]}${data["message"]}${data["message_trans"]}${msg_id}"""
-            if not (
-                data.get("uid", 0) == 0 and check_username(data["user_info"]["uname"])
-            ):
+            if not (data.get("uid", 0) == 0 and check_username(data["user_info"]["uname"])):
                 return True
         case "SUPER_CHAT_MESSAGE_JPN":
             id_1 = f"""{cmd}${data["id"]}${data.get("uid", 0)}${data["user_info"]["uname"]}${data["message"]}${data["message_jpn"]}${msg_id}"""
-            if not (
-                data.get("uid", 0) == 0 and check_username(data["user_info"]["uname"])
-            ):
+            if not (data.get("uid", 0) == 0 and check_username(data["user_info"]["uname"])):
                 return True
         case "ANCHOR_LOT_AWARD" | "ANCHOR_LOT_END" | "ANCHOR_LOT_START":
             id_1 = f"""{cmd}${data["id"]}${msg_id}"""
         case "RANK_REM":
-            id_1 = (
-                f"""{cmd}${data["time"]}${data.get("uid", 0)}${data["ruid"]}${msg_id}"""
-            )
+            id_1 = f"""{cmd}${data["time"]}${data.get("uid", 0)}${data["ruid"]}${msg_id}"""
         case "GUARD_BUY":
             id_1 = f"""{cmd}${data["start_time"]}${data.get("uid", 0)}${itm['data']["num"]}${msg_id}"""
         case "DANMU_MSG:3:7:1:1:1:1":
@@ -128,12 +120,7 @@ def _deduplicate_it(itm: dict[str, dict], has_timestamp: bool) -> bool:
             id_1 = f"""{cmd}${data["payflow_id"]}${data.get("uid", 0)}${msg_id}"""
         case "COMMON_ANIMATION":
             id_1 = f"""{cmd}${data["order_id"]}${data.get("uid", 0)}${msg_id}"""
-        case (
-            "LIVE_INTERACTIVE_GAME"
-            | "LIVE_OPEN_PLATFORM_GAME"
-            | "RECOMMEND_CARD"
-            | "SPREAD_SHOW_FEET_V2"
-        ):
+        case "LIVE_INTERACTIVE_GAME" | "LIVE_OPEN_PLATFORM_GAME" | "RECOMMEND_CARD" | "SPREAD_SHOW_FEET_V2":
             id_1 = f"""{cmd}${data["timestamp"]}${msg_id}"""
         case "DANMU_AGGREGATION":
             id_1 = f"""{cmd}${data["timestamp"]}${data["activity_identity"]}${msg_id}"""
@@ -251,9 +238,7 @@ def _deduplicate(in_path: str):
         a = input_file.readlines()
         _total = len(a)
     with open(in_path + "_DEDUP", "w", 50 * 2**20, "utf-8") as output_file:
-        for line in tqdm(
-            a, leave=False, desc=f"{os.path.basename(in_path)} ", position=1
-        ):
+        for line in tqdm(a, leave=False, desc=f"{os.path.basename(in_path)} ", position=1):
             if line in _deduplicate_dict:
                 continue
             pos = line.find("{")

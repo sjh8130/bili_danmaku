@@ -213,9 +213,7 @@ def _I(a: str) -> None:
                     print(j)
                     raise e
                 _H(i, k)
-                h.write(
-                    f"{time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()):<32}{i:<12}{k['name']:20}{len(j):>8}"
-                )
+                h.write(f"{time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()):<32}{i:<12}{k['name']:20}{len(j):>8}")
 
 
 def _J() -> None:
@@ -233,9 +231,7 @@ def _J() -> None:
                     print(d)
                     raise f
                 _H(c, e)
-                print(
-                    f"{time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()):<32}{c:<12}{e['name']:20}{len(d):>8}"
-                )
+                print(f"{time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()):<32}{c:<12}{e['name']:20}{len(d):>8}")
             time.sleep(a)
 
 

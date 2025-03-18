@@ -87,7 +87,6 @@ def _main(user, movie_id, host):
     }
     I_current_page = 0
     while True:
-        # a = open(f"twitcasting_{_user}_{_movie_id}_{page}.html", encoding="utf-8").read()
         page = _downloader(
             page=I_current_page,
             host=host,
@@ -97,12 +96,7 @@ def _main(user, movie_id, host):
         )
         if page == b"BREAK":
             break
-        comments = list(
-            bs4.BeautifulSoup(page, "lxml").select(
-                ".tw-comment-history-item", limit=999
-            )
-        )
-        # _out["info"]["title"] = str(bs4.BeautifulSoup(a, "lxml").title.contents[0]).replace(" Comment - TwitCasting", "").replace(" コメント - ツイキャス", "")
+        comments = list(bs4.BeautifulSoup(page, "lxml").select(".tw-comment-history-item", limit=999))
         if I_current_page == 0:
             D_out["info"]["title"] = str(bs4.BeautifulSoup(page, "lxml").select(".tw-basic-page-header-path", limit=1)[0].contents[3].contents[1].contents[0]).strip()  # type: ignore[index,attr-defined]
             I_page_count = int(bs4.BeautifulSoup(page, "lxml").select(".tw-pager", limit=1)[0].contents[-1].contents[0])  # type: ignore[attr-defined]
@@ -112,42 +106,12 @@ def _main(user, movie_id, host):
                 {
                     "type": "comment",
                     "id": int(comment.attrs["data-comment-id"]),
-                    "message": str(
-                        comment.select(".tw-comment-history-item__content__text")[
-                            0
-                        ].contents[0]
-                    )
-                    .strip("\n")
-                    .strip("\t")
-                    .strip(),
-                    "createdAt": int(
-                        time.mktime(
-                            time.strptime(
-                                comment.select(".tw-comment-history-item__info__date")[
-                                    0
-                                ].attrs["datetime"],
-                                "%a, %d %b %Y %H:%M:%S %z",
-                            )
-                        )
-                    ),
+                    "message": str(comment.select(".tw-comment-history-item__content__text")[0].contents[0]).strip("\n").strip("\t").strip(),
+                    "createdAt": int(time.mktime(time.strptime(comment.select(".tw-comment-history-item__info__date")[0].attrs["datetime"], "%a, %d %b %Y %H:%M:%S %z"))),
                     "author": {
-                        "id": comment.select(
-                            ".tw-comment-history-item__details__user-link"
-                        )[0].attrs["href"][1:],
-                        "name": str(
-                            comment.select(
-                                ".tw-comment-history-item__details__user-link"
-                            )[0].contents[0]
-                        )
-                        .strip("\n")
-                        .strip("\t")
-                        .strip(),
-                        "profileImage": (
-                            "https:"
-                            + comment.select(".tw-comment-history-item__user__icon")[
-                                0
-                            ].attrs["src"]
-                        ).replace("https:https://", "https://"),
+                        "id": comment.select(".tw-comment-history-item__details__user-link")[0].attrs["href"][1:],
+                        "name": str(comment.select(".tw-comment-history-item__details__user-link")[0].contents[0]).strip("\n").strip("\t").strip(),
+                        "profileImage": ("https:" + comment.select(".tw-comment-history-item__user__icon")[0].attrs["src"]).replace("https:https://", "https://"),
                     },
                 }
             )
@@ -155,12 +119,7 @@ def _main(user, movie_id, host):
         if I_current_page >= I_page_count or I_current_page >= 100:
             break
     session.close()
-    out_data = (
-        json.dumps(D_out, ensure_ascii=False, separators=(",", ":"), indent="\t")
-        .replace("\n\t\t\t\t", "")
-        .replace("\n\t\t\t", "")
-        .replace("\n\t\t}", "}")
-    )
+    out_data = json.dumps(D_out, ensure_ascii=False, separators=(",", ":"), indent="\t").replace("\n\t\t\t\t", "").replace("\n\t\t\t", "").replace("\n\t\t}", "}")
     write_file(f"twitcasting_{user}_{movie_id}.json", out_data)
 
 

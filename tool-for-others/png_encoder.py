@@ -213,9 +213,11 @@ class Palette(NamedTuple):
 class P1:
     compression_level = COMPRESSION_LEVEL.LV_9
     apng_seq = 0
+    data: bytes = b""
 
     def __init__(self, compression_level) -> None:
         self.compression_level = compression_level
+        self.data += _PNG_SIGNATURE
 
     def _sign(self, chunk_type: bytes | str, data: bytes, /) -> bytes:
         if isinstance(chunk_type, str):
@@ -223,7 +225,9 @@ class P1:
         chunk_length = len(data)
         chunk_crc = struct.pack(">I", zlib.crc32(chunk_type + data, 0) & 0xFFFFFFFF)
         logger.debug(f"chunk_type={str(chunk_type,'utf-8')}, {chunk_length=}")
-        return struct.pack(">I", chunk_length) + chunk_type + data + chunk_crc
+        signed_data = struct.pack(">I", chunk_length) + chunk_type + data + chunk_crc
+        self.data += signed_data
+        return signed_data
 
     def IHDR(
         self,
@@ -328,12 +332,10 @@ class P1:
         for i in range(0, len(compressed_data), chunk_size):
             chunk_data = compressed_data[i : i + chunk_size]
             if apng:
-                yield self._sign(
-                    _CHUNK_TYPE.fdAT, struct.pack(">I", self.apng_seq) + chunk_data
-                )
+                self._sign(_CHUNK_TYPE.fdAT, struct.pack(">I", self.apng_seq) + chunk_data)
                 self.apng_seq += 1
             else:
-                yield self._sign(_CHUNK_TYPE.IDAT, chunk_data)
+                self._sign(_CHUNK_TYPE.IDAT, chunk_data)
 
     def IEND(self):
         return self._sign(b"IEND", b"")
@@ -391,12 +393,7 @@ class P1:
         return self._sign(_CHUNK_TYPE.tEXt, data)
 
     def zTXt(self, keyword: str, text: str) -> bytes:
-        data = (
-            keyword.encode()
-            + _NULL_SEPARATOR
-            + b"\x00"
-            + zlib.compress(text.encode(), COMPRESSION_LEVEL.LV_9)
-        )
+        data = keyword.encode() + _NULL_SEPARATOR + b"\x00" + zlib.compress(text.encode(), COMPRESSION_LEVEL.LV_9)
         return self._sign(_CHUNK_TYPE.zTXt, data)
 
     def iTXt(
@@ -436,9 +433,7 @@ class P1:
         data = struct.pack(">IIB", pixels_per_unit_x, pixels_per_unit_y, unit)
         return self._sign(_CHUNK_TYPE.pHYs, data)
 
-    def tIME(
-        self, year: int, month: int, day: int, hour: int, minute: int, second: int
-    ):
+    def tIME(self, year: int, month: int, day: int, hour: int, minute: int, second: int):
         data = struct.pack(">HBBBBB", year, month, day, hour, minute, second)
         return self._sign(_CHUNK_TYPE.tIME, data)
 
@@ -466,41 +461,33 @@ def create_png(
     if apng and num_frames == -1:
         num_frames = len(image_data)
     x = P1(min(compression_level, COMPRESSION_LEVEL.LV_9))
-    png_data: bytes = b""
-    png_data += bytes(_PNG_SIGNATURE)
-    png_data += x.IHDR(width, height, bit_depth, color_type)
-    png_data += x.tEXt("Software", "SJH8130:png_encoder")
+    x.IHDR(width, height, bit_depth, color_type)
+    x.tEXt("Software", "SJH8130:png_encoder")
     if apng:
-        png_data += x.acTL(num_frames, loop_times)
+        x.acTL(num_frames, loop_times)
         if num_frames == -1:
             num_frames = len(image_data)
-    for chunk in x.XDAT(
-        image_data[0], width, height, bit_depth, color_type, chunk_size
-    ):
-        png_data += chunk
+    x.XDAT(image_data[0], width, height, bit_depth, color_type, chunk_size)
     if apng and 0:
-        png_data += x.fcTL(width, height, 0, 0, delay_num, delay_den)
+        x.fcTL(width, height, 0, 0, delay_num, delay_den)
     if apng:
         for idx in trange(0, num_frames):
-            png_data += x.fcTL(width, height, 0, 0, delay_num, delay_den)
-            for chunk in x.XDAT(
-                image_data[idx], width, height, bit_depth, color_type, chunk_size, True
-            ):
-                png_data += chunk
-    png_data += x.IEND()
+            x.fcTL(width, height, 0, 0, delay_num, delay_den)
+            x.XDAT(image_data[idx], width, height, bit_depth, color_type, chunk_size, True)
+    x.IEND()
     if oxipng is not False and compression_level == COMPRESSION_LEVEL.X_OXIPNG:
-        del x
-        before = len(png_data)
-        png_data = oxipng.optimize_from_memory(
-            png_data,
+        before = len(x.data)
+        png_data = oxipng.optimize_from_memory(  # type:ignore
+            x.data,
             level=6,
             optimize_alpha=True,
             bit_depth_reduction=False,
-            deflate=oxipng.Deflaters.zopfli(255),
+            color_type_reduction=False,
+            deflate=oxipng.Deflaters.zopfli(255),  # type:ignore
         )
         after = len(png_data)
         logger.info(f"{before:,} -> {after:,} {(after/before):.2f}%")
-    return png_data
+    return x.data
 
 
 def encode_tile_image_to_apng(

@@ -138,12 +138,8 @@ def _main(video: _Video):
     if video is None:
         return
     url_info_1n = f"https://api.bilibili.com/x/web-interface/view?bvid={video.bvid}"
-    url_info_1e = "https://api.bilibili.com/x/web-interface/wbi/view?" + gen_w_rid(
-        {"aid": video.avid_n}
-    )
-    url_info_2n = (
-        f"https://api.bilibili.com/x/web-interface/view/detail?bvid={video.bvid}"
-    )
+    url_info_1e = "https://api.bilibili.com/x/web-interface/wbi/view?" + gen_w_rid({"aid": video.avid_n})
+    url_info_2n = f"https://api.bilibili.com/x/web-interface/view/detail?bvid={video.bvid}"
     session = requests.Session()
     headers = {
         "Accept-Encoding": AE,
@@ -186,9 +182,7 @@ def _main(video: _Video):
     if json_info["subtitle"] is not None:
         for subs in json_info["subtitle"]["list"]:
             _data = _downloader(subs["subtitle_url"], headers, session)
-            write_file(
-                f"[{video.bvid}]_[Subtitle]_[{subs['id']}]_[{subs['lan']}].bcc", _data
-            )
+            write_file(f"[{video.bvid}]_[Subtitle]_[{subs['id']}]_[{subs['lan']}].bcc", _data)
             del _data
     # ================================ 首映
     try:
@@ -204,9 +198,7 @@ def _main(video: _Video):
         vp = _VideoPart(V=video, cid=oid, oid=oid)
         v_url = f"https://api.bilibili.com/x/v2/dm/web/view?type=1&oid={vp.cid}&pid={vp.avid}&duration={this['']}"
         extra_info_proto_binary = _downloader(v_url, headers, session)
-        write_file(
-            f"[{video.bvid}]_[{vp.cid}]_[BAS]_[INFO].bin", extra_info_proto_binary
-        )
+        write_file(f"[{video.bvid}]_[{vp.cid}]_[BAS]_[INFO].bin", extra_info_proto_binary)
         extra_info_proto = dm_pb2.DmWebViewReply()
         extra_info_proto.ParseFromString(extra_info_proto_binary)
         # extra_info_json = MessageToDict(extra_info_proto)
@@ -222,9 +214,7 @@ def _main(video: _Video):
             for dmc in dms_j["colorfulSrc"]:
                 danmakuColorful_list.append(dmc)
         final_json = {"elems": danmaku_list, "colorfulSrc": danmakuColorful_list}
-        final_string = json.dumps(
-            final_json, ensure_ascii=False, separators=(",", ":")
-        ).replace('{"id":', '\n\t{"id":')
+        final_string = json.dumps(final_json, ensure_ascii=False, separators=(",", ":")).replace('{"id":', '\n\t{"id":')
         write_file(f"[{video.bvid}]_[{video.avid}].json", final_string)
 
 

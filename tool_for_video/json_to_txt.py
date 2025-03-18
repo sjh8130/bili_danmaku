@@ -6,6 +6,7 @@ try:
 except ImportError:
     simdjson = json
 
+
 def _main():
     """ffprobe json[data-hash] to txt"""
     in_path = sys.argv[1]
@@ -22,9 +23,10 @@ def _main():
             switch = True
         preload += 1
     if switch:
-        with open(in_path.rsplit(".", 1)[-2] + "V.txt", "w") as f1, open(
-            in_path.rsplit(".", 1)[-2] + "A.txt", "w"
-        ) as f2:
+        with (
+            open(in_path.rsplit(".", 1)[-2] + "V.txt", "w") as f1,
+            open(in_path.rsplit(".", 1)[-2] + "A.txt", "w") as f2,
+        ):
             for i in d["packets"]:
                 if i["stream_index"] == 0:
                     f1.write(i["data_hash"] + "\n")

@@ -12,9 +12,10 @@ _SKIP_KEYWORDS = []
 
 
 def _trim_file(in_path: str):
-    with open(in_path, "r", 1048576, encoding="utf-8") as input_file, open(
-        in_path + "_trim", "a", 1048576, "utf-8"
-    ) as out_file:
+    with (
+        open(in_path, "r", 1048576, encoding="utf-8") as input_file,
+        open(in_path + "_trim", "a", 1048576, "utf-8") as out_file,
+    ):
         for line in input_file.readlines():
             # if any(keyword in line for keyword in _SKIP_KEYWORDS):
             #     continue
@@ -27,9 +28,7 @@ def _trim_file(in_path: str):
             x = simdjson.loads(line[ls:])
             if x["cmd"] in _SKIP_KEYWORDS:
                 continue
-            out_file.write(
-                date + json.dumps(x, ensure_ascii=False, separators=(",", ":")) + "\n"
-            )
+            out_file.write(date + json.dumps(x, ensure_ascii=False, separators=(",", ":")) + "\n")
 
 
 files_to_process = sys.argv[1:]

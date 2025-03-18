@@ -10,10 +10,7 @@ def write_file(filename: str, data: str | bytes | dict, _gzip: bool = False) -> 
     if isinstance(data, str):
         _data = data.encode("utf-8")
     elif isinstance(data, dict):
-
-        _data = _data = json.dumps(
-            data, ensure_ascii=False, separators=(",", ":")
-        ).encode("utf-8")
+        _data = json.dumps(data, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
     else:
         _data = data
     if _gzip:

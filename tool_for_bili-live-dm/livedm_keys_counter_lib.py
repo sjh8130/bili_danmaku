@@ -59,9 +59,7 @@ def _a(cmd: str, item: int | str | list | dict | bool | NoneType, tk="", /):
             _a(cmd, value, tk2)
     elif isinstance(item, list):
         for index, list_item in enumerate(item):
-            tk2 = (
-                f"{tk}[IDX]" if SW2 and fk in DONT_CARE_INDEX_LIST else f"{tk}[{index}]"
-            )
+            tk2 = f"{tk}[IDX]" if SW2 and fk in DONT_CARE_INDEX_LIST else f"{tk}[{index}]"
             _a(cmd, list_item, tk2)
     if fk in (f"{cmd}.cmd", f"{cmd}.msg_id", f"{cmd}.send_time", cmd):
         return
@@ -79,9 +77,7 @@ def _a(cmd: str, item: int | str | list | dict | bool | NoneType, tk="", /):
 
 def p_main(in_path: str | Path):
     with open(in_path, "r", encoding="utf-8") as file_in:
-        for line in tqdm(
-            file_in.readlines(), leave=False, desc=f"{os.path.basename(in_path)}"
-        ):
+        for line in tqdm(file_in.readlines(), leave=False, desc=f"{os.path.basename(in_path)}"):
             try:
                 item: dict = simdjson.loads(line[line.find("{") :])
             except Exception:

@@ -42,9 +42,7 @@ def _main(in_paths):
         is_err = False
         lineno = 1
         with open(in_path, "r", encoding="utf-8") as file_in:
-            for line in tqdm(
-                file_in.readlines(), leave=False, desc=f"{os.path.basename(in_path)}"
-            ):
+            for line in tqdm(file_in.readlines(), leave=False, desc=f"{os.path.basename(in_path)}"):
                 lineno += 1
                 left_pos = line.find("{")
                 try:
