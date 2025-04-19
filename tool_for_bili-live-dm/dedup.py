@@ -55,18 +55,20 @@ def gift_id_enc(
 
 
 # @numba.jit(cache=True)
-def _deduplicate_it(itm: dict[str, dict], has_timestamp: bool) -> bool:
+def _deduplicate_it(itm: dict[str, Any], has_timestamp: bool) -> bool:
     """if exist: return false"""
     id_1: str
     id_2: str = ""
     dm_id_str: str
-    cmd: str = itm["cmd"]  # type:ignore
+    cmd: str = itm.get("cmd", "")
+    if not cmd:
+        return True
     data: dict[str, Any] = itm.get("data", None)  # type:ignore
     msg_id = str(itm.get("msg_id", 0))
     match cmd:
         # sort by hot-spot
         case "DANMU_MSG" | "DANMU_MSG:4:0:2:2:2:0":
-            dm_id_str = simdjson.loads(itm["info"][0][15]["extra"]).get("id_str", "")
+            dm_id_str = simdjson.loads(itm["info"][0][15]["extra"]).get("id_str", "")  # type:ignore
             id_1 = f"""{cmd}${itm["info"][0][7]}${itm["info"][0][4]}${itm["info"][0][5]}${itm["info"][9]["ct"]}${itm["info"][9]["ts"]}${itm["info"][2][0]}${itm["info"][2][1]}${dm_id_str}${msg_id}"""
             # mid_hash,time.Now().Unix(),rnd,ct,ts,uid,uname,extra:dm_id_str,msg_id
             if not (itm["info"][2][1] == 0 and check_username(itm["info"][2][0])):
@@ -152,6 +154,7 @@ def _deduplicate_it(itm: dict[str, dict], has_timestamp: bool) -> bool:
             | "LIKE_INFO_V3_UPDATE"
             | "NOTICE_MSG"
             | "ONLINE_RANK_V2"
+            | "RADIO_BACKGROUND"
             | "ROOM_REAL_TIME_MESSAGE_UPDATE"
             | "SUPER_CHAT_MESSAGE_DELETE"
             | "WATCHED_CHANGE"
@@ -168,6 +171,7 @@ def _deduplicate_it(itm: dict[str, dict], has_timestamp: bool) -> bool:
             | "HOT_ROOM_NOTIFY"
             | "LOG_IN_NOTICE"
             | "ONLINE_RANK_TOP3"
+            | "OTHER_SLICE_LOADING_RESULT"
             | "POPULAR_RANK_CHANGED"
             | "RANK_CHANGED"
             | "REVENUE_RANK_CHANGED"
