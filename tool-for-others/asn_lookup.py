@@ -320,9 +320,7 @@ _IPS_DEFAULT = set(
         IP("192.52.193.0/24", "XX", "[IANA]AMT", "reserved"),
         IP("192.88.99.0/24", "XX", "[IANA]Deprecated (6to4 Relay Anycast)", "reserved"),
         IP("192.168.0.0/16", "XX", "[IANA]Private-Use", "reserved"),
-        IP(
-            "192.175.48.0/24", "XX", "[IANA]Direct Delegation AS112 Service", "reserved"
-        ),
+        IP("192.175.48.0/24", "XX", "[IANA]Direct Delegation AS112 Service", "reserved"),
         IP("198.18.0.0/15", "XX", "[IANA]Benchmarking", "reserved"),
         IP("198.51.100.0/24", "XX", "[IANA]Documentation (TEST-NET-2)", "reserved"),
         IP("203.0.113.0/24", "XX", "[IANA]Documentation (TEST-NET-3)", "reserved"),

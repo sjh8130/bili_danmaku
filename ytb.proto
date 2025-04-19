@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+message liveChatItemContextMenuEndpoint {
+  liveChatItemContextMenuEndpoint_f1 f1 = 1;
+  liveChatItemContextMenuEndpoint_f3 f3 = 3;
+  int32 f4 = 4;
+  int32 f5 = 5;
+  User user_info = 6;
+  int32 f7 = 7;
+  int32 f9 = 9;
+  int32 f10 = 10;
+  message liveChatItemContextMenuEndpoint_f1 {
+    liveChatItemContextMenuEndpoint_f1_f1 f1 = 1;
+  }
+  message liveChatItemContextMenuEndpoint_f1_f1 { string comment_id = 1; }
+  message liveChatItemContextMenuEndpoint_f3 { Uploader Uploader = 5; }
+  message Uploader {
+    string User_id = 1;
+    string Video_id = 2;
+  }
+  message User { string User_channel_id = 1; }
+  message liveChatViewerEngagementMessageRenderer {
+    liveChatViewerEngagementMessageRenderer_f1 f1 = 1;
+  }
+  message liveChatViewerEngagementMessageRenderer_f1 { string t = 1; }
+}
+message general_id {
+  aa a = 1;
+  message aa { string id = 1; }
+}
+message globalConfiguration {
+  gg a = 144;
+  message gg {
+    string x1 = 1;
+    xxx2 x2 = 2;
+    message xxx2 {}
+  }
+}

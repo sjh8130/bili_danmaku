@@ -172,7 +172,7 @@ def _main(video: _Video):
     video_info_3_load = json.loads(video_info_3)
     write_file(f"[{video.bvid}]_[0]_[Video]_[INFO_3].json", video_info_3_load)
     # ================================ 加载
-    json_info = video_info_1_load["data"]
+    json_info:dict = video_info_1_load["data"]
     # ================================ bvid aid 检查
     if json_info["bvid"] != video.bvid:
         print(f"[bvid]: bvid mismatch {json_info['bvid']}|{video.bvid}")
@@ -185,18 +185,15 @@ def _main(video: _Video):
             write_file(f"[{video.bvid}]_[Subtitle]_[{subs['id']}]_[{subs['lan']}].bcc", _data)
             del _data
     # ================================ 首映
-    try:
-        if json_info["premiere"] is not None:
-            print(f"[{video.bvid}]: 首映 premiere")
-    except KeyError:
-        pass
+    if json_info.get("premiere") is not None:
+        print(f"[{video.bvid}]: 首映 premiere")
     # ================================ 分集处理
     part = 0
     for this in json_info["pages"]:
         part += 1
         oid = int(this["cid"])
         vp = _VideoPart(V=video, cid=oid, oid=oid)
-        v_url = f"https://api.bilibili.com/x/v2/dm/web/view?type=1&oid={vp.cid}&pid={vp.avid}&duration={this['']}"
+        v_url = f"https://api.bilibili.com/x/v2/dm/web/view?type=1&oid={vp.cid}&pid={vp.avid_n}&duration={this['duration']}"
         extra_info_proto_binary = _downloader(v_url, headers, session)
         write_file(f"[{video.bvid}]_[{vp.cid}]_[BAS]_[INFO].bin", extra_info_proto_binary)
         extra_info_proto = dm_pb2.DmWebViewReply()
@@ -220,18 +217,18 @@ def _main(video: _Video):
 
 def _process_args(vid: str):
     if vid.startswith("https://www.bilibili.com/video/"):
-        vid = vid.lstrip("https://www.bilibili.com/video/")
+        vid = vid.removeprefix("https://www.bilibili.com/video/")
     elif vid.startswith("http://www.bilibili.com/video/"):
-        vid = vid.lstrip("http://www.bilibili.com/video/")
+        vid = vid.removeprefix("http://www.bilibili.com/video/")
     elif vid.startswith("https://b23.tv/BV1") or vid.startswith("https://b23.tv/av"):
-        vid = vid.lstrip("https://b23.tv/")
+        vid = vid.removeprefix("https://b23.tv/")
     vid = vid.split("?")[0].split("/")[0]
     if vid.startswith("BV"):
         bvid = vid[vid.find("BV") : vid.find("BV") + 12]
         avid_n = BV2AV(bvid)
         avid = f"av{avid_n}"
     elif vid.startswith("av"):
-        avid_n = int(vid.lstrip("av"))
+        avid_n = int(vid.removeprefix("av"))
         avid = f"av{avid_n}"
         bvid = AV2BV(avid_n)
     else:

@@ -27,9 +27,9 @@ class DMAttrBit(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     __slots__ = []
     DMAttrBitProtect: _ClassVar[DMAttrBit]
     DMAttrBitFromLive: _ClassVar[DMAttrBit]
-    DMAttrHighLike: _ClassVar[DMAttrBit]
-    DMAttrPicture: _ClassVar[DMAttrBit]
-    DMAttrNFT: _ClassVar[DMAttrBit]
+    DMAttrBitHighLike: _ClassVar[DMAttrBit]
+    DMAttrBitPicture: _ClassVar[DMAttrBit]
+    DMAttrBitNFT: _ClassVar[DMAttrBit]
     DMAttrX15: _ClassVar[DMAttrBit]
 
 class DmColorfulType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
@@ -115,9 +115,9 @@ CheckboxTypeEncourage: CheckboxType
 CheckboxTypeColorDM: CheckboxType
 DMAttrBitProtect: DMAttrBit
 DMAttrBitFromLive: DMAttrBit
-DMAttrHighLike: DMAttrBit
-DMAttrPicture: DMAttrBit
-DMAttrNFT: DMAttrBit
+DMAttrBitHighLike: DMAttrBit
+DMAttrBitPicture: DMAttrBit
+DMAttrBitNFT: DMAttrBit
 DMAttrX15: DMAttrBit
 NoneType: DmColorfulType
 VipGradualColor: DmColorfulType
@@ -325,13 +325,13 @@ class DanmakuAIFlag(_message.Message):
     def __init__(self, dm_flags: _Optional[_Iterable[_Union[DanmakuFlag, _Mapping]]] = ...) -> None: ...
 
 class DanmakuElem(_message.Message):
-    __slots__ = ["id", "progress", "mode", "fontsize", "color", "midHash", "content", "ctime", "weight", "action", "pool", "idStr", "attr", "mid", "likes", "test16", "test17", "reply_count", "test19", "test20", "test21", "animation", "extra", "colorful", "type", "oid"]
+    __slots__ = ["id", "progress", "mode", "fontsize", "color", "mid_hash", "content", "ctime", "weight", "action", "pool", "idStr", "attr", "mid", "likes", "test16", "test17", "reply_count", "test19", "test20", "test21", "animation", "extra", "colorful", "type", "oid", "xxx27"]
     ID_FIELD_NUMBER: _ClassVar[int]
     PROGRESS_FIELD_NUMBER: _ClassVar[int]
     MODE_FIELD_NUMBER: _ClassVar[int]
     FONTSIZE_FIELD_NUMBER: _ClassVar[int]
     COLOR_FIELD_NUMBER: _ClassVar[int]
-    MIDHASH_FIELD_NUMBER: _ClassVar[int]
+    MID_HASH_FIELD_NUMBER: _ClassVar[int]
     CONTENT_FIELD_NUMBER: _ClassVar[int]
     CTIME_FIELD_NUMBER: _ClassVar[int]
     WEIGHT_FIELD_NUMBER: _ClassVar[int]
@@ -352,12 +352,13 @@ class DanmakuElem(_message.Message):
     COLORFUL_FIELD_NUMBER: _ClassVar[int]
     TYPE_FIELD_NUMBER: _ClassVar[int]
     OID_FIELD_NUMBER: _ClassVar[int]
+    XXX27_FIELD_NUMBER: _ClassVar[int]
     id: int
     progress: int
     mode: int
     fontsize: int
     color: int
-    midHash: str
+    mid_hash: str
     content: str
     ctime: int
     weight: int
@@ -378,7 +379,8 @@ class DanmakuElem(_message.Message):
     colorful: DmColorfulType
     type: int
     oid: int
-    def __init__(self, id: _Optional[int] = ..., progress: _Optional[int] = ..., mode: _Optional[int] = ..., fontsize: _Optional[int] = ..., color: _Optional[int] = ..., midHash: _Optional[str] = ..., content: _Optional[str] = ..., ctime: _Optional[int] = ..., weight: _Optional[int] = ..., action: _Optional[str] = ..., pool: _Optional[int] = ..., idStr: _Optional[str] = ..., attr: _Optional[int] = ..., mid: _Optional[int] = ..., likes: _Optional[int] = ..., test16: _Optional[int] = ..., test17: _Optional[int] = ..., reply_count: _Optional[int] = ..., test19: _Optional[bytes] = ..., test20: _Optional[str] = ..., test21: _Optional[str] = ..., animation: _Optional[str] = ..., extra: _Optional[str] = ..., colorful: _Optional[_Union[DmColorfulType, str]] = ..., type: _Optional[int] = ..., oid: _Optional[int] = ...) -> None: ...
+    xxx27: int
+    def __init__(self, id: _Optional[int] = ..., progress: _Optional[int] = ..., mode: _Optional[int] = ..., fontsize: _Optional[int] = ..., color: _Optional[int] = ..., mid_hash: _Optional[str] = ..., content: _Optional[str] = ..., ctime: _Optional[int] = ..., weight: _Optional[int] = ..., action: _Optional[str] = ..., pool: _Optional[int] = ..., idStr: _Optional[str] = ..., attr: _Optional[int] = ..., mid: _Optional[int] = ..., likes: _Optional[int] = ..., test16: _Optional[int] = ..., test17: _Optional[int] = ..., reply_count: _Optional[int] = ..., test19: _Optional[bytes] = ..., test20: _Optional[str] = ..., test21: _Optional[str] = ..., animation: _Optional[str] = ..., extra: _Optional[str] = ..., colorful: _Optional[_Union[DmColorfulType, str]] = ..., type: _Optional[int] = ..., oid: _Optional[int] = ..., xxx27: _Optional[int] = ...) -> None: ...
 
 class DanmakuFlag(_message.Message):
     __slots__ = ["dmid", "flag"]
@@ -886,7 +888,7 @@ class DmViewReq(_message.Message):
     def __init__(self, pid: _Optional[int] = ..., oid: _Optional[int] = ..., type: _Optional[int] = ..., spmid: _Optional[str] = ..., is_hard_boot: _Optional[int] = ..., context_ext: _Optional[str] = ...) -> None: ...
 
 class DmWebViewReply(_message.Message):
-    __slots__ = ["state", "text", "text_side", "dm_sge", "flag", "special_dms", "check_box", "count", "commandDms", "player_config", "report_filter_content", "expressions", "post_panel", "activity_meta", "post_panel_2", "sub_views", "qoe"]
+    __slots__ = ["state", "text", "text_side", "dm_sge", "flag", "special_dms", "check_box", "count", "commandDms", "player_config", "report_filter_content", "expressions", "post_panel", "activity_meta", "post_panel_2", "sub_views", "qoe", "mask_walls"]
     STATE_FIELD_NUMBER: _ClassVar[int]
     TEXT_FIELD_NUMBER: _ClassVar[int]
     TEXT_SIDE_FIELD_NUMBER: _ClassVar[int]
@@ -904,6 +906,7 @@ class DmWebViewReply(_message.Message):
     POST_PANEL_2_FIELD_NUMBER: _ClassVar[int]
     SUB_VIEWS_FIELD_NUMBER: _ClassVar[int]
     QOE_FIELD_NUMBER: _ClassVar[int]
+    MASK_WALLS_FIELD_NUMBER: _ClassVar[int]
     state: int
     text: str
     text_side: str
@@ -921,7 +924,8 @@ class DmWebViewReply(_message.Message):
     post_panel_2: _containers.RepeatedCompositeFieldContainer[PostPanelV2]
     sub_views: _containers.RepeatedCompositeFieldContainer[DmSubView]
     qoe: QoeInfo
-    def __init__(self, state: _Optional[int] = ..., text: _Optional[str] = ..., text_side: _Optional[str] = ..., dm_sge: _Optional[_Union[DmSegConfig, _Mapping]] = ..., flag: _Optional[_Union[DanmakuFlagConfig, _Mapping]] = ..., special_dms: _Optional[_Iterable[str]] = ..., check_box: bool = ..., count: _Optional[int] = ..., commandDms: _Optional[_Iterable[_Union[CommandDm, _Mapping]]] = ..., player_config: _Optional[_Union[DanmuWebPlayerConfig, _Mapping]] = ..., report_filter_content: _Optional[_Iterable[str]] = ..., expressions: _Optional[_Iterable[_Union[Expressions, _Mapping]]] = ..., post_panel: _Optional[_Iterable[_Union[PostPanel, _Mapping]]] = ..., activity_meta: _Optional[_Iterable[str]] = ..., post_panel_2: _Optional[_Iterable[_Union[PostPanelV2, _Mapping]]] = ..., sub_views: _Optional[_Iterable[_Union[DmSubView, _Mapping]]] = ..., qoe: _Optional[_Union[QoeInfo, _Mapping]] = ...) -> None: ...
+    mask_walls: _containers.RepeatedCompositeFieldContainer[DmMaskWall]
+    def __init__(self, state: _Optional[int] = ..., text: _Optional[str] = ..., text_side: _Optional[str] = ..., dm_sge: _Optional[_Union[DmSegConfig, _Mapping]] = ..., flag: _Optional[_Union[DanmakuFlagConfig, _Mapping]] = ..., special_dms: _Optional[_Iterable[str]] = ..., check_box: bool = ..., count: _Optional[int] = ..., commandDms: _Optional[_Iterable[_Union[CommandDm, _Mapping]]] = ..., player_config: _Optional[_Union[DanmuWebPlayerConfig, _Mapping]] = ..., report_filter_content: _Optional[_Iterable[str]] = ..., expressions: _Optional[_Iterable[_Union[Expressions, _Mapping]]] = ..., post_panel: _Optional[_Iterable[_Union[PostPanel, _Mapping]]] = ..., activity_meta: _Optional[_Iterable[str]] = ..., post_panel_2: _Optional[_Iterable[_Union[PostPanelV2, _Mapping]]] = ..., sub_views: _Optional[_Iterable[_Union[DmSubView, _Mapping]]] = ..., qoe: _Optional[_Union[QoeInfo, _Mapping]] = ..., mask_walls: _Optional[_Iterable[_Union[DmMaskWall, _Mapping]]] = ...) -> None: ...
 
 class ExpoReport(_message.Message):
     __slots__ = ["should_report_at_end"]
@@ -1344,71 +1348,3 @@ class GOOGLE_PROTOBUF_ANY(_message.Message):
     type_url: str
     value: bytes
     def __init__(self, type_url: _Optional[str] = ..., value: _Optional[bytes] = ...) -> None: ...
-
-class xxxxxx(_message.Message):
-    __slots__ = ["t1", "t2", "t3", "t4", "t5", "t6", "t7", "t8", "t9", "t10", "t11", "t12", "t13", "t14", "t15", "t16", "t17", "t18", "t19", "t20", "t21", "t22", "t23", "t24", "t25", "t26", "t27", "t28", "t29", "t30", "t31", "t32"]
-    T1_FIELD_NUMBER: _ClassVar[int]
-    T2_FIELD_NUMBER: _ClassVar[int]
-    T3_FIELD_NUMBER: _ClassVar[int]
-    T4_FIELD_NUMBER: _ClassVar[int]
-    T5_FIELD_NUMBER: _ClassVar[int]
-    T6_FIELD_NUMBER: _ClassVar[int]
-    T7_FIELD_NUMBER: _ClassVar[int]
-    T8_FIELD_NUMBER: _ClassVar[int]
-    T9_FIELD_NUMBER: _ClassVar[int]
-    T10_FIELD_NUMBER: _ClassVar[int]
-    T11_FIELD_NUMBER: _ClassVar[int]
-    T12_FIELD_NUMBER: _ClassVar[int]
-    T13_FIELD_NUMBER: _ClassVar[int]
-    T14_FIELD_NUMBER: _ClassVar[int]
-    T15_FIELD_NUMBER: _ClassVar[int]
-    T16_FIELD_NUMBER: _ClassVar[int]
-    T17_FIELD_NUMBER: _ClassVar[int]
-    T18_FIELD_NUMBER: _ClassVar[int]
-    T19_FIELD_NUMBER: _ClassVar[int]
-    T20_FIELD_NUMBER: _ClassVar[int]
-    T21_FIELD_NUMBER: _ClassVar[int]
-    T22_FIELD_NUMBER: _ClassVar[int]
-    T23_FIELD_NUMBER: _ClassVar[int]
-    T24_FIELD_NUMBER: _ClassVar[int]
-    T25_FIELD_NUMBER: _ClassVar[int]
-    T26_FIELD_NUMBER: _ClassVar[int]
-    T27_FIELD_NUMBER: _ClassVar[int]
-    T28_FIELD_NUMBER: _ClassVar[int]
-    T29_FIELD_NUMBER: _ClassVar[int]
-    T30_FIELD_NUMBER: _ClassVar[int]
-    T31_FIELD_NUMBER: _ClassVar[int]
-    T32_FIELD_NUMBER: _ClassVar[int]
-    t1: str
-    t2: str
-    t3: str
-    t4: str
-    t5: str
-    t6: str
-    t7: str
-    t8: str
-    t9: str
-    t10: str
-    t11: str
-    t12: str
-    t13: str
-    t14: str
-    t15: str
-    t16: str
-    t17: str
-    t18: str
-    t19: str
-    t20: str
-    t21: str
-    t22: str
-    t23: str
-    t24: str
-    t25: str
-    t26: str
-    t27: str
-    t28: str
-    t29: str
-    t30: str
-    t31: str
-    t32: str
-    def __init__(self, t1: _Optional[str] = ..., t2: _Optional[str] = ..., t3: _Optional[str] = ..., t4: _Optional[str] = ..., t5: _Optional[str] = ..., t6: _Optional[str] = ..., t7: _Optional[str] = ..., t8: _Optional[str] = ..., t9: _Optional[str] = ..., t10: _Optional[str] = ..., t11: _Optional[str] = ..., t12: _Optional[str] = ..., t13: _Optional[str] = ..., t14: _Optional[str] = ..., t15: _Optional[str] = ..., t16: _Optional[str] = ..., t17: _Optional[str] = ..., t18: _Optional[str] = ..., t19: _Optional[str] = ..., t20: _Optional[str] = ..., t21: _Optional[str] = ..., t22: _Optional[str] = ..., t23: _Optional[str] = ..., t24: _Optional[str] = ..., t25: _Optional[str] = ..., t26: _Optional[str] = ..., t27: _Optional[str] = ..., t28: _Optional[str] = ..., t29: _Optional[str] = ..., t30: _Optional[str] = ..., t31: _Optional[str] = ..., t32: _Optional[str] = ...) -> None: ...

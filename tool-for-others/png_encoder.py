@@ -24,7 +24,7 @@ except ImportError:
 try:
     import oxipng
 except ImportError:
-    oxipng = False
+    oxipng = None
 
 # PNG signature
 _PNG_SIGNATURE = b"\x89PNG\x0d\x0a\x1a\x0a"
@@ -216,12 +216,12 @@ class P1:
     data: bytes = b""
 
     def __init__(self, compression_level) -> None:
-        self.compression_level = compression_level
+        self.compression_level = COMPRESSION_LEVEL(compression_level)
         self.data += _PNG_SIGNATURE
 
     def _sign(self, chunk_type: bytes | str, data: bytes, /) -> bytes:
         if isinstance(chunk_type, str):
-            chunk_type = chunk_type.encode()
+            chunk_type = chunk_type.encode("utf-8")
         chunk_length = len(data)
         chunk_crc = struct.pack(">I", zlib.crc32(chunk_type + data, 0) & 0xFFFFFFFF)
         logger.debug(f"chunk_type={str(chunk_type,'utf-8')}, {chunk_length=}")
@@ -348,7 +348,7 @@ class P1:
         return self._sign(_CHUNK_TYPE.gAMA, data)
 
     def iCCP(self, profile_name: str, profile_data: bytes):
-        data = profile_name.encode() + b"\x00" + profile_data
+        data = profile_name.encode("utf-8") + _NULL_SEPARATOR + profile_data
         return self._sign(_CHUNK_TYPE.iCCP, data)
 
     def sRGB(
@@ -389,11 +389,11 @@ class P1:
         return self._sign(_CHUNK_TYPE.fcTL, data)
 
     def tEXt(self, keyword: str, text: str) -> bytes:
-        data = keyword.encode() + _NULL_SEPARATOR + text.encode()
+        data = keyword.encode("utf-8") + _NULL_SEPARATOR + text.encode("utf-8")
         return self._sign(_CHUNK_TYPE.tEXt, data)
 
     def zTXt(self, keyword: str, text: str) -> bytes:
-        data = keyword.encode() + _NULL_SEPARATOR + b"\x00" + zlib.compress(text.encode(), COMPRESSION_LEVEL.LV_9)
+        data = keyword.encode("utf-8") + _NULL_SEPARATOR * 2 + zlib.compress(text.encode("utf-8"), COMPRESSION_LEVEL.LV_9)
         return self._sign(_CHUNK_TYPE.zTXt, data)
 
     def iTXt(
@@ -404,7 +404,7 @@ class P1:
         translated_keyword: str = "",
         compression_flag: bool = False,
     ) -> bytes:
-        t1 = text.encode()
+        t1 = text.encode("utf-8")
         if compression_flag:
             _text: bytes = zlib.compress(t1, COMPRESSION_LEVEL.LV_9)
             compression_method = 0
@@ -412,15 +412,15 @@ class P1:
             _text = t1
             compression_method = 1
         data = (
-            keyword.encode()
+            keyword.encode("utf-8")
             + _NULL_SEPARATOR
             + _text
             + struct.pack(">?B", compression_flag, compression_method)
-            + language_tag.encode()
+            + language_tag.encode("utf-8")
             + _NULL_SEPARATOR
-            + translated_keyword.encode()
+            + translated_keyword.encode("utf-8")
             + _NULL_SEPARATOR
-            + text.encode()
+            + text.encode("utf-8")
         )
         return self._sign(_CHUNK_TYPE.iTXt, data)
 
@@ -460,7 +460,7 @@ def create_png(
 ):
     if apng and num_frames == -1:
         num_frames = len(image_data)
-    x = P1(min(compression_level, COMPRESSION_LEVEL.LV_9))
+    x = P1(min(compression_level, COMPRESSION_LEVEL.LV_9 if oxipng is None else COMPRESSION_LEVEL.Z_BEST_SPEED))
     x.IHDR(width, height, bit_depth, color_type)
     x.tEXt("Software", "SJH8130:png_encoder")
     if apng:
@@ -475,18 +475,19 @@ def create_png(
             x.fcTL(width, height, 0, 0, delay_num, delay_den)
             x.XDAT(image_data[idx], width, height, bit_depth, color_type, chunk_size, True)
     x.IEND()
-    if oxipng is not False and compression_level == COMPRESSION_LEVEL.X_OXIPNG:
+    if oxipng is not None and compression_level == COMPRESSION_LEVEL.X_OXIPNG:
         before = len(x.data)
-        png_data = oxipng.optimize_from_memory(  # type:ignore
+        png_data = oxipng.optimize_from_memory(
             x.data,
             level=6,
             optimize_alpha=True,
             bit_depth_reduction=False,
             color_type_reduction=False,
-            deflate=oxipng.Deflaters.zopfli(255),  # type:ignore
+            deflate=oxipng.Deflaters.zopfli(255),
         )
         after = len(png_data)
         logger.info(f"{before:,} -> {after:,} {(after/before):.2f}%")
+        return png_data
     return x.data
 
 

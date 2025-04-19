@@ -147,7 +147,7 @@ s1.hdslb.com/bfs/static/player/main/widgets/npd.xxx.xxx.js
 | ~~posY~~				| float		| |
 | posX_2				| num		| |
 | posY_2				| num		| |
-| icon					| str		| [url][url_01] |
+| icon					| str		| (url) |
 | mid					| num		| 合作up主 mid |
 | midstr				| str		| 合作up主 mid string |
 | face					| str		| 合作up主 头像 URL |
@@ -166,7 +166,7 @@ s1.hdslb.com/bfs/static/player/main/widgets/npd.xxx.xxx.js
 | posY					| float		| |
 | posX_2				| num		| |
 | posY_2				| num		| |
-| icon					| str		| [url][url_02] |
+| icon					| str		| (url) |
 | type					| num		| 2 |
 | arc_type				| num		| 0 |
 | shrink_icon			| str		| |
@@ -214,17 +214,17 @@ s1.hdslb.com/bfs/static/player/main/widgets/npd.xxx.xxx.js
 | user_checkin_date		| xxx	| |
 | user_completed		| xxx	| |
 | user_over_number		| xxx	| |
-| ~~posX~~				| float		| |
-| ~~posY~~				| float		| |
-| posX_2				| num		| |
-| posY_2				| num		| |
+| ~~posX~~				| float	| |
+| ~~posY~~				| float	| |
+| posX_2				| num	| |
+| posY_2				| num	| |
 #### CMTIME
-| key 					| type		| value	|
+| key 					| type	| value	|
 |-|-|-|
-| ~~posX~~				| float		| |
-| ~~posY~~				| float		| |
-| posX_2				| num		| |
-| posY_2				| num		| |
+| ~~posX~~				| float	| |
+| ~~posY~~				| float	| |
+| posX_2				| num	| |
+| posY_2				| num	| |
 | dm_key_word			| xxx	| |
 | duration				| xxx	| |
 | slogan_icon			| xxx	| |
@@ -232,10 +232,10 @@ s1.hdslb.com/bfs/static/player/main/widgets/npd.xxx.xxx.js
 #### GOODSLIKE
 | key 					| type	| value	|
 |-|-|-|
-| ~~posX~~				| float		| |
-| ~~posY~~				| float		| |
-| posX_2				| num		| |
-| posY_2				| num		| |
+| ~~posX~~				| float	| |
+| ~~posY~~				| float	| |
+| posX_2				| num	| |
+| posY_2				| num	| |
 | button_icon			| xxx	| |
 | button_selected		| xxx	| |
 | button_unselected		| xxx	| |
@@ -257,15 +257,15 @@ s1.hdslb.com/bfs/static/player/main/widgets/npd.xxx.xxx.js
 | ? posY_2				| num	| |
 | grade_id				| num	| id |
 | duration				| num	| 5000 |
-| icon					| str	| [url][url_03] |
+| icon					| str	| (url) |
 | mid_score				| num	| |
 | count					| num	| |
 | avg_score				| float	| |
-| skin_unselected		| str	| skin=1: [url][url_04]<br>skin=2: [url][url_05] |
-| skin_selected			| str	| skin=1: [url][url_06]<br>skin=2: [url][url_07] |
+| skin_unselected		| str	| skin=1: (url)<br>skin=2: (url) |
+| skin_selected			| str	| skin=1: (url)<br>skin=2: (url) |
 | skin_font_color		| str	| color<br>skin=1: "`#FFB112`"<br>skin=2: "`#FA5555`" |
 | summary_duration		| num	| 6000 |
-| shrink_icon			| str	| [url][url_08] |
+| shrink_icon			| str	| (url) |
 | shrink_title			| str	| "推荐" |
 | show_status			| num	| 0 |
 #### GRADESUMMARY__查看总分
@@ -278,9 +278,9 @@ s1.hdslb.com/bfs/static/player/main/widgets/npd.xxx.xxx.js
 | posY_2				| num	| |
 | dmids					| \[\]num	| [dmid] |
 | duration				| num	| 65000 |
-| icon					| str	| [url][url_03] |
+| icon					| str	| (url) |
 | grades				| \[\]obj	| |
-| shrink_icon			| str	| [url][url_08] |
+| shrink_icon			| str	| (url) |
 | shrink_title			| str	| "推荐" |
 | show_status			| num	| 0 |
 ##### GRADESUMMARY__grades
@@ -298,7 +298,7 @@ s1.hdslb.com/bfs/static/player/main/widgets/npd.xxx.xxx.js
 |-|-|-|
 | aid					| num	| 目标视频avid |
 | title					| str	| 目标视频标题 |
-| icon					| str	| [url][url_09] |
+| icon					| str	| (url) |
 | bvid					| str	| 目标视频bvid |
 | posX					| float	| |
 | posY					| float	| |
@@ -306,7 +306,7 @@ s1.hdslb.com/bfs/static/player/main/widgets/npd.xxx.xxx.js
 | posY_2				| num	| |
 | arc_pic				| str	| 目标视频封面 |
 | arc_duration			| num	| 目标视频时长 |
-| shrink_icon			| str	| [url][url_10] |
+| shrink_icon			| str	| (url) |
 | shrink_title			| str	| "视频" |
 | show_status			| num	| 0 |
 | duration				| num	| |
@@ -327,7 +327,7 @@ s1.hdslb.com/bfs/static/player/main/widgets/npd.xxx.xxx.js
 | posX_2				| num	| |
 | posY_2				| num	| |
 | duration				| num	| 5000 |
-| icon					| str	| [url][url_11] |
+| icon					| str	| (url) |
 | reserve_count			| num	| 预约人数 |
 | reserve_state			| num	| 0 / 1 |
 | user_state			| bool 	| 预约状态 | 需要登录 |
@@ -344,7 +344,7 @@ s1.hdslb.com/bfs/static/player/main/widgets/npd.xxx.xxx.js
 | stime_format			| str	| 视频: ""<br>直播: "`MM-dd HH:mm`" / "`今天HH:mm`" |
 | live_lottery			| bool 	| `true` |
 | desc					| str	| "" |
-| shrink_icon			| str	| [url][url_12] |
+| shrink_icon			| str	| (url) |
 | shrink_title			| str	| "预约" |
 | show_status			| num	| 0 |
 ```json
@@ -391,7 +391,7 @@ s1.hdslb.com/bfs/static/player/main/widgets/npd.xxx.xxx.js
 | question				| str	| 投票问题 |
 | cnt					| num	| 投票人数 |
 | options				| array	| 选项 |
-| icon					| str	| [url][url_13] |
+| icon					| str	| (url) |
 | my_vote				| num	| 我的选项 |
 | pub_dynamic			| bool 	| |
 | posX					| float	| |
@@ -399,7 +399,7 @@ s1.hdslb.com/bfs/static/player/main/widgets/npd.xxx.xxx.js
 | posX_2				| num	| |
 | posY_2				| num	| |
 | duration				| num	| |
-| shrink_icon			| str	| [url][url_14] |
+| shrink_icon			| str	| (url) |
 | shrink_title			| str	| "投票" |
 | show_status			| num	| 0 / 1 |
 | mid					| ?	| |
@@ -530,6 +530,7 @@ posY_2 = Math.round(posY / 375 * 100)
 | LOL_ACTIVITY							| [❌](#LOL_ACTIVITY)						| |
 | LOL_PLAYER_GRADE						| [✅](#LOL_PLAYER_GRADE)					| LOL |
 | LPL_REALTIME_STATUS_CHANGED			| [✅](#LPL_REALTIME_STATUS_CHANGED)			| LOL |
+| master_qn_strategy_chg				| [❌](#master_qn_strategy_chg)				| |
 | MATCH_TEAM_GIFT_RANK					| [❌](#MATCH_TEAM_GIFT_RANK)				| |
 | MESSAGEBOX_USER_GAIN_MEDAL			| [✅](#MESSAGEBOX_USER_GAIN_MEDAL)			| 获得粉丝牌 |
 | MESSAGEBOX_USER_MEDAL_CHANGE			| [✅](#MESSAGEBOX_USER_MEDAL_CHANGE)		| 粉丝牌升级 |
@@ -558,6 +559,7 @@ posY_2 = Math.round(posY / 375 * 100)
 | ONLINE_RANK_TOP3						| [✅](#ONLINE_RANK_TOP3)					| 高能榜: 高能用户前三恭喜 |
 | ONLINE_RANK_V2						| [✅](#ONLINE_RANK_V2)						| 高能榜: 高能用户TOP7 |
 | OTHER_SLICE_LOADING_RESULT			| [✅](#OTHER_SLICE_LOADING_RESULT)			| |
+| OTHER_SLICE_PUBLISH_RESULT			| [❌](#OTHER_SLICE_PUBLISH_RESULT)			| |
 | OTHER_SLICE_SETTING_CHANGED			| [✅](#OTHER_SLICE_SETTING_CHANGED)			| |
 | PANEL_INTERACTIVE_NOTIFY_CHANGE		| [✅](#PANEL_INTERACTIVE_NOTIFY_CHANGE)		| |
 | PK_AGAIN								| [❌](#PK_PRT_1)							| PK |
@@ -649,7 +651,8 @@ posY_2 = Math.round(posY / 375 * 100)
 | ROOM_RANK								| [❌](#ROOM_RANK)							| |
 | ROOM_REAL_TIME_MESSAGE_UPDATE			| [✅](#ROOM_REAL_TIME_MESSAGE_UPDATE)		| 当前粉丝团人数，关注人数 |
 | ROOM_REFRESH							| [✅](#ROOM_REFRESH)						| @todo |
-| ROOM_SILENT_OFF/ROOM_SILENT_ON		| [✅](#ROOM_SILENT)							| 直播间全局禁言 |
+| ROOM_SILENT_ON						| [✅](#ROOM_SILENT)							| 直播间全局禁言 |
+| ROOM_SILENT_OFF						| [✅](#ROOM_SILENT)							| 直播间全局禁言 |
 | ROOM_SKIN_MSG							| [✅](#ROOM_SKIN_MSG)						| 直播间背景 |
 | ROOM_SWITCH_INFO_CONFIG_CHANGE		| [✅](#ROOM_SWITCH_INFO_CONFIG_CHANGE)		| |
 | RUN_UP_DOWN_GUIDE						| [❌](#RUN_UP_DOWN_GUIDE)					| |
@@ -778,7 +781,7 @@ posY_2 = Math.round(posY / 375 * 100)
 ----
 ### LIVE
 [TOP](#直播弹幕)
-文档更新：2024-11-xx
+文档更新：2025-04-xx
 开播/主播断线重连(重新推流)
 | key 10,11			| type	| value	|
 |-|-|-|
@@ -790,8 +793,12 @@ posY_2 = Math.round(posY / 375 * 100)
 | live_model		| num	| ?0 1 2 3 4 5 |
 | roomid			| num	| 长直播间ID |
 | ?live_time		| num	| 开播时间TimeStamp(秒) |
+| special_type		| num	| |
+| delay				| obj	| |
+| scatter			| obj	| |
 ```json
 {"cmd":"LIVE","live_key":"111111111111111111","voice_background":"","sub_session_key":"111111111111111111sub_time:xxxxxxxxxx","live_platform":"xxx","live_model":xxx,"roomid":xxx,"live_time":xxxxxxxxxx}
+{"cmd":"LIVE","delay":{"min":10,"max":30},"scatter":{"min":10,"max":30},"special_type":1,"roomid":"xxx"}
 {"cmd":"LIVE","live_key":"111111111111111111","voice_background":"","sub_session_key":"111111111111111111sub_time:xxxxxxxxxx","live_platform":"xxx","live_model":xxx,"roomid":xxx}
 ```
 #### live_platform
@@ -825,7 +832,7 @@ posY_2 = Math.round(posY / 375 * 100)
 | p_msg_type	| num	| |
 | send_time		| num	| TimeStamp(毫秒) |
 #### SEND_GIFT__danmu
-| key 59				| type		| value	|
+| key					| type		| value	|
 |-|-|-|
 | area					| num		| 0,1 |
 #### SEND_GIFT__data
@@ -944,7 +951,7 @@ posY_2 = Math.round(posY / 375 * 100)
 | uid					| num		| |
 | uname					| str		| |
 ```json
-{"cmd":"SEND_GIFT_V2","data":{"dmscore":36,"pb":"...."},"msg_id":"xxx","p_is_ack":true,"p_msg_type":1,"send_time":xxx}
+{"cmd":"SEND_GIFT_V2","data":{"dmscore":36,"pb":"...."},"msg_id":"xxx:xxx:xxx","p_is_ack":true,"p_msg_type":1,"send_time":xxx}
 {
 	"cmd":"SEND_GIFT",
 	"data":{
@@ -1036,8 +1043,7 @@ posY_2 = Math.round(posY / 375 * 100)
 		"uname":"xxx",
 		"wealth_level":1
 	},
-	"msg_id":"xxx:1:1000",
-	"msg_id":"xxx:1000:1000",
+	"msg_id":"xxx:xxx:xxx",
 	"p_is_ack":true,
 	"p_msg_type":1,
 	"send_time":xxxxxxxxxxxxx
@@ -1070,6 +1076,7 @@ posY_2 = Math.round(posY / 375 * 100)
 | uname			| str	| 昵称 |
 | rank			| num	| 排名(1-7) |
 | guard_level	| num	| [大航海等级](#others) |
+| is_mystery	| bool	| |
 | uinfo			| obj	| [uinfo](#PUBLIC_uinfo) |
 ```json
 {
@@ -1122,7 +1129,7 @@ posY_2 = Math.round(posY / 375 * 100)
 ----
 ### ONLINE_RANK_COUNT
 [TOP](#直播弹幕)
-文档更新：2024-11-xx
+文档更新：2025-04-01
 高能用户人数(观众人数)
 约每5×N秒发送一次
 | key		| type	| value	|
@@ -1287,7 +1294,7 @@ posY_2 = Math.round(posY / 375 * 100)
 ----
 ### LIKE_INFO_V3_CLICK
 [TOP](#直播弹幕)
-文档更新：2024-xx-xx
+文档更新：2025-04-01
 点赞，实时&每5秒最多发送一次
 | key		| type	| value	|
 |-|-|-|
@@ -1299,10 +1306,10 @@ posY_2 = Math.round(posY / 375 * 100)
 | contribution_info	| obj		| |
 | dmscore			| num		| |
 | fans_medal		| obj		| [fans_medal](#粉丝勋章medal_info) |
-| group_medal		| null/		| |
-| identities		| \[+]\num	| [identities](#others) |
+| group_medal		| null/obj	| |
+| identities		| \[+\]num	| [identities](#others) |
 | is_mystery		| bool		| |
-| like_icon			| str		| [图标][img_16] |
+| like_icon			| str		| |
 | like_text			| str		| "为主播点赞了" |
 | msg_type			| num		| 6 |
 | show_area			| num		| 0 / 1(30s) |
@@ -1334,7 +1341,7 @@ posY_2 = Math.round(posY / 375 * 100)
 ----
 ### LIKE_INFO_V3_UPDATE
 [TOP](#直播弹幕)
-文档更新：2024-11-01
+文档更新：2025-04-01
 点赞，实时&每5秒最多发送一次
 | key		| type	| value	|
 |-|-|-|
@@ -1482,7 +1489,7 @@ f"<%{USERNAME}%> 来了"
 ----
 ### STOP_LIVE_ROOM_LIST
 [TOP](#直播弹幕)
-文档更新：2024-11-01
+文档更新：2025-04-01
 每30秒发送一次(`HH:mm:29`,`HH:mm:59`)
 广播 未压缩
 | key			| type		| value	|
@@ -1687,7 +1694,7 @@ f"<%{USERNAME}%> 来了"
 | msg_id	| str	| |
 | send_time	| num	| |
 #### SUPER_CHAT_MESSAGE__data
-| key 27					| type		| value	| 备注
+| key 30					| type		| value	| 备注
 |-|-|-|-|
 | background_bottom_color	| str		| [table](#SC价格颜色表) |
 | background_color			| str		| [table](#SC价格颜色表) |
@@ -1783,7 +1790,7 @@ f"<%{USERNAME}%> 来了"
 		"user_info":{"key":"value"}
 	},
 	"is_report":true,
-	"msg_id":"xxx:???:1000",
+	"msg_id":"xxx:xxx:xxx",
 	"p_is_ack":true,
 	"p_msg_type":1,
 	"send_time":9999
@@ -1931,21 +1938,21 @@ SC 删除
 ----
 ### ANCHOR_LOT_CHECKSTATUS
 [TOP](#直播弹幕)
-文档更新：2024-xx-xx
+文档更新：2025-03-xx
 抽奖(天选时刻)检查
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "ANCHOR_LOT_CHECKSTATUS" |
 | data		| obj	| |
 #### ANCHOR_LOT_CHECKSTATUS__data
-| key 3,5			| type	| value	|
+| key 3,6				| type	| value	|
 |-|-|-|
-| award_name_reject	| str	| |
-| id				| num	| 抽奖id	|
-| ?reject_danmu		| null	| ?null	|
-| ?reject_reason	| str	| 拒绝理由	|
-| status			| num	| 4:通过 / 5:拒绝	|
-| uid				| num	| 主播uid	|
+| ?award_name_reject	| str	| |
+| id					| num	| 抽奖id	|
+| ?reject_danmu			| null	| ?null	|
+| ?reject_reason		| str	| 拒绝理由	|
+| status				| num	| 4:通过 / 5:拒绝	|
+| uid					| num	| 主播uid	|
 ```json
 {"cmd":"ANCHOR_LOT_CHECKSTATUS","data":{"id":123,"reject_danmu":null,"reject_reason":"由于奖品格式不合格,请仔细检查后再提交哦","status":5,"uid":12345}}
 {"cmd":"ANCHOR_LOT_CHECKSTATUS","data":{"award_name_reject":"","id":12345,"reject_danmu":null,"reject_reason":"","status":4,"uid":123}}
@@ -2157,6 +2164,9 @@ SC 删除
 {"roomid":"12345","round":1,"cmd":"PREPARING"}
 {"roomid":"12345","cmd":"PREPARING"}
 //{"cmd":"PREPARING","roomid":"12345","round":1,"scatter":{"max":30,"min":10}}
+{"cmd":"PREPARING","msg_id":"xxx:xxx:xxx","p_is_ack":true,"p_msg_type":1,"roomid":"xxx","round":1,"send_time":xxx}
+{"cmd":"PREPARING","msg_id":"xxx:xxx:xxx","p_is_ack":true,"p_msg_type":1,"roomid":"xxx","scatter":{"max":30,"min":10},"send_time":xxx}
+{"cmd":"PREPARING","msg_id":"xxx:xxx:xxx","p_is_ack":true,"p_msg_type":1,"roomid":"xxx","send_time":xxx}
 ```
 ----
 ### DANMU_MSG
@@ -2346,6 +2356,7 @@ voiceConfig
 | reply_uname				| str		| 弹幕回复-昵称 |202206-
 | reply_uname_color			| str		| 弹幕回复 |202206-
 | reply_is_mystery			| bool		| 弹幕回复 |202206-
+| reply_type_enum			| num		| 弹幕回复 |2025-
 | hit_combo					| num		| 0,1 +1弹幕 |202206-
 | esports_jump_url			| str		| |20240905
 #### DANMU_MSG__info__0__15__extra__emots
@@ -2421,7 +2432,7 @@ voiceConfig
 | msg		| str	| |
 | room_id	| num	| 直播间id |
 ```json
-{"cmd":"CUT_OFF","msg":"xxx","msg_id":"xxx:1000:1000","p_is_ack":true,"room_id":xxx,"send_time":9999}
+{"cmd":"CUT_OFF","msg":"xxx","msg_id":"xxx:xxx:xxx","p_is_ack":true,"room_id":xxx,"send_time":9999}
 "版权相关"
 "分区错误，直播该游戏请到THE FINALS分区"
 "分区错误，直播该游戏请移至虚拟APEX分区直播"
@@ -2957,7 +2968,7 @@ timestamp: N×5
 | icon_url_grey	| str	| https://i0.hdslb.com/bfs/live/cb7444b1faf1d785df6265bfdc1fcfc993419b76.png |
 | action_type	| num	| 1 / 2 |
 | timestamp		| num	| 当前时间 TimeStamp(秒) |
-| msg_id		| str	| UUID |
+| msg_id		| str	| UUID4 |
 | jump_url_link	| str	| |
 | jump_url_pc	| str	| |
 | jump_url_pink	| str	| |
@@ -3160,7 +3171,7 @@ timestamp: N×5
 ----
 ### DM_INTERACTION
 [TOP](#直播弹幕)
-文档更新：2024-11-11
+文档更新：2025-04-01
 弹幕投票 / 他们都在说
 | key		| type	| value	|
 |-|-|-|
@@ -3455,7 +3466,7 @@ match data["type"]:
 | red_point		| num	| |
 | refresh		| num	| |
 ```json
-{"cmd":"VOICE_JOIN_LIST","data":{"apply_count":x,"category":1,"cmd":"","red_point":1,"refresh":1,"room_id":12345},"msg_id":"xxx:1000:1000","p_is_ack":true,"p_msg_type":1,"room_id":12345,"send_time":xxx}
+{"cmd":"VOICE_JOIN_LIST","data":{"apply_count":x,"category":1,"cmd":"","red_point":1,"refresh":1,"room_id":12345},"msg_id":"xxx:xxx:xxx","p_is_ack":true,"p_msg_type":1,"room_id":12345,"send_time":xxx}
 ```
 ----
 ### VOICE_JOIN_ROOM_COUNT_INFO
@@ -3477,7 +3488,7 @@ match data["type"]:
 | notify_count	| num	| |
 | red_point		| num	| |
 ```json
-{"cmd":"VOICE_JOIN_ROOM_COUNT_INFO","data":{"apply_count":xx,"cmd":"","notify_count":0,"red_point":1,"room_id":12345,"room_status":1,"root_status":1},"msg_id":"xxx:1000:1000","p_is_ack":true,"p_msg_type":1,"room_id":12345,"send_time":xxx}
+{"cmd":"VOICE_JOIN_ROOM_COUNT_INFO","data":{"apply_count":xx,"cmd":"","notify_count":0,"red_point":1,"room_id":12345,"room_status":1,"root_status":1},"msg_id":"xxx:xxx:xxx","p_is_ack":true,"p_msg_type":1,"room_id":12345,"send_time":xxx}
 {"cmd":"VOICE_JOIN_ROOM_COUNT_INFO","data":{"cmd":"","room_id":12345,"root_status":1,"room_status":1,"apply_count":xx,"notify_count":0,"red_point":1},"room_id":12345}
 {"cmd":"VOICE_JOIN_ROOM_COUNT_INFO","data":{"cmd":"","room_id":12345,"root_status":1,"room_status":1,"apply_count":xx,"notify_count":0,"red_point":0},"room_id":12345}
 {"cmd":"VOICE_JOIN_ROOM_COUNT_INFO","data":{"apply_count":xx,"cmd":"","notify_count":0,"red_point":1,"room_id":12345,"room_status":1,"root_status":1},"room_id":12345}
@@ -4848,7 +4859,7 @@ role 0 1 2
 | expire	| str	| UTC+8 |
 | roomid	| num	| |
 ```json
-{"cmd":"ROOM_LOCK","expire":"yyyy-mm-dd hh:mm:ss","msg_id":"xxx:1000:1000","p_is_ack":true,"p_msg_type":1,"roomid":xxx,"send_time":xxx}
+{"cmd":"ROOM_LOCK","expire":"yyyy-mm-dd hh:mm:ss","msg_id":"xxx:xxx:xxx","p_is_ack":true,"p_msg_type":1,"roomid":xxx,"send_time":xxx}
 ```
 ---
 ### OFFICIAL_ROOM_EVENT
@@ -5412,7 +5423,7 @@ role 0 1 2
 | area_name		| str	| 分区名称(大/小分区) |
 | blink_url		| str	| 排行榜URL |
 | countdown		| num	| 倒计时\[1-1800\] |
-| icon			| str	| [图像][url_15] |
+| icon			| str	| (url) |
 | live_link_url	| str	| 排行榜URL |
 | live_url		| str	| 排行榜URL |
 | pc_link_url	| str	| 排行榜URL |
@@ -5430,23 +5441,23 @@ role 0 1 2
 文档更新：2024-xx-xx  
 [已移除][热门榜功能下线公告]  
 每30分(1800秒 `HH:25:05,HH:55:05`)广播一次，大/小分区排行榜topxx  
-| key | type | value |
+| key		| type	 | value |
 |-|-|-|
-| cmd	| str	| "HOT_RANK_SETTLEMENT" / "HOT_RANK_SETTLEMENT_V2" |
-| data	| obj	| |
+| cmd		| str		| "HOT_RANK_SETTLEMENT" / "HOT_RANK_SETTLEMENT_V2" |
+| data		| obj		| |
 #### HOT_RANK_SETTLEMENT__data
-| key		| type	| value |
-| area_name	| str	| 分区名称(大/小) |
-| cache_key	| str	| hex(128bit) |
-| dm_msg	| str	| "恭喜主播 <% {uname} %> 荣登限时热门榜{总}榜top{rank}! 即将获得热门流量推荐哦！" "恭喜主播 <% {uname} %> 荣登限时热门榜{总}榜榜首!" "恭喜主播 <% {uname} %> 荣登限时热门榜{总}榜top{rank}!" |
-| dm_msg	| str	| `f"恭喜主播 <% {uname} %> 荣登限时热门榜{总}榜{xxx}!"` "榜首,top2-10" |
-| dmscore	| str	| 144 |
-| face		| str	| 主播头像URL |
-| icon		| str	| url_15 |
+| key		| type		| value |
+| area_name	| str		| 分区名称(大/小) |
+| cache_key	| str		| hex(128bit) |
+| dm_msg	| str		| "恭喜主播 <% {uname} %> 荣登限时热门榜{总}榜top{rank}! 即将获得热门流量推荐哦！" "恭喜主播 <% {uname} %> 荣登限时热门榜{总}榜榜首!" "恭喜主播 <% {uname} %> 荣登限时热门榜{总}榜top{rank}!" |
+| dm_msg	| str		| `f"恭喜主播 <% {uname} %> 荣登限时热门榜{总}榜{xxx}!"` "榜首,top2-10" |
+| dmscore	| str		| 144 |
+| face		| str		| 主播头像URL |
+| icon		| str		| (url) |
 | rank		| num/str	| 排名 |
 | timestamp	| num/str	| TimeStamp(秒) `HH:25:05 HH:55:05` |
-| uname		| str	| 主播用户名 |
-| url		| str	| |
+| uname		| str		| 主播用户名 |
+| url		| str		| |
 ```json
 {"key":"value"}
 ```
@@ -5776,7 +5787,7 @@ role 0 1 2
 |-|-|-|
 | data	| xxx	| |
 ```json
-{"cmd":"REVENUE_RANK_CHANGED","data":{"conf_id":-20000,"rank_name":"xxx","uid":xxx,"rank":xxx,"icon_url_blue":"(url)","icon_url_pink":"(url)","icon_url_grey":"(url)","action_type":1,"timestamp":xxx,"msg_id":"(uuid4)","jump_url_link":"(url)","jump_url_pc":"(url)","jump_url_pink":"(url)","jump_url_web":"(url)"}}
+{"cmd":"REVENUE_RANK_CHANGED","data":{"conf_id":-20000,"rank_name":"xxx","uid":xxx,"rank":xxx,"icon_url_blue":"(url)","icon_url_pink":"(url)","icon_url_grey":"(url)","action_type":1,"timestamp":xxx,"msg_id":"(UUID4)","jump_url_link":"(url)","jump_url_pc":"(url)","jump_url_pink":"(url)","jump_url_web":"(url)"}}
 ```
 ---
 ### LIVE_ANI_RES_UPDATE
@@ -6306,6 +6317,14 @@ enum recall_type={NOTHING:0,DANMAKU:1,USER:2,ALL:3}
 {"cmd":"RADIO_BACKGROUND","data":{"background_url":"https://i0.hdslb.com/bfs/live/5712fbec7dcda4a9509a47001172aab352782dc2.png","background_type":0,"video_url":""}}
 ```
 ---
+### master_qn_strategy_chg
+[TOP](#直播弹幕)
+文档更新：2025-01-01
+```json
+{"cmd":"master_qn_strategy_chg","data":"{\"mtime\":xxx,\"scatter\":[0,300]}"}
+{"mtime":xxx,"scatter":[0,300]}
+```
+---
 ### XXXXXXXXXXXX
 [TOP](#直播弹幕)
 文档更新：2025-01-01
@@ -6409,12 +6428,12 @@ enum recall_type={NOTHING:0,DANMAKU:1,USER:2,ALL:3}
 | score						| num		| 亲密值 |
 | guard_icon				| str		| 大航海等级图标 |
 | honor_icon				| str		| |
+| user_receive_count		| num		| |
 | v2_medal_color_start		| str		| #RRGGBBAA |
 | v2_medal_color_end		| str		| #RRGGBBAA |
 | v2_medal_color_border		| str		| #RRGGBBAA |
 | v2_medal_color_text		| str		| #RRGGBBAA |
 | v2_medal_color_level		| str		| #RRGGBBAA |
-| user_receive_count		| num		| |
 #### PUBLIC_uinfo__base
 | key						| type		| value	|
 |-|-|-|
@@ -6603,23 +6622,6 @@ UNIXts(UTC+8)
 172 000 0000	2024-07-03 17:46:40
 173 000 0000	2024-10-27 11:33:20
 174 000 0000	2025-02-20 05:20:00
+175 000 0000	2025-06-15 23:06:40
 180 000 0000	2027-01-15 16:00:00
 ```
-
-# url
-[url_01]:http://i0.hdslb.com/bfs/album/19cc369845a2709464f3df9c38bbdea019619acd.png
-[url_02]:http://i0.hdslb.com/bfs/album/ea58d134636f05ddc208a13889dd054ae45eb6ef.png
-[url_03]:http://i0.hdslb.com/bfs/b/d1f96d0ad5341b214663b62e0de32dcbf776f894.png
-[url_04]:http://i0.hdslb.com/bfs/b/1d8fc3daf9201d70189a3778e605d2acf9cae7e9.png
-[url_05]:http://i0.hdslb.com/bfs/b/a00a37f4a1f419a42f04f535147d21ac96f27a79.png
-[url_06]:http://i0.hdslb.com/bfs/b/ee3aca3dbc22087341cf312d71a1354af527e444.png
-[url_07]:http://i0.hdslb.com/bfs/b/c7d3e7d452e4ff5caf719a8e422eca10e5caad1f.png
-[url_08]:http://i0.hdslb.com/bfs/b/7e947f8e64c7802a16de7ebec8a8e290160ec668.png
-[url_09]:http://i0.hdslb.com/bfs/archive/03ef3f34944e0f78b1b4050fc3f9705d1fa905e3.png
-[url_10]:http://i0.hdslb.com/bfs/b/44338bca6bb98a34da40698beb4ee7d19aea92a6.png
-[url_11]:http://i0.hdslb.com/bfs/b/4312fb7b155646fc6fd5f6f8a6a07a062d82587c.png
-[url_12]:http://i0.hdslb.com/bfs/b/a4b1c7f03e687f680f7c3629c530e3fdd77d63ed.png
-[url_13]:http://i0.hdslb.com/bfs/album/5ec559dbd4d54f8c1e76021d52eb9807de94bfb9.png
-[url_14]:http://i0.hdslb.com/bfs/b/2eec72efb74244eed5c2f28ce5628de4e9f9c9e8.png
-[url_15]:https://i0.hdslb.com/bfs/live/cb2e160ac4f562b347bb5ae6e635688ebc69580f.png
-[热门榜功能下线公告]:https://link.bilibili.com/p/eden/news#/newsdetail?id=3270

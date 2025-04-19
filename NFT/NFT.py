@@ -113,7 +113,7 @@ def _get_data(item_id: int | str) -> int:
                     d0["nft_list"] += response_d["nft_list"]
                 except Exception:
                     pass
-            log.info(f"{item_id=:<8}size={len(data):<8}{pn}/{float(response_d["total"]/ps).__ceil__()}")
+            log.info(f"{item_id=:<8}size={len(data):<8}{pn}/{float(response_d['total']/ps).__ceil__()}")
             pn += 1
     _clean_it(d0["nft_list"])
     d0.pop("private", "")
@@ -125,7 +125,7 @@ def _get_data(item_id: int | str) -> int:
 
 
 def _main():
-    for item_id in range(1, 3000):
+    for item_id in range(2000, 3000):
         if os.path.exists(_BP + f"\\NFT_{item_id}.json"):
             continue
         _get_data(item_id)
@@ -140,5 +140,5 @@ if __name__ == "__main__":
     except Exception as e:
         log.exception(e)
     finally:
-        log.error(f"📦{_a}")
+        log.error(f"📦 {_a}")
     session.close()

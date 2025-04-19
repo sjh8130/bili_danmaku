@@ -8,21 +8,6 @@ try:
 except ImportError:
     simdjson = json
 
-"""
-修视频？
-使用ffmpeg计算的hash来修复视频文件
-for %a in (*.flv) do ffmpeg -v warning -hide_banner -i "%~na.flv" -c copy "%~na.aac" -c copy "%~na.264"
-
-for %a in (*.flv) do ffmpeg -v warning -hide_banner -i "%~na.flv" -vn -c copy "%~na.aac"
-for %a in (*.flv) do ffmpeg -v warning -hide_banner -i "%~na.flv" -an -c copy "%~na.264"
-
-for %a in (*.aac) do ffprobe -v warning -hide_banner -show_data_hash SHA256 -show_packets "%~na.aac"|find "data_hash=SHA256:" >"%~naA.txt"
-for %a in (*.aac) do ffprobe -v warning -hide_banner -show_data_hash SHA256 -show_packets -print_format json=compact=1 "%~na.aac" > "%~naA.json"
-
-for %a in (*.264) do ffprobe -v warning -hide_banner -show_data_hash SHA256 -show_packets "%~na.264"|find "data_hash=SHA256:" >"%~naV.txt"
-for %a in (*.264) do ffprobe -v warning -hide_banner -show_data_hash SHA256 -show_packets -print_format json=compact=1 "%~na.264" > "%~naV.json"
-"""
-
 if sys.argv[3].__eq__("A"):
     SUFFIX = ".aac"
 elif sys.argv[3].__eq__("V"):
