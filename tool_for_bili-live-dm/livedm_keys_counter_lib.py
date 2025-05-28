@@ -2,21 +2,17 @@
 import json
 import os
 from pathlib import Path
-from types import NoneType
 
 from tqdm import tqdm
 
 try:
     import simdjson
 except ImportError:
-    simdjson = json
+    simdjson = json  # type:ignore
 
 result: dict[str, dict[str, dict]] = {}
 SW1: bool = False
-IGNORE_LIST = set()
 SW2: bool = False
-DONT_CARE_INDEX_LIST = set()
-STR_LIST = set()
 SW3: bool = False
 try:
     with open("livedm_keys_not_interest.json") as fp:
@@ -28,20 +24,20 @@ else:
         STR_LIST = set(_D1["STR_LIST"])
         SW3 = True
     except KeyError:
-        pass
+        STR_LIST = set()
     try:
         DONT_CARE_INDEX_LIST: set[str] = set(_D1["DONT_CARE_INDEX_LIST"])
         SW1 = True
     except KeyError:
-        pass
+        DONT_CARE_INDEX_LIST = set()
     try:
         IGNORE_LIST: set[str] = set(_D1["IGNORE_LIST"])
         SW2 = True
     except KeyError:
-        pass
+        IGNORE_LIST = set()
 
 
-def _a(cmd: str, item: int | str | list | dict | bool | NoneType, tk="", /):
+def _a(cmd: str, item: int | str | list | dict | bool | None, tk="", /) -> None:
     fk: str = f"{cmd}{tk}"
     _typ: str = type(item).__name__
     if SW3 and fk in STR_LIST:
@@ -76,10 +72,10 @@ def _a(cmd: str, item: int | str | list | dict | bool | NoneType, tk="", /):
 
 
 def p_main(in_path: str | Path):
-    with open(in_path, "r", encoding="utf-8") as file_in:
+    with open(in_path, encoding="utf-8") as file_in:
         for line in tqdm(file_in.readlines(), leave=False, desc=f"{os.path.basename(in_path)}"):
             try:
-                item: dict = simdjson.loads(line[line.find("{") :])
+                item: dict = simdjson.loads(line[line.find("{") :])  # type:ignore
             except Exception:
                 continue
             _a(item["cmd"], item)

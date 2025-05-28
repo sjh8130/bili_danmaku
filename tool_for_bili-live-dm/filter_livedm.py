@@ -1,3 +1,4 @@
+import contextlib
 import json
 import os
 import sys
@@ -8,18 +9,19 @@ try:
 except ImportError:
     simdjson = json
 
+
 from filters import FILTER_MID, FILTER_MID_HASH_STR_LOWER, FILTER_WORDS
 from tqdm import tqdm
 
 
-def main(in_paths: list[str], out_path: str):
+def main(in_paths: list[str], out_path: str) -> None:
     line: str
     left_pos = 0
     if not in_paths:
         return
     try:
-        with open(out_path, "r", encoding="utf-8") as file_io:
-            final_write = simdjson.load(file_io)
+        with open(out_path, encoding="utf-8") as file_io:
+            final_write = simdjson.load(file_io)  # type: ignore
     except FileNotFoundError:
         final_write = {}
     except json.JSONDecodeError as e:
@@ -36,7 +38,7 @@ def main(in_paths: list[str], out_path: str):
         lineno = 1
         if in_path == out_path:
             continue
-        with open(in_path, "r", encoding="utf-8") as file_in:
+        with open(in_path, encoding="utf-8") as file_in:
             for line in tqdm(
                 file_in.readlines(),
                 unit="line",
@@ -50,7 +52,7 @@ def main(in_paths: list[str], out_path: str):
                 lineno += 1
                 left_pos = line.find("{")
                 try:
-                    cmd: dict = simdjson.loads(line[left_pos:])
+                    cmd: dict = simdjson.loads(line[left_pos:])  # type: ignore
                 except json.JSONDecodeError:
                     print(lineno)
                     if not is_err:
@@ -81,21 +83,18 @@ def main(in_paths: list[str], out_path: str):
                     .strip()
                 )
                 if dm_text in FILTER_WORDS or dm_text.lower() in FILTER_WORDS:
-                    try:
+                    with contextlib.suppress(KeyError):
                         del final_write[dm_text]
-                    except KeyError:
-                        pass
                     continue
-                else:
-                    try:
-                        if cmd["info"][0][15]["extra"].find('"hit_combo":1') >= 1:
-                            continue
-                    except KeyError:
-                        pass
-                    try:
-                        final_write[dm_text] += 1
-                    except KeyError:
-                        final_write[dm_text] = 1
+                try:
+                    if cmd["info"][0][15]["extra"].find('"hit_combo":1') >= 1:
+                        continue
+                except KeyError:
+                    pass
+                try:
+                    final_write[dm_text] += 1
+                except KeyError:
+                    final_write[dm_text] = 1
     with open(out_path, "w", encoding="utf-8") as file_io:
         json.dump(final_write, file_io, ensure_ascii=False, indent="\t", sort_keys=True)
 

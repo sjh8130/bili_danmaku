@@ -1,9 +1,8 @@
+import contextlib
 import json
 
-try:
+with contextlib.suppress(ImportError):
     import pyperclip
-except ImportError:
-    pass
 # 读取json数据
 f = input("input:")
 data: dict = json.loads(f)

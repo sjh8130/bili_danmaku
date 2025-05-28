@@ -794,8 +794,8 @@ posY_2 = Math.round(posY / 375 * 100)
 | roomid			| num	| 长直播间ID |
 | ?live_time		| num	| 开播时间TimeStamp(秒) |
 | special_type		| num	| |
-| delay				| obj	| |
-| scatter			| obj	| |
+| ?delay			| obj	| |
+| ?scatter			| obj	| |
 ```json
 {"cmd":"LIVE","live_key":"111111111111111111","voice_background":"","sub_session_key":"111111111111111111sub_time:xxxxxxxxxx","live_platform":"xxx","live_model":xxx,"roomid":xxx,"live_time":xxxxxxxxxx}
 {"cmd":"LIVE","delay":{"min":10,"max":30},"scatter":{"min":10,"max":30},"special_type":1,"roomid":"xxx"}
@@ -1129,7 +1129,7 @@ posY_2 = Math.round(posY / 375 * 100)
 ----
 ### ONLINE_RANK_COUNT
 [TOP](#直播弹幕)
-文档更新：2025-04-01
+文档更新：2025-05-01
 高能用户人数(观众人数)
 约每5×N秒发送一次
 | key		| type	| value	|
@@ -1139,15 +1139,16 @@ posY_2 = Math.round(posY / 375 * 100)
 #### ONLINE_RANK_COUNT__data
 | key		| type	| value	|
 |-|-|-|
-| count				| num	| 最大值约为10000[1-100xx] |
+| count				| num	| 最大值约为9999[1-100xx] |
 | count_text		| str	| |
-| online_count		| num	| |
+| online_count		| num	| 最大值约为9999 |
 | online_count_text	| str	| |
 ```json
 // {"cmd":"ONLINE_RANK_COUNT","data":{"count":10000,"count_text":"1万+"}}
 // {"cmd":"ONLINE_RANK_COUNT","data":{"count":10001,"count_text":"1万+","online_count":415011,"online_count_text":"41万+"}}
 {"cmd":"ONLINE_RANK_COUNT","data":{"count":0,"count_text":"0","online_count":0,"online_count_text":"0"}}
 {"cmd":"ONLINE_RANK_COUNT","data":{"count":999,"count_text":"999+","online_count":999,"online_count_text":"999+"}}
+{"cmd":"ONLINE_RANK_COUNT","data":{"count":9999,"count_text":"9999+","online_count":9999,"online_count_text":"9999+"}}
 ```
 ----
 ### INTERACT_WORD

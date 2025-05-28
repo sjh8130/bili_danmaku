@@ -15,11 +15,7 @@ try:
 except ImportError:
     import logging
 
-    logging.basicConfig(
-        format="%(asctime)s %(message)s",
-        level=logging.INFO,
-        datefmt="%Y-%m-%d %H:%M:%S",
-    )
+    logging.basicConfig(format="%(asctime)s %(message)s", level=logging.INFO, datefmt="%Y-%m-%d %H:%M:%S")
     logger = logging.getLogger("PNG")
 try:
     import oxipng
@@ -199,11 +195,6 @@ class _CHUNK_TYPE(StrEnum):
     """Frame Data Chunk"""
 
 
-def validate(who, value, left, right) -> bool:
-
-    return bool()
-
-
 class Palette(NamedTuple):
     r: int | bytes
     g: int | bytes
@@ -238,7 +229,7 @@ class P1:
         compression_method: int = 0,
         filter_method: int = 0,
         interlace_method: int = 0,
-    ):
+    ) -> bytes:
         data = struct.pack(
             ">IIBBBBB",
             width,
@@ -251,9 +242,9 @@ class P1:
         )
         return self._sign(_CHUNK_TYPE.IHDR, data)
 
-    def PLTE(self, palette: list[Palette]):
+    def PLTE(self, palette: list[Palette]) -> bytes:
         if 0 >= len(palette) > 256:
-            raise ValueError()
+            raise ValueError
         data = b""
         for color in palette:
             data += struct.pack(">BBB", color[0], color[1], color[2])
@@ -267,8 +258,9 @@ class P1:
         bit_depth: int,
         color_type: COLOR_TYPE,
         chunk_size: int,
+        *,
         apng: bool = False,
-    ):
+    ) -> None:
         compressor = zlib.compressobj(self.compression_level, wbits=15, memLevel=9)
         match color_type:
             case 0:
@@ -319,7 +311,7 @@ class P1:
             case _:
                 row_size = -1
         if row_size == -1:
-            raise ValueError()
+            raise ValueError
         filtered_data = bytearray()
         for y in range(height):
             row_start = y * row_size
@@ -337,28 +329,28 @@ class P1:
             else:
                 self._sign(_CHUNK_TYPE.IDAT, chunk_data)
 
-    def IEND(self):
+    def IEND(self) -> bytes:
         return self._sign(b"IEND", b"")
 
-    def tRNS(self, transparency: list[int]):
+    def tRNS(self, transparency: list[int]) -> bytes:
         return self._sign(_CHUNK_TYPE.tRNS, bytes(bytearray(transparency)))
 
-    def gAMA(self, gamma: float):
+    def gAMA(self, gamma: float) -> bytes:
         data = struct.pack(">I", int(gamma * 100000))
         return self._sign(_CHUNK_TYPE.gAMA, data)
 
-    def iCCP(self, profile_name: str, profile_data: bytes):
+    def iCCP(self, profile_name: str, profile_data: bytes) -> bytes:
         data = profile_name.encode("utf-8") + _NULL_SEPARATOR + profile_data
         return self._sign(_CHUNK_TYPE.iCCP, data)
 
     def sRGB(
         self,
         rendering_intent: _SRGB_RENDERING_INTENT = _SRGB_RENDERING_INTENT.SRGB_RENDERING_INTENT_PERCEPTUAL,
-    ):
+    ) -> bytes:
         data = struct.pack(">B", rendering_intent)
         return self._sign(_CHUNK_TYPE.sRGB, data)
 
-    def acTL(self, num_frames: int, num_plays: int):
+    def acTL(self, num_frames: int, num_plays: int) -> bytes:
         data = struct.pack(">II", num_frames, num_plays)
         return self._sign(_CHUNK_TYPE.acTL, data)
 
@@ -372,7 +364,7 @@ class P1:
         delay_den: int = 30,
         dispose_op: Disposal = Disposal.OP_NONE,
         blend_op: Blend = Blend.OP_SOURCE,
-    ):
+    ) -> bytes:
         data = struct.pack(
             ">IiiiiHHBB",
             self.apng_seq,
@@ -468,12 +460,12 @@ def create_png(
         if num_frames == -1:
             num_frames = len(image_data)
     x.XDAT(image_data[0], width, height, bit_depth, color_type, chunk_size)
-    if apng and 0:
+    if apng and False:
         x.fcTL(width, height, 0, 0, delay_num, delay_den)
     if apng:
         for idx in trange(0, num_frames):
             x.fcTL(width, height, 0, 0, delay_num, delay_den)
-            x.XDAT(image_data[idx], width, height, bit_depth, color_type, chunk_size, True)
+            x.XDAT(image_data[idx], width, height, bit_depth, color_type, chunk_size, apng=True)
     x.IEND()
     if oxipng is not None and compression_level == COMPRESSION_LEVEL.X_OXIPNG:
         before = len(x.data)
@@ -499,8 +491,9 @@ def encode_tile_image_to_apng(
     chunk_size=1048576,
     frame_cont=-1,
     fps=30,
+    *,
     remove_alpha=False,
-):
+) -> None:
     if path_in == path_out:
         raise Exception(f"{path_in}=={path_out}::{path_in=}{path_out=}")
     logger.info(f"{path_in=},{path_out=}")
@@ -547,7 +540,7 @@ def recompress_png(
     png_path,
     chunk_size=1048576,
     compression_level=COMPRESSION_LEVEL.LV_9,
-):
+) -> None:
     image = Image.open(png_path)
     logger.debug(image)
     width, height = image.size
@@ -618,7 +611,7 @@ def recompress_png(
     write(png_path, r)
 
 
-def write(path, data):
+def write(path, data) -> None:
     if not (isinstance(data, (bytes, str))):
         raise TypeError
     if isinstance(data, str):

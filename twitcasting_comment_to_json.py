@@ -4,14 +4,13 @@ import sys
 import time
 
 import bs4
-import lxml
 import requests
 
 from my_lib.file_writer import write_file
 
 ssl._create_default_https_context = ssl._create_unverified_context
 requests.packages.urllib3.disable_warnings()  # type: ignore[attr-defined]
-with open("config.json", "r", -1, "utf-8") as fp:
+with open("config.json", encoding="utf-8") as fp:
     config = json.load(fp)
 del fp
 
@@ -22,16 +21,13 @@ _TWITCASTING_URL_GL = "twitcasting.tv"
 
 def _downloader(
     page: int | str,
-    host,
-    user,
-    movie_id,
+    host: str,
+    user: str,
+    movie_id: str,
     session: requests.Session,
 ) -> bytes:
     retry_count = 0
-    if page in [0, "0"]:
-        page = ""
-    else:
-        page = f"-{page}"
+    page = "" if page in [0, "0"] else f"-{page}"
     url = f"https://{host}/{user}/moviecomment/{movie_id}{page}"
     while True:
         try:
@@ -59,7 +55,7 @@ def _downloader(
             raise
 
 
-def _get_user_and_movie_id():
+def _get_user_and_movie_id() -> tuple[str, str]:
     if "#" in sys.argv[1]:
         user = sys.argv[1].split("#")[0]
         movie_id = sys.argv[1].split("#")[1].split("_")[0]
@@ -72,12 +68,12 @@ def _get_user_and_movie_id():
     return user, movie_id
 
 
-def _main(user, movie_id, host):
+def _main(user: str, movie_id: str, host: str) -> None:
     session = requests.Session()
-    I_page_count = 0
-    LD_comment: list[dict] = []
-    D_out = {
-        "comment": LD_comment,
+    page_count = 0
+    comment_list: list[dict] = []
+    out = {
+        "comment": comment_list,
         "info": {
             "user": user,
             "movie_id": int(movie_id),
@@ -85,10 +81,10 @@ def _main(user, movie_id, host):
             "url": f"https://{host}/{user}/movie/{movie_id}",
         },
     }
-    I_current_page = 0
+    current_page = 0
     while True:
         page = _downloader(
-            page=I_current_page,
+            page=current_page,
             host=host,
             user=user,
             movie_id=movie_id,
@@ -96,30 +92,30 @@ def _main(user, movie_id, host):
         )
         if page == b"BREAK":
             break
-        comments = list(bs4.BeautifulSoup(page, "lxml").select(".tw-comment-history-item", limit=999))
-        if I_current_page == 0:
-            D_out["info"]["title"] = str(bs4.BeautifulSoup(page, "lxml").select(".tw-basic-page-header-path", limit=1)[0].contents[3].contents[1].contents[0]).strip()  # type: ignore[index,attr-defined]
-            I_page_count = int(bs4.BeautifulSoup(page, "lxml").select(".tw-pager", limit=1)[0].contents[-1].contents[0])  # type: ignore[attr-defined]
-            print(I_page_count)
-        for comment in comments:
-            LD_comment.append(
+        downloaded_comments = list(bs4.BeautifulSoup(page, "lxml").select(".tw-comment-history-item", limit=999))
+        if current_page == 0:
+            out["info"]["title"] = str(bs4.BeautifulSoup(page, "lxml").select(".tw-basic-page-header-path", limit=1)[0].contents[3].contents[1].contents[0]).strip()  # type: ignore[index,attr-defined]
+            page_count = int(bs4.BeautifulSoup(page, "lxml").select(".tw-pager", limit=1)[0].contents[-1].contents[0])  # type: ignore[attr-defined]
+            print(page_count)
+        for comment in downloaded_comments:
+            comment_list.append(  # noqa: PERF401
                 {
                     "type": "comment",
-                    "id": int(comment.attrs["data-comment-id"]),
+                    "id": int(comment.attrs["data-comment-id"]),  # type: ignore
                     "message": str(comment.select(".tw-comment-history-item__content__text")[0].contents[0]).strip("\n").strip("\t").strip(),
-                    "createdAt": int(time.mktime(time.strptime(comment.select(".tw-comment-history-item__info__date")[0].attrs["datetime"], "%a, %d %b %Y %H:%M:%S %z"))),
+                    "createdAt": int(time.mktime(time.strptime(comment.select(".tw-comment-history-item__info__date")[0].attrs["datetime"], "%a, %d %b %Y %H:%M:%S %z"))),  # type: ignore
                     "author": {
                         "id": comment.select(".tw-comment-history-item__details__user-link")[0].attrs["href"][1:],
                         "name": str(comment.select(".tw-comment-history-item__details__user-link")[0].contents[0]).strip("\n").strip("\t").strip(),
-                        "profileImage": ("https:" + comment.select(".tw-comment-history-item__user__icon")[0].attrs["src"]).replace("https:https://", "https://"),
+                        "profileImage": ("https:" + comment.select(".tw-comment-history-item__user__icon")[0].attrs["src"]).replace("https:https://", "https://"),  # type: ignore
                     },
-                }
+                },
             )
-        I_current_page += 1
-        if I_current_page >= I_page_count or I_current_page >= 100:
+        current_page += 1
+        if current_page >= page_count or current_page >= 100:
             break
     session.close()
-    out_data = json.dumps(D_out, ensure_ascii=False, separators=(",", ":"), indent="\t").replace("\n\t\t\t\t", "").replace("\n\t\t\t", "").replace("\n\t\t}", "}")
+    out_data = json.dumps(out, ensure_ascii=False, separators=(",", ":"), indent="\t").replace("\n\t\t\t\t", "").replace("\n\t\t\t", "").replace("\n\t\t}", "}")
     write_file(f"twitcasting_{user}_{movie_id}.json", out_data)
 
 

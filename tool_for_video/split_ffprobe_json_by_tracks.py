@@ -7,7 +7,7 @@ except ImportError:
     simdjson = json
 
 
-def get_file_name_base(file_name: str):
+def get_file_name_base(file_name: str) -> str:
     try:
         file_name_base = file_name.rsplit(".", 1)[-2]
         return file_name_base if file_name_base != file_name else file_name + "_"
@@ -15,13 +15,13 @@ def get_file_name_base(file_name: str):
         return file_name + "_"
 
 
-def write_json_file(file_name, data_dict):
+def write_json_file(file_name: str, data_dict: dict) -> None:
     with open(file_name, "w", encoding="utf-8") as fp:
         json_string = json.dumps(data_dict, indent="\t", separators=(",", ":"))
         fp.write(json_string.replace("\n\t\t\t", "").replace("\n\t\t}", "}"))
 
 
-def main(d: dict):
+def main(d: dict) -> None:
     p_stream_index = []
     file_name_base = get_file_name_base(file_name)
     for stream in d.get("packets", []):
@@ -65,8 +65,8 @@ def main(d: dict):
 
 if __name__ == "__main__":
     file_name = sys.argv[1]
-    with open(file_name, "r", encoding="utf-8") as f:
-        data: dict = simdjson.load(f)
+    with open(file_name, encoding="utf-8") as f:
+        data: dict = simdjson.load(f)  # type: ignore
     if not data:
-        exit()
+        sys.exit()
     main(data)

@@ -9,7 +9,7 @@ import requests
 
 ssl._create_default_https_context = ssl._create_unverified_context
 requests.packages.urllib3.disable_warnings()  # type: ignore[attr-defined]
-with open("..\\config.json", "r", -1, "utf-8") as fp:
+with open("config.json", encoding="utf-8") as fp:
     config = json.load(fp)
 del fp
 
@@ -81,13 +81,13 @@ mixinKeyEncTab = [
 ]
 
 
-def getMixinKey(orig: str):
-    "对 imgKey 和 subKey 进行字符顺序打乱编码"
+def getMixinKey(orig: str) -> str:
+    """对 imgKey 和 subKey 进行字符顺序打乱编码."""
     return reduce(lambda s, i: s + orig[i], mixinKeyEncTab, "")[:32]
 
 
-def encWbi(params: dict, img_key: str, sub_key: str):
-    "为请求参数进行 wbi 签名"
+def encWbi(params: dict, img_key: str, sub_key: str) -> dict:
+    """为请求参数进行 wbi 签名."""
     mixin_key = getMixinKey(img_key + sub_key)
     # print("[mixin_key]",  mixin_key)
     curr_time = round(time.time())
@@ -103,7 +103,7 @@ def encWbi(params: dict, img_key: str, sub_key: str):
 
 @lru_cache
 def getWbiKeys() -> tuple[str, str]:
-    "获取最新的 img_key 和 sub_key"
+    """获取最新的 img_key 和 sub_key."""
     headers = {"User-Agent": config["ua"]}
     resp = requests.get("https://api.bilibili.com/x/web-interface/nav", headers=headers, verify=False)
     resp.raise_for_status()
@@ -115,7 +115,7 @@ def getWbiKeys() -> tuple[str, str]:
     return img_key, sub_key
 
 
-def gen_w_rid(query: dict):
+def gen_w_rid(query: dict) -> str:
     img_key, sub_key = getWbiKeys()
     signed_params = encWbi(params=query, img_key=img_key, sub_key=sub_key)
     ret = urllib.parse.urlencode(signed_params)

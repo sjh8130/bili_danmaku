@@ -5,6 +5,7 @@ import os
 import ssl
 import sys
 import time
+from typing import TypedDict
 
 import requests
 from loguru import logger
@@ -15,7 +16,7 @@ from my_lib.xx_util import OPR, del_keys, replace_str, sort_list_dict
 log = logger.bind(user="X3")
 ssl._create_default_https_context = ssl._create_unverified_context
 requests.packages.urllib3.disable_warnings()  # type: ignore[attr-defined]
-with open("config.json", "r", -1, "utf-8") as a:
+with open("config.json", encoding="utf-8") as a:
     config = json.load(a)
 del a
 _A = {
@@ -30,6 +31,36 @@ _O = [{}, {"no_access": True, "unlocked": False}, {"no_access": True}]
 _a = 0
 
 
+class M(TypedDict):
+    size: int
+    item_id: int
+    alias: str
+    label_text: str
+    label_color: str
+
+
+class EMOTE(TypedDict):
+    id: int
+    package_id: int
+    text: str
+    url: str
+    gif_url: str
+    webp_url: str
+    mtime: int
+    type: int
+    meta: M
+
+
+class TYPE_E_DICT(TypedDict):
+    id: int
+    text: str
+    url: str
+    mtime: int
+    type: int
+    meta: M
+    emote: list[EMOTE]
+
+
 def _E(a, b, c):
     global _a
     d = 0
@@ -41,48 +72,52 @@ def _E(a, b, c):
         except requests.RequestException as e:
             d += 1
             print(" ")
-            log.error(e)
+            log.exception(e)
             time.sleep(c)
         except KeyboardInterrupt:
             raise KeyboardInterrupt
     raise Exception(f"Failed to fetch {b}")
 
 
-def _F(a, b):
+def _F(a, b: TYPE_E_DICT) -> None:
+    d = json.dumps(b, ensure_ascii=False, separators=(",", ":"), indent="\t")
     e = ""
     if os.path.exists(a) and True:
-        with open(a, "r", -1, "utf-8") as fp:
+        with open(a, encoding="utf-8") as fp:
             e = fp.read()
-            c = json.loads(e)
+            if d == e:
+                return
+            c: TYPE_E_DICT = json.loads(e)
         if "emote" in c:
             if "emote" not in b:
                 b["emote"] = c["emote"]
             else:
-                f = {json.dumps(item, sort_keys=True) for item in b["emote"]}
+                f = {json.dumps(item) for item in b["emote"]}
                 for g in c["emote"]:
-                    h = json.dumps(g, sort_keys=True)
+                    h = json.dumps(g)
                     if h not in f:
                         b["emote"].append(g)
                         f.add(h)
     if "emote" in b:
-        sort_list_dict(b["emote"], "id", "text")
-    d = json.dumps(b, ensure_ascii=False, separators=(",", ":"), indent="\t")
+        sort_list_dict(b["emote"], "id", "text")  # type: ignore
     if d == e:
         return
+    d = json.dumps(b, ensure_ascii=False, separators=(",", ":"), indent="\t")
     open(a, "w", -1, "utf-8").write(d)
 
 
-def _G(a, b):
-    "csv"
+def _G(a, b) -> None:
+    """Csv."""
+    c = b + "\n"
     if os.path.isfile(a):
-        with open(a, "r", 1048576, "utf-8") as fp:
-            if (c := b + "\n") in (x := fp.readlines()) or b in x:
+        with open(a, encoding="utf-8") as fp:
+            if c in (x := fp.readlines()) or b in x:
                 return
     with open(a, "a", 1048576, "utf-8") as fp:
         fp.write(c)
 
 
-def _K(a, item):
+def _K(a, item) -> None:
     del_keys(item, "suggest", [""])
     del_keys(item, "flags", _O, OPR.IN)
     del_keys(item, "activity", None, OPR.ANY)
@@ -100,10 +135,10 @@ def _K(a, item):
     _G(os.path.join(_D, "ids.csv"), f"{a},{item['text']}")
 
 
-def _L(j=False):
+def _L(j=False) -> None:
     a = _N()
     b = 1
-    c: int = 7800 if not j else 1
+    c = 8000 if not j else 1
     d = 10000
     with (
         requests.Session() as e,
@@ -124,18 +159,17 @@ def _L(j=False):
             h = _E(e, g, b)
             if h == _B:
                 continue
-            else:
-                for i in json.loads(h)["data"]["packages"]:
-                    _K(g, i)
-                    f.write(f"{time.strftime('%Y-%m-%d %H:%M:%S',time.localtime()):<32}{g:<12}{i['text']:20}")
+            for i in json.loads(h)["data"]["packages"]:
+                _K(g, i)
+                f.write(f"{time.strftime('%Y-%m-%d %H:%M:%S',time.localtime()):<32}{g:<12}{i['text']:20}")
 
 
-def _M():
+def _M() -> None:
     a = 1
     if sys.argv[1].lower() in "main":
         _L()
         return
-    elif sys.argv[1] in "uU":
+    if sys.argv[1] in "uU":
         _L(True)
         return
     with requests.Session() as b:
@@ -143,13 +177,10 @@ def _M():
             c = input("item_id:")
             time.sleep(a)
             d = _E(b, c, a)
-            if d == _B:
+            if d == _B or not c.isdigit():
                 continue
-            elif not c.isdigit():
-                continue
-            else:
-                for e in json.loads(d)["data"]["packages"]:
-                    _K(c, e)
+            for e in json.loads(d)["data"]["packages"]:
+                _K(c, e)
 
 
 def _N():

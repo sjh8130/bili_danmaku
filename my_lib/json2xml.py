@@ -5,10 +5,8 @@ from zlib import crc32
 _ERR_STR = "ERROR"
 
 
-def json2XML_CMD(this: dict):
-    """
-    commandDms to xml
-    """
+def json2XML_CMD(this: dict) -> str:
+    """CommandDms to xml."""
     # commandDms 1 / 10
     dmid_1 = str(this.get("id", _ERR_STR))
     dmid_2 = str(this.get("dmid", _ERR_STR))
@@ -18,7 +16,7 @@ def json2XML_CMD(this: dict):
         dmid_1 = dmid_2
     elif dmid_1 != "0" and dmid_2 == _ERR_STR:
         dmid_2 = dmid_1
-    elif dmid_1 != "0" and dmid_2 != "0" and dmid_1 != dmid_2:
+    elif dmid_1 != "0" and dmid_2 not in ("0", dmid_1):
         print("[json2XML]: dmid_1 != oid")
     # commandDms 2
     oid = str(this.get("oid", _ERR_STR))
@@ -29,7 +27,7 @@ def json2XML_CMD(this: dict):
         cid = oid
     elif cid != "0" and oid == _ERR_STR:
         oid = cid
-    elif cid != "0" and oid != "0" and cid != oid:
+    elif cid != "0" and oid not in ("0", cid):
         print("[json2XML]: cid != oid")
     mid = str(this.get("mid", "0"))
     command = str(this.get("command", ""))
@@ -45,10 +43,7 @@ def json2XML_CMD(this: dict):
     return f'\t<d p="{f_time},1,25,16777215,{f_ctime},999,{midHash},{dmid_2},11">{text}</d><!-- SPECIAL: {command}{extra} -->'
 
 
-def json2XML(this: dict):
-    """
-    Text
-    """
+def json2XML(this: dict) -> str:
     # dmid 1 / 12
     dmid = str(this.get("id", this.get("idStr", this.get("dmid", "FAKE"))))
     # showtime 2

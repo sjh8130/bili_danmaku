@@ -6,17 +6,17 @@ import time
 try:
     import simdjson
 except ImportError:
-    simdjson = json
+    simdjson = json  # type:ignore
 
 import livedm_keys_counter_lib
 from tqdm import tqdm
 
 
-def main():
+def main() -> None:
     p1 = "livedm_keys.json"
     if True and os.path.exists(os.path.join(output_dir, p1)):
-        with open(os.path.join(output_dir, p1), "r", encoding="utf-8") as fp:
-            livedm_keys_counter_lib.result.update(simdjson.load(fp))
+        with open(os.path.join(output_dir, p1), encoding="utf-8") as fp:
+            livedm_keys_counter_lib.result.update(simdjson.load(fp))  # type:ignore
     for path in tqdm(paths, leave=False):
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
@@ -35,10 +35,7 @@ def main():
 
 if __name__ == "__main__":
     paths = sys.argv[1:]
-    if os.name == "nt":
-        output_dir = "Z:\\"
-    else:
-        output_dir = "/mnt/z/"
+    output_dir = "Z:\\" if os.name == "nt" else "/mnt/z/"
     start_time = time.time()
     main()
     total_time = time.time() - start_time

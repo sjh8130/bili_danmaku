@@ -1,4 +1,5 @@
 import json
+from collections.abc import Mapping
 from enum import IntEnum, auto
 from typing import Any
 
@@ -27,10 +28,10 @@ def sort_str_list(s: str, /) -> str:
 
 
 def sort_list_dict(
-    ld: list[dict],
+    ld: list[Mapping[str, Any]],
     k1: str = "item_id",
     k2: str = "name",
-) -> list[dict]:
+) -> list[Mapping]:
     items_with_k1 = [item for item in ld if item[k1] not in [0, "0"]]
     items_with_k2 = [item for item in ld if item[k1] in [0, "0"]]
     items_with_k1.sort(key=lambda x: x[k1])
@@ -39,7 +40,7 @@ def sort_list_dict(
     return items_with_k1 + items_with_k2
 
 
-def sort_p6_emoji(ld: list[dict[str, dict]], /) -> list[dict]:
+def sort_p6_emoji(ld: list[Mapping], /) -> list[Mapping]:
     for i in range(len(ld)):
         if isinstance(ld[i].get("properties"), dict):
             if isinstance(ld[i]["properties"].get("item_ids"), str):
@@ -48,7 +49,7 @@ def sort_p6_emoji(ld: list[dict[str, dict]], /) -> list[dict]:
     return ld
 
 
-def del_keys(d: dict, k: str, v=None, operator: OPR = OPR.EQ, recursive=True):
+def del_keys(d: Mapping, k: str, v=None, operator: OPR = OPR.EQ, recursive=True) -> None:
     if isinstance(d, dict) and k in d and (type(d[k]) is type(v) or operator in (OPR.IN, OPR.ANY)):
         match operator:
             case OPR.EQ:
@@ -101,7 +102,7 @@ def del_keys(d: dict, k: str, v=None, operator: OPR = OPR.EQ, recursive=True):
                     del_keys(item, k, v, operator, recursive)
 
 
-def replace_str(d: dict[str, str | Any] | list[str], old: str, new: str, count: int = -1, recursive=True):
+def replace_str(d: Mapping | list[str], old: str, new: str, count: int = -1, recursive=True) -> None:
     if not isinstance(d, (dict, list)):
         return
     if not recursive:

@@ -1,4 +1,3 @@
-#!/dev/null
 from functools import lru_cache
 
 _ATTR_MAP = {
@@ -39,8 +38,8 @@ _ATTR_MAP = {
 }
 
 
-@lru_cache()
-def danmaku_attr_type(attr: int):
+@lru_cache
+def danmaku_attr_type(attr: int) -> str:
     if attr == 0:
         return "DM "
     o = ""

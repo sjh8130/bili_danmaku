@@ -9,15 +9,15 @@ from tqdm import tqdm
 try:
     import simdjson
 except ImportError:
-    simdjson = json
+    simdjson = json  # type:ignore
 
 _cmd_count: dict[str, int] = {}
 
 
-def _p1():
+def _p1() -> None:
     try:
-        with open(_out_path, "r", encoding="utf-8") as file_io:
-            _cmd_count.update(simdjson.load(file_io))
+        with open(_out_path, encoding="utf-8") as file_io:
+            _cmd_count.update(simdjson.load(file_io))  # type:ignore
     except FileNotFoundError:
         pass
     except json.JSONDecodeError as e:
@@ -27,12 +27,12 @@ def _p1():
             raise e
 
 
-def _p2():
+def _p2() -> None:
     with open(_out_path, "w", encoding="utf-8") as file_io:
         json.dump(_cmd_count, file_io, ensure_ascii=False, indent="\t", sort_keys=True)
 
 
-def _main(in_paths):
+def _main(in_paths: list[str]) -> None:
     if in_paths == []:
         return
     for in_path in in_paths:
@@ -41,7 +41,7 @@ def _main(in_paths):
             continue
         is_err = False
         lineno = 1
-        with open(in_path, "r", encoding="utf-8") as file_in:
+        with open(in_path, encoding="utf-8") as file_in:
             for line in tqdm(file_in.readlines(), leave=False, desc=f"{os.path.basename(in_path)}"):
                 lineno += 1
                 left_pos = line.find("{")
