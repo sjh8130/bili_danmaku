@@ -9,12 +9,11 @@ import sys
 import time
 
 import bs4
-import lxml
 import requests
 
 ssl._create_default_https_context = ssl._create_unverified_context
 requests.packages.urllib3.disable_warnings()  # type: ignore[attr-defined]
-with open("config.json", "r", -1, "utf-8") as fp:
+with open("config.json", encoding="utf-8") as fp:
     config = json.load(fp)
 del fp
 AE = config["ae"]
@@ -102,12 +101,12 @@ def _get_user_page(pl: str, user_id: str, pn: int) -> UserPage:
                 pub_time=pub_time,
                 thumb=thumb,
                 title=title,
-            )
+            ),
         )
     return UserPage(total=total, posts=posts)
 
 
-def _aria2_downloader(path: str, url: str):
+def _aria2_downloader(path: str, url: str) -> None:
     logger.info(f"[aria2Downloader] {path} {url}")
     if not isinstance(url, str):
         logger.error(f"[aria2Downloader] {url}")
@@ -144,7 +143,7 @@ def _get_users(p, u) -> tuple[str, str]:
         with open(F, "w", encoding="utf-8") as fp:
             json.dump(data, fp, ensure_ascii=False)
     else:
-        with open(F, "r", encoding="utf-8") as fp:
+        with open(F, encoding="utf-8") as fp:
             data = json.load(fp)
     for itm in data:
         if (u == itm["name"] or u == itm["user_id"]) and p == itm["service"]:
@@ -152,7 +151,7 @@ def _get_users(p, u) -> tuple[str, str]:
     return ("", "")
 
 
-def _get_posts_file(bp: str, p: Post):
+def _get_posts_file(bp: str, p: Post) -> None:
     logger.info(f"[getPostsFile] {p.platform} {p.post_id} {p.title}")
     date = datetime.datetime.fromtimestamp(p.pub_time).strftime("%Y%m%d")
     path = os.path.join(bp, f"[{date}] [{p.post_id}] {_escape_path(p.title)}")

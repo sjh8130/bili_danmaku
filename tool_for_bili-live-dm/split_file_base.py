@@ -119,7 +119,7 @@ def _s6(timestamp: int) -> datetime:
     return datetime.fromtimestamp(timestamp, tz=_TZ)
 
 
-def split_file_by_time(in_path: str, b_name: str, sp_type: SPLIT_SEL):
+def split_file_by_time(in_path: str, b_name: str, sp_type: SPLIT_SEL) -> None:
     if sp_type == SPLIT_SEL.YEAR:
         gd = _s0
         _fmt = "%Y"
@@ -147,8 +147,8 @@ def split_file_by_time(in_path: str, b_name: str, sp_type: SPLIT_SEL):
     lines_by_day: dict[datetime, list[str]] = {}
     base_name, ext = os.path.splitext(os.path.basename(b_name))
     directory = os.path.dirname(in_path)
-    with open(in_path, "r", 41943040, "utf-8") as input_file:
-        for line in input_file.readlines():
+    with open(in_path, encoding="utf-8") as input_file:
+        for line in input_file:
             timestamp_match = re.search(r"^(\d+)", line)
             if timestamp_match:
                 timestamp = timestamp_match.group(1)[0:13]

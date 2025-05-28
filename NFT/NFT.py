@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 import base64
 import binascii
+import contextlib
 import json
 import os
 import ssl
@@ -12,7 +13,7 @@ from loguru import logger
 log = logger.bind(user="NFT")
 ssl._create_default_https_context = ssl._create_unverified_context
 requests.packages.urllib3.disable_warnings()  # type: ignore[attr-defined]
-with open("..\\config.json", "r", -1, "utf-8") as fp:
+with open("..\\config.json", encoding="utf-8") as fp:
     config = json.load(fp)
 del fp
 URL: str = config["nft"]["url"]
@@ -46,9 +47,8 @@ def _downloader(pn: int | str, item_id: int | str, ps: int | str) -> bytes:
                 timeout=20,
             )
             _a += 1
-            if isinstance(x.content, bytes):
-                if x.content != _B:
-                    return x.content
+            if isinstance(x.content, bytes) and x.content != _B:
+                return x.content
         except requests.exceptions.Timeout:
             retries += 1
         if retries == 3:
@@ -58,26 +58,17 @@ def _downloader(pn: int | str, item_id: int | str, ps: int | str) -> bytes:
     return _A
 
 
-def _clean_it(ld: list[dict]):
+def _clean_it(ld: list[dict]) -> None:
     for d in ld:
-        if True:
-            d.pop("item_name")
-        if True:
-            d.pop("token_id")
-        if True:
-            d.pop("avatar")
-        if True:
-            d.pop("detail_jump")
-        if True:
-            d.pop("mid")
-        if True:
-            d.pop("username")
-        if True:
-            d.pop("like_number")
-        if True:
-            d.pop("like_status")
-        if True:
-            d.pop("is_show")
+        d.pop("item_name")
+        d.pop("token_id")
+        d.pop("avatar")
+        d.pop("detail_jump")
+        d.pop("mid")
+        d.pop("username")
+        d.pop("like_number")
+        d.pop("like_status")
+        d.pop("is_show")
 
 
 def _get_data(item_id: int | str) -> int:
@@ -109,10 +100,8 @@ def _get_data(item_id: int | str) -> int:
                 item_name = str(response_d.get("item_name", "")).strip()
                 issuer_name = str(response_d.get("issuer_name", "")).strip()
             else:
-                try:
+                with contextlib.suppress(Exception):
                     d0["nft_list"] += response_d["nft_list"]
-                except Exception:
-                    pass
             log.info(f"{item_id=:<8}size={len(data):<8}{pn}/{float(response_d['total']/ps).__ceil__()}")
             pn += 1
     _clean_it(d0["nft_list"])
@@ -124,7 +113,7 @@ def _get_data(item_id: int | str) -> int:
     return 200
 
 
-def _main():
+def _main() -> None:
     for item_id in range(2000, 3000):
         if os.path.exists(_BP + f"\\NFT_{item_id}.json"):
             continue

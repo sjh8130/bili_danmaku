@@ -1,3 +1,5 @@
+import contextlib
+
 FILTER_WORDS: set[str] = {
     '"',
     '(,,´•ω•)ノ"(´っω•｀。)',
@@ -1426,7 +1428,7 @@ FILTER_WORDS: set[str] = {
     "₍ᐢ•''•ᐢ₎？",
     "₍ᐢ•''•ᐢ₎",
     "（ᗜ ‸ ᗜ）",
-    "(ᗜ ˰ ᗜ)​",
+    "(ᗜ ˰ ᗜ)\u200b",
     "(ᗜˬᗜ)",
     "（ᗜˬᗜ）",
     "(ᗜᴗᗜ)",
@@ -9856,23 +9858,11 @@ FILTER_MID_HASH_STR_LOWER: list[str] = [x.lower() for x in FILTER_MID_HASH]
 FILTER_MID_HASH_STR_UPPER: list[str] = [x.upper() for x in FILTER_MID_HASH]
 FILTER_MID_HASH_DEC: list[int] = [int(x, 16) for x in FILTER_MID_HASH]
 FILTER_MID_HASH_DEC_STR: list[str] = [str(x) for x in FILTER_MID_HASH_DEC]
-FILTER_MID_ALL = frozenset(
-    FILTER_MID
-    + FILTER_MID_HASH_DEC
-    + FILTER_MID_STR
-    + FILTER_MID_HASH
-    + FILTER_MID_HASH_STR_LOWER
-    + FILTER_MID_HASH_STR_UPPER
-    + FILTER_MID_HASH_DEC_STR
-)
+FILTER_MID_ALL = frozenset(FILTER_MID + FILTER_MID_HASH_DEC + FILTER_MID_STR + FILTER_MID_HASH + FILTER_MID_HASH_STR_LOWER + FILTER_MID_HASH_STR_UPPER + FILTER_MID_HASH_DEC_STR)
 
 if __name__ == "__main__":
     from time import sleep
 
-    try:
-        from rich import print
-    except ImportError:
-        pass
     sleep(1)
     print(FILTER_WORDS)
     print(FILTER_MID)

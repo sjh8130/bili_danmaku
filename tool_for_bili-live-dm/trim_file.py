@@ -11,21 +11,18 @@ except ImportError:
 _SKIP_KEYWORDS = []
 
 
-def _trim_file(in_path: str):
+def _trim_file(in_path: str) -> None:
     with (
-        open(in_path, "r", 1048576, encoding="utf-8") as input_file,
+        open(in_path, encoding="utf-8") as input_file,
         open(in_path + "_trim", "a", 1048576, "utf-8") as out_file,
     ):
-        for line in input_file.readlines():
+        for line in input_file:
             # if any(keyword in line for keyword in _SKIP_KEYWORDS):
             #     continue
             ls = line.find("{")
             date_raw = line[:ls]
-            if "." in date_raw:
-                date = (date_raw.replace(".", "") + "0000000000000")[:13] if ls else ""
-            else:
-                date = date_raw[:13] if ls else ""
-            x = simdjson.loads(line[ls:])
+            date = ((date_raw.replace(".", "") + "0000000000000")[:13] if ls else "") if "." in date_raw else date_raw[:13] if ls else ""
+            x = simdjson.loads(line[ls:])  # type: ignore
             if x["cmd"] in _SKIP_KEYWORDS:
                 continue
             out_file.write(date + json.dumps(x, ensure_ascii=False, separators=(",", ":")) + "\n")

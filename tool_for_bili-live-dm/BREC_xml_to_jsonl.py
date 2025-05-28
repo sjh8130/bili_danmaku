@@ -12,14 +12,14 @@ from lxml import etree
 from tqdm import tqdm
 
 
-def process_brec_xml_to_jsonl(file_path: str | os.PathLike):
+def process_brec_xml_to_jsonl(file_path: str | os.PathLike) -> None:
     preload = open(file_path, "rb").read(512)
     if preload.find(b"encoding="):
         file = open(file_path, "rb").read()
     elif preload[:2] == b"\xef\xbb\xbf":
-        file = open(file_path, "r", encoding="utf-8").read()[2:]
+        file = open(file_path, encoding="utf-8").read()[2:]
     else:
-        file = open(file_path, "r", encoding="utf-8").read()
+        file = open(file_path, encoding="utf-8").read()
     tree = etree.XML(file)
     dmks = tree.findall(".//d")
     gifts = tree.findall(".//gift")
@@ -31,20 +31,20 @@ def process_brec_xml_to_jsonl(file_path: str | os.PathLike):
         encoding="utf-8",
     ) as fp:
         for dm in tqdm(dmks, leave=False):
-            dm_info = simdjson.loads(dm.attrib["raw"])
+            dm_info = simdjson.loads(dm.attrib["raw"])  # type: ignore
             fp.write(str(dm_info[0][4]))
             fp.write(
                 json.dumps(
                     {"cmd": "DANMU_MSG", "info": dm_info},
                     ensure_ascii=False,
                     separators=(",", ":"),
-                )
+                ),
             )
             fp.write("\n")
             # print(i.attrib["raw"])
             # b = 1
         for gift in tqdm(gifts, leave=False):
-            gift_data = simdjson.loads(gift.attrib["raw"])
+            gift_data = simdjson.loads(gift.attrib["raw"])  # type: ignore
             fp.write(
                 str(int(gift_data["timestamp"] * 1000))
                 + json.dumps(
@@ -52,7 +52,7 @@ def process_brec_xml_to_jsonl(file_path: str | os.PathLike):
                     ensure_ascii=False,
                     separators=(",", ":"),
                 )
-                + "\n"
+                + "\n",
             )
 
 

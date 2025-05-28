@@ -1,12 +1,9 @@
-#!/dev/null
 import gzip
 import json
 
 
-def write_file(filename: str, data: str | bytes | dict, _gzip: bool = False) -> None:
-    """
-    输出文件
-    """
+def write_file(filename: str, data: str | bytes | dict, *, _gzip: bool = False) -> None:
+    """输出文件."""
     if isinstance(data, str):
         _data = data.encode("utf-8")
     elif isinstance(data, dict):

@@ -1,4 +1,3 @@
-#!/dev/null
 import dm_pb2
 
 
@@ -16,4 +15,4 @@ def proto_to_xml(this: dm_pb2.DanmakuElem) -> str:
     )
     if not content:
         return ""
-    return f'\t<d p="{(this.progress/1000):.5f},{this.mode},{this.fontsize},{this.color},{this.ctime},{this.pool},{this.midHash},{this.id},{this.weight}">{content}</d>\n'
+    return f'\t<d p="{(this.progress/1000):.5f},{this.mode},{this.fontsize},{this.color},{this.ctime},{this.pool},{this.mid_hash},{this.id},{this.weight}">{content}</d>\n'

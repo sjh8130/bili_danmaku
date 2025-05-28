@@ -70,7 +70,7 @@ def _del_keys(d: dict, k: str, v: Any, o: OPR):
                 raise Exception("*ToDo")
 
 
-def _del_keys_prep(d: dict, k: str, v: Any, o: OPR, cmd="", dep: int = 0):
+def _del_keys_prep(d: dict, k: str, v: Any, o: OPR, cmd="", dep: int = 0) -> None:
     cmd = d["cmd"] if cmd == "" else cmd
     # print("_del_keys_prep", cmd)
     for key_1 in d:
@@ -273,12 +273,12 @@ KEYS_DEL_IF_FALSE = [
 ]
 
 
-def _clean_dm(a: str):
+def _clean_dm(a: str) -> None:
     with (
-        open(a, "r", 1048576, encoding="utf-8") as g,
+        open(a, encoding="utf-8") as g,
         open(a + "x_cleaned", "a", 10485760, "utf-8") as h,
     ):
-        for line_num, f in tqdm(enumerate(g.readlines()), leave=False, desc=f"{os.path.basename(a)}"):
+        for _line_num, f in tqdm(enumerate(g.readlines()), leave=False, desc=f"{os.path.basename(a)}"):
             e = f.find("{")
             b = f[:e]
             c = ((b.replace(".", "") + "0000000000000")[:13]).lstrip("0")

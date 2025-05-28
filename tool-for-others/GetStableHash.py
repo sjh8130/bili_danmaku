@@ -2,7 +2,7 @@ from functools import lru_cache
 
 
 @lru_cache
-def GetStableHash(str_input):
+def GetStableHash(str_input: str) -> int:
     hash1 = 5381
     hash2 = hash1
     for i in range(0, len(str_input), 2):

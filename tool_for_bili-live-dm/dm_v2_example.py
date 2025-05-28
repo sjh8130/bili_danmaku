@@ -1,5 +1,4 @@
 import binascii
-import io
 import json
 import sys
 import time
@@ -18,13 +17,13 @@ out_path = "Z:\\test.json"
 left_pos_cache = 0
 right_pos_cache = 0
 dm_proto = live_dm.Dm()
-with open(in_path, "r", 1048576, encoding="utf-8") as F_in, io.open(out_path, "w", encoding="utf-8") as F_out:
-    for line in F_in.readlines():
+with open(in_path, encoding="utf-8") as F_in, open(out_path, "w", encoding="utf-8") as F_out:
+    for line in F_in:
         if line.find("dm_v2") == -1:
             continue
         right_pos_cache = len(line)
         try:
-            dm_proto.ParseFromString(binascii.a2b_base64(simdjson.loads(line[line.find("{") : right_pos_cache])["dm_v2"]))
+            dm_proto.ParseFromString(binascii.a2b_base64(simdjson.loads(line[line.find("{") : right_pos_cache])["dm_v2"]))  # type: ignore
         except json.decoder.JSONDecodeError as err:
             if err.msg == "Extra data":
                 left_pos_cache = err.pos

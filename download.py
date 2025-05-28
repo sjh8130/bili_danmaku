@@ -9,7 +9,7 @@ import requests
 from google.protobuf.json_format import MessageToDict
 
 import dm_pb2
-from my_lib.bvav import AV2BV, BV2AV
+from my_lib.bvav import av2bv, bv2av
 from my_lib.file_writer import write_file
 from my_lib.gen_wib import gen_w_rid
 
@@ -18,7 +18,7 @@ requests.packages.urllib3.disable_warnings()  # type: ignore[attr-defined]
 MAX_RETRIES = 2
 RETRY_SIZE = 2048
 SLEEP_TIME = 1.0
-with open("config.json", "r", -1, "utf-8") as fp:
+with open("config.json", encoding="utf-8") as fp:
     config = json.load(fp)
 del fp
 UA: str = config["ua"]
@@ -27,7 +27,7 @@ AE = config["ae"]
 
 @dataclasses.dataclass
 class _Video:
-    def __init__(self, avid: str, bvid: str, avid_n: int):
+    def __init__(self, avid: str, bvid: str, avid_n: int) -> None:
         self.avid = avid
         self.bvid = bvid
         self.avid_n = avid_n
@@ -35,7 +35,7 @@ class _Video:
 
 @dataclasses.dataclass
 class _VideoPart(_Video):
-    def __init__(self, V: _Video, cid: int, oid: int):
+    def __init__(self, V: _Video, cid: int, oid: int) -> None:
         super().__init__(V.avid, V.bvid, V.avid_n)
         self.cid = cid if cid is not None else oid
         if oid is not None and cid is not None and cid != oid:
@@ -134,7 +134,7 @@ def _get_special_danmaku(
     return bas_danmakus
 
 
-def _main(video: _Video):
+def _main(video: _Video) -> None:
     if video is None:
         return
     url_info_1n = f"https://api.bilibili.com/x/web-interface/view?bvid={video.bvid}"
@@ -172,7 +172,7 @@ def _main(video: _Video):
     video_info_3_load = json.loads(video_info_3)
     write_file(f"[{video.bvid}]_[0]_[Video]_[INFO_3].json", video_info_3_load)
     # ================================ 加载
-    json_info:dict = video_info_1_load["data"]
+    json_info: dict = video_info_1_load["data"]
     # ================================ bvid aid 检查
     if json_info["bvid"] != video.bvid:
         print(f"[bvid]: bvid mismatch {json_info['bvid']}|{video.bvid}")
@@ -215,22 +215,22 @@ def _main(video: _Video):
         write_file(f"[{video.bvid}]_[{video.avid}].json", final_string)
 
 
-def _process_args(vid: str):
+def _process_args(vid: str) -> _Video:
     if vid.startswith("https://www.bilibili.com/video/"):
         vid = vid.removeprefix("https://www.bilibili.com/video/")
     elif vid.startswith("http://www.bilibili.com/video/"):
         vid = vid.removeprefix("http://www.bilibili.com/video/")
-    elif vid.startswith("https://b23.tv/BV1") or vid.startswith("https://b23.tv/av"):
+    elif vid.startswith(("https://b23.tv/BV1", "https://b23.tv/av")):
         vid = vid.removeprefix("https://b23.tv/")
     vid = vid.split("?")[0].split("/")[0]
     if vid.startswith("BV"):
         bvid = vid[vid.find("BV") : vid.find("BV") + 12]
-        avid_n = BV2AV(bvid)
+        avid_n = bv2av(bvid)
         avid = f"av{avid_n}"
     elif vid.startswith("av"):
         avid_n = int(vid.removeprefix("av"))
         avid = f"av{avid_n}"
-        bvid = AV2BV(avid_n)
+        bvid = av2bv(avid_n)
     else:
         raise Exception(vid)
     return _Video(avid, bvid, avid_n)

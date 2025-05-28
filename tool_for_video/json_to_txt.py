@@ -4,16 +4,16 @@ import sys
 try:
     import simdjson
 except ImportError:
-    simdjson = json
+    simdjson = json  # type:ignore
 
 
-def _main():
-    """ffprobe json[data-hash] to txt"""
+def _main() -> None:
+    """FFprobe json[data-hash] to txt."""
     in_path = sys.argv[1]
-    with open(in_path, "r", encoding="utf-8") as fp:
-        d = simdjson.load(fp)
+    with open(in_path, encoding="utf-8") as fp:
+        d = simdjson.load(fp)  # type:ignore
     if not d:
-        exit()
+        sys.exit()
     preload = 0
     switch = False
     for i in d["packets"]:

@@ -4,13 +4,13 @@ import json
 import os
 import sys
 import time
+from decimal import Decimal
 from typing import Any
 
 try:
     import simdjson
 except ImportError:
     simdjson = json
-# import numba
 from loguru import logger
 from tqdm import tqdm
 
@@ -20,16 +20,12 @@ _deduplicate_dict: set[str] = set()
 
 
 def check_username(uname: str) -> bool:
-    """if is-censored: return true"""
+    """If is-censored: return true."""
     return len(uname) == 4 and uname[1:] == "***"
 
 
-def gift_id_recover(
-    batch_combo_id: str = "",
-    combo_id: str = "",
-    uid: int = 0,
-) -> tuple[str, str]:
-    """decensor gift_id"""
+def gift_id_recover(batch_combo_id: str = "", combo_id: str = "", uid: int = 0) -> tuple[str, str]:
+    """de-censor gift_id."""
     a = combo_id.split(":")
     b = batch_combo_id.split(":")
     if batch_combo_id and _E_MD5 in batch_combo_id:
@@ -39,12 +35,8 @@ def gift_id_recover(
     return ":".join(b), ":".join(a)
 
 
-def gift_id_enc(
-    batch_combo_id: str = "",
-    combo_id: str = "",
-    uid: int = 0,
-) -> tuple[str, str]:
-    """re-censor gift_id"""
+def gift_id_enc(batch_combo_id: str = "", combo_id: str = "", uid: int = 0) -> tuple[str, str]:
+    """re-censor gift_id."""
     a = combo_id.split(":")
     b = batch_combo_id.split(":")
     if combo_id and _E_MD5 not in combo_id:
@@ -54,21 +46,21 @@ def gift_id_enc(
     return ":".join(b), ":".join(a)
 
 
-# @numba.jit(cache=True)
-def _deduplicate_it(itm: dict[str, Any], has_timestamp: bool) -> bool:
-    """if exist: return false"""
+def _deduplicate_it(itm: dict[str, Any], timestamp: int | Decimal | float, str_itm: str) -> bool:
+    """If exist: return false."""
     id_1: str
     id_2: str = ""
     dm_id_str: str
     cmd: str = itm.get("cmd", "")
     if not cmd:
+        print("No CMD", itm)
         return True
-    data: dict[str, Any] = itm.get("data", None)  # type:ignore
+    data: dict[str, Any] = itm.get("data")  # type: ignore
     msg_id = str(itm.get("msg_id", 0))
     match cmd:
         # sort by hot-spot
         case "DANMU_MSG" | "DANMU_MSG:4:0:2:2:2:0":
-            dm_id_str = simdjson.loads(itm["info"][0][15]["extra"]).get("id_str", "")  # type:ignore
+            dm_id_str = simdjson.loads(itm["info"][0][15]["extra"]).get("id_str", "")  # type: ignore
             id_1 = f"""{cmd}${itm["info"][0][7]}${itm["info"][0][4]}${itm["info"][0][5]}${itm["info"][9]["ct"]}${itm["info"][9]["ts"]}${itm["info"][2][0]}${itm["info"][2][1]}${dm_id_str}${msg_id}"""
             # mid_hash,time.Now().Unix(),rnd,ct,ts,uid,uname,extra:dm_id_str,msg_id
             if not (itm["info"][2][1] == 0 and check_username(itm["info"][2][0])):
@@ -77,6 +69,8 @@ def _deduplicate_it(itm: dict[str, Any], has_timestamp: bool) -> bool:
             id_1 = f"""{cmd}${data["roomid"]}${data["score"]}${data["timestamp"]}${data["trigger_time"]}${data.get("uid", 0)}${data["uname"]}${msg_id}"""
             if not (data.get("uid", 0) == 0 and check_username(data["uname"])):
                 id_2 = f"""{cmd}${data["roomid"]}${data["score"]}${data["timestamp"]}${data["trigger_time"]}$0${data["uname"][0]}***${msg_id}"""
+        case "ENTRY_EFFECT" | "ENTRY_EFFECT_MUST_RECEIVE":
+            id_1 = f"""{cmd}${data["trigger_time"]}${data.get("uid", 0)}${data["target_id"]}${msg_id}"""
         case "SEND_GIFT":
             id_1 = f"""{cmd}${data["rnd"]}${data.get("uid", 0)}${data["uname"]}${msg_id}"""
             if not (data.get("uid", 0) == 0 and check_username(data["uname"])):
@@ -89,8 +83,6 @@ def _deduplicate_it(itm: dict[str, Any], has_timestamp: bool) -> bool:
                 id_2 = f"""{cmd}${_bcid}${_cid}${msg_id}"""
             else:
                 id_2 = ""
-        case "ENTRY_EFFECT" | "ENTRY_EFFECT_MUST_RECEIVE":
-            id_1 = f"""{cmd}${data["trigger_time"]}${data.get("uid", 0)}${data["target_id"]}${msg_id}"""
         case "COMBO_END":
             id_1 = f"""{cmd}${data["start_time"]}${data["end_time"]}${data["ruid"]}${data.get("uid", 0)}${msg_id}"""
         case "SUPER_CHAT_MESSAGE":
@@ -105,8 +97,6 @@ def _deduplicate_it(itm: dict[str, Any], has_timestamp: bool) -> bool:
             id_1 = f"""{cmd}${data["id"]}${msg_id}"""
         case "RANK_REM":
             id_1 = f"""{cmd}${data["time"]}${data.get("uid", 0)}${data["ruid"]}${msg_id}"""
-        case "GUARD_BUY":
-            id_1 = f"""{cmd}${data["start_time"]}${data.get("uid", 0)}${itm['data']["num"]}${msg_id}"""
         case "DANMU_MSG:3:7:1:1:1:1":
             id_1 = f"""{cmd}${itm["info"][0][4]}${msg_id}"""
         case (
@@ -118,8 +108,12 @@ def _deduplicate_it(itm: dict[str, Any], has_timestamp: bool) -> bool:
             | "POPULARITY_RED_POCKET_WINNER_LIST"
         ):
             id_1 = f"""{cmd}${data["lot_id"]}${msg_id}"""
+        case "GUARD_BUY":
+            id_1 = f"""{cmd}${data["start_time"]}${data.get("uid", 0)}${itm['data']["num"]}${msg_id}"""
         case "USER_TOAST_MSG":
             id_1 = f"""{cmd}${data["payflow_id"]}${data.get("uid", 0)}${msg_id}"""
+        case "USER_TOAST_MSG_V2":
+            id_1 = f"""{cmd}${data["pay_info"]["payflow_id"]}${data["sender_uinfo"].get("uid", 0)}${data["sender_uinfo"]["base"]["name"]}${data["receiver_uinfo"].get("uid", 0)}${data["receiver_uinfo"]["base"]["name"]}${msg_id}"""
         case "COMMON_ANIMATION":
             id_1 = f"""{cmd}${data["order_id"]}${data.get("uid", 0)}${msg_id}"""
         case "LIVE_INTERACTIVE_GAME" | "LIVE_OPEN_PLATFORM_GAME" | "RECOMMEND_CARD" | "SPREAD_SHOW_FEET_V2":
@@ -160,9 +154,8 @@ def _deduplicate_it(itm: dict[str, Any], has_timestamp: bool) -> bool:
             | "WATCHED_CHANGE"
             | "WIDGET_GIFT_STAR_PROCESS"
         ):
-            id_1 = f"""{cmd}${str(data)}${msg_id}"""
-        case "USER_TOAST_MSG_V2":
-            id_1 = f"""{cmd}${data["pay_info"]["payflow_id"]}${data["sender_uinfo"].get("uid", 0)}${data["sender_uinfo"]["base"]["name"]}${data["receiver_uinfo"].get("uid", 0)}${data["receiver_uinfo"]["base"]["name"]}${msg_id}"""
+            # id_1 = f"""{cmd}${str(data)}${msg_id}"""
+            id_1 = str_itm
         case "WIDGET_WISH_INFO":
             id_1 = f"""{cmd}${data["ts"]}${data["sid"]}${data["tid"]}${msg_id}"""
         case (
@@ -170,9 +163,11 @@ def _deduplicate_it(itm: dict[str, Any], has_timestamp: bool) -> bool:
             | "GUARD_HONOR_THOUSAND"
             | "HOT_ROOM_NOTIFY"
             | "LOG_IN_NOTICE"
+            | "master_qn_strategy_chg"
             | "ONLINE_RANK_TOP3"
             | "OTHER_SLICE_LOADING_RESULT"
             | "POPULAR_RANK_CHANGED"
+            | "RANK_CHANGED_V2"
             | "RANK_CHANGED"
             | "REVENUE_RANK_CHANGED"
             | "STOP_LIVE_ROOM_LIST"
@@ -188,6 +183,7 @@ def _deduplicate_it(itm: dict[str, Any], has_timestamp: bool) -> bool:
             | "ANCHOR_HELPER_DANMU"
             | "ANCHOR_LOT_CHECKSTATUS"
             | "ANCHOR_LOT_NOTICE"
+            | "ANCHOR_NORMAL_NOTIFY"
             | "BENEFIT_CARD_CLEAN"
             | "CARD_MSG"
             | "CHANGE_ROOM_INFO"
@@ -201,6 +197,7 @@ def _deduplicate_it(itm: dict[str, Any], has_timestamp: bool) -> bool:
             | "LIVE"
             | "MESSAGEBOX_USER_GAIN_MEDAL"
             | "OBS_SHIELD_STATUS_UPDATE"
+            | "OTHER_SLICE_SETTING_CHANGED"
             | "PLAYTOGETHER_ICON_CHANGE"
             | "POPULAR_RANK_GUIDE_CARD"
             | "POPULARITY_RANK_TAB_CHG"
@@ -228,17 +225,16 @@ def _deduplicate_it(itm: dict[str, Any], has_timestamp: bool) -> bool:
             tqdm.write(cmd)
             id_1 = ""
             # return True
-    if (id_1 and id_1 in _deduplicate_dict) or (id_2 and id_2 in _deduplicate_dict):
+    if (id_1 and (id_1 in _deduplicate_dict)) or (id_2 and (id_2 in _deduplicate_dict)):
         return False
-    else:
-        _deduplicate_dict.add(id_1) if id_1 else ...
-        _deduplicate_dict.add(id_2) if id_2 else ...
-        # _deduplicate_dict.add(str(itm))
-        return True
+    _deduplicate_dict.add(id_1) if id_1 else ...
+    _deduplicate_dict.add(id_2) if id_2 else ...
+    # _deduplicate_dict.add(str_itm)
+    return True
 
 
-def _deduplicate(in_path: str):
-    with open(in_path, "r", 1048576, encoding="utf-8") as input_file:
+def _deduplicate(in_path: str) -> int:
+    with open(in_path, buffering=1048576, encoding="utf-8") as input_file:
         a = input_file.readlines()
         _total = len(a)
     with open(in_path + "_DEDUP", "w", 50 * 2**20, "utf-8") as output_file:
@@ -246,8 +242,9 @@ def _deduplicate(in_path: str):
             if line in _deduplicate_dict:
                 continue
             pos = line.find("{")
-            itm: dict = simdjson.loads(line[pos:])  # type:ignore
-            if _deduplicate_it(itm, bool(pos)):
+            str_itm = line[pos:]
+            itm: dict = simdjson.loads(str_itm)  # type: ignore
+            if _deduplicate_it(itm, Decimal(line[:pos]), str_itm):
                 output_file.write(line)
             _deduplicate_dict.add(line)
     return _total

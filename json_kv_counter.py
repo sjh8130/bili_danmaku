@@ -3,14 +3,13 @@ import os
 import sys
 import time
 from pathlib import Path
-from types import NoneType
 
 from tqdm import tqdm
 
 try:
     import simdjson
 except ImportError:
-    simdjson = json
+    simdjson = json  # type:ignore
 
 result: dict[str, dict[str, dict]] = {}
 DONT_CARE_INDEX_LIST = {
@@ -20,7 +19,7 @@ DONT_CARE_INDEX_LIST = {
 }
 
 
-def _a(item: int | str | list | dict | bool | NoneType, target_key="root"):
+def _a(item: int | str | list | dict | bool | None, target_key: str = "root") -> None:
     _typ: str = type(item).__name__
     if result.get(target_key) is None:
         result[target_key] = {"type": {}}
@@ -45,17 +44,17 @@ def _a(item: int | str | list | dict | bool | NoneType, target_key="root"):
 
 
 def _b(ii: str | Path):
-    with open(ii, "r", encoding="utf-8") as fp:
-        item: dict = simdjson.load(fp)
+    with open(ii, encoding="utf-8") as fp:
+        item: dict = simdjson.load(fp)  # type:ignore
         _a(item)
     return result
 
 
-def main():
+def main() -> None:
     p1 = "json_kvs.json"
     if True and os.path.exists(os.path.join(od, p1)):
-        with open(os.path.join(od, p1), "r", encoding="utf-8") as fp:
-            result.update(simdjson.load(fp))
+        with open(os.path.join(od, p1), encoding="utf-8") as fp:
+            result.update(simdjson.load(fp))  # type:ignore
     for path in tqdm(paths, leave=False):
         if not os.path.exists(od):
             os.makedirs(od)
@@ -74,10 +73,7 @@ def main():
 
 if __name__ == "__main__":
     paths = sys.argv[1:]
-    if os.name == "nt":
-        od = "Z:\\"
-    else:
-        od = "/mnt/z/"
+    od = "Z:\\" if os.name == "nt" else "/mnt/z/"
     start_time = time.time()
     main()
     total_time = time.time() - start_time

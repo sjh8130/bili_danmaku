@@ -6,13 +6,13 @@ import socket
 import requests
 import requests.adapters
 
-with open("..\\config.json", "r", -1, "utf-8") as fp:
+with open("..\\config.json", encoding="utf-8") as fp:
     config = json.load(fp)
 del fp
 
 
 class HostHeaderSSLAdapter(requests.adapters.HTTPAdapter):
-    def __init__(self, resolved_ip):
+    def __init__(self, resolved_ip) -> None:
         super().__init__()
         self.resolved_ip = resolved_ip
 
@@ -58,7 +58,7 @@ def scrape_urls(start, end, ip_address, base, trd):
             print(f"Error accessing {url}: {e}")
 
 
-def main(base_url: str, target):
+def main(base_url: str, target) -> None:
     domain = base_url.split("/")[1]
     ip_addresses = resolve_dns(domain)
     num_ips = len(ip_addresses)
@@ -78,7 +78,7 @@ def main(base_url: str, target):
                     ip_addresses[xx],
                     base_url,
                     xx,
-                )
+                ),
             )
         # Wait for all futures to complete
         for future in concurrent.futures.as_completed(futures):

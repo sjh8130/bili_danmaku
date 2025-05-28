@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
+import contextlib
 import re
 import string
 import sys
@@ -12,7 +12,7 @@ E_L = ["", "", "", "", "", "", "", "", "", ""]
 
 
 def c2s(name: str) -> list[str]:
-    """camelCase to snake_case"""
+    """CamelCase to snake_case."""
     a = re.sub("(.)([A-Z][a-z]+)", r"\1_\2", name)
     b = re.sub("([a-z0-9])([A-Z])", r"\1_\2", a)
     c = re.sub("([a-zA-Z])([0-9])", r"\1_\2", b)
@@ -27,18 +27,11 @@ def c2s(name: str) -> list[str]:
 
 
 PROTO_DICT = {
-    "StringValue": "google.protobuf.StringValue",
-    "FloatValue": "google.protobuf.FloatValue",
-    "DoubleValue": "google.protobuf.DoubleValue",
-    "BoolValue": "google.protobuf.BoolValue",
-    "BytesValue": "google.protobuf.BytesValue",
-    "UInt32Value": "google.protobuf.UInt32Value",
-    "UInt64Value": "google.protobuf.UInt64Value",
-    "Int32Value": "google.protobuf.Int32Value",
-    "Int64Value": "google.protobuf.Int64Value",
     "Any": "google.protobuf.Any",
     "Api": "google.protobuf.Api",
+    "boolean": "bool",
     "BoolValue": "google.protobuf.BoolValue",
+    "ByteString": "bytes",
     "BytesValue": "google.protobuf.BytesValue",
     "DoubleValue": "google.protobuf.DoubleValue",
     "Duration": "google.protobuf.Duration",
@@ -48,14 +41,25 @@ PROTO_DICT = {
     "Field": "google.protobuf.Field",
     "FieldMask": "google.protobuf.FieldMask",
     "FloatValue": "google.protobuf.FloatValue",
+    "int": "int32",
     "Int32Value": "google.protobuf.Int32Value",
     "Int64Value": "google.protobuf.Int64Value",
+    "Integer": "int32",
+    "Internal.BytesList": "repeated bytes",
+    "Internal.DoubleList": "repeated double",
+    "Internal.FloatList": "repeated float",
+    "Internal.IntList": "repeated int32",
+    "Internal.LongList": "repeated int64",
+    "Internal.StringList": "repeated string",
     "ListValue": "google.protobuf.ListValue",
+    "long": "int64",
+    "Long": "int64",
     "Method": "google.protobuf.Method",
     "Mixin": "google.protobuf.Mixin",
     "NullValue": "google.protobuf.NullValue",
     "Option": "google.protobuf.Option",
     "SourceContext": "google.protobuf.SourceContext",
+    "String": "string",
     "StringValue": "google.protobuf.StringValue",
     "Struct": "google.protobuf.Struct",
     "Syntax": "google.protobuf.Syntax",
@@ -64,33 +68,19 @@ PROTO_DICT = {
     "UInt32Value": "google.protobuf.UInt32Value",
     "UInt64Value": "google.protobuf.UInt64Value",
     "Value": "google.protobuf.Value",
-    "String": "string",
-    "int": "int32",
-    "Integer": "int32",
-    "long": "int64",
-    "Long": "int64",
-    "Internal.IntList": "repeated int32",
-    "Internal.LongList": "repeated int64",
-    "Internal.FloatList": "repeated float",
-    "Internal.DoubleList": "repeated double",
-    "Internal.StringList": "repeated string",
-    "Internal.BytesList": "repeated bytes",
-    "ByteString": "bytes",
-    "boolean": "bool",
 }
 
 
 def get_protobuf_type(a: str) -> str:
-    """根据输入字符串返回相应的数据类型。"""
+    """根据输入字符串返回相应的数据类型."""
     if a in PROTO_DICT:
         return PROTO_DICT[a]
     if a.startswith("Internal.ProtobufList"):
-        return "repeated {0}".format(get_protobuf_type(a[22:-1]))
-    elif a.startswith("MapFieldLite"):
+        return f"repeated {get_protobuf_type(a[22:-1])}"
+    if a.startswith("MapFieldLite"):
         b = a[13:-1].split(",")
-        return "map<{0}, {1}>".format(get_protobuf_type(b[0]), get_protobuf_type(b[1]))
-    else:
-        return a
+        return f"map<{get_protobuf_type(b[0])}, {get_protobuf_type(b[1])}>"
+    return a
 
 
 def combine_msg(list_1: list[tuple[str, int]], list_2: list[str]) -> str:
@@ -118,23 +108,23 @@ def combine_msg(list_1: list[tuple[str, int]], list_2: list[str]) -> str:
 def combine_enum(list_1: list[tuple[str, int]]) -> str:
     ids = []
     ret_str = ""
-    for id in list_1:
-        ids.append(id[1])
+    for _id in list_1:
+        ids.append(_id[1])
     ids = sorted(ids)
-    for id in ids:
+    for _id in ids:
         for j in list_1:
-            if id == j[1] and id != -1:
+            if _id == j[1] and _id != -1:
                 ret_str += f"    {j[0][0:-6]} = {j[1]};\n"
-    for id in ids:
+    for _id in ids:
         for j in list_1:
-            if id == j[1] and id == -1:
+            if _id == j[1] and _id == -1:
                 ret_str += f"    {j[0][0:-6]} = {j[1]};\n"
                 return ret_str
     return ret_str
 
 
 def snake_to_camel(name: str) -> str:
-    """将 snake_case 格式的字符串转换为 camelCase 格式。"""
+    """将 snake_case 格式的字符串转换为 camelCase 格式."""
     return "".join(name.split("_"))
 
 
@@ -163,7 +153,7 @@ class MsgType(StrEnum):
     none = ""
 
 
-def process(data: list[str]):
+def process(data: list[str]) -> None:
     msg_type = MsgType.none
     msg_name = ""
     final_str = ""
@@ -183,9 +173,7 @@ def process(data: list[str]):
             elif strs[:2] == ["public", "enum"]:
                 msg_type = MsgType.enum
                 msg_name = strs[2]
-            elif strs[:3] == ["public", "final", "class"] and strs[3] in string.ascii_letters:
-                msg_type = MsgType.service
-            elif strs[:4] == ["private", "static", "final", "int"] and strs[4].startswith("METHODID_"):
+            elif (strs[:3] == ["public", "final", "class"] and strs[3] in string.ascii_letters) or (strs[:4] == ["private", "static", "final", "int"] and strs[4].startswith("METHODID_")):
                 msg_type = MsgType.service
         elif msg_type == MsgType.message:
             if strs[:5] == ["public", "static", "final", "String", "SERVICE_NAME"]:
@@ -238,7 +226,7 @@ def process(data: list[str]):
         sys.stderr.write("no data found\n")
 
 
-def main():
+def main() -> None:
     in_strings: list[str] = []
     paste = False
     while True:
@@ -261,7 +249,5 @@ def main():
 
 
 if __name__ == "__main__":
-    try:
+    with contextlib.suppress(KeyboardInterrupt):
         main()
-    except KeyboardInterrupt:
-        pass
