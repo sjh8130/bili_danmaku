@@ -7,8 +7,9 @@ from google.protobuf.json_format import MessageToDict
 import dm_pb2
 from my_lib.file_writer import write_file
 
-d: dict
-if __name__ == "__main__":
+
+def main():
+    d: dict
     dms = dm_pb2.DmSegMobileReply()
     with open(sys.argv[1], "rb") as fp:
         dms.ParseFromString(fp.read())
@@ -24,3 +25,7 @@ if __name__ == "__main__":
     fw = json.dumps(j1, ensure_ascii=False, separators=(",", ":"))
     fw = fw.replace('},{"id"', '},\n\t{"id"')
     write_file(f"{sys.argv[1]}.json", fw)
+
+
+if __name__ == "__main__":
+    main()

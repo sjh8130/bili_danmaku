@@ -1,7 +1,7 @@
 import json
-import os
 import sys
 import time
+from pathlib import Path
 from typing import Any
 
 from tqdm import tqdm
@@ -16,7 +16,7 @@ _cmd_count: dict[str, int] = {}
 
 def _p1() -> None:
     try:
-        with open(_out_path, encoding="utf-8") as file_io:
+        with _out_path.open(encoding="utf-8") as file_io:
             _cmd_count.update(simdjson.load(file_io))  # type:ignore
     except FileNotFoundError:
         pass
@@ -28,21 +28,22 @@ def _p1() -> None:
 
 
 def _p2() -> None:
-    with open(_out_path, "w", encoding="utf-8") as file_io:
+    with _out_path.open("w", encoding="utf-8") as file_io:
         json.dump(_cmd_count, file_io, ensure_ascii=False, indent="\t", sort_keys=True)
 
 
 def _main(in_paths: list[str]) -> None:
     if in_paths == []:
         return
-    for in_path in in_paths:
+    for in_path_s in in_paths:
+        in_path = Path(in_path_s)
         # print(in_path)
         if in_path == _out_path:
             continue
         is_err = False
         lineno = 1
-        with open(in_path, encoding="utf-8") as file_in:
-            for line in tqdm(file_in.readlines(), leave=False, desc=f"{os.path.basename(in_path)}"):
+        with in_path.open(encoding="utf-8") as file_in:
+            for line in tqdm(file_in.readlines(), leave=False, desc=in_path.name):
                 lineno += 1
                 left_pos = line.find("{")
                 try:
@@ -60,7 +61,7 @@ def _main(in_paths: list[str]) -> None:
 
 if __name__ == "__main__":
     _in_path = sys.argv[1:]
-    _out_path = "Z:\\CMD_count.json"
+    _out_path = Path("Z:\\CMD_count.json")
     _st = time.time()
     _p1()
     _main(_in_path)

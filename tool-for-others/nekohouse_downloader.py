@@ -2,16 +2,16 @@ import dataclasses
 import datetime
 import json
 import logging
-import os
 import re
 import ssl
 import sys
 import time
+from pathlib import Path
 
 import bs4
 import requests
 
-ssl._create_default_https_context = ssl._create_unverified_context
+ssl._create_default_https_context = ssl._create_unverified_context  # noqa: S323, SLF001
 requests.packages.urllib3.disable_warnings()  # type: ignore[attr-defined]
 with open("config.json", encoding="utf-8") as fp:
     config = json.load(fp)
@@ -68,7 +68,7 @@ def _get_posts_page(p: Post) -> Post:
     p.content = content_tag.decode_contents().strip() if content_tag else ""
     # Extract additional items (like media attachments)
     attachment_links = soup.select("a.scrape__attachment-link, div.fileThumb")
-    p.items = ["https://nekohouse.su" + itm.attrs["href"] for itm in attachment_links]
+    p.items = ["https://nekohouse.su" + itm.attrs["href"] for itm in attachment_links]  # type: ignore
     return p
 
 
@@ -91,7 +91,7 @@ def _get_user_page(pl: str, user_id: str, pn: int) -> UserPage:
     for itm in soup.select(".post-card.post-card--preview.post-card--scrape"):
         post_id = itm.a["href"].split("/")[-1]  # type: ignore[union-attr,index]
         pub_time = time.mktime(time.strptime(itm.footer.time["datetime"], "%Y-%m-%d %H:%M:%S%z"))  # type: ignore[arg-type,union-attr,index]
-        thumb = "https://nekohouse.su" + itm.select(".post-card__image")[0].attrs["src"]
+        thumb = "https://nekohouse.su" + itm.select(".post-card__image")[0].attrs["src"]  # type: ignore
         title = itm.header.text.strip()  # type: ignore[union-attr]
         posts.append(
             Post(
@@ -106,7 +106,7 @@ def _get_user_page(pl: str, user_id: str, pn: int) -> UserPage:
     return UserPage(total=total, posts=posts)
 
 
-def _aria2_downloader(path: str, url: str) -> None:
+def _aria2_downloader(path: Path, url: str) -> None:
     logger.info(f"[aria2Downloader] {path} {url}")
     if not isinstance(url, str):
         logger.error(f"[aria2Downloader] {url}")
@@ -117,7 +117,7 @@ def _aria2_downloader(path: str, url: str) -> None:
             "token:AAAAA",
             [url],
             {
-                "dir": path,
+                "dir": str(path),
                 "remote-time": "true",
                 "user-agent": UA,
             },
@@ -128,7 +128,7 @@ def _aria2_downloader(path: str, url: str) -> None:
 
 def _get_users(p, u) -> tuple[str, str]:
     U = "https://nekohouse.su/api/creators"
-    F = "Z:\\creators"
+    F = Path("Z:\\creators").resolve()
     H = {
         "Accept-Encoding": AE,
         "Connection": "keep-alive",
@@ -137,13 +137,13 @@ def _get_users(p, u) -> tuple[str, str]:
         "User-Agent": UA,
     }
     data: list[dict]
-    if not os.path.exists(F):
+    if not F.exists():
         response = session.get(U, headers=H, verify=False)
         data = response.json()
-        with open(F, "w", encoding="utf-8") as fp:
+        with F.open("w", encoding="utf-8") as fp:
             json.dump(data, fp, ensure_ascii=False)
     else:
-        with open(F, encoding="utf-8") as fp:
+        with F.open(encoding="utf-8") as fp:
             data = json.load(fp)
     for itm in data:
         if (u == itm["name"] or u == itm["user_id"]) and p == itm["service"]:
@@ -151,33 +151,33 @@ def _get_users(p, u) -> tuple[str, str]:
     return ("", "")
 
 
-def _get_posts_file(bp: str, p: Post) -> None:
+def _get_posts_file(bp: Path, p: Post) -> None:
     logger.info(f"[getPostsFile] {p.platform} {p.post_id} {p.title}")
     date = datetime.datetime.fromtimestamp(p.pub_time).strftime("%Y%m%d")
-    path = os.path.join(bp, f"[{date}] [{p.post_id}] {_escape_path(p.title)}")
+    path = bp / f"[{date}] [{p.post_id}] {_escape_path(p.title)}"
     for i in p.items:
         _aria2_downloader(path, i)
 
 
-def main():
+def main() -> None:
     argv = sys.argv
     if len(argv) == 1:
         print(f"{argv[0]} <service> <user_id/user_name> [max_pn] [base_path] ")
         print(f"{argv[0]} <url> [max_pn] [base_path] ")
         return
     if argv[1].startswith("https"):
-        _t = [_ for _ in argv[1].split("/") if _]
-        service = _t[2]
-        user_id, user_name = _get_users(service, _t[4])
-        del _t
+        t = [_ for _ in argv[1].split("/") if _]
+        service = t[2]
+        user_id, user_name = _get_users(service, t[4])
+        del t
         try:
             max_pn = int(argv[2])
         except IndexError:
             max_pn = -1
         try:
-            base_path = argv[3] + f"/{service}[{user_name}]"
+            base_path = Path(argv[3]).resolve() / f"{service}[{user_name}]"
         except IndexError:
-            base_path = os.path.abspath(".") + f"/[{service}]{user_name}"
+            base_path = Path.cwd() / f"[{service}]{user_name}"
     else:
         service = argv[1]
         try:
@@ -186,20 +186,20 @@ def main():
             max_pn = -1
         user_id, user_name = _get_users(service, argv[2])
         try:
-            base_path = argv[4] + f"/{service}[{user_name}]"
+            base_path = Path(argv[4]).resolve() / f"{service}[{user_name}]"
         except IndexError:
-            base_path = os.path.abspath(".") + f"/[{service}]{user_name}"
+            base_path = Path.cwd() / f"[{service}]{user_name}"
     item_count = 2
     page_num = 0
     try:
         while True:
             user_page = _get_user_page(service, user_id, page_num)
             item_count = user_page.total
-            for pn2 in range(user_page.posts.__len__()):
+            for pn2 in range(len(user_page.posts)):
                 user_page.posts[pn2] = _get_posts_page(user_page.posts[pn2])
                 _get_posts_file(base_path, user_page.posts[pn2])
             page_num += 1
-            if page_num >= max_pn and max_pn > 0:
+            if page_num >= max_pn > 0:
                 break
             if (page_num + 1) * 50 > item_count:
                 break

@@ -3,15 +3,15 @@ import base64
 import binascii
 import contextlib
 import json
-import os
 import ssl
 import time
+from pathlib import Path
 
 import requests
 from loguru import logger
 
 log = logger.bind(user="NFT")
-ssl._create_default_https_context = ssl._create_unverified_context
+ssl._create_default_https_context = ssl._create_unverified_context  # noqa: S323, SLF001
 requests.packages.urllib3.disable_warnings()  # type: ignore[attr-defined]
 with open("..\\config.json", encoding="utf-8") as fp:
     config = json.load(fp)
@@ -40,12 +40,7 @@ def _downloader(pn: int | str, item_id: int | str, ps: int | str) -> bytes:
     while retries < 3:
         try:
             time.sleep(2)
-            x: requests.Response = session.get(
-                URL.format(ps=ps, pn=pn, item_id=item_id),
-                headers=_HEADERS,
-                verify=False,
-                timeout=20,
-            )
+            x: requests.Response = session.get(URL.format(ps=ps, pn=pn, item_id=item_id), headers=_HEADERS, verify=False, timeout=20)
             _a += 1
             if isinstance(x.content, bytes) and x.content != _B:
                 return x.content
@@ -102,20 +97,20 @@ def _get_data(item_id: int | str) -> int:
             else:
                 with contextlib.suppress(Exception):
                     d0["nft_list"] += response_d["nft_list"]
-            log.info(f"{item_id=:<8}size={len(data):<8}{pn}/{float(response_d['total']/ps).__ceil__()}")
+            log.info(f"{item_id=:<8}size={len(data):<8}{pn}/{float(response_d['total'] / ps)}")
             pn += 1
     _clean_it(d0["nft_list"])
     d0.pop("private", "")
-    with open(_BP + f"\\NFT_{item_id}.json", "a", 8192, "utf-8") as fp:
+    with (Path(_BP) / f"\\NFT_{item_id}.json").open("a", 8192, "utf-8") as fp:
         json.dump(d0, fp, ensure_ascii=False, indent="\t", separators=(",", ":"))
-    with open(_BP + "\\..\\" + "NFT_ID.tsv", "a", 4096, "utf-8") as f:
+    with (Path(_BP).parent / "NFT_ID.tsv").open("a", 4096, "utf-8") as f:
         f.write(f"{item_id}\t{issuer_name}\t{item_name}\n")
     return 200
 
 
 def _main() -> None:
     for item_id in range(2000, 3000):
-        if os.path.exists(_BP + f"\\NFT_{item_id}.json"):
+        if Path(_BP + f"\\NFT_{item_id}.json").exists():
             continue
         _get_data(item_id)
 

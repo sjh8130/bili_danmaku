@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+import contextlib
 import json
 import sys
 from functools import lru_cache
@@ -6,27 +7,27 @@ from functools import lru_cache
 
 @lru_cache
 def convert_srt_time(t: int) -> str:
-    return f"{(t//3600000):02d}:{(t//60000%60):02d}:{(t//1000%60):02d},{(t%1000):03d}"
+    return f"{(t // 3600000):02d}:{(t // 60000 % 60):02d}:{(t // 1000 % 60):02d},{(t % 1000):03d}"
 
 
 @lru_cache
 def convert_lrc_time(t: int) -> str:
-    return f"[{(t//60000):02d}:{(t//1000%60):02d}.{(t%1000//10):02d}]"
+    return f"[{(t // 60000):02d}:{(t // 1000 % 60):02d}.{(t % 1000 // 10):02d}]"
 
 
 @lru_cache
-def convert_ass_time(t: int):  # noqa: ANN201
-    return f"{(t//3600000):01d}:{(t//60000%60):02d}:{(t//1000%60):02d}.{(t%1000):03d}"[0:-1]
+def convert_ass_time(t: int):
+    return f"{(t // 3600000):01d}:{(t // 60000 % 60):02d}:{(t // 1000 % 60):02d}.{(t % 1000):03d}"[0:-1]
 
 
-def proc_karaoke(karaoke_item: dict):  # noqa: ANN201
-    karaoke_word = f"\x7b\\K{int((karaoke_item[0]['end_time']-karaoke_item[0]['start_time'])/10)}\x7d{karaoke_item[0]['label']}"
+def proc_karaoke(karaoke_item: dict):
+    karaoke_word = f"\x7b\\K{int((karaoke_item[0]['end_time'] - karaoke_item[0]['start_time']) / 10)}\x7d{karaoke_item[0]['label']}"
     if karaoke_item[0]["label"].isascii():
         karaoke_word += " "
     for timed_chars in range(len(karaoke_item)):
         if timed_chars == 0:
             continue
-        karaoke_word += f"""\x7b\\K{int((karaoke_item[timed_chars]["end_time"]-karaoke_item[timed_chars-1]["end_time"])/10)}\x7d{karaoke_item[timed_chars]["label"]}"""
+        karaoke_word += f"""\x7b\\K{int((karaoke_item[timed_chars]["end_time"] - karaoke_item[timed_chars - 1]["end_time"]) / 10)}\x7d{karaoke_item[timed_chars]["label"]}"""
         if karaoke_item[timed_chars]["label"].isascii() and timed_chars != len(karaoke_item):
             karaoke_word += " "
     return karaoke_word
@@ -37,11 +38,8 @@ def proc_ass(item: dict) -> str:
     start_time = item["start_time"]
     end_time = item["end_time"]
     fi___itm = f"""Dialogue: 0,{convert_ass_time(start_time)},{convert_ass_time(end_time)},A,,0,0,0,,{item["transcript"]}\n"""
-    try:
-        pass
-        # fi_k_itm = f"Dialogue: 1,{convert_ass_time(start_time)},{convert_ass_time(end_time)},B,,0,0,0,,{proc_karaoke(item["words"])}\n".replace("{\k0}","")
-    except KeyError:
-        pass
+    # with contextlib.suppress(KeyError):
+    #     fi_k_itm = f"Dialogue: 1,{convert_ass_time(start_time)},{convert_ass_time(end_time)},B,,0,0,0,,{proc_karaoke(item['words'])}\n".replace("{\\k0}", "")
     return fi___itm + fi_k_itm.replace(" \n", "\n").replace("  ", " ").replace(",,0,0,0,, ", ",,0,0,0,,")
 
 

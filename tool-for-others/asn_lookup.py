@@ -1,9 +1,12 @@
+import csv
 import dataclasses
 import ipaddress
 import json
-import os
 import socket
 import sys
+from pathlib import Path
+
+import requests
 
 
 @dataclasses.dataclass
@@ -17,12 +20,12 @@ class IP:
     def __str__(self) -> str:
         return f"{self.ip_cidr}\t{self.region}\t{self.desc}\t{self.status}"
 
-    def __hash__(self):
+    def __hash__(self) -> int:
         return hash(self.ip_cidr + self.region)
 
 
-def _init(overwrite=False) -> None:
-    PATH_BASE = "Z:\\"
+def _init(*, overwrite: bool = False) -> None:
+    PATH_BASE = Path("Z:\\")
     URL_BASE = "https://ftp.apnic.net/stats"
     URL = [
         f"{URL_BASE}/iana/delegated-iana-latest",
@@ -33,11 +36,11 @@ def _init(overwrite=False) -> None:
         f"{URL_BASE}/afrinic/delegated-afrinic-latest",
     ]
     tld_url = "https://data.iana.org/TLD/tlds-alpha-by-domain.txt"
-    _download_file(tld_url, PATH_BASE + "tlds-alpha-by-domain.txt", overwrite)
-    _process_tld(PATH_BASE + "tlds-alpha-by-domain.txt")
+    _download_file(tld_url, PATH_BASE / "tlds-alpha-by-domain.txt", overwrite=overwrite)
+    _process_tld(PATH_BASE / "tlds-alpha-by-domain.txt")
     for url in URL:
-        file_name = PATH_BASE + url.split("/")[-1]
-        _download_file(url, file_name, overwrite)
+        file_name = PATH_BASE / url.split("/")[-1]
+        _download_file(url, file_name, overwrite=overwrite)
         _process_file(file_name)
 
 
@@ -428,28 +431,25 @@ _CIDR_CALC: dict[str | int, str] = {
 }
 
 
-def _download_file(url: str, file_name: str, overwrite: bool) -> None:
-    if os.path.isfile(file_name) and (not overwrite):
+def _download_file(url: str, file_name: Path, *, overwrite: bool) -> None:
+    if file_name.is_file() and (not overwrite):
         # file {} exist
         # print(f"文件 {file_name} 已存在.")
-        pass
+        return
+    if overwrite:
+        # file {} not exist, downloading...
+        print(f"文件 {file_name} 正在下载...")
     else:
-        import requests
-
-        if overwrite:
-            # file {} not exist, downloading...
-            print(f"文件 {file_name} 正在下载...")
-        else:
-            # file {} not exist, downloading...
-            print(f"文件 {file_name} 不存在，正在下载...")
-        response = requests.get(url, headers={"Accept-Encoding": "gzip, deflate, bzip2, br, zstd"})
-        if response.status_code == 200:
-            with open(file_name, "wb") as file:
-                file.write(response.content)
+        # file {} not exist, downloading...
+        print(f"文件 {file_name} 不存在，正在下载...")
+    response = requests.get(url, headers={"Accept-Encoding": "gzip, deflate, bzip2, br, zstd"})
+    if response.status_code == 200:
+        with file_name.open("wb") as file:
+            file.write(response.content)
         # print(f"文件 {file_name} 下载完成.")
 
 
-def _process_file(file_name: str) -> None:
+def _process_file(file_name: Path) -> None:
     """处理CIDR数据,返回IPv4和IPv6的字典
     The version line:
     0       1        2      3       4         5       6
@@ -459,25 +459,15 @@ def _process_file(file_name: str) -> None:
     registry|*|type|*|count|summary
     Record format:
     0        1  2    3     4     5    6       7
-    registry|cc|type|start|value|date|status[|extensions...].
+    registry|cc|type|start|value|date|status[|extensions...]
     """
-    import csv
-
     # import math
-    with open(file_name) as file:
+    with file_name.open(encoding="utf-8") as file:
         reader = csv.reader(file, delimiter="|")
         for line in reader:
             if line[0].startswith("#"):
                 continue
-            if line[1] in [
-                "afrinic",
-                "apnic",
-                "arin",
-                "iana",
-                "lacnic",
-                "ripe-ncc",
-                "ripencc",
-            ]:
+            if line[1] in {"afrinic", "apnic", "arin", "iana", "lacnic", "ripe-ncc", "ripencc"}:
                 continue
             region = "XX" if line[1] == "" else line[1]
             if line[5] == "summary":
@@ -494,8 +484,8 @@ def _process_file(file_name: str) -> None:
                 ips.add(IP(cidr, region, line[0], line[6]))
 
 
-def _process_tld(file_name: str) -> None:
-    with open(file_name) as file:
+def _process_tld(file_name: Path) -> None:
+    with file_name.open(encoding="utf-8") as file:
         for i in file:
             if i.startswith("#"):
                 continue
@@ -515,7 +505,7 @@ def _query_ip(d: str) -> None:
     ip: IP
     for ip in ips:
         if d == ip.ip_cidr:
-            print("".join(ip.__str__()))
+            print("".join(str(ip)))
         elif "/" in ip.ip_cidr:
             if _ip_in_range(d, ip.ip_cidr):
                 print(ip)
@@ -523,7 +513,7 @@ def _query_ip(d: str) -> None:
             print(ip)
 
 
-def _resolve_dns(host) -> list[str]:
+def _resolve_dns(host: str) -> list[str]:
     try:
         ip_addresses = socket.getaddrinfo(host, None)
         return [str(addr[4][0]) for addr in ip_addresses]
@@ -600,7 +590,7 @@ if __name__ == "__main__":
                     print(len(ips))
                 case "dump" | "export" | "save":
                     j = json.dumps(ips, ensure_ascii=False, separators=(",", ":"), sort_keys=True)
-                    open("Z:\\dump.json", "w", encoding="utf-8").write(j)
+                    Path("Z:\\dump.json").open("w", encoding="utf-8").write(j)
                     del j
                 case "afrinic" | "apnic" | "arin" | "iana" | "lacnic" | "ripe-ncc" | "ripencc":
                     _query_desc(query_string)

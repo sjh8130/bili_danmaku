@@ -3,6 +3,7 @@ import struct
 import time
 import zlib
 from enum import IntEnum, StrEnum
+from pathlib import Path
 from typing import NamedTuple
 
 from PIL import Image
@@ -30,7 +31,7 @@ _BRD_S8 = 2**8 - 1
 _NULL_SEPARATOR = b"\x00"
 
 
-class COLOR_TYPE(IntEnum):
+class ColorType(IntEnum):
     GRAY = 0
     G = GRAY
     GRAYSCALE = GRAY
@@ -82,12 +83,12 @@ class COLOR_TYPE(IntEnum):
     rgba64 = TRUECOLOR_WITH_ALPHA
 
 
-_ALLOWED_DEPTH_LIST: dict[COLOR_TYPE, list[int]] = {
-    COLOR_TYPE.GRAY: [1, 2, 4, 8, 16],
-    COLOR_TYPE.TRUECOLOR: [8, 16],
-    COLOR_TYPE.INDEXED_COLOR: [1, 2, 4, 8, 16],
-    COLOR_TYPE.GRAY_ALPHA: [8, 16],
-    COLOR_TYPE.TRUECOLOR_WITH_ALPHA: [8, 16],
+_ALLOWED_DEPTH_LIST: dict[ColorType, list[int]] = {
+    ColorType.GRAY: [1, 2, 4, 8, 16],
+    ColorType.TRUECOLOR: [8, 16],
+    ColorType.INDEXED_COLOR: [1, 2, 4, 8, 16],
+    ColorType.GRAY_ALPHA: [8, 16],
+    ColorType.TRUECOLOR_WITH_ALPHA: [8, 16],
 }
 
 
@@ -102,7 +103,7 @@ class Blend(IntEnum):
     OP_OVER = 1
 
 
-class COMPRESSION_LEVEL(IntEnum):
+class CompressionLevel(IntEnum):
     COPY = 0
     NONE = 0
     LV_0 = 0
@@ -202,12 +203,12 @@ class Palette(NamedTuple):
 
 
 class P1:
-    compression_level = COMPRESSION_LEVEL.LV_9
+    compression_level = CompressionLevel.LV_9
     apng_seq = 0
     data: bytes = b""
 
-    def __init__(self, compression_level) -> None:
-        self.compression_level = COMPRESSION_LEVEL(compression_level)
+    def __init__(self, compression_level: CompressionLevel) -> None:
+        self.compression_level = CompressionLevel(compression_level)
         self.data += _PNG_SIGNATURE
 
     def _sign(self, chunk_type: bytes | str, data: bytes, /) -> bytes:
@@ -215,7 +216,7 @@ class P1:
             chunk_type = chunk_type.encode("utf-8")
         chunk_length = len(data)
         chunk_crc = struct.pack(">I", zlib.crc32(chunk_type + data, 0) & 0xFFFFFFFF)
-        logger.debug(f"chunk_type={str(chunk_type,'utf-8')}, {chunk_length=}")
+        # logger.debug(f"chunk_type={str(chunk_type, 'utf-8')}, {chunk_length=}")
         signed_data = struct.pack(">I", chunk_length) + chunk_type + data + chunk_crc
         self.data += signed_data
         return signed_data
@@ -225,7 +226,7 @@ class P1:
         width: int,
         height: int,
         bit_depth: int,
-        color_type: COLOR_TYPE,
+        color_type: ColorType,
         compression_method: int = 0,
         filter_method: int = 0,
         interlace_method: int = 0,
@@ -256,7 +257,7 @@ class P1:
         width: int,
         height: int,
         bit_depth: int,
-        color_type: COLOR_TYPE,
+        color_type: ColorType,
         chunk_size: int,
         *,
         apng: bool = False,
@@ -385,28 +386,21 @@ class P1:
         return self._sign(_CHUNK_TYPE.tEXt, data)
 
     def zTXt(self, keyword: str, text: str) -> bytes:
-        data = keyword.encode("utf-8") + _NULL_SEPARATOR * 2 + zlib.compress(text.encode("utf-8"), COMPRESSION_LEVEL.LV_9)
+        data = keyword.encode("utf-8") + _NULL_SEPARATOR * 2 + zlib.compress(text.encode("utf-8"), CompressionLevel.LV_9)
         return self._sign(_CHUNK_TYPE.zTXt, data)
 
-    def iTXt(
-        self,
-        keyword: str,
-        text: str,
-        language_tag: str = "",
-        translated_keyword: str = "",
-        compression_flag: bool = False,
-    ) -> bytes:
+    def iTXt(self, keyword: str, text: str, language_tag: str = "", translated_keyword: str = "", *, compression_flag: bool = False) -> bytes:
         t1 = text.encode("utf-8")
         if compression_flag:
-            _text: bytes = zlib.compress(t1, COMPRESSION_LEVEL.LV_9)
+            text_: bytes = zlib.compress(t1, CompressionLevel.LV_9)
             compression_method = 0
         else:
-            _text = t1
+            text_ = t1
             compression_method = 1
         data = (
             keyword.encode("utf-8")
             + _NULL_SEPARATOR
-            + _text
+            + text_
             + struct.pack(">?B", compression_flag, compression_method)
             + language_tag.encode("utf-8")
             + _NULL_SEPARATOR
@@ -421,15 +415,15 @@ class P1:
         pixels_per_unit_x: int,
         pixels_per_unit_y: int,
         unit: _PHYS_UNIT = _PHYS_UNIT.PHYS_UNIT_METER,
-    ):
+    ) -> bytes:
         data = struct.pack(">IIB", pixels_per_unit_x, pixels_per_unit_y, unit)
         return self._sign(_CHUNK_TYPE.pHYs, data)
 
-    def tIME(self, year: int, month: int, day: int, hour: int, minute: int, second: int):
+    def tIME(self, year: int, month: int, day: int, hour: int, minute: int, second: int) -> bytes:
         data = struct.pack(">HBBBBB", year, month, day, hour, minute, second)
         return self._sign(_CHUNK_TYPE.tIME, data)
 
-    def sBIT(self, significant_bits: list[int]):
+    def sBIT(self, significant_bits: list[int]) -> bytes:
         data = b""
         for bit in significant_bits:
             data += struct.pack(">B", bit)
@@ -447,12 +441,12 @@ def create_png(
     delay_den: int = 30,
     loop_times: int = 1,
     bit_depth: int = 8,
-    color_type: COLOR_TYPE = COLOR_TYPE.RGB32,
-    compression_level: COMPRESSION_LEVEL | int = COMPRESSION_LEVEL.LV_9,
-):
+    color_type: ColorType = ColorType.RGB32,
+    compression_level: CompressionLevel | int = CompressionLevel.LV_9,
+) -> bytes:
     if apng and num_frames == -1:
         num_frames = len(image_data)
-    x = P1(min(compression_level, COMPRESSION_LEVEL.LV_9 if oxipng is None else COMPRESSION_LEVEL.Z_BEST_SPEED))
+    x = P1(min(CompressionLevel(compression_level), CompressionLevel.LV_9 if oxipng is None else CompressionLevel.Z_BEST_SPEED))
     x.IHDR(width, height, bit_depth, color_type)
     x.tEXt("Software", "SJH8130:png_encoder")
     if apng:
@@ -467,7 +461,7 @@ def create_png(
             x.fcTL(width, height, 0, 0, delay_num, delay_den)
             x.XDAT(image_data[idx], width, height, bit_depth, color_type, chunk_size, apng=True)
     x.IEND()
-    if oxipng is not None and compression_level == COMPRESSION_LEVEL.X_OXIPNG:
+    if oxipng is not None and compression_level == CompressionLevel.X_OXIPNG:
         before = len(x.data)
         png_data = oxipng.optimize_from_memory(
             x.data,
@@ -478,7 +472,7 @@ def create_png(
             deflate=oxipng.Deflaters.zopfli(255),
         )
         after = len(png_data)
-        logger.info(f"{before:,} -> {after:,} {(after/before):.2f}%")
+        logger.info(f"{before:,} -> {after:,} {(after / before):.2f}%")
         return png_data
     return x.data
 
@@ -504,12 +498,7 @@ def encode_tile_image_to_apng(
     horizontal_frames = image.width // tile_width
     for v in range(vertical_frames):
         for h in range(horizontal_frames):
-            box = (
-                h * tile_width,
-                v * tile_height,
-                (h + 1) * tile_width,
-                (v + 1) * tile_height,
-            )
+            box = (h * tile_width, v * tile_height, (h + 1) * tile_width, (v + 1) * tile_height)
             tile = image.crop(box)
             # tile.save(f"Z:\\{fc+1}.png")
             frame_data = tile.tobytes()
@@ -530,65 +519,61 @@ def encode_tile_image_to_apng(
         delay_den=fps,
         loop_times=0,
         bit_depth=8,
-        color_type=COLOR_TYPE.RGB24 if remove_alpha else COLOR_TYPE.RGBA32,
-        compression_level=COMPRESSION_LEVEL.X_OXIPNG,
+        color_type=ColorType.RGB24 if remove_alpha else ColorType.RGBA32,
+        compression_level=CompressionLevel.MAX,
     )
     write(path_out, r)
 
 
-def recompress_png(
-    png_path,
-    chunk_size=1048576,
-    compression_level=COMPRESSION_LEVEL.LV_9,
-) -> None:
+def recompress_png(png_path: Path, chunk_size=1048576, compression_level=CompressionLevel.LV_9) -> None:
     image = Image.open(png_path)
     logger.debug(image)
     width, height = image.size
     match image.mode:
         case "1":
-            color_type = COLOR_TYPE.GRAY
+            color_type = ColorType.GRAY
             bit_depth = 1
         case "L;2":
-            color_type = COLOR_TYPE.GRAY
+            color_type = ColorType.GRAY
             bit_depth = 2
         case "L;4":
-            color_type = COLOR_TYPE.GRAY
+            color_type = ColorType.GRAY
             bit_depth = 4
         case "L":
-            color_type = COLOR_TYPE.GRAY
+            color_type = ColorType.GRAY
             bit_depth = 8
         case "I;16B":
-            color_type = COLOR_TYPE.GRAY
+            color_type = ColorType.GRAY
             bit_depth = 16
         case "P;1":
-            color_type = COLOR_TYPE.INDEXED_COLOR
+            color_type = ColorType.INDEXED_COLOR
             bit_depth = 1
         case "P;2":
-            color_type = COLOR_TYPE.INDEXED_COLOR
+            color_type = ColorType.INDEXED_COLOR
             bit_depth = 2
         case "P;4":
-            color_type = COLOR_TYPE.INDEXED_COLOR
+            color_type = ColorType.INDEXED_COLOR
             bit_depth = 4
         case "P":
-            color_type = COLOR_TYPE.INDEXED_COLOR
+            color_type = ColorType.INDEXED_COLOR
             bit_depth = 8
         case "LA":
-            color_type = COLOR_TYPE.GRAYSCALE_WITH_ALPHA
+            color_type = ColorType.GRAYSCALE_WITH_ALPHA
             bit_depth = 16
         case "LA;16B":
-            color_type = COLOR_TYPE.GRAYSCALE_WITH_ALPHA
+            color_type = ColorType.GRAYSCALE_WITH_ALPHA
             bit_depth = 32
         case "RGB":
-            color_type = COLOR_TYPE.TRUECOLOR
+            color_type = ColorType.TRUECOLOR
             bit_depth = 24
         case "RGB;16B":
-            color_type = COLOR_TYPE.TRUECOLOR
+            color_type = ColorType.TRUECOLOR
             bit_depth = 48
         case "RGBA":
-            color_type = COLOR_TYPE.TRUECOLOR_WITH_ALPHA
+            color_type = ColorType.TRUECOLOR_WITH_ALPHA
             bit_depth = 32
         case "RGBA;16B":
-            color_type = COLOR_TYPE.TRUECOLOR_WITH_ALPHA
+            color_type = ColorType.TRUECOLOR_WITH_ALPHA
             bit_depth = 64
         case _:
             color_type = -1
@@ -611,26 +596,26 @@ def recompress_png(
     write(png_path, r)
 
 
-def write(path, data) -> None:
+def write(path: Path, data) -> None:
     if not (isinstance(data, (bytes, str))):
         raise TypeError
     if isinstance(data, str):
-        with open(path, "w", encoding="utf-8") as fp:
+        with path.open("w", encoding="utf-8") as fp:
             fp.write(data)
         return
-    with open(path, "wb") as fp:
+    with path.open("wb") as fp:
         fp.write(data)
 
 
 if __name__ == "__main__":
     try:
         encode_tile_image_to_apng(
-            r"ヾ(≧▽≦*)o",
-            r"φ(*￣0￣)",
+            Path(),
+            Path(),
             256,
             256,
             frame_cont=120,
-            remove_alpha=True,
+            remove_alpha=False,
         )
     except KeyboardInterrupt:
         print()

@@ -2,6 +2,7 @@ import concurrent.futures
 import json
 import math
 import socket
+from urllib.parse import urlparse
 
 import requests
 import requests.adapters
@@ -17,7 +18,6 @@ class HostHeaderSSLAdapter(requests.adapters.HTTPAdapter):
         self.resolved_ip = resolved_ip
 
     def send(self, request, **kwargs):  # type:ignore
-        from urllib.parse import urlparse
 
         connection_pool_kwargs = self.poolmanager.connection_pool_kw
         result = urlparse(request.url)
@@ -32,7 +32,7 @@ class HostHeaderSSLAdapter(requests.adapters.HTTPAdapter):
         else:
             # theses headers from a previous request may have been left
             connection_pool_kwargs.pop("assert_hostname", None)
-        return super(HostHeaderSSLAdapter, self).send(request, **kwargs)
+        return super().send(request, **kwargs)
 
 
 def resolve_dns(domain):

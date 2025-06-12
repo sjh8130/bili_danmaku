@@ -1,5 +1,3 @@
-import contextlib
-
 FILTER_WORDS: set[str] = {
     '"',
     '(,,´•ω•)ノ"(´っω•｀。)',

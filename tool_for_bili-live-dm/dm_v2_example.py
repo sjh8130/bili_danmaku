@@ -2,6 +2,7 @@ import binascii
 import json
 import sys
 import time
+from pathlib import Path
 
 try:
     import simdjson
@@ -12,12 +13,12 @@ from filters import FILTER_WORDS
 from google.protobuf.json_format import MessageToDict
 
 st = time.time()
-in_path = sys.argv[1]
-out_path = "Z:\\test.json"
+in_path = Path(sys.argv[1])
+out_path = Path("Z:\\test.json")
 left_pos_cache = 0
 right_pos_cache = 0
 dm_proto = live_dm.Dm()
-with open(in_path, encoding="utf-8") as F_in, open(out_path, "w", encoding="utf-8") as F_out:
+with in_path.open(encoding="utf-8") as F_in, out_path.open("w", encoding="utf-8") as F_out:
     for line in F_in:
         if line.find("dm_v2") == -1:
             continue

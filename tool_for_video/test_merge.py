@@ -6,9 +6,9 @@ try:
 except ImportError:
     import json
 
-if sys.argv[3].__eq__("A"):
+if sys.argv[3] == "A":
     SUFFIX = ".aac"
-elif sys.argv[3].__eq__("V"):
+elif sys.argv[3] == "V":
     SUFFIX = ".264"
 else:
     SUFFIX = ".XXX"
@@ -21,8 +21,8 @@ OUT__FILE = "NUL"
 OUT__FILE = IN_FILE_1.rsplit(".")[-2] + "_OUT." + IN_FILE_1.rsplit(".")[-1]
 
 with (
-    open(IN_INFO_1) as HASH_L,
-    open(IN_INFO_2) as HASH_R,
+    open(IN_INFO_1, encoding="utf-8") as HASH_L,
+    open(IN_INFO_2, encoding="utf-8") as HASH_R,
     open(IN_FILE_1, "rb", buffering=256 * 1024 * 1024) as FILE_1,
     open(IN_FILE_2, "rb", buffering=256 * 1024 * 1024) as FILE_2,
     open(OUT__FILE, "wb", buffering=256 * 1024 * 1024) as OUT_FI,
@@ -93,5 +93,5 @@ with (
     print("#\tFrames\t\tSize")
     print(f"A\t{LEN_L}\t\t{os.stat(IN_FILE_1).st_size}")
     print(f"B\t{LEN_R}\t\t{os.stat(IN_FILE_2).st_size}")
-    print(f"S\t{LEN_L+LEN_R}\t\t{os.stat(IN_FILE_1).st_size+os.stat(IN_FILE_2).st_size}")
+    print(f"S\t{LEN_L + LEN_R}\t\t{os.stat(IN_FILE_1).st_size + os.stat(IN_FILE_2).st_size}")
     print(f"F\t{output_frames}\t\t{output_f_size}")

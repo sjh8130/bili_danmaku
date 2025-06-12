@@ -2,15 +2,16 @@ import json
 import ssl
 import sys
 import time
+from pathlib import Path
 
 import bs4
 import requests
 
 from my_lib.file_writer import write_file
 
-ssl._create_default_https_context = ssl._create_unverified_context
+ssl._create_default_https_context = ssl._create_unverified_context  # noqa: S323, SLF001
 requests.packages.urllib3.disable_warnings()  # type: ignore[attr-defined]
-with open("config.json", encoding="utf-8") as fp:
+with Path("config.json").open(encoding="utf-8") as fp:
     config = json.load(fp)
 del fp
 
@@ -27,7 +28,7 @@ def _downloader(
     session: requests.Session,
 ) -> bytes:
     retry_count = 0
-    page = "" if page in [0, "0"] else f"-{page}"
+    page = "" if page in {0, "0"} else f"-{page}"
     url = f"https://{host}/{user}/moviecomment/{movie_id}{page}"
     while True:
         try:
@@ -98,7 +99,7 @@ def _main(user: str, movie_id: str, host: str) -> None:
             page_count = int(bs4.BeautifulSoup(page, "lxml").select(".tw-pager", limit=1)[0].contents[-1].contents[0])  # type: ignore[attr-defined]
             print(page_count)
         for comment in downloaded_comments:
-            comment_list.append(  # noqa: PERF401
+            comment_list.append(
                 {
                     "type": "comment",
                     "id": int(comment.attrs["data-comment-id"]),  # type: ignore

@@ -31,7 +31,7 @@ class OPR(StrEnum):
     NIS = auto()
 
 
-def _del_keys(d: dict, k: str, v: Any, o: OPR):
+def _del_keys(d: dict, k: str, v: Any, o: OPR) -> None:
     if k in d:
         match o:
             case OPR.EQ:

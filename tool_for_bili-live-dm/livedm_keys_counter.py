@@ -2,6 +2,7 @@ import json
 import os
 import sys
 import time
+from pathlib import Path
 
 try:
     import simdjson
@@ -13,29 +14,23 @@ from tqdm import tqdm
 
 
 def main() -> None:
-    p1 = "livedm_keys.json"
-    if True and os.path.exists(os.path.join(output_dir, p1)):
-        with open(os.path.join(output_dir, p1), encoding="utf-8") as fp:
+    n = "livedm_keys.json"
+    if True and (a := (output_dir / n)).exists():
+        with a.open(encoding="utf-8") as fp:
             livedm_keys_counter_lib.result.update(simdjson.load(fp))  # type:ignore
-    for path in tqdm(paths, leave=False):
-        if not os.path.exists(output_dir):
-            os.makedirs(output_dir)
-        if path == output_dir:
+    for path_s in tqdm(paths, leave=False):
+        if not output_dir.exists():
+            output_dir.mkdir()
+        if (path := Path(path_s)) == output_dir:
             continue
         livedm_keys_counter_lib.p_main(path)
-    with open(os.path.join(output_dir, p1), "w", encoding="utf-8") as fp:
-        json.dump(
-            livedm_keys_counter_lib.result,
-            fp,
-            ensure_ascii=False,
-            indent="\t",
-            sort_keys=True,
-        )
+    with a.open("w", encoding="utf-8") as fp:
+        json.dump(livedm_keys_counter_lib.result, fp, ensure_ascii=False, indent="\t", sort_keys=True)
 
 
 if __name__ == "__main__":
     paths = sys.argv[1:]
-    output_dir = "Z:\\" if os.name == "nt" else "/mnt/z/"
+    output_dir = Path("Z:\\") if os.name == "nt" else Path("/mnt/z/")
     start_time = time.time()
     main()
     total_time = time.time() - start_time

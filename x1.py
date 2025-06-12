@@ -1,10 +1,9 @@
 #!/usr/bin/python3
-import glob
 import json
-import os
 import ssl
 import sys
 import time
+from pathlib import Path
 from typing import TypedDict
 
 import requests
@@ -21,9 +20,9 @@ from my_lib.xx_util import (
 )
 
 log = logger.bind(user="X1")
-ssl._create_default_https_context = ssl._create_unverified_context  # noqa: SLF001
+ssl._create_default_https_context = ssl._create_unverified_context  # noqa: S323, SLF001
 requests.packages.urllib3.disable_warnings()  # type: ignore[attr-defined]
-with open("config.json", encoding="utf-8") as fp:
+with Path("config.json").open(encoding="utf-8") as fp:
     config = json.load(fp)
 del fp
 _A = {
@@ -113,7 +112,7 @@ class SuitItems(TypedDict):
     properties: Properties
 
 
-class current_next_activity(TypedDict):
+class CurrentNextActivity(TypedDict):
     type: num
     time_limit: bool
     time_left: str
@@ -134,8 +133,8 @@ class X1(TypedDict):
     part_id: int
     state: str
     properties: Properties | dict
-    current_activity: current_next_activity
-    next_activity: current_next_activity
+    current_activity: CurrentNextActivity
+    next_activity: CurrentNextActivity
     current_sources: int
     finish_sources: int
     sale_left_time: int
@@ -152,7 +151,7 @@ class X1(TypedDict):
     activity_entrance: int
 
 
-def _E(b: requests.Session, d):
+def _E(b: requests.Session, d: int | str) -> bytes:
     global _a
     a = 0
     while a < 5:
@@ -172,33 +171,59 @@ def _E(b: requests.Session, d):
     raise Exception(f"Failed to fetch {d}")
 
 
-def _F(a: str, b: str) -> None:
-    if os.path.isfile(a):
-        with open(a, encoding="utf-8") as fp:
+def _F(a: Path, b: X1) -> None:
+    d = json.dumps(b, ensure_ascii=False, separators=(",", ":"), indent="\t")
+    e = ""
+    if a.is_file():
+        with a.open(encoding="utf-8") as fp:
             e = fp.read()
-            if (d := b) == e:
+            if d == e:
                 return
-            d = d
-    with open(a, "w", 1048576, "utf-8") as fp:
-        fp.write(b)
+            c: X1 = json.loads(e)
+        if isinstance(b.get(P), dict):
+            if isinstance(b[P].get("item_ids"), str) and isinstance(c[P].get("item_ids"), str):
+                b[P]["item_ids"] = sort_str_list(b[P]["item_ids"] + "," + c[P]["item_ids"])
+            if isinstance(b[P].get("fan_item_ids"), str) and isinstance(c[P].get("fan_item_ids"), str):
+                b[P]["fan_item_ids"] = sort_str_list(b[P]["fan_item_ids"] + "," + c[P]["fan_item_ids"])
+        # ============================
+        for i in c[S]:
+            if i in c[S]:
+                if i not in b[S]:
+                    b[S][i] = c[S][i]
+                else:
+                    f = {json.dumps(j, ensure_ascii=False) for j in b[S][i]}
+                    for g in c[S][i]:
+                        h = json.dumps(g, ensure_ascii=False)
+                        if h not in f:
+                            b[S][i].append(g)
+                            f.add(h)
+            if i in b[S]:
+                sort_list_dict(b[S][i], "item_id", "name")  # type: ignore
+    # ============================
+    d = json.dumps(b, ensure_ascii=False, separators=(",", ":"), indent="\t")
+    if d == e:
+        return
+    with a.open("w", 1048576, "utf-8") as fp:
+        fp.write(d)
 
 
-def _G(a: str, b: str) -> None:
+def _G(a: Path, b: str) -> None:
+    if isinstance(b, dict):
+        b = json.dumps(b, ensure_ascii=False, separators=(",", ":"))
     """Csv / jsonl."""
     c = b + "\n"
-    if os.path.isfile(a):
-        with open(a, encoding="utf-8") as fp:
+    if a.is_file():
+        with a.open(encoding="utf-8") as fp:
             if c in (x := fp.readlines()) or b in x:
                 return
-    with open(a, "a", encoding="utf-8") as fp:
+    with a.open("a", encoding="utf-8") as fp:
         fp.write(c)
 
 
-def _H(a: int | str, item: X1 | dict) -> None:
+def _H(a: int | str, item: X1) -> None:
     c = item["part_id"]
     d = _G
-    d(f"{_M}\\ids.csv", f"{a},{item['name']},{item['group_id']},{c}")
-    e = None
+    d(Path(_M) / "ids.csv", f"{a},{item['name']},{item['group_id']},{c}")
     if isinstance(item.get(P), dict):
         if isinstance(item[P].get("item_ids"), str):
             item[P]["item_ids"] = sort_str_list(item[P]["item_ids"])
@@ -235,11 +260,9 @@ def _H(a: int | str, item: X1 | dict) -> None:
         case 4:
             f = "PART_4_表情.jsonl"
         case 5:
-            e = "\t"
             d = _F
             f = f"PART_5_表情包\\{a}.json"
         case 6:
-            e = "\t"
             d = _F
             f = f"PART_6_main\\{a}.json"
         case 7:
@@ -298,8 +321,7 @@ def _H(a: int | str, item: X1 | dict) -> None:
     replace_str(item, "https://i1.hdslb.com", "https://i0.hdslb.com")
     replace_str(item, "https://i2.hdslb.com", "https://i0.hdslb.com")
     # replace_str(item, "fasle", "false")
-    b = json.dumps(item, ensure_ascii=False, separators=(",", ":"), indent=e)
-    d(os.path.join(_M, f), b)
+    d(Path(_M) / f, item)  # type: ignore
 
 
 def _I(a: str) -> None:
@@ -343,7 +365,7 @@ def _I(a: str) -> None:
                 continue
                 print(f"{i:<12}N", end="\r")
             try:
-                k: dict = json.loads(j)["data"]
+                k: X1 = json.loads(j)["data"]
             except json.JSONDecodeError as e:
                 print(j)
                 raise e
@@ -370,7 +392,7 @@ def _N() -> None:
                 d.write(f"{time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()):<32}{g:<12}🟥🟩🟦🟨⬛⬜ NOT Found")
                 continue
             try:
-                f: dict = json.loads(e)["data"]
+                f: X1 = json.loads(e)["data"]
             except json.JSONDecodeError as h:
                 print(h)
                 raise h
@@ -388,7 +410,7 @@ def _J() -> None:
                 print(f"{c:<12}None")
             else:
                 try:
-                    e: dict = json.loads(d)["data"]
+                    e: X1 = json.loads(d)["data"]
                 except json.JSONDecodeError as f:
                     print(d)
                     raise f
@@ -400,10 +422,10 @@ def _J() -> None:
 def _K() -> list[int]:
     g: list[int] = []
     for a in ["PART_5_表情包", "PART_6_main"]:
-        for b in glob.glob("*.json", root_dir=os.path.join(_M, a)):
-            g.append(int(b.split(".")[0]))
-    for a in glob.glob("PART*.jsonl", root_dir=_M):
-        with open(os.path.join(_M, a), encoding="utf-8") as c:
+        for b in (Path(_M) / a).rglob("*.json"):
+            g.append(int(b.stem))
+    for a in Path(_M).rglob("PART*.jsonl"):
+        with a.open(encoding="utf-8") as c:
             for d in c:
                 f = json.loads(d)
                 g.append(int(f["item_id"]))
@@ -412,9 +434,9 @@ def _K() -> list[int]:
 
 if __name__ == "__main__":
     try:
-        if len(sys.argv) > 2 and sys.argv[1] not in ["0", "1", "2", "3", "4", "U", "u"]:
+        if len(sys.argv) > 2 and sys.argv[1] not in {"0", "1", "2", "3", "4", "U", "u"}:
             _J()
-        elif sys.argv[1] in ["0", "1", "2", "3", "4"]:
+        elif sys.argv[1] in {"0", "1", "2", "3", "4"}:
             _I(sys.argv[1])
         elif sys.argv[1] in "Uu":
             _N()

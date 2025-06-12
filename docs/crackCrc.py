@@ -1,5 +1,6 @@
 import sys
 import time
+from typing import Any
 
 CRCPOLYNOMIAL = 0xEDB88320
 crc_table = [
@@ -262,7 +263,7 @@ crc_table = [
 ]
 
 
-def crc32(string):
+def crc32(string: str) -> int:
     crcstart = 0xFFFFFFFF
     for i in range(len(str(string))):
         index = (crcstart ^ ord(str(string)[i])) & 255
@@ -270,22 +271,22 @@ def crc32(string):
     return crcstart
 
 
-def crc32_last_index(string):
+def crc32_last_index(string: str) -> int:
     crcstart = 0xFFFFFFFF
     for i in range(len(str(string))):
         index = (crcstart ^ ord(str(string)[i])) & 255
         crcstart = (crcstart >> 8) ^ crc_table[index]
-    return index
+    return index  # type:ignore
 
 
-def get_crc_index(t):
+def get_crc_index(t) -> int:
     for i in range(256):
         if crc_table[i] >> 24 == t:
             return i
     return -1
 
 
-def deep_check(i, index):
+def deep_check(i, index) -> list[int] | list[Any]:
     string = ""
     tc = 0x00
     hashcode = crc32(i)
@@ -307,7 +308,7 @@ def deep_check(i, index):
     return [1, string]
 
 
-def main(string):
+def main(string) -> None:
     count = 0
     index = [0 for x in range(4)]
     i = 0
@@ -326,7 +327,6 @@ def main(string):
                 # break
         if count == 3:
             break
-    return
 
 
 # 2147483648

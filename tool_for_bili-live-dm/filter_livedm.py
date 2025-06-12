@@ -1,8 +1,7 @@
-import contextlib
 import json
-import os
 import sys
 import time
+from pathlib import Path
 
 try:
     import simdjson
@@ -14,14 +13,14 @@ from filters import FILTER_MID, FILTER_MID_HASH_STR_LOWER, FILTER_WORDS
 from tqdm import tqdm
 
 
-def main(in_paths: list[str], out_path: str) -> None:
+def main(in_paths: list[str], out_path: Path) -> None:
     line: str
     left_pos = 0
     if not in_paths:
         return
     try:
-        with open(out_path, encoding="utf-8") as file_io:
-            final_write = simdjson.load(file_io)  # type: ignore
+        with out_path.open(encoding="utf-8") as fp:
+            final_write = simdjson.load(fp)  # type: ignore
     except FileNotFoundError:
         final_write = {}
     except json.JSONDecodeError as e:
@@ -31,19 +30,20 @@ def main(in_paths: list[str], out_path: str) -> None:
             raise
     len_i = len(in_paths)
     p_i = 1
-    for in_path in in_paths:
+    for in_path_s in in_paths:
+        in_path = Path(in_path_s).resolve()
         f_s = f"{p_i}/{len_i}"
         p_i += 1
         is_err = False
         lineno = 1
         if in_path == out_path:
             continue
-        with open(in_path, encoding="utf-8") as file_in:
+        with in_path.open(encoding="utf-8") as fp:
             for line in tqdm(
-                file_in.readlines(),
+                fp.readlines(),
                 unit="line",
                 bar_format="{desc}{percentage:3.0f}%|{bar}| {n_fmt}->{total_fmt} ",
-                desc=f"{f_s:8} {os.path.basename(in_path)} ",
+                desc=f"{f_s:8} {in_path.name} ",
             ):
                 # if "DANMU_MSG" not in line:
                 #     continue
@@ -83,8 +83,7 @@ def main(in_paths: list[str], out_path: str) -> None:
                     .strip()
                 )
                 if dm_text in FILTER_WORDS or dm_text.lower() in FILTER_WORDS:
-                    with contextlib.suppress(KeyError):
-                        del final_write[dm_text]
+                    final_write.pop(dm_text, None)
                     continue
                 try:
                     if cmd["info"][0][15]["extra"].find('"hit_combo":1') >= 1:
@@ -95,13 +94,13 @@ def main(in_paths: list[str], out_path: str) -> None:
                     final_write[dm_text] += 1
                 except KeyError:
                     final_write[dm_text] = 1
-    with open(out_path, "w", encoding="utf-8") as file_io:
-        json.dump(final_write, file_io, ensure_ascii=False, indent="\t", sort_keys=True)
+    with out_path.open("w", encoding="utf-8") as fp:
+        json.dump(final_write, fp, ensure_ascii=False, indent="\t", sort_keys=True)
 
 
 if __name__ == "__main__":
     in_path = sys.argv[1:]
-    out_path = "Z:\\test.json"
+    out_path = Path("Z:\\test.json").resolve()
     start_time = time.time()
     main(in_path, out_path)
     total_time = time.time() - start_time
