@@ -19,12 +19,12 @@ DONT_CARE_INDEX_LIST = {
 }
 
 
-def _a(item: int | str | list | dict | bool | None, target_key: str = "root") -> None:
-    _typ: str = type(item).__name__
+def _a(item: int | str | list | dict | bool | None, target_key: str = "root") -> None:  # noqa: FBT001
+    typ: str = type(item).__name__
     if result.get(target_key) is None:
         result[target_key] = {"type": {}}
-    if _typ not in result[target_key]["type"]:
-        result[target_key]["type"][_typ] = result[target_key]["type"].get(_typ, 0) + 1
+    if typ not in result[target_key]["type"]:
+        result[target_key]["type"][typ] = result[target_key]["type"].get(typ, 0) + 1
     if isinstance(item, dict):
         for key, value in item.items():
             tk2: str = f"{target_key}.{key}"
@@ -40,11 +40,11 @@ def _a(item: int | str | list | dict | bool | None, target_key: str = "root") ->
     t1: str = repr(item)
     if result[target_key]["value"].get(t1) is None:
         result[target_key]["value"][t1] = 0
-    result[target_key]["value"][t1] = result[target_key]["value"][t1] + 1
+    result[target_key]["value"][t1] += 1
 
 
-def _b(ii: str | Path):
-    with open(ii, encoding="utf-8") as fp:
+def _b(ii: Path) -> dict:
+    with ii.open(encoding="utf-8") as fp:
         item: dict = simdjson.load(fp)  # type:ignore
         _a(item)
     return result
@@ -52,16 +52,16 @@ def _b(ii: str | Path):
 
 def main() -> None:
     p1 = "json_kvs.json"
-    if True and os.path.exists(os.path.join(od, p1)):
-        with open(os.path.join(od, p1), encoding="utf-8") as fp:
+    if True and Path(od / p1).exists():
+        with Path(od / p1).open(encoding="utf-8") as fp:
             result.update(simdjson.load(fp))  # type:ignore
-    for path in tqdm(paths, leave=False):
-        if not os.path.exists(od):
-            os.makedirs(od)
-        if path == od:
+    for path_str in tqdm(paths, leave=False):
+        if not Path(od).exists() and Path(od).is_dir():
+            Path(od).mkdir()
+        if (path := Path(path_str)) == od:
             continue
         _b(path)
-    with open(os.path.join(od, p1), "w", encoding="utf-8") as fp:
+    with (Path(od) / p1).open("w", encoding="utf-8") as fp:
         json.dump(
             result,
             fp,
@@ -73,7 +73,7 @@ def main() -> None:
 
 if __name__ == "__main__":
     paths = sys.argv[1:]
-    od = "Z:\\" if os.name == "nt" else "/mnt/z/"
+    od = Path("Z:\\") if os.name == "nt" else Path("/mnt/z/")
     start_time = time.time()
     main()
     total_time = time.time() - start_time

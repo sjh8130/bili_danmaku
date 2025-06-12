@@ -1,10 +1,10 @@
 import binascii
 import gc
 import json
-import os
 import sys
 import time
 from decimal import Decimal
+from pathlib import Path
 from typing import Any
 
 try:
@@ -64,7 +64,7 @@ def _deduplicate_it(itm: dict[str, Any], timestamp: int | Decimal | float, str_i
             id_1 = f"""{cmd}${itm["info"][0][7]}${itm["info"][0][4]}${itm["info"][0][5]}${itm["info"][9]["ct"]}${itm["info"][9]["ts"]}${itm["info"][2][0]}${itm["info"][2][1]}${dm_id_str}${msg_id}"""
             # mid_hash,time.Now().Unix(),rnd,ct,ts,uid,uname,extra:dm_id_str,msg_id
             if not (itm["info"][2][1] == 0 and check_username(itm["info"][2][0])):
-                id_2 = f"""{cmd}${itm["info"][0][7]}${itm["info"][0][4]}${itm["info"][0][5]}${itm["info"][9]["ct"]}${itm["info"][9]["ts"]}$0${(itm["info"][2][1][0]+'***')if itm['info'][2][1]else ''}${dm_id_str}${msg_id}"""
+                id_2 = f"""{cmd}${itm["info"][0][7]}${itm["info"][0][4]}${itm["info"][0][5]}${itm["info"][9]["ct"]}${itm["info"][9]["ts"]}$0${(itm["info"][2][1][0] + "***") if itm["info"][2][1] else ""}${dm_id_str}${msg_id}"""
         case "INTERACT_WORD":
             id_1 = f"""{cmd}${data["roomid"]}${data["score"]}${data["timestamp"]}${data["trigger_time"]}${data.get("uid", 0)}${data["uname"]}${msg_id}"""
             if not (data.get("uid", 0) == 0 and check_username(data["uname"])):
@@ -79,8 +79,8 @@ def _deduplicate_it(itm: dict[str, Any], timestamp: int | Decimal | float, str_i
             id_1 = f"""{cmd}${data["batch_combo_id"]}${data["combo_id"]}${msg_id}"""
             # _t1, _t2 = gift_id_recover(data["batch_combo_id"], data["combo_id"])
             if not (data.get("uid", 0) == 0 and check_username(data["uname"])):
-                _bcid, _cid = gift_id_enc(data["batch_combo_id"], data["combo_id"])
-                id_2 = f"""{cmd}${_bcid}${_cid}${msg_id}"""
+                bcid, cid = gift_id_enc(data["batch_combo_id"], data["combo_id"])
+                id_2 = f"""{cmd}${bcid}${cid}${msg_id}"""
             else:
                 id_2 = ""
         case "COMBO_END":
@@ -109,7 +109,7 @@ def _deduplicate_it(itm: dict[str, Any], timestamp: int | Decimal | float, str_i
         ):
             id_1 = f"""{cmd}${data["lot_id"]}${msg_id}"""
         case "GUARD_BUY":
-            id_1 = f"""{cmd}${data["start_time"]}${data.get("uid", 0)}${itm['data']["num"]}${msg_id}"""
+            id_1 = f"""{cmd}${data["start_time"]}${data.get("uid", 0)}${itm["data"]["num"]}${msg_id}"""
         case "USER_TOAST_MSG":
             id_1 = f"""{cmd}${data["payflow_id"]}${data.get("uid", 0)}${msg_id}"""
         case "USER_TOAST_MSG_V2":
@@ -234,11 +234,11 @@ def _deduplicate_it(itm: dict[str, Any], timestamp: int | Decimal | float, str_i
 
 
 def _deduplicate(in_path: str) -> int:
-    with open(in_path, buffering=1048576, encoding="utf-8") as input_file:
+    with Path(in_path).open(buffering=1048576, encoding="utf-8") as input_file:
         a = input_file.readlines()
-        _total = len(a)
-    with open(in_path + "_DEDUP", "w", 50 * 2**20, "utf-8") as output_file:
-        for line in tqdm(a, leave=False, desc=f"{os.path.basename(in_path)} ", position=1):
+        total_ = len(a)
+    with Path(in_path + "_DEDUP").open("w", 50 * 2**20, "utf-8") as output_file:
+        for line in tqdm(a, leave=False, desc=Path(in_path).name + "", position=1):
             if line in _deduplicate_dict:
                 continue
             pos = line.find("{")
@@ -247,7 +247,7 @@ def _deduplicate(in_path: str) -> int:
             if _deduplicate_it(itm, Decimal(line[:pos]), str_itm):
                 output_file.write(line)
             _deduplicate_dict.add(line)
-    return _total
+    return total_
 
 
 if __name__ == "__main__":
@@ -261,7 +261,7 @@ if __name__ == "__main__":
             gc.collect(0)
             total = _deduplicate(file)
             total_time = time.time() - st
-            tqdm.write(f"{file}:{total_time:.3f}s, {(total/total_time):.0f} lines/s")
+            tqdm.write(f"{file}:{total_time:.3f}s, {(total / total_time):.0f} lines/s")
             # print(f"{file}:{total_time:.3f}s, {(total/total_time):.0f} lines/s")
     except KeyboardInterrupt:
         pass

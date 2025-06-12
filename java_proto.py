@@ -6,17 +6,27 @@ import string
 import sys
 from enum import StrEnum
 
-import pyperclip
+try:
+    import pyperclip  # type: ignore
+except ImportError:
+
+    class pyperclip:  # noqa: N801
+        def copy(self, str):
+            pass
+
+        def paste(self):
+            return ""
+
 
 E_L = ["", "", "", "", "", "", "", "", "", ""]
 
 
 def c2s(name: str) -> list[str]:
     """CamelCase to snake_case."""
-    a = re.sub("(.)([A-Z][a-z]+)", r"\1_\2", name)
-    b = re.sub("([a-z0-9])([A-Z])", r"\1_\2", a)
-    c = re.sub("([a-zA-Z])([0-9])", r"\1_\2", b)
-    d = re.sub("([0-9])([A-Z])", r"\1_\2", c)
+    a = re.sub(r"(.)([A-Z][a-z]+)", r"\1_\2", name)
+    b = re.sub(r"([a-z0-9])([A-Z])", r"\1_\2", a)
+    c = re.sub(r"([a-zA-Z])([0-9])", r"\1_\2", b)
+    d = re.sub(r"([0-9])([A-Z])", r"\1_\2", c)
     # sys.stderr("\n")
     # sys.stderr(f"{name= }" + "\n")
     # sys.stderr(f"{a= }" + "\n")
@@ -200,28 +210,16 @@ def process(data: list[str]) -> None:
             elif strs[:4] == ["private", "static", "volatile", "x0"]:
                 pass
             elif strs[:3] == ["private", "static", "volatile"] and strs[3].startswith("MethodDescriptor"):
-                list_2.append(strs[3][17:-1].split(",") + [strs[4][3:-6]])
+                list_2.append([*strs[3][17:-1].split(","), strs[4][3:-6]])
     if msg_type == MsgType.message:
-        final_str += f"""
-//
-{MsgType.message} {msg_name} \x7b
-{combine_msg(list_1, list_2)}\x7d
-"""
+        final_str += f"\n//\n{MsgType.message} {msg_name} \x7b\n{combine_msg(list_1, list_2)}\x7d\n"
     elif msg_type == MsgType.enum:
-        final_str += f"""
-//
-{MsgType.enum} {msg_name} \x7b
-{combine_enum(list_1)}\x7d
-"""
+        final_str += f"\n//\n{MsgType.enum} {msg_name} \x7b\n{combine_enum(list_1)}\x7d\n"
     elif msg_type == MsgType.service:
-        final_str += f"""
-//
-{MsgType.service} {msg_name} \x7b{combine_rpc(list_1, list_2)}
-\x7d
-"""
+        final_str += f"\n//\n{MsgType.service} {msg_name} \x7b{combine_rpc(list_1, list_2)}\n\x7d\n"
     if final_str:
         print(final_str)
-        pyperclip.copy(final_str)
+        pyperclip.copy(final_str)  # type: ignore
     else:
         sys.stderr.write("no data found\n")
 
@@ -242,7 +240,7 @@ def main() -> None:
         elif a == "" and len(in_strings) == 0:
             if not paste:
                 paste = True
-                process(pyperclip.paste().splitlines())
+                process(pyperclip.paste().splitlines())  # type: ignore
                 in_strings.clear()
         else:
             in_strings.append(a)

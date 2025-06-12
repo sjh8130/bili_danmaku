@@ -1,10 +1,9 @@
 #!/usr/bin/python3
-import glob
 import json
-import os
 import ssl
 import sys
 import time
+from pathlib import Path
 from typing import TypedDict
 
 import requests
@@ -14,9 +13,9 @@ from tqdm import tqdm
 from my_lib.xx_util import OPR, del_keys, replace_str, sort_list_dict
 
 log = logger.bind(user="X3")
-ssl._create_default_https_context = ssl._create_unverified_context
+ssl._create_default_https_context = ssl._create_unverified_context  # noqa: S323, SLF001
 requests.packages.urllib3.disable_warnings()  # type: ignore[attr-defined]
-with open("config.json", encoding="utf-8") as a:
+with Path("config.json").open(encoding="utf-8") as a:
     config = json.load(a)
 del a
 _A = {
@@ -25,13 +24,13 @@ _A = {
     "Accept-Encoding": config["ae"],
 }
 _B = b'{"code":0,"message":"0","ttl":1,"data":{"packages":null}}'
-_C = config["x3"]["url"]
-_D = config["x3"]["bp"]
+_C: str = config["x3"]["url"]
+_D: str = config["x3"]["bp"]
 _O = [{}, {"no_access": True, "unlocked": False}, {"no_access": True}]
 _a = 0
 
 
-class M(TypedDict):
+class EmoteMeta(TypedDict):
     size: int
     item_id: int
     alias: str
@@ -39,7 +38,7 @@ class M(TypedDict):
     label_color: str
 
 
-class EMOTE(TypedDict):
+class Emote(TypedDict):
     id: int
     package_id: int
     text: str
@@ -48,20 +47,20 @@ class EMOTE(TypedDict):
     webp_url: str
     mtime: int
     type: int
-    meta: M
+    meta: EmoteMeta
 
 
-class TYPE_E_DICT(TypedDict):
+class EmoteMain(TypedDict):
     id: int
     text: str
     url: str
     mtime: int
     type: int
-    meta: M
-    emote: list[EMOTE]
+    meta: EmoteMeta
+    emote: list[Emote]
 
 
-def _E(a, b, c):
+def _E(a: requests.Session, b: int | str, c: int) -> bytes:
     global _a
     d = 0
     while d < 5:
@@ -73,51 +72,51 @@ def _E(a, b, c):
             d += 1
             print(" ")
             log.exception(e)
-            time.sleep(c)
+            time.sleep(c + d)
         except KeyboardInterrupt:
             raise KeyboardInterrupt
     raise Exception(f"Failed to fetch {b}")
 
 
-def _F(a, b: TYPE_E_DICT) -> None:
+def _F(a: Path, b: EmoteMain) -> None:
     d = json.dumps(b, ensure_ascii=False, separators=(",", ":"), indent="\t")
     e = ""
-    if os.path.exists(a) and True:
-        with open(a, encoding="utf-8") as fp:
+    if a.is_file():
+        with a.open(encoding="utf-8") as fp:
             e = fp.read()
             if d == e:
                 return
-            c: TYPE_E_DICT = json.loads(e)
+            c: EmoteMain = json.loads(e)
         if "emote" in c:
             if "emote" not in b:
                 b["emote"] = c["emote"]
             else:
-                f = {json.dumps(item) for item in b["emote"]}
+                f = {json.dumps(item, ensure_ascii=False) for item in b["emote"]}
                 for g in c["emote"]:
-                    h = json.dumps(g)
+                    h = json.dumps(g, ensure_ascii=False)
                     if h not in f:
                         b["emote"].append(g)
                         f.add(h)
     if "emote" in b:
         sort_list_dict(b["emote"], "id", "text")  # type: ignore
+    d = json.dumps(b, ensure_ascii=False, separators=(",", ":"), indent="\t")
     if d == e:
         return
-    d = json.dumps(b, ensure_ascii=False, separators=(",", ":"), indent="\t")
-    open(a, "w", -1, "utf-8").write(d)
+    a.open("w", encoding="utf-8").write(d)
 
 
-def _G(a, b) -> None:
-    """Csv."""
+def _G(a: Path, b: str) -> None:
+    """csv"""
     c = b + "\n"
-    if os.path.isfile(a):
-        with open(a, encoding="utf-8") as fp:
+    if a.is_file():
+        with a.open(encoding="utf-8") as fp:
             if c in (x := fp.readlines()) or b in x:
                 return
-    with open(a, "a", 1048576, "utf-8") as fp:
+    with a.open("a", 1048576, "utf-8") as fp:
         fp.write(c)
 
 
-def _K(a, item) -> None:
+def _K(a: int | str, item: dict) -> None:
     del_keys(item, "suggest", [""])
     del_keys(item, "flags", _O, OPR.IN)
     del_keys(item, "activity", None, OPR.ANY)
@@ -130,12 +129,12 @@ def _K(a, item) -> None:
     replace_str(item, "https://i1.hdslb.com", "https://i0.hdslb.com")
     replace_str(item, "https://i2.hdslb.com", "https://i0.hdslb.com")
     replace_str(item, "fasle", "false")
-    c = os.path.join(_D, f"{a}.json")
-    _F(c, item)
-    _G(os.path.join(_D, "ids.csv"), f"{a},{item['text']}")
+    c = Path(_D) / f"{a}.json"
+    _F(c, item)  # type: ignore
+    _G(Path(_D) / "ids.csv", f"{a},{item['text']}")
 
 
-def _L(j=False) -> None:
+def _L(*, j: bool = False) -> None:
     a = _N()
     b = 1
     c = 8000 if not j else 1
@@ -161,7 +160,7 @@ def _L(j=False) -> None:
                 continue
             for i in json.loads(h)["data"]["packages"]:
                 _K(g, i)
-                f.write(f"{time.strftime('%Y-%m-%d %H:%M:%S',time.localtime()):<32}{g:<12}{i['text']:20}")
+                f.write(f"{time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()):<32}{g:<12}{i['text']:20}")
 
 
 def _M() -> None:
@@ -170,11 +169,11 @@ def _M() -> None:
         _L()
         return
     if sys.argv[1] in "uU":
-        _L(True)
+        _L(j=True)
         return
     with requests.Session() as b:
         while True:
-            c = input("item_id:")
+            c: str = input("item_id:")
             time.sleep(a)
             d = _E(b, c, a)
             if d == _B or not c.isdigit():
@@ -183,12 +182,11 @@ def _M() -> None:
                 _K(c, e)
 
 
-def _N():
+def _N() -> list[int]:
     a = []
     try:
-        for b in glob.glob("*.json", root_dir=_D):
-            c = b.split(".")[0]
-            a.append(int(c))
+        for b in Path(_D).rglob("*.json"):
+            a.append(int(b.stem))
         a.sort()
         return list(set(a))
     except Exception as e:
@@ -198,7 +196,7 @@ def _N():
 
 if __name__ == "__main__":
     try:
-        if sys.argv.__len__() > 1:
+        if (len(sys.argv)) > 1:
             _M()
         else:
             _L()

@@ -2,28 +2,29 @@
 import contextlib
 import json
 import sys
+from pathlib import Path
 
 
 def _convert_srt_time(t: int) -> str:
-    return f"{(t//3600000):02d}:{(t//60000%60):02d}:{(t//1000%60):02d},{(t%1000):03d}"
+    return f"{(t // 3600000):02d}:{(t // 60000 % 60):02d}:{(t // 1000 % 60):02d},{(t % 1000):03d}"
 
 
 def _convert_lrc_time(t: int) -> str:
-    return f"[{(t//60000):02d}:{(t//1000%60):02d}.{(t%1000//10):02d}]"
+    return f"[{(t // 60000):02d}:{(t // 1000 % 60):02d}.{(t % 1000 // 10):02d}]"
 
 
 def _convert_ass_time(_time: int) -> str:
-    return f"{(_time//3600000):01d}:{(_time//60000%60):02d}:{(_time//1000%60):02d}.{(_time%1000):03d}"[0:-1]
+    return f"{(_time // 3600000):01d}:{(_time // 60000 % 60):02d}:{(_time // 1000 % 60):02d}.{(_time % 1000):03d}"[0:-1]
 
 
 def _proc_ass_karaoke(word: list) -> str:
-    karaoke_word = f"\x7b\\K{int((word[0]['end']-word[0]['start'])/10)}\x7d{word[0]['word']}"
+    karaoke_word = f"\x7b\\K{int((word[0]['end'] - word[0]['start']) / 10)}\x7d{word[0]['word']}"
     if word[0]["word"].isascii():
         karaoke_word += " "
     for timed_chars in range(len(word)):
         if timed_chars == 0:
             continue
-        karaoke_word += f"\x7b\\K{int((word[timed_chars]['end']-word[timed_chars-1]['end'])/10)}\x7d{word[timed_chars]['word']}"
+        karaoke_word += f"\x7b\\K{int((word[timed_chars]['end'] - word[timed_chars - 1]['end']) / 10)}\x7d{word[timed_chars]['word']}"
         if word[timed_chars]["word"].isascii() and timed_chars != len(word):
             karaoke_word += " "
     return karaoke_word
@@ -38,13 +39,13 @@ def _proc_ass(item: dict) -> str:
     return normal_line + karaoke_line.replace(" \n", "\n").replace("  ", " ").replace(",,0,0,0,, ", ",,0,0,0,,")
 
 
-input_path = sys.argv[1]
-output_srt = input_path.rsplit(".", 1)[-2] + "_P.srt"
-output_ass = input_path.rsplit(".", 1)[-2] + "_P.ass"
-output_lrc = input_path.rsplit(".", 1)[-2] + "_P.lrc"
-output_txt = input_path.rsplit(".", 1)[-2] + "_P.txt"
-input_path = open(input_path, encoding="utf-8").read()
-loaded_dict = json.loads(input_path)
+input_path = Path(sys.argv[1]).resolve()
+output_srt = input_path.parent / (input_path.stem + "_P.srt")
+output_ass = input_path.parent / (input_path.stem + "_P.ass")
+output_lrc = input_path.parent / (input_path.stem + "_P.lrc")
+output_txt = input_path.parent / (input_path.stem + "_P.txt")
+with input_path.open(encoding="utf-8") as fp:
+    loaded_dict = json.load(fp)
 srt_index = 0
 try:
     language = loaded_dict["language"]
@@ -76,7 +77,7 @@ for srt_index, line in enumerate(loaded_dict["segments"], 1):
     lrc_file += f"{_convert_lrc_time(line_start)}{segment_text}\n"
     txt_file += f"{segment_text}\n"
     ass_file += _proc_ass(line)
-open(output_srt, "w", encoding="utf-8").write(srt_file)
-open(output_ass, "w", encoding="utf-8").write(ass_head + ass_file)
+output_srt.open("w", encoding="utf-8").write(srt_file)
+output_ass.open("w", encoding="utf-8").write(ass_head + ass_file)
 # open(output_LRC, "w", encoding="utf-8").write(lrc_file)
 # open(output_TXT, "w", encoding="utf-8").write(txt_file)

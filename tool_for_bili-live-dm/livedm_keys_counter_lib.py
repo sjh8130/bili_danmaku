@@ -1,6 +1,5 @@
 # cython:language_level=3
 import json
-import os
 from pathlib import Path
 
 from tqdm import tqdm
@@ -15,7 +14,7 @@ SW1: bool = False
 SW2: bool = False
 SW3: bool = False
 try:
-    with open("livedm_keys_not_interest.json") as fp:
+    with Path("livedm_keys_not_interest.json").open(encoding="utf-8") as fp:
         _D1: dict[str, list[str]] = json.load(fp)
 except FileNotFoundError:
     pass
@@ -37,16 +36,16 @@ else:
         IGNORE_LIST = set()
 
 
-def _a(cmd: str, item: int | str | list | dict | bool | None, tk="", /) -> None:
+def _a(cmd: str, item: int | str | list | dict | bool | None, tk: str = "", /) -> None:  # noqa: FBT001
     fk: str = f"{cmd}{tk}"
-    _typ: str = type(item).__name__
+    typ: str = type(item).__name__
     if SW3 and fk in STR_LIST:
         item = simdjson.loads(item)  # type:ignore[reportArgumentType]
-        _typ = "str_dict"
+        typ = "str_dict"
     if result.get(fk) is None:
         result[fk] = {"type": {}}
-    if _typ not in result[fk]["type"]:
-        result[fk]["type"][_typ] = result[fk]["type"].get(_typ, 0) + 1
+    if typ not in result[fk]["type"]:
+        result[fk]["type"][typ] = result[fk]["type"].get(typ, 0) + 1
     if isinstance(item, dict):
         for key, value in item.items():
             tk2: str = f"{tk}.{key}"
@@ -57,7 +56,7 @@ def _a(cmd: str, item: int | str | list | dict | bool | None, tk="", /) -> None:
         for index, list_item in enumerate(item):
             tk2 = f"{tk}[IDX]" if SW2 and fk in DONT_CARE_INDEX_LIST else f"{tk}[{index}]"
             _a(cmd, list_item, tk2)
-    if fk in (f"{cmd}.cmd", f"{cmd}.msg_id", f"{cmd}.send_time", cmd):
+    if fk in {f"{cmd}.cmd", f"{cmd}.msg_id", f"{cmd}.send_time", cmd}:
         return
     if isinstance(item, (dict, list)):
         return
@@ -68,12 +67,12 @@ def _a(cmd: str, item: int | str | list | dict | bool | None, tk="", /) -> None:
     t1: str = repr(item)
     if result[fk]["value"].get(t1) is None:
         result[fk]["value"][t1] = 0
-    result[fk]["value"][t1] = result[fk]["value"][t1] + 1
+    result[fk]["value"][t1] += 1
 
 
-def p_main(in_path: str | Path):
-    with open(in_path, encoding="utf-8") as file_in:
-        for line in tqdm(file_in.readlines(), leave=False, desc=f"{os.path.basename(in_path)}"):
+def p_main(in_path: Path) -> dict:
+    with in_path.open(encoding="utf-8") as file_in:
+        for line in tqdm(file_in.readlines(), leave=False, desc=in_path.name):
             try:
                 item: dict = simdjson.loads(line[line.find("{") :])  # type:ignore
             except Exception:

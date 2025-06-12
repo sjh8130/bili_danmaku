@@ -14,18 +14,16 @@ def _main() -> None:
         d = simdjson.load(fp)  # type:ignore
     if not d:
         sys.exit()
-    preload = 0
     switch = False
-    for i in d["packets"]:
+    for preload, i in enumerate(d["packets"]):
         if preload >= 150:
             break
         if i["stream_index"] > 0:
             switch = True
-        preload += 1
     if switch:
         with (
-            open(in_path.rsplit(".", 1)[-2] + "V.txt", "w") as f1,
-            open(in_path.rsplit(".", 1)[-2] + "A.txt", "w") as f2,
+            open(in_path.rsplit(".", 1)[-2] + "V.txt", "w", encoding="utf-8") as f1,
+            open(in_path.rsplit(".", 1)[-2] + "A.txt", "w", encoding="utf-8") as f2,
         ):
             for i in d["packets"]:
                 if i["stream_index"] == 0:
@@ -33,7 +31,7 @@ def _main() -> None:
                 elif i["stream_index"] == 1:
                     f2.write(i["data_hash"] + "\n")
     else:
-        with open(in_path.rsplit(".", 1)[-2] + ".txt", "w") as f:
+        with open(in_path.rsplit(".", 1)[-2] + ".txt", "w", encoding="utf-8") as f:
             for i in d["packets"]:
                 f.write(i["data_hash"] + "\n")
 

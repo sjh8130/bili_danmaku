@@ -13,12 +13,11 @@ from my_lib.file_writer import write_file
 from my_lib.json2xml import json2XML, json2XML_CMD
 
 
-def main() -> None:
+def main(file_name) -> None:
     start_time = time.time()
-    in_path = sys.argv[1]
-    with open(in_path, "rb") as fp:
+    with open(file_name, "rb") as fp:
         preload = fp.read(4)
-    with open(in_path, "rb") as fp:
+        fp.seek(0)
         if preload.startswith((b'{"el', b"\xeb\xbb\xbf")):
             data = simdjson.load(fp)  # type:ignore
         elif preload.startswith(b"\x1f\x8b"):
@@ -45,7 +44,7 @@ def main() -> None:
 \t<source>k-v</source>
 """
     xml_data = []
-    last_modified_time = int(os.stat(in_path).st_ctime)
+    last_modified_time = int(os.stat(file_name).st_ctime)
     xml_tail = f"</i>\n<!-- Create Time: {last_modified_time} -->"
     try:
         command_dms_count = len(data["commandDms"])
@@ -63,10 +62,11 @@ def main() -> None:
             xml_data.append(json2XML_CMD(this))
     for this in data["elems"]:
         xml_data.append(json2XML(this))
-    write_file(in_path + ".xml", xml_head + "\n".join(xml_data) + xml_tail)
+    write_file(file_name + ".xml", xml_head + "\n".join(xml_data) + xml_tail)
     end_time = time.time()
-    print(f"\r{danmaku_count=:10}, 总计用时：{round(end_time-start_time, 4):10}")
+    print(f"\r{danmaku_count=:10}, 总计用时：{round(end_time - start_time, 4):10}")
 
 
 if __name__ == "__main__":
-    main()
+    for _i in sys.argv[1:]:
+        main(_i)
