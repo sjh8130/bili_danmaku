@@ -13,11 +13,9 @@ from loguru import logger
 log = logger.bind(user="NFT")
 ssl._create_default_https_context = ssl._create_unverified_context  # noqa: S323, SLF001
 requests.packages.urllib3.disable_warnings()  # type: ignore[attr-defined]
-with open("..\\config.json", encoding="utf-8") as fp:
-    config = json.load(fp)
-del fp
+config = json.loads(Path("..\\config.json").read_text(encoding="utf-8"))
 URL: str = config["nft"]["url"]
-_BP: str = config["nft"]["bp"]
+_BP: Path = Path(config["nft"]["bp"]).resolve()
 _HEADERS = {
     "Accept-Encoding": config["ae"],
     "Origin": "https://www.bilibili.com",
@@ -101,16 +99,16 @@ def _get_data(item_id: int | str) -> int:
             pn += 1
     _clean_it(d0["nft_list"])
     d0.pop("private", "")
-    with (Path(_BP) / f"\\NFT_{item_id}.json").open("a", 8192, "utf-8") as fp:
+    with (_BP / f"NFT_{item_id}.json").open("a", 8192, "utf-8") as fp:
         json.dump(d0, fp, ensure_ascii=False, indent="\t", separators=(",", ":"))
-    with (Path(_BP).parent / "NFT_ID.tsv").open("a", 4096, "utf-8") as f:
+    with (_BP.parent / "NFT_ID.tsv").open("a", 4096, "utf-8") as f:
         f.write(f"{item_id}\t{issuer_name}\t{item_name}\n")
     return 200
 
 
 def _main() -> None:
     for item_id in range(2000, 3000):
-        if Path(_BP + f"\\NFT_{item_id}.json").exists():
+        if (_BP / f"NFT_{item_id}.json").exists():
             continue
         _get_data(item_id)
 

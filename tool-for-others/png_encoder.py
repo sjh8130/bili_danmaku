@@ -147,9 +147,11 @@ class _CHUNK_TYPE(StrEnum):
     """Image data"""
     IEND = "IEND"
     """Image trailer"""
+    # Ancillary chunks
+    # # Transparency information
     tRNS = "tRNS"
     """Transparency"""
-    # Color space information
+    # # Color space information
     cHRM = "cHRM"
     """Primary chromaticities and white point"""
     gAMA = "gAMA"
@@ -166,14 +168,14 @@ class _CHUNK_TYPE(StrEnum):
     """Mastering Display Color Volume***"""
     cLLi = "cLLi"
     """Content Light Level Information***"""
-    # Textual information
-    iTXt = "iTXt"
-    """International textual data"""
+    # # Textual information
     tEXt = "tEXt"
     """Textual data"""
     zTXt = "zTXt"
     """Compressed textual data"""
-    # Miscellaneous information
+    iTXt = "iTXt"
+    """International textual data"""
+    # # Miscellaneous information
     bKGD = "bKGD"
     """Background color***"""
     hIST = "hIST"  # ***
@@ -184,10 +186,10 @@ class _CHUNK_TYPE(StrEnum):
     """Suggested palette"""
     eXIf = "eXIf"  # ***
     """Exchangeable Image File (Exif) Profile"""
-    # Time information
+    # # Time information
     tIME = "tIME"
     """Image last-modification time"""
-    # Animation information
+    # # Animation information
     acTL = "acTL"
     """Animation Control Chunk"""
     fcTL = "fcTL"
@@ -205,6 +207,7 @@ class Palette(NamedTuple):
 class P1:
     compression_level = CompressionLevel.LV_9
     apng_seq = 0
+    color_type: ColorType
     data: bytes = b""
 
     def __init__(self, compression_level: CompressionLevel) -> None:
@@ -491,11 +494,11 @@ def encode_tile_image_to_apng(
     if path_in == path_out:
         raise Exception(f"{path_in}=={path_out}::{path_in=}{path_out=}")
     logger.info(f"{path_in=},{path_out=}")
-    image = Image.open(path_in).convert("RGB" if remove_alpha else "RGBA")
+    image: Image.Image = Image.open(path_in).convert("RGB" if remove_alpha else "RGBA")
     frames: list[bytes] = []
     fc = 0
-    vertical_frames = image.height // tile_height
-    horizontal_frames = image.width // tile_width
+    vertical_frames: int = image.height // tile_height
+    horizontal_frames: int = image.width // tile_width
     for v in range(vertical_frames):
         for h in range(horizontal_frames):
             box = (h * tile_width, v * tile_height, (h + 1) * tile_width, (v + 1) * tile_height)

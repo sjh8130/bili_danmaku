@@ -3,6 +3,7 @@ import os
 import sys
 import time
 from pathlib import Path
+from typing import Any
 
 from tqdm import tqdm
 
@@ -11,7 +12,7 @@ try:
 except ImportError:
     simdjson = json  # type:ignore
 
-result: dict[str, dict[str, dict]] = {}
+result: dict[str, dict[str, dict[str, Any]]] = {}
 DONT_CARE_INDEX_LIST = {
     "root.elems",
     "root.colorfulSrc",
@@ -19,7 +20,7 @@ DONT_CARE_INDEX_LIST = {
 }
 
 
-def _a(item: int | str | list | dict | bool | None, target_key: str = "root") -> None:  # noqa: FBT001
+def _a(item: int | str | list[Any] | dict[str, Any] | bool | None, target_key: str = "root") -> None:  # noqa: FBT001
     typ: str = type(item).__name__
     if result.get(target_key) is None:
         result[target_key] = {"type": {}}
@@ -43,7 +44,7 @@ def _a(item: int | str | list | dict | bool | None, target_key: str = "root") ->
     result[target_key]["value"][t1] += 1
 
 
-def _b(ii: Path) -> dict:
+def _b(ii: Path) -> dict[str, Any]:
     with ii.open(encoding="utf-8") as fp:
         item: dict = simdjson.load(fp)  # type:ignore
         _a(item)
@@ -52,23 +53,17 @@ def _b(ii: Path) -> dict:
 
 def main() -> None:
     p1 = "json_kvs.json"
-    if True and Path(od / p1).exists():
-        with Path(od / p1).open(encoding="utf-8") as fp:
+    if True and (od / p1).exists():
+        with (od / p1).open(encoding="utf-8") as fp:
             result.update(simdjson.load(fp))  # type:ignore
     for path_str in tqdm(paths, leave=False):
-        if not Path(od).exists() and Path(od).is_dir():
-            Path(od).mkdir()
+        if not od.exists() and od.is_dir():
+            od.mkdir()
         if (path := Path(path_str)) == od:
             continue
         _b(path)
-    with (Path(od) / p1).open("w", encoding="utf-8") as fp:
-        json.dump(
-            result,
-            fp,
-            ensure_ascii=False,
-            indent="\t",
-            sort_keys=True,
-        )
+    with (od / p1).open("w", encoding="utf-8") as fp:
+        json.dump(result, fp, ensure_ascii=False, indent="\t", sort_keys=True)
 
 
 if __name__ == "__main__":

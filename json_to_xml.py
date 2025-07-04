@@ -4,6 +4,7 @@ import json
 import os
 import sys
 import time
+from pathlib import Path
 
 try:
     import simdjson
@@ -13,9 +14,9 @@ from my_lib.file_writer import write_file
 from my_lib.json2xml import json2XML, json2XML_CMD
 
 
-def main(file_name) -> None:
+def main(file_name: Path) -> None:
     start_time = time.time()
-    with open(file_name, "rb") as fp:
+    with file_name.open("rb") as fp:
         preload = fp.read(4)
         fp.seek(0)
         if preload.startswith((b'{"el', b"\xeb\xbb\xbf")):
@@ -62,11 +63,11 @@ def main(file_name) -> None:
             xml_data.append(json2XML_CMD(this))
     for this in data["elems"]:
         xml_data.append(json2XML(this))
-    write_file(file_name + ".xml", xml_head + "\n".join(xml_data) + xml_tail)
+    write_file(file_name.with_suffix(".xml"), xml_head + "\n".join(xml_data) + xml_tail)
     end_time = time.time()
     print(f"\r{danmaku_count=:10}, 总计用时：{round(end_time - start_time, 4):10}")
 
 
 if __name__ == "__main__":
-    for _i in sys.argv[1:]:
-        main(_i)
+    for p in sys.argv[1:]:
+        main(Path(p))

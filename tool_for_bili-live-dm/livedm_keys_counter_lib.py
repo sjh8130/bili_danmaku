@@ -1,6 +1,7 @@
 # cython:language_level=3
 import json
 from pathlib import Path
+from typing import Any
 
 from tqdm import tqdm
 
@@ -9,7 +10,7 @@ try:
 except ImportError:
     simdjson = json  # type:ignore
 
-result: dict[str, dict[str, dict]] = {}
+result: dict[str, dict[str, dict[str, Any]]] = {}
 SW1: bool = False
 SW2: bool = False
 SW3: bool = False
@@ -36,7 +37,7 @@ else:
         IGNORE_LIST = set()
 
 
-def _a(cmd: str, item: int | str | list | dict | bool | None, tk: str = "", /) -> None:  # noqa: FBT001
+def _a(cmd: str, item: int | str | list[Any] | dict[str, Any] | bool | None, tk: str = "", /) -> None:  # noqa: FBT001
     fk: str = f"{cmd}{tk}"
     typ: str = type(item).__name__
     if SW3 and fk in STR_LIST:
@@ -70,7 +71,7 @@ def _a(cmd: str, item: int | str | list | dict | bool | None, tk: str = "", /) -
     result[fk]["value"][t1] += 1
 
 
-def p_main(in_path: Path) -> dict:
+def p_main(in_path: Path) -> dict[str, Any]:
     with in_path.open(encoding="utf-8") as file_in:
         for line in tqdm(file_in.readlines(), leave=False, desc=in_path.name):
             try:

@@ -25,5 +25,5 @@ def write_json_file(file_name: Path, data_dict: dict) -> None:
         fp.write(json_string.replace("\n\t\t\t", "").replace("\n\t\t}", "}"))
 
 
-write_json_file(file_name / (file_name_base + "packets.json"), {"packets": packets})
-write_json_file(file_name / (file_name_base + "frames.json"), {"frames": frames})
+write_json_file(file_name.with_name(file_name_base + "packets.json"), {"packets": packets})
+write_json_file(file_name.with_name(file_name_base + "frames.json"), {"frames": frames})

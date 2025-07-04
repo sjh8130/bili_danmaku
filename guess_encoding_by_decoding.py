@@ -90,7 +90,7 @@ ALL_UNICODE_ENCODINGS = [
     "mac_turkish",
     "palmos",
     "ptcp154",
-    "punycode",
+    # "punycode",
     "raw_unicode_escape",
     "shift_jis",
     "shift_jis_2004",
@@ -141,18 +141,20 @@ def safe_print(s: str):
     print(s)
 
 
-def guess_encoding_by_decoding(byte_data: str) -> None:
-    final_set = set()
+def guess_encoding_by_decoding(inn: str) -> None:
+    final_set: set[str] = set()
     for enc in ALL_UNICODE_ENCODINGS:
         try:
-            bb = byte_data.encode(enc)
+            bb = inn.encode(enc, errors="replace")
             for dec in ALL_UNICODE_ENCODINGS:
                 with contextlib.suppress(Exception):
-                    final_set.add(bb.decode(dec))
+                    final_set.add(bb.decode(dec, errors="replace"))
         except:
             pass
     for x in sorted(final_set):
-        safe_print(x)
+        if len(x) == len(inn) and len(inn) < len(x) * 3:
+            safe_print(x)
+    print("#" * 120)
     # print(sorted(final_set))
 
 
@@ -162,4 +164,5 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    with contextlib.suppress(KeyboardInterrupt):
+        main()

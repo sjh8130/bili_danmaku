@@ -93,7 +93,7 @@ def split_file_by_time(in_path: Path, b_name: Path, sp_type: SplitMode) -> None:
     lines_by_day: dict[datetime, list[str]] = {}
     base_name, ext = b_name.stem, in_path.suffix
     in_path = in_path.resolve()
-    directory = in_path.parent
+    base_path = in_path.parent
     with in_path.open(encoding="utf-8") as input_file:
         for line in input_file:
             timestamp_match = re.search(r"^(\d+)", line)
@@ -105,6 +105,6 @@ def split_file_by_time(in_path: Path, b_name: Path, sp_type: SplitMode) -> None:
                 lines_by_day[date].append(line)
     for date, lines_1 in lines_by_day.items():
         output_file_name = f"{base_name}-{date.strftime(fmt)}{ext}"
-        out_path = directory / output_file_name
+        out_path = base_path / output_file_name
         with out_path.open("a", 1048576, "utf-8") as output_file:
             output_file.writelines(lines_1)
