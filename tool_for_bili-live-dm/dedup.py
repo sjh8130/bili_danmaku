@@ -191,6 +191,7 @@ def _deduplicate_it(itm: dict[str, Any], timestamp: int | Decimal | float, str_i
             | "FULL_SCREEN_SPECIAL_EFFECT"
             | "GIFT_PANEL_PLAN"
             | "GUARD_ACHIEVEMENT_ROOM"
+            | "GUARD_LEADER_NOTICE"
             | "LIVE_ANI_RES_UPDATE"
             | "LIVE_PANEL_CHANGE_CONTENT"
             | "LIVE_PANEL_CHANGE"
@@ -233,12 +234,12 @@ def _deduplicate_it(itm: dict[str, Any], timestamp: int | Decimal | float, str_i
     return True
 
 
-def _deduplicate(in_path: str) -> int:
-    with Path(in_path).open(buffering=1048576, encoding="utf-8") as input_file:
+def _deduplicate(in_path: Path) -> int:
+    with in_path.open(encoding="utf-8") as input_file:
         a = input_file.readlines()
         total_ = len(a)
-    with Path(in_path + "_DEDUP").open("w", 50 * 2**20, "utf-8") as output_file:
-        for line in tqdm(a, leave=False, desc=Path(in_path).name + "", position=1):
+    with in_path.with_suffix(".DEDUP.jsonl").open("w", 50 * 2**20, "utf-8") as output_file:
+        for line in tqdm(a, leave=False, desc=in_path.name, position=1):
             if line in _deduplicate_dict:
                 continue
             pos = line.find("{")
@@ -259,7 +260,7 @@ if __name__ == "__main__":
             gc.collect(2)
             gc.collect(1)
             gc.collect(0)
-            total = _deduplicate(file)
+            total = _deduplicate(Path(file))
             total_time = time.time() - st
             tqdm.write(f"{file}:{total_time:.3f}s, {(total / total_time):.0f} lines/s")
             # print(f"{file}:{total_time:.3f}s, {(total/total_time):.0f} lines/s")

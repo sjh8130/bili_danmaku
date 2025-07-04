@@ -1,11 +1,12 @@
 # /dev/null
 import time
+from typing import Any
 from zlib import crc32
 
 _ERR_STR = "ERROR"
 
 
-def json2XML_CMD(this: dict) -> str:
+def json2XML_CMD(this: dict[str, Any]) -> str:
     """CommandDms to xml."""
     # commandDms 1 / 10
     dmid_1 = str(this.get("id", _ERR_STR))
@@ -43,7 +44,7 @@ def json2XML_CMD(this: dict) -> str:
     return f'\t<d p="{f_time},1,25,16777215,{f_ctime},999,{midHash},{dmid_2},11">{text}</d><!-- SPECIAL: {command}{extra} -->'
 
 
-def json2XML(this: dict) -> str:
+def json2XML(this: dict[str, Any]) -> str:
     # dmid 1 / 12
     dmid = str(this.get("id", this.get("idStr", this.get("dmid", "FAKE"))))
     # showtime 2

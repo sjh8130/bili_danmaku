@@ -10,8 +10,8 @@ try:
     import pyperclip  # type: ignore
 except ImportError:
 
-    class pyperclip:  # noqa: N801
-        def copy(self, str):
+    class pyperclip:
+        def copy(self, s: str):
             pass
 
         def paste(self):
@@ -99,7 +99,7 @@ def combine_msg(list_1: list[tuple[str, int]], list_2: list[str]) -> str:
     ret_str = ""
     for i in list_1:
         ids.append(i[1])
-    sorted_ids = sorted(ids)
+    sorted_ids: list[int] = sorted(ids)
     for i in list_2:
         form_s2.append([c2s(i[0])[5], get_protobuf_type(i[1]), i[0]])
     for i in sorted_ids:
@@ -120,7 +120,7 @@ def combine_enum(list_1: list[tuple[str, int]]) -> str:
     ret_str = ""
     for _id in list_1:
         ids.append(_id[1])
-    ids = sorted(ids)
+    ids: list[int] = sorted(ids)
     for _id in ids:
         for j in list_1:
             if _id == j[1] and _id != -1:
@@ -141,7 +141,7 @@ def snake_to_camel(name: str) -> str:
 def combine_rpc(list_1: list[tuple[str, int]], list_2: tuple[str, str, str]) -> str:
     #                              ^                         rpc_req*,rpc_reply*,rpc_name*
     #                             rpc_name(CAMEL,UPPER),rpc_index*
-    index = []
+    index: list[int] = []
     ret_str: str = ""
     idx: int
     for _, idx in list_1:

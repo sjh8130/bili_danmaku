@@ -15,9 +15,7 @@ from my_lib.xx_util import OPR, del_keys, replace_str, sort_list_dict
 log = logger.bind(user="X3")
 ssl._create_default_https_context = ssl._create_unverified_context  # noqa: S323, SLF001
 requests.packages.urllib3.disable_warnings()  # type: ignore[attr-defined]
-with Path("config.json").open(encoding="utf-8") as a:
-    config = json.load(a)
-del a
+config = json.loads(Path("config.json").read_text(encoding="utf-8"))
 _A = {
     "User-Agent": config["ua"],
     "Connection": "keep-alive",
@@ -25,7 +23,7 @@ _A = {
 }
 _B = b'{"code":0,"message":"0","ttl":1,"data":{"packages":null}}'
 _C: str = config["x3"]["url"]
-_D: str = config["x3"]["bp"]
+_D: Path = Path(config["x3"]["bp"]).resolve()
 _O = [{}, {"no_access": True, "unlocked": False}, {"no_access": True}]
 _a = 0
 
@@ -61,12 +59,13 @@ class EmoteMain(TypedDict):
 
 
 def _E(a: requests.Session, b: int | str, c: int) -> bytes:
-    global _a
+    global _a  # noqa: PLW0603
     d = 0
     while d < 5:
         try:
             _a += 1
             e = a.get(_C.format(q=b), headers=_A, verify=False, timeout=20)
+            e.raise_for_status()
             return e.content
         except requests.RequestException as e:
             d += 1
@@ -74,7 +73,7 @@ def _E(a: requests.Session, b: int | str, c: int) -> bytes:
             log.exception(e)
             time.sleep(c + d)
         except KeyboardInterrupt:
-            raise KeyboardInterrupt
+            raise KeyboardInterrupt  # noqa: B904
     raise Exception(f"Failed to fetch {b}")
 
 
@@ -82,36 +81,33 @@ def _F(a: Path, b: EmoteMain) -> None:
     d = json.dumps(b, ensure_ascii=False, separators=(",", ":"), indent="\t")
     e = ""
     if a.is_file():
-        with a.open(encoding="utf-8") as fp:
-            e = fp.read()
-            if d == e:
-                return
-            c: EmoteMain = json.loads(e)
+        e = a.read_text(encoding="utf-8")
+        if d == e:
+            return
+        c: EmoteMain = json.loads(e)
         if "emote" in c:
             if "emote" not in b:
                 b["emote"] = c["emote"]
             else:
-                f = {json.dumps(item, ensure_ascii=False) for item in b["emote"]}
+                f = {json.dumps(item, ensure_ascii=False, sort_keys=True) for item in b["emote"]}
                 for g in c["emote"]:
-                    h = json.dumps(g, ensure_ascii=False)
+                    h = json.dumps(g, ensure_ascii=False, sort_keys=True)
                     if h not in f:
                         b["emote"].append(g)
                         f.add(h)
     if "emote" in b:
-        sort_list_dict(b["emote"], "id", "text")  # type: ignore
+        sort_list_dict(b["emote"], "id", "text")
     d = json.dumps(b, ensure_ascii=False, separators=(",", ":"), indent="\t")
     if d == e:
         return
-    a.open("w", encoding="utf-8").write(d)
+    a.write_text(d, encoding="utf-8")
 
 
 def _G(a: Path, b: str) -> None:
     """csv"""
     c = b + "\n"
-    if a.is_file():
-        with a.open(encoding="utf-8") as fp:
-            if c in (x := fp.readlines()) or b in x:
-                return
+    if a.is_file() and (c in (x := a.read_text(encoding="utf-8").splitlines(keepends=True)) or b in x):
+        return
     with a.open("a", 1048576, "utf-8") as fp:
         fp.write(c)
 
@@ -128,16 +124,15 @@ def _K(a: int | str, item: dict) -> None:
     replace_str(item, "http://", "https://")
     replace_str(item, "https://i1.hdslb.com", "https://i0.hdslb.com")
     replace_str(item, "https://i2.hdslb.com", "https://i0.hdslb.com")
-    replace_str(item, "fasle", "false")
-    c = Path(_D) / f"{a}.json"
-    _F(c, item)  # type: ignore
-    _G(Path(_D) / "ids.csv", f"{a},{item['text']}")
+    # replace_str(item, "fasle", "false")
+    _F(_D / f"{a}.json", item)  # type: ignore
+    _G(_D / "ids.csv", f"{a},{item['text']}")
 
 
 def _L(*, j: bool = False) -> None:
     a = _N()
     b = 1
-    c = 8000 if not j else 1
+    c = 8200 if not j else 1
     d = 10000
     with (
         requests.Session() as e,
@@ -165,7 +160,7 @@ def _L(*, j: bool = False) -> None:
 
 def _M() -> None:
     a = 1
-    if sys.argv[1].lower() in "main":
+    if sys.argv[1].lower() in {"main", "0"}:
         _L()
         return
     if sys.argv[1] in "uU":
@@ -185,7 +180,7 @@ def _M() -> None:
 def _N() -> list[int]:
     a = []
     try:
-        for b in Path(_D).rglob("*.json"):
+        for b in _D.rglob("*.json"):
             a.append(int(b.stem))
         a.sort()
         return list(set(a))

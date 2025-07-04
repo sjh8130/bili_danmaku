@@ -11,9 +11,7 @@ from my_lib.file_writer import write_file
 
 ssl._create_default_https_context = ssl._create_unverified_context  # noqa: S323, SLF001
 requests.packages.urllib3.disable_warnings()  # type: ignore[attr-defined]
-with Path("config.json").open(encoding="utf-8") as fp:
-    config = json.load(fp)
-del fp
+config = json.loads(Path("config.json").read_text(encoding="utf-8"))
 
 _TWITCASTING_URL_JP = "ja.twitcasting.tv"
 _TWITCASTING_URL_EN = "en.twitcasting.tv"

@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+import contextlib
 import json
 import ssl
 import sys
@@ -10,21 +11,12 @@ import requests
 from loguru import logger
 from tqdm import tqdm
 
-from my_lib.xx_util import (
-    OPR,
-    del_keys,
-    replace_str,
-    sort_list_dict,
-    sort_p6_emoji,
-    sort_str_list,
-)
+from my_lib.xx_util import OPR, del_keys, replace_str, sort_list_dict, sort_p6_emoji, sort_str_list
 
 log = logger.bind(user="X1")
 ssl._create_default_https_context = ssl._create_unverified_context  # noqa: S323, SLF001
 requests.packages.urllib3.disable_warnings()  # type: ignore[attr-defined]
-with Path("config.json").open(encoding="utf-8") as fp:
-    config = json.load(fp)
-del fp
+config = json.loads(Path("config.json").read_text(encoding="utf-8"))
 _A = {
     "User-Agent": config["ua"],
     "Connection": "keep-alive",
@@ -40,64 +32,11 @@ _EMPTY_ACTIVITY_ENTRANCE = {
     "jump_link": "",
 }
 _L: str = config["x1"]["url"]
-_M: str = config["x1"]["bp"]
+_M: Path = Path(config["x1"]["bp"]).resolve()
 P = "properties"
 S = "suit_items"
 _a: int = 0
-
-num = int
-
-
-class Properties(TypedDict):
-    desc: str
-    fan_id: str
-    fan_item_ids: str
-    fan_mid: str
-    fan_no_color: str
-    fan_recommend_desc: str
-    fan_recommend_jump_type: str
-    fan_recommend_jump_value: str
-    fan_share_image: str
-    gray_rule_type: str
-    gray_rule: str
-    image_cover_color: str
-    image_cover_long: str
-    image_cover: str
-    image_desc: str
-    is_hide: str
-    item_base_intro_image: str
-    item_hot_limit: str
-    item_id_card: str
-    item_id_emoji_package: str
-    item_id_emoji: str
-    item_id_pendant: str
-    item_id_thumbup: str
-    item_ids: str
-    item_stock_surplus: str
-    open_platform_vip_discount: str
-    owner_uid: str
-    pub_btn_plus_color: str
-    pub_btn_shade_color_bottom: str
-    pub_btn_shade_color_top: str
-    rank_investor_name: str
-    rank_investor_show: str
-    realname_auth: str
-    related_words: str
-    sale_bp_forever_raw: str
-    sale_bp_pm_raw: str
-    sale_buy_num_limit: str
-    sale_quantity_limit: str
-    sale_quantity: str
-    sale_region_ip_limit: str
-    sale_reserve_switch: str
-    sale_sku_id_1: str
-    sale_sku_id_2: str
-    sale_time_begin: str
-    sale_time_end: str
-    sale_type: str
-    suit_card_type: str
-    timing_online_unix: str
-    type: str
+Properties = dict[str, str]
 
 
 class SuitItems(TypedDict):
@@ -113,16 +52,22 @@ class SuitItems(TypedDict):
 
 
 class CurrentNextActivity(TypedDict):
-    type: num
+    type: int
     time_limit: bool
     time_left: str
-    tag: num
-    price_bp_month: num
-    price_bp_forever: num
-    type_month: num
-    tag_month: num
+    tag: int
+    price_bp_month: int
+    price_bp_forever: int
+    type_month: int
+    tag_month: int
     time_limit_month: bool
     time_left_month: str
+
+
+class FanUser(TypedDict):
+    mid: int
+    nickname: str
+    avatar: str
 
 
 class X1(TypedDict):
@@ -146,28 +91,27 @@ class X1(TypedDict):
     jump_link: str
     sales_mode: int
     suit_items: dict[str, list[SuitItems]]
-    fan_user: int
+    fan_user: FanUser
     unlock_items: int
     activity_entrance: int
 
 
 def _E(b: requests.Session, d: int | str) -> bytes:
-    global _a
-    a = 0
-    while a < 5:
+    global _a  # noqa: PLW0603
+    retry = 0
+    while retry < 5:
         try:
             _a += 1
             c = b.get(_L.format(q=d), headers=_A, verify=False, timeout=20)
             c.raise_for_status()
             return c.content
         except requests.RequestException as e:
-            a += 1
-            # print(" ")
-            # log.error(e)
-            log.exception(f"Failed to fetch {d},{e}, retry:{a}")
+            retry += 1
+            log.error(f" {d} {retry=}")
+            log.exception(e)
             time.sleep(1)
         except KeyboardInterrupt:
-            raise KeyboardInterrupt
+            raise KeyboardInterrupt  # noqa: B904
     raise Exception(f"Failed to fetch {d}")
 
 
@@ -175,18 +119,17 @@ def _F(a: Path, b: X1) -> None:
     d = json.dumps(b, ensure_ascii=False, separators=(",", ":"), indent="\t")
     e = ""
     if a.is_file():
-        with a.open(encoding="utf-8") as fp:
-            e = fp.read()
-            if d == e:
-                return
-            c: X1 = json.loads(e)
+        e = a.read_text(encoding="utf-8")
+        if d == e:
+            return
+        c: X1 = json.loads(e)
         if isinstance(b.get(P), dict):
             if isinstance(b[P].get("item_ids"), str) and isinstance(c[P].get("item_ids"), str):
                 b[P]["item_ids"] = sort_str_list(b[P]["item_ids"] + "," + c[P]["item_ids"])
             if isinstance(b[P].get("fan_item_ids"), str) and isinstance(c[P].get("fan_item_ids"), str):
                 b[P]["fan_item_ids"] = sort_str_list(b[P]["fan_item_ids"] + "," + c[P]["fan_item_ids"])
         # ============================
-        for i in c[S]:
+        for i in c.get(S, {}):
             if i in c[S]:
                 if i not in b[S]:
                     b[S][i] = c[S][i]
@@ -203,8 +146,7 @@ def _F(a: Path, b: X1) -> None:
     d = json.dumps(b, ensure_ascii=False, separators=(",", ":"), indent="\t")
     if d == e:
         return
-    with a.open("w", 1048576, "utf-8") as fp:
-        fp.write(d)
+    a.write_text(d, "utf-8")
 
 
 def _G(a: Path, b: str) -> None:
@@ -212,10 +154,8 @@ def _G(a: Path, b: str) -> None:
         b = json.dumps(b, ensure_ascii=False, separators=(",", ":"))
     """Csv / jsonl."""
     c = b + "\n"
-    if a.is_file():
-        with a.open(encoding="utf-8") as fp:
-            if c in (x := fp.readlines()) or b in x:
-                return
+    if a.is_file() and (c in (x := a.read_text(encoding="utf-8").splitlines(keepends=True)) or b in x):
+        return
     with a.open("a", encoding="utf-8") as fp:
         fp.write(c)
 
@@ -223,7 +163,7 @@ def _G(a: Path, b: str) -> None:
 def _H(a: int | str, item: X1) -> None:
     c = item["part_id"]
     d = _G
-    d(Path(_M) / "ids.csv", f"{a},{item['name']},{item['group_id']},{c}")
+    d(_M / "ids.csv", f"{a},{item['name']},{item['group_id']},{c}")
     if isinstance(item.get(P), dict):
         if isinstance(item[P].get("item_ids"), str):
             item[P]["item_ids"] = sort_str_list(item[P]["item_ids"])
@@ -317,11 +257,13 @@ def _H(a: int | str, item: X1) -> None:
     del_keys(item, "unlock_items", None)
     del_keys(item, "properties", {})
     del_keys(item, "suit_items", {})
+    with contextlib.suppress(KeyError):
+        del item["fan_user"]["avatar"]  # type: ignore
     replace_str(item, "http://", "https://")
     replace_str(item, "https://i1.hdslb.com", "https://i0.hdslb.com")
     replace_str(item, "https://i2.hdslb.com", "https://i0.hdslb.com")
     # replace_str(item, "fasle", "false")
-    d(Path(_M) / f, item)  # type: ignore
+    d(_M / f, item)  # type: ignore
 
 
 def _I(a: str) -> None:
@@ -338,19 +280,15 @@ def _I(a: str) -> None:
             f = 250000002
         case "4":
             e = 300000001
-            e = 311000001
-            f = 315000002
+            e = 318000001
+            f = 319000001
         case "0" | "1" | _:
             d = 1
-            e = 73000
-            f = 73500
+            e = 60000
+            f = 73600
     with (
         requests.Session() as g,
-        tqdm(
-            total=int((f - e) / d) + 1,
-            initial=0,
-            bar_format="{desc}{percentage:3.0f}%|{bar}| {n_fmt}->{total_fmt} [{elapsed}->{remaining}]",
-        ) as h,
+        tqdm(total=int((f - e) / d) + 1, initial=0, bar_format="{desc}{percentage:3.0f}%|{bar}| {n_fmt}->{total_fmt} [{elapsed}->{remaining}]") as h,
     ):
         for i in range(e, f + d, d):
             h.update()
@@ -375,20 +313,20 @@ def _I(a: str) -> None:
 
 def _N() -> None:
     a = _K()
+    h = json.loads((_M / "🗑.json").read_text("utf-8"))
     b = 1
     with (
         requests.Session() as c,
-        tqdm(
-            total=len(a),
-            initial=0,
-            bar_format="{percentage:3.0f}%|{bar}| {n_fmt}->{total_fmt} [{elapsed}->{remaining}]",
-        ) as d,
+        tqdm(total=len(a) - len(h), initial=0, bar_format="{percentage:3.0f}%|{bar}| {n_fmt}->{total_fmt} [{elapsed}->{remaining}]") as d,
     ):
         for g in a:
+            if g in h or str(g) in h:
+                continue
             time.sleep(b)
             e = _E(c, g)
             d.update()
             if e == _B:
+                _G(_M / "ids.csv", f"{g},🗑,0,0")
                 d.write(f"{time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()):<32}{g:<12}🟥🟩🟦🟨⬛⬜ NOT Found")
                 continue
             try:
@@ -422,13 +360,13 @@ def _J() -> None:
 def _K() -> list[int]:
     g: list[int] = []
     for a in ["PART_5_表情包", "PART_6_main"]:
-        for b in (Path(_M) / a).rglob("*.json"):
+        for b in (_M / a).rglob("*.json"):
             g.append(int(b.stem))
-    for a in Path(_M).rglob("PART*.jsonl"):
-        with a.open(encoding="utf-8") as c:
-            for d in c:
-                f = json.loads(d)
-                g.append(int(f["item_id"]))
+    for a in _M.rglob("PART*.jsonl"):
+        c = a.read_text(encoding="utf-8")
+        for d in c.splitlines():
+            f = json.loads(d)
+            g.append(int(f["item_id"]))
     return g
 
 

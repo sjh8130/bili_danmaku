@@ -79,5 +79,5 @@ for srt_index, line in enumerate(loaded_dict["segments"], 1):
     ass_file += _proc_ass(line)
 output_srt.open("w", encoding="utf-8").write(srt_file)
 output_ass.open("w", encoding="utf-8").write(ass_head + ass_file)
-# open(output_LRC, "w", encoding="utf-8").write(lrc_file)
-# open(output_TXT, "w", encoding="utf-8").write(txt_file)
+# output_lrc.open("w", encoding="utf-8").write(lrc_file)
+# output_txt.open("w", encoding="utf-8").write(txt_file)

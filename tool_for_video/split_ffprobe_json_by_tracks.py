@@ -59,7 +59,7 @@ def main(d: dict) -> None:
 
 
 if __name__ == "__main__":
-    file_name = Path(sys.argv[1])
+    file_name = Path(sys.argv[1]).resolve()
     with file_name.open(encoding="utf-8") as f:
         data: dict = simdjson.load(f)  # type: ignore
     if not data:

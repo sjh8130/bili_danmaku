@@ -95,11 +95,11 @@ def _main() -> None:
     TYP = argv[3]
     IN_FILE_1 = Path(argv[1]).resolve()
     IN_FILE_2 = Path(argv[2]).resolve()
-    IN_INFO_1 = IN_FILE_1.parent / (IN_FILE_1.stem + TYP + ".json")
-    IN_INFO_2 = IN_FILE_2.parent / (IN_FILE_2.stem + TYP + ".json")
+    IN_INFO_1 = IN_FILE_1.with_name(IN_FILE_1.stem + TYP + ".json")
+    IN_INFO_2 = IN_FILE_2.with_name(IN_FILE_2.stem + TYP + ".json")
 
     out_path = "NUL"
-    out_path = IN_FILE_1.parent / (IN_FILE_1.stem + "_OUT" + SUFFIX)
+    out_path = IN_FILE_1.with_name(IN_FILE_1.stem + "_OUT" + SUFFIX)
 
     with IN_INFO_1.open(encoding="utf-8") as HASH_1, IN_INFO_2.open(encoding="utf-8") as HASH_2:
         PACKETS_1 = FFProbeFile(simdjson.load(HASH_1)["packets"])  # type: ignore

@@ -44,7 +44,7 @@ class _VideoPart(_Video):
             raise ValueError("CID and OID must be the same or one must be None.")
 
 
-def _downloader(url: str, headers: dict, session: requests.Session, *, _json: bool = False) -> bytes:
+def _downloader(url: str, headers: dict[str, str], session: requests.Session, *, _json: bool = False) -> bytes:
     url = url.replace("http://", "https://")
     for _ in range(MAX_RETRIES):
         time.sleep(SLEEP_TIME)
@@ -58,11 +58,7 @@ def _downloader(url: str, headers: dict, session: requests.Session, *, _json: bo
     raise Exception("下载失败")
 
 
-def _get_danmaku(
-    vp: _VideoPart,
-    duration: float,
-    session: requests.Session,
-) -> list[bytes]:
+def _get_danmaku(vp: _VideoPart, duration: float, session: requests.Session) -> list[bytes]:
     seg = math.ceil(duration / 360) + 1
     danmakus: list[bytes] = []
     HEADERS = {
@@ -117,11 +113,7 @@ def _get_danmaku(
     return danmakus
 
 
-def _get_special_danmaku(
-    vp: _VideoPart,
-    spdm: dm_pb2.DmWebViewReply,
-    session: requests.Session,
-) -> list[bytes]:
+def _get_special_danmaku(vp: _VideoPart, spdm: dm_pb2.DmWebViewReply, session: requests.Session) -> list[bytes]:
     HEADERS = {
         "Accept-Encoding": AE,
         "Origin": "https://www.bilibili.com",

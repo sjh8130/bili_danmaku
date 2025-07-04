@@ -31,7 +31,7 @@ class OPR(StrEnum):
     NIS = auto()
 
 
-def _del_keys(d: dict, k: str, v: Any, o: OPR) -> None:
+def _del_keys(d: dict[Any, Any], k: str, v: Any, o: OPR) -> None:
     if k in d:
         match o:
             case OPR.EQ:
@@ -70,7 +70,7 @@ def _del_keys(d: dict, k: str, v: Any, o: OPR) -> None:
                 raise Exception("*ToDo")
 
 
-def _del_keys_prep(d: dict, k: str, v: Any, o: OPR, cmd="", dep: int = 0) -> None:
+def _del_keys_prep(d: dict[Any, Any], k: str, v: Any, o: OPR, cmd="", dep: int = 0) -> None:
     cmd = d["cmd"] if cmd == "" else cmd
     # print("_del_keys_prep", cmd)
     for key_1 in d:
@@ -274,10 +274,7 @@ KEYS_DEL_IF_FALSE = [
 
 
 def _clean_dm(a: str) -> None:
-    with (
-        open(a, encoding="utf-8") as g,
-        open(a + "x_cleaned", "a", 10485760, "utf-8") as h,
-    ):
+    with open(a, encoding="utf-8") as g, open(a + "x_cleaned", "a", 10485760, "utf-8") as h:
         for _line_num, f in tqdm(enumerate(g.readlines()), leave=False, desc=f"{os.path.basename(a)}"):
             e = f.find("{")
             b = f[:e]

@@ -1,8 +1,10 @@
 import gzip
 import json
+from pathlib import Path
+from typing import Any
 
 
-def write_file(filename: str, data: str | bytes | dict, *, _gzip: bool = False) -> None:
+def write_file(filename: str | Path, data: str | bytes | dict[Any, Any], *, _gzip: bool = False) -> None:
     """输出文件."""
     if isinstance(data, str):
         data_ = data.encode("utf-8")

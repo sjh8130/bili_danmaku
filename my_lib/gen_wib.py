@@ -86,7 +86,7 @@ def getMixinKey(orig: str) -> str:
     return reduce(lambda s, i: s + orig[i], _mixin_key_enc_tab, "")[:32]
 
 
-def encWbi(params: dict, img_key: str, sub_key: str) -> dict:
+def encWbi(params: dict[str, str], img_key: str, sub_key: str) -> dict[str, str]:
     """为请求参数进行 wbi 签名."""
     mixin_key = getMixinKey(img_key + sub_key)
     # print("[mixin_key]",  mixin_key)
@@ -115,7 +115,7 @@ def getWbiKeys() -> tuple[str, str]:
     return img_key, sub_key
 
 
-def gen_w_rid(query: dict) -> str:
+def gen_w_rid(query: dict[str, str]) -> str:
     img_key, sub_key = getWbiKeys()
     signed_params = encWbi(params=query, img_key=img_key, sub_key=sub_key)
     ret = urllib.parse.urlencode(signed_params)

@@ -1,7 +1,6 @@
 import dataclasses
 import datetime
 import json
-import logging
 import re
 import ssl
 import sys
@@ -10,17 +9,16 @@ from pathlib import Path
 
 import bs4
 import requests
+from loguru import logger
 
 ssl._create_default_https_context = ssl._create_unverified_context  # noqa: S323, SLF001
 requests.packages.urllib3.disable_warnings()  # type: ignore[attr-defined]
-with open("config.json", encoding="utf-8") as fp:
+with open("../config.json", encoding="utf-8") as fp:
     config = json.load(fp)
 del fp
 AE = config["ae"]
 UA = config["ua"]
-logging.basicConfig(format="%(asctime)s %(message)s", level=logging.INFO, datefmt="%Y-%m-%d %H:%M:%S")
-logger = logging.getLogger("nekohouse-downloader")
-logger.setLevel(logging.ERROR)
+log = logger.bind(user="nekohouse-downloader")
 
 
 @dataclasses.dataclass
@@ -86,23 +84,17 @@ def _get_user_page(pl: str, user_id: str, pn: int) -> UserPage:
     logger.info(f"[getUserPage] {pl} {user_id} {pn}")
     response = session.get(url, headers=headers, verify=False)
     soup = bs4.BeautifulSoup(response.content, "lxml")
-    total = int(soup.select(".paginator")[0].small.contents[0].strip().split(" ")[-1])  # type: ignore[union-attr]
+    try:
+        total = int(soup.select(".paginator")[0].small.contents[0].strip().split(" ")[-1])  # type: ignore[union-attr]
+    except AttributeError:
+        total = 0
     posts = []
     for itm in soup.select(".post-card.post-card--preview.post-card--scrape"):
         post_id = itm.a["href"].split("/")[-1]  # type: ignore[union-attr,index]
         pub_time = time.mktime(time.strptime(itm.footer.time["datetime"], "%Y-%m-%d %H:%M:%S%z"))  # type: ignore[arg-type,union-attr,index]
         thumb = "https://nekohouse.su" + itm.select(".post-card__image")[0].attrs["src"]  # type: ignore
         title = itm.header.text.strip()  # type: ignore[union-attr]
-        posts.append(
-            Post(
-                platform=pl,
-                user_id=user_id,
-                post_id=post_id,
-                pub_time=pub_time,
-                thumb=thumb,
-                title=title,
-            ),
-        )
+        posts.append(Post(platform=pl, user_id=user_id, post_id=post_id, pub_time=pub_time, thumb=thumb, title=title))
     return UserPage(total=total, posts=posts)
 
 
@@ -194,11 +186,12 @@ def main() -> None:
     try:
         while True:
             user_page = _get_user_page(service, user_id, page_num)
-            item_count = user_page.total
+            item_count = max(item_count, user_page.total)
             for pn2 in range(len(user_page.posts)):
                 user_page.posts[pn2] = _get_posts_page(user_page.posts[pn2])
                 _get_posts_file(base_path, user_page.posts[pn2])
             page_num += 1
+            print(f"[{service}]{user_name}: ")
             if page_num >= max_pn > 0:
                 break
             if (page_num + 1) * 50 > item_count:
@@ -206,9 +199,11 @@ def main() -> None:
             time.sleep(30)
     except KeyboardInterrupt:
         pass
-    raise
 
 
 if __name__ == "__main__":
     session = requests.Session()
-    main()
+    try:
+        main()
+    except Exception as e:
+        logger.exception(e)

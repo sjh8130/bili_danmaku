@@ -13,8 +13,8 @@ from filters import FILTER_WORDS
 from google.protobuf.json_format import MessageToDict
 
 st = time.time()
-in_path = Path(sys.argv[1])
-out_path = Path("Z:\\test.json")
+in_path = Path(sys.argv[1]).resolve()
+out_path = Path("Z:\\test.json").resolve()
 left_pos_cache = 0
 right_pos_cache = 0
 dm_proto = live_dm.Dm()
@@ -31,12 +31,7 @@ with in_path.open(encoding="utf-8") as F_in, out_path.open("w", encoding="utf-8"
             if err.msg == "Expecting value":
                 right_pos_cache -= 1
             continue
-        if (
-            dm_proto.text.lstrip(" ").rstrip(" ").lstrip("　").rstrip("　").lower() in FILTER_WORDS
-            or dm_proto.text.find("【") > 0
-            or dm_proto.text.find("】") > 0
-            or dm_proto.dm_type != live_dm.DmTypeNormal
-        ):
+        if dm_proto.text.lstrip(" ").rstrip(" ").lstrip("　").rstrip("　").lower() in FILTER_WORDS or "【" in dm_proto.text or "】" in dm_proto.text or dm_proto.dm_type != live_dm.DmTypeNormal:
             continue
         itm = MessageToDict(dm_proto)
         itm["text"] = itm["text"].strip()

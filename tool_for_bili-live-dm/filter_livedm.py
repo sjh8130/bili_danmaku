@@ -39,12 +39,7 @@ def main(in_paths: list[str], out_path: Path) -> None:
         if in_path == out_path:
             continue
         with in_path.open(encoding="utf-8") as fp:
-            for line in tqdm(
-                fp.readlines(),
-                unit="line",
-                bar_format="{desc}{percentage:3.0f}%|{bar}| {n_fmt}->{total_fmt} ",
-                desc=f"{f_s:8} {in_path.name} ",
-            ):
+            for line in tqdm(fp.readlines(), unit="line", bar_format="{desc}{percentage:3.0f}%|{bar}| {n_fmt}->{total_fmt} ", desc=f"{f_s:8} {in_path.name} "):
                 # if "DANMU_MSG" not in line:
                 #     continue
                 # if line.find("DANMU_MSG:3:7:1:1:1:1") == 1:

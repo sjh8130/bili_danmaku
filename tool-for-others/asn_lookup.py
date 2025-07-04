@@ -444,8 +444,7 @@ def _download_file(url: str, file_name: Path, *, overwrite: bool) -> None:
         print(f"文件 {file_name} 不存在，正在下载...")
     response = requests.get(url, headers={"Accept-Encoding": "gzip, deflate, bzip2, br, zstd"})
     if response.status_code == 200:
-        with file_name.open("wb") as file:
-            file.write(response.content)
+        file_name.write_bytes(response.content)
         # print(f"文件 {file_name} 下载完成.")
 
 
@@ -590,7 +589,7 @@ if __name__ == "__main__":
                     print(len(ips))
                 case "dump" | "export" | "save":
                     j = json.dumps(ips, ensure_ascii=False, separators=(",", ":"), sort_keys=True)
-                    Path("Z:\\dump.json").open("w", encoding="utf-8").write(j)
+                    Path("Z:\\dump.json").write_text(j, encoding="utf-8")
                     del j
                 case "afrinic" | "apnic" | "arin" | "iana" | "lacnic" | "ripe-ncc" | "ripencc":
                     _query_desc(query_string)
