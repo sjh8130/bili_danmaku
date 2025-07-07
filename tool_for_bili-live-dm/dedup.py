@@ -156,7 +156,7 @@ def _deduplicate_it(itm: dict[str, Any], timestamp: int | Decimal | float, str_i
         ):
             # id_1 = f"""{cmd}${str(data)}${msg_id}"""
             id_1 = str_itm
-        case "WIDGET_WISH_INFO":
+        case "WIDGET_WISH_INFO" | "WIDGET_WISH_INFO_V2":
             id_1 = f"""{cmd}${data["ts"]}${data["sid"]}${data["tid"]}${msg_id}"""
         case (
             "AREA_RANK_CHANGED"
@@ -165,13 +165,17 @@ def _deduplicate_it(itm: dict[str, Any], timestamp: int | Decimal | float, str_i
             | "LOG_IN_NOTICE"
             | "master_qn_strategy_chg"
             | "ONLINE_RANK_TOP3"
+            | "ONLINE_RANK_V3"
             | "OTHER_SLICE_LOADING_RESULT"
+            | "PLAYURL_RELOAD"
             | "POPULAR_RANK_CHANGED"
             | "RANK_CHANGED_V2"
             | "RANK_CHANGED"
             | "REVENUE_RANK_CHANGED"
             | "STOP_LIVE_ROOM_LIST"
             | "SUPER_CHAT_ENTRANCE"
+            | "VOICE_JOIN_SWITCH_V2"
+            | "VOICE_JOIN_SWITCH"
         ):
             return False
         case (

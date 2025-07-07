@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 import contextlib
+import csv
 import json
 import ssl
 import sys
@@ -37,6 +38,14 @@ P = "properties"
 S = "suit_items"
 _a: int = 0
 Properties = dict[str, str]
+TRASH = "🗑"
+IDCSV = "ids.csv"
+Z = [
+    "2060,2:3,19,1",
+    "67055,豆泥大陆收藏家勋章,106,2",
+    '1882,("▔□▔)/,7,4',
+    "206537601,-Yu酱-婚纱主题装扮,47,6",
+]
 
 
 class SuitItems(TypedDict):
@@ -154,7 +163,9 @@ def _G(a: Path, b: str) -> None:
         b = json.dumps(b, ensure_ascii=False, separators=(",", ":"))
     """Csv / jsonl."""
     c = b + "\n"
-    if a.is_file() and (c in (x := a.read_text(encoding="utf-8").splitlines(keepends=True)) or b in x):
+    if b in Z or c in Z:
+        return
+    if a.is_file() and (b in (x := set(a.read_text(encoding="utf-8").splitlines())) or c in x):
         return
     with a.open("a", encoding="utf-8") as fp:
         fp.write(c)
@@ -163,7 +174,7 @@ def _G(a: Path, b: str) -> None:
 def _H(a: int | str, item: X1) -> None:
     c = item["part_id"]
     d = _G
-    d(_M / "ids.csv", f"{a},{item['name']},{item['group_id']},{c}")
+    d(_M / IDCSV, f"{a},{item['name']},{item['group_id']},{c}")
     if isinstance(item.get(P), dict):
         if isinstance(item[P].get("item_ids"), str):
             item[P]["item_ids"] = sort_str_list(item[P]["item_ids"])
@@ -284,7 +295,7 @@ def _I(a: str) -> None:
             f = 319000001
         case "0" | "1" | _:
             d = 1
-            e = 60000
+            e = 70000
             f = 73600
     with (
         requests.Session() as g,
@@ -311,22 +322,35 @@ def _I(a: str) -> None:
             h.write(f"{time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()):<32}{i:<12}{k['name']:20}{len(j):>8}")
 
 
-def _N() -> None:
+def _N(j) -> None:
+    match j:
+        case "0":
+            k = range(1, 9999)
+        case "2":
+            k = range(100000000, 199999999)
+        case "3":
+            k = range(200000000, 299999999)
+        case "4":
+            k = range(300000000, 399999999)
+        case "1":
+            k = range(10000, 100000000 - 1)
+        case _:
+            k = range(2**32)
     a = _K()
-    h = json.loads((_M / "🗑.json").read_text("utf-8"))
+    h = json.loads((_M / f"{TRASH}.json").read_text("utf-8"))
     b = 1
     with (
         requests.Session() as c,
         tqdm(total=len(a) - len(h), initial=0, bar_format="{percentage:3.0f}%|{bar}| {n_fmt}->{total_fmt} [{elapsed}->{remaining}]") as d,
     ):
         for g in a:
-            if g in h or str(g) in h:
+            if g in h or str(g) in h or (g not in k):
                 continue
             time.sleep(b)
-            e = _E(c, g)
             d.update()
+            e = _E(c, g)
             if e == _B:
-                _G(_M / "ids.csv", f"{g},🗑,0,0")
+                _G(_M / IDCSV, f"{g},{TRASH},0,0")
                 d.write(f"{time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()):<32}{g:<12}🟥🟩🟦🟨⬛⬜ NOT Found")
                 continue
             try:
@@ -336,6 +360,25 @@ def _N() -> None:
                 raise h
             _H(g, f)
             d.write(f"{time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()):<32}{g:<12}{f['name']:20}{len(e):>8}")
+
+
+def _P(a: Path) -> None:
+    for b in a.iterdir():
+        if b.is_dir():
+            _P(b)
+            continue
+        log.warning(b)
+        f = b.read_text("utf-8")
+        if str(b).endswith(".jsonl"):
+            for c in tqdm(f.splitlines(), leave=False):
+                d: X1 = json.loads(c)
+                _H(d["item_id"], d)
+        elif str(b).endswith(".json"):
+            d: X1 = json.loads(f)
+            try:
+                _H(d["item_id"], d)
+            except KeyError:
+                _H(d["data"]["item_id"], d["data"])
 
 
 def _J() -> None:
@@ -370,16 +413,38 @@ def _K() -> list[int]:
     return g
 
 
+def _O():
+    a = []
+    b = []
+    c = _M / IDCSV
+    d = csv.reader(c.read_text("utf-8"))
+    next(d)
+    for f in d:
+        if f[1] == TRASH:
+            b.append(int(f[0]))
+        else:
+            a.append(int(f[0]))
+    return a, b
+
+
 if __name__ == "__main__":
     try:
-        if len(sys.argv) > 2 and sys.argv[1] not in {"0", "1", "2", "3", "4", "U", "u"}:
+        if len(sys.argv) > 2 and sys.argv[1] not in {"0", "1", "2", "3", "4", "U", "u", "x", "X"}:
             _J()
         elif sys.argv[1] in {"0", "1", "2", "3", "4"}:
             _I(sys.argv[1])
         elif sys.argv[1] in "Uu":
-            _N()
+            _N(sys.argv[2])
+        elif sys.argv[1] in "Xx":
+            _P(Path(sys.argv[2]).resolve())
         else:
             _I("0")
+    except IndexError:
+        print("(script name)", "usage:")
+        print("(script name)", "any input: repr")
+        print("(script name)", "[0,1,2,3,4]: dl")
+        print("(script name)", "u", "[0,1,2,3,4]", ": sync")
+        print("(script name)", "x", "path-to-dir", ": sync with local files")
     except KeyboardInterrupt:
         pass
     except Exception as e:

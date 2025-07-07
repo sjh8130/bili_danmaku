@@ -491,10 +491,10 @@ posY_2 = Math.round(posY / 375 * 100)
 | GUARD_WINDOWS_OPEN					| [❌](#GUARD_WINDOWS_OPEN)					| |
 | HAS_GUARD_PILOT						| [❌](#HAS_GUARD_PILOT)						| |
 | HOT_BUY_NUM							| [✅](#HOT_BUY_NUM)							| 移动端: 购物 |
-| HOT_RANK_CHANGED						| [✅](#HOT_RANK_CHANGED)					| [热门榜功能下线公告] |
-| HOT_RANK_CHANGED_V2					| [✅](#HOT_RANK_CHANGED)					| [热门榜功能下线公告] |
-| HOT_RANK_SETTLEMENT					| [✅](#HOT_RANK_SETTLEMENT)					| [热门榜功能下线公告] |
-| HOT_RANK_SETTLEMENT_V2				| [✅](#HOT_RANK_SETTLEMENT)					| [热门榜功能下线公告] |
+| HOT_RANK_CHANGED						| [✅](#HOT_RANK_CHANGED)					| **已移除** |
+| HOT_RANK_CHANGED_V2					| [✅](#HOT_RANK_CHANGED)					| **已移除** |
+| HOT_RANK_SETTLEMENT					| [✅](#HOT_RANK_SETTLEMENT)					| **已移除** |
+| HOT_RANK_SETTLEMENT_V2				| [✅](#HOT_RANK_SETTLEMENT)					| **已移除** |
 | HALF_SCREEN_TRIGGER					| [✅](#HALF_SCREEN_TRIGGER)					| |
 | HOT_ROOM_NOTIFY						| [✅](#HOT_ROOM_NOTIFY)						| |
 | HOUR_RANK_AWARDS 						| [✅](#HOUR_RANK_AWARDS)					| |!!!
@@ -502,7 +502,7 @@ posY_2 = Math.round(posY / 375 * 100)
 | INTERACT_JOIN_OLD						| [❌](#INTERACT_JOIN_OLD)					| |
 | INTERACT_LEAVE						| [❌](#INTERACT_LEAVE)						| |
 | INTERACT_OPERATION					| [❌](#INTERACT_OPERATION)					| |
-| INTERACT_WORD							| [✅](#INTERACT_WORD)						| 通知栏: 进入直播间/关注主播 |
+| INTERACT_WORD							| [⚠](#INTERACT_WORD)						| 通知栏: 进入直播间/关注主播 |
 | INTERACT_WORD_V2						| [✅](#INTERACT_WORD_V2)					| 通知栏: 进入直播间/关注主播 |
 | INTERACTIVE_USER						| [✅](#INTERACTIVE_USER)					| 特殊玩法@ |
 | LIKE_GUIDE_USER						| [✅](#LIKE_GUIDE_USER)						| 点赞引导 |
@@ -732,11 +732,11 @@ posY_2 = Math.round(posY / 375 * 100)
 | [--](#XXXXXXXXXXXX)
 ----
 ### LOG_IN_NOTICE
-[TOP](#直播弹幕)
+[TOP](#直播弹幕)  
 ```json
-文档更新：2024-xx-xx
-20230726"为保护用户隐私，未注册登陆用户将无法查看他人昵称"
-20230814"为保护用户隐私，未登录无法查看他人昵称"+image_app
+文档更新：2024-xx-xx  
+20230726"为保护用户隐私，未注册登陆用户将无法查看他人昵称"  
+20230814"为保护用户隐私，未登录无法查看他人昵称"+image_app  
 {
 	"cmd":"LOG_IN_NOTICE",
 	"data":{
@@ -748,9 +748,9 @@ posY_2 = Math.round(posY / 375 * 100)
 ```
 ----
 ### WARNING
-[TOP](#直播弹幕)
-文档更新：2024-xx-xx
-**警告**
+[TOP](#直播弹幕)  
+文档更新：2024-xx-xx  
+**警告**  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "WARNING" |
@@ -784,8 +784,8 @@ posY_2 = Math.round(posY / 375 * 100)
 ```
 ----
 ### LIVE
-[TOP](#直播弹幕)
-文档更新：2025-04-xx
+[TOP](#直播弹幕)  
+文档更新：2025-04-xx  
 开播/主播断线重连(重新推流)
 | key 10,11			| type	| value	|
 |-|-|-|
@@ -823,18 +823,14 @@ posY_2 = Math.round(posY / 375 * 100)
 | xxxxxxxxxxxxxxx	| xxx |
 ----
 ### SEND_GIFT
-[TOP](#直播弹幕)
-文档更新：2025-07-01
-送礼物
+[TOP](#直播弹幕)  
+文档更新：2025-07-01  
+送礼物  
 | key			| type	| value	|
 |-|-|-|
 | cmd			| str	| "SEND_GIFT/SEND_GIFT_V2" |
 | danmu			| obj	| |
 | data			| obj	| |
-| msg_id		| str	| |
-| p_is_ack		| bool	| |
-| p_msg_type	| num	| |
-| send_time		| num	| TimeStamp(毫秒) |
 #### SEND_GIFT__danmu
 | key					| type		| value	|
 |-|-|-|
@@ -845,7 +841,7 @@ posY_2 = Math.round(posY / 375 * 100)
 | pb					| base64(protobuf)	| |
 | action				| str		| "投喂" |
 | bag_gift				| null/obj	| |
-| batch_combo_id		| str		| `f"batch:gift:combo_id:{uid}:{主播uid}:{giftId}:{TimeStamp:.4f}"` / `UUID` |
+| batch_combo_id		| str		| `f"batch:gift:combo_id:{uid}:{主播uid}:{giftId}:{TimeStamp:.4f}"` <br> `UUID` |
 | batch_combo_send		| null/obj	| |
 | beatId				| str		| "" / "0" |
 | biz_source			| str		| "Live" / "live" |
@@ -1059,19 +1055,15 @@ posY_2 = Math.round(posY / 375 * 100)
 		"uid":xxx,
 		"uname":"xxx",
 		"wealth_level":1
-	},
-	"msg_id":"xxx:xxx:xxx",
-	"p_is_ack":true,
-	"p_msg_type":1,
-	"send_time":xxxxxxxxxxxxx
+	}
 }
 "batch_combo_id":"batch:gift:combo_id:AAAA:BBBB:CCCC:DDDD.dddd",
 ```
 ----
 ### ONLINE_RANK_V2
-[TOP](#直播弹幕)
-文档更新：2024-11-xx
-高能用户前七(左)，实时
+[TOP](#直播弹幕)  
+文档更新：2024-11-xx  
+高能用户前七(左)，实时  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "ONLINE_RANK_V2" |
@@ -1119,9 +1111,9 @@ posY_2 = Math.round(posY / 375 * 100)
 ```
 ----
 ### ONLINE_RANK_V3
-[TOP](#直播弹幕)
-文档更新：2024-11-xx
-高能用户前七(左)，实时
+[TOP](#直播弹幕)  
+文档更新：2025-07-03  
+高能用户前七  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "ONLINE_RANK_V3" |
@@ -1134,9 +1126,9 @@ posY_2 = Math.round(posY / 375 * 100)
 {"cmd":"ONLINE_RANK_V3","data":{"pb":"..."}}
 ```
 ### ONLINE_RANK_TOP3
-[TOP](#直播弹幕)
-文档更新：2024-11-xx
-高能用户前三(左)
+[TOP](#直播弹幕)  
+文档更新：2024-11-xx  
+高能用户前三(左)  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "ONLINE_RANK_TOP3" |
@@ -1160,10 +1152,10 @@ posY_2 = Math.round(posY / 375 * 100)
 ```
 ----
 ### ONLINE_RANK_COUNT
-[TOP](#直播弹幕)
-文档更新：2025-05-01
-高能用户人数(观众人数)
-约每5×N秒发送一次
+[TOP](#直播弹幕)  
+文档更新：2025-05-01  
+高能用户人数(观众人数)  
+约每5×N秒发送一次  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "ONLINE_RANK_COUNT" |
@@ -1184,9 +1176,9 @@ posY_2 = Math.round(posY / 375 * 100)
 ```
 ----
 ### INTERACT_WORD
-[TOP](#直播弹幕)
-文档更新：2024-11-xx
-进入直播间、关注主播通知（高精度）500ms
+[TOP](#直播弹幕)  
+文档更新：2024-11-xx  
+进入直播间、关注主播通知（高精度）500ms  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "INTERACT_WORD" |
@@ -1287,9 +1279,9 @@ posY_2 = Math.round(posY / 375 * 100)
 ```
 ----
 ### INTERACT_WORD_V2
-[TOP](#直播弹幕)
-文档更新：2024-07-01
-进入直播间、关注主播通知（高精度）500ms
+[TOP](#直播弹幕)  
+文档更新：2025-07-01  
+进入直播间、关注主播通知  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "INTERACT_WORD_V2" |
@@ -1304,9 +1296,10 @@ posY_2 = Math.round(posY / 375 * 100)
 ```
 ----
 ### WATCHED_CHANGE
-[TOP](#直播弹幕)
-文档更新：2024-11-01
-(每5秒&数值更新)发送一次 用户(包括游客、主播)进入直播间时发送
+[TOP](#直播弹幕)  
+文档更新：2024-11-01  
+`max(每5秒, 用户进入直播间)`发送一次  
+用户(包括游客、主播)进入直播间时发送  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "WATCHED_CHANGE" |
@@ -1318,15 +1311,15 @@ posY_2 = Math.round(posY / 375 * 100)
 | text_small	| str	| "num" / "x.y万" |
 | text_large	| str	| "num人看过" / "x.y万人看过" |
 ```json
-{"cmd":"WATCHED_CHANGE","data":{"num":0,    "text_small":"0",    "text_large":"0人看过"}}
-{"cmd":"WATCHED_CHANGE","data":{"num":9999, "text_small":"9999", "text_large":"9999人看过"}}
+{"cmd":"WATCHED_CHANGE","data":{"num":0,"text_small":"0","text_large":"0人看过"}}
+{"cmd":"WATCHED_CHANGE","data":{"num":9999,"text_small":"9999","text_large":"9999人看过"}}
 {"cmd":"WATCHED_CHANGE","data":{"num":10001,"text_small":"1.0万","text_large":"1.0万人看过"}}
 ```
 ----
 ### ROOM_REAL_TIME_MESSAGE_UPDATE
-[TOP](#直播弹幕)
-文档更新：2024-11-01
-(每N×60秒&数值更新)发送一次，更新关注数、粉丝团人数
+[TOP](#直播弹幕)  
+文档更新：2024-11-01  
+(每N×60秒&数值更新)发送一次，更新关注数、粉丝团人数  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "ROOM_REAL_TIME_MESSAGE_UPDATE" |
@@ -1343,9 +1336,9 @@ posY_2 = Math.round(posY / 375 * 100)
 ```
 ----
 ### LIKE_INFO_V3_CLICK
-[TOP](#直播弹幕)
-文档更新：2025-04-01
-点赞，实时&每5秒最多发送一次
+[TOP](#直播弹幕)  
+文档更新：2025-04-01  
+点赞，实时&每5秒最多发送一次  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "LIKE_INFO_V3_CLICK" |
@@ -1390,9 +1383,9 @@ posY_2 = Math.round(posY / 375 * 100)
 ```
 ----
 ### LIKE_INFO_V3_UPDATE
-[TOP](#直播弹幕)
-文档更新：2025-04-01
-点赞，实时&每5秒最多发送一次
+[TOP](#直播弹幕)  
+文档更新：2025-04-01  
+点赞，实时&每5秒最多发送一次  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "LIKE_INFO_V3_UPDATE" |
@@ -1406,8 +1399,8 @@ posY_2 = Math.round(posY / 375 * 100)
 ```
 ----
 ### HOT_ROOM_NOTIFY
-[TOP](#直播弹幕)
-文档更新：2024-xx-xx
+[TOP](#直播弹幕)  
+文档更新：2024-xx-xx  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "HOT_ROOM_NOTIFY" |
@@ -1429,10 +1422,10 @@ posY_2 = Math.round(posY / 375 * 100)
 ```
 ----
 ### ENTRY_EFFECT
-[TOP](#直播弹幕)
-文档更新：2024-05-01
-`ENTRY_EFFECT` 欢迎大航海成员进入直播间，高精度
-`ENTRY_EFFECT_MUST_RECEIVE` 欢迎???进入直播间，高精度
+[TOP](#直播弹幕)  
+文档更新：2024-05-01  
+`ENTRY_EFFECT` 欢迎大航海成员进入直播间，高精度  
+`ENTRY_EFFECT_MUST_RECEIVE` 欢迎???进入直播间，高精度  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "ENTRY_EFFECT" "ENTRY_EFFECT_MUST_RECEIVE" |
@@ -1538,9 +1531,9 @@ f"<%{USERNAME}%> 来了"
 ```
 ----
 ### STOP_LIVE_ROOM_LIST
-[TOP](#直播弹幕)
-文档更新：2025-04-01
-每30秒发送一次(`HH:mm:29`,`HH:mm:59`)
+[TOP](#直播弹幕)  
+文档更新：2025-04-01  
+每30秒发送一次(`HH:mm:29`,`HH:mm:59`)  
 广播 未压缩
 | key			| type		| value	|
 |-|-|-|
@@ -1555,9 +1548,10 @@ f"<%{USERNAME}%> 来了"
 ```
 ----
 ### GUARD_BUY
-[TOP](#直播弹幕)
-文档更新：2024-04-12
-大航海购买
+[TOP](#直播弹幕)  
+文档更新：2024-04-12  
+大航海购买  
+**推荐使用 [USER_TOAST_MSG_V2]()**  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "GUARD_BUY" |
@@ -1570,7 +1564,7 @@ f"<%{USERNAME}%> 来了"
 | guard_level	| num	| [guard_level](#others) |
 | num			| num	| 购买数量 |
 | price			| num	| 舰长:198000 / 提督:1998000 / 总督:19998000 |
-| gift_id		| num	| 舰长:10003 /  提督:10002 /   总督:10001 |
+| gift_id		| num	| 舰长:10003 / 提督:10002 / 总督:10001 |
 | gift_name		| str	| |
 | start_time	| num	| 购买时间 TimeStamp(秒) |
 | end_time		| num	| 购买时间 TimeStamp(秒) |
@@ -1581,9 +1575,10 @@ f"<%{USERNAME}%> 来了"
 ```
 ----
 ### USER_TOAST_MSG
-[TOP](#直播弹幕)
-文档更新：2024-11-xx
-大航海购买通知，显示在聊天区
+[TOP](#直播弹幕)  
+文档更新：2024-11-xx  
+大航海购买通知，显示在聊天区  
+**推荐使用 [USER_TOAST_MSG_V2]()**  
 | key	| type	| value	|
 |-|-|-|
 | cmd	| str	| "USER_TOAST_MSG" |
@@ -1659,9 +1654,9 @@ f"<%{USERNAME}%> 来了"
 ```
 ----
 ### NOTICE_MSG
-[TOP](#直播弹幕)
-文档更新：2024-11-xx
-滚动横幅
+[TOP](#直播弹幕)  
+文档更新：2024-11-xx  
+滚动横幅  
 | key 17,18		| type	| value	|
 |-|-|-|
 | cmd			| str	| "NOTICE_MSG" |
@@ -1732,17 +1727,14 @@ f"<%{USERNAME}%> 来了"
 ```
 ----
 ### SUPER_CHAT_MESSAGE
-[TOP](#直播弹幕)
-文档更新：2024-04-22
+[TOP](#直播弹幕)  
+文档更新：2024-04-22  
 **醒目留言 SuperChat**
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "SUPER_CHAT_MESSAGE" |
 | data		| obj	| |
 | roomid	| num	| 长_短直播间ID |
-| is_report	| bool	| true |
-| msg_id	| str	| |
-| send_time	| num	| |
 #### SUPER_CHAT_MESSAGE__data
 | key 30					| type		| value	| 备注
 |-|-|-|-|
@@ -1838,12 +1830,7 @@ f"<%{USERNAME}%> 来了"
 		"uid":xxx,
 		"uinfo":{"key":"value"},
 		"user_info":{"key":"value"}
-	},
-	"is_report":true,
-	"msg_id":"xxx:xxx:xxx",
-	"p_is_ack":true,
-	"p_msg_type":1,
-	"send_time":9999
+	}
 }
 ```
 ### SC价格颜色表
@@ -1857,10 +1844,10 @@ f"<%{USERNAME}%> 来了"
 | 2000+	| #AB1A32 | #FFD8D8 | #8B0F3D | #600012 | #C86A7A | #FFE163 |
 ----
 ### SUPER_CHAT_MESSAGE_JPN
-[TOP](#直播弹幕)
-文档更新：2024-xx-xx
-SuperChat 日本語 Japanese
-由`百度翻译`提供翻译 / Translated by `Baidu Translate`
+[TOP](#直播弹幕)  
+文档更新：2024-xx-xx  
+SuperChat 日本語 Japanese  
+由`百度翻译`提供翻译 / Translated by `Baidu Translate`  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "SUPER_CHAT_MESSAGE_JPN" |
@@ -1894,9 +1881,9 @@ SuperChat 日本語 Japanese
 ```
 ----
 ### SUPER_CHAT_MESSAGE_DELETE
-[TOP](#直播弹幕)
-文档更新：2024-04-12
-SC 删除
+[TOP](#直播弹幕)  
+文档更新：2024-04-12  
+SC 删除  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "SUPER_CHAT_MESSAGE_DELETE" |
@@ -1911,9 +1898,9 @@ SC 删除
 ```
 ----
 ### DANMU_AGGREGATION
-[TOP](#直播弹幕)
-文档更新：2024-xx-xx
-抽奖通知 每秒最多更新一次 每个抽奖最多发送`max_time-1`个包
+[TOP](#直播弹幕)  
+文档更新：2024-xx-xx  
+抽奖通知 每秒最多更新一次 每个抽奖最多发送`max_time-1`个包  
 | key	| type	| value	|
 |-|-|-|
 | cmd	| str	| "DANMU_AGGREGATION" |
@@ -1942,8 +1929,8 @@ SC 删除
 ```
 ----
 ### SPECIAL_GIFT
-[TOP](#直播弹幕)
-文档更新：2024-xx-xx
+[TOP](#直播弹幕)  
+文档更新：2024-xx-xx  
 | key	| type	| value	|
 |-|-|-|
 | cmd	| str	| "SPECIAL_GIFT" |
@@ -1970,8 +1957,8 @@ SC 删除
 ```
 ----
 ### GUARD_HONOR_THOUSAND
-[TOP](#直播弹幕)
-文档更新：2024-11-01
+[TOP](#直播弹幕)  
+文档更新：2024-11-01  
 | key	| type	| value	|
 |-|-|-|
 | cmd	| str	| "GUARD_HONOR_THOUSAND" |
@@ -1987,9 +1974,9 @@ SC 删除
 ```
 ----
 ### ANCHOR_LOT_CHECKSTATUS
-[TOP](#直播弹幕)
-文档更新：2025-03-xx
-抽奖(天选时刻)检查
+[TOP](#直播弹幕)  
+文档更新：2025-03-xx  
+抽奖(天选时刻)检查  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "ANCHOR_LOT_CHECKSTATUS" |
@@ -2010,9 +1997,9 @@ SC 删除
 ```
 ----
 ### ANCHOR_LOT_START
-[TOP](#直播弹幕)
-文档更新：2025-01-01
-抽奖(天选时刻)开始
+[TOP](#直播弹幕)  
+文档更新：2025-01-01  
+抽奖(天选时刻)开始  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "ANCHOR_LOT_START" |
@@ -2076,17 +2063,14 @@ SC 删除
 		"room_id":xxx,"send_gift_ensure":0,"show_panel":1,"start_dont_popup":0,"status":1,"time":xxx,
 		"url":"xxx",
 		"web_url":"https://live.xxx.com/p/html/live-lottery/anchor-join.html"
-	},
-	"msg_id":"xxx:xxx:xxx",
-	"p_is_ack":true,
-	"send_time":xxx
+	}
 }
 ```
 ----
 ### ANCHOR_LOT_END
-[TOP](#直播弹幕)
-文档更新：2024-11-01
-抽奖(天选时刻)结束
+[TOP](#直播弹幕)  
+文档更新：2024-11-01  
+抽奖(天选时刻)结束  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "ANCHOR_LOT_END" |
@@ -2096,13 +2080,13 @@ SC 删除
 |-|-|-|
 | id		| num	| 抽奖id |
 ```json
-{"cmd":"ANCHOR_LOT_END","data":{"id":xxx},"msg_id":"xxx:xxx:xxx","p_is_ack":true,"send_time":xxx}
+{"cmd":"ANCHOR_LOT_END","data":{"id":xxx}}
 ```
 ----
 ### ANCHOR_LOT_AWARD
-[TOP](#直播弹幕)
-文档更新：2025-01-01
-抽奖(天选时刻) 中奖名单
+[TOP](#直播弹幕)  
+文档更新：2025-01-01  
+抽奖(天选时刻) 中奖名单  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "ANCHOR_LOT_AWARD" |
@@ -2149,10 +2133,7 @@ SC 删除
 		"lot_status":2,
 		"url":"xxx",
 		"web_url":"https://live.xxx.com/p/html/live-lottery/anchor-join.html"
-	},
-	"msg_id":"xxx:xxx:xxx",
-	"p_is_ack":true,
-	"send_time":xxx
+	}
 }
 ////////////////
 {
@@ -2175,8 +2156,8 @@ SC 删除
 ```
 ----
 ### POPULAR_RANK_CHANGED
-[TOP](#直播弹幕)
-文档更新：2024-xx-xx
+[TOP](#直播弹幕)  
+文档更新：2024-xx-xx  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "POPULAR_RANK_CHANGED" |
@@ -2200,9 +2181,9 @@ SC 删除
 ```
 ----
 ### PREPARING
-[TOP](#直播弹幕)
-文档更新：2024-xx-xx
-结束直播
+[TOP](#直播弹幕)  
+文档更新：2024-xx-xx  
+结束直播  
 | key 4		| type	| value	|
 |-|-|-|
 | cmd		| str	| "PREPARING" |
@@ -2210,28 +2191,25 @@ SC 删除
 | roomid	| str	| 长_短直播间ID |
 | ?scatter	| obj	| |
 ```json
-{"roomid":"12345","scatter":{"min":10,"max":30},"round":1,"cmd":"PREPARING"}
-{"roomid":"12345","round":1,"cmd":"PREPARING"}
-{"roomid":"12345","cmd":"PREPARING"}
-//{"cmd":"PREPARING","roomid":"12345","round":1,"scatter":{"max":30,"min":10}}
-{"cmd":"PREPARING","msg_id":"xxx:xxx:xxx","p_is_ack":true,"p_msg_type":1,"roomid":"xxx","round":1,"send_time":xxx}
-{"cmd":"PREPARING","msg_id":"xxx:xxx:xxx","p_is_ack":true,"p_msg_type":1,"roomid":"xxx","scatter":{"max":30,"min":10},"send_time":xxx}
-{"cmd":"PREPARING","msg_id":"xxx:xxx:xxx","p_is_ack":true,"p_msg_type":1,"roomid":"xxx","send_time":xxx}
+{"roomid":"xxx","scatter":{"min":10,"max":30},"round":1,"cmd":"PREPARING"}
+{"roomid":"xxx","round":1,"cmd":"PREPARING"}
+{"roomid":"xxx","cmd":"PREPARING"}
+{"cmd":"PREPARING","roomid":"xxx","round":1,"scatter":{"max":30,"min":10}}
+{"cmd":"PREPARING","roomid":"xxx","round":1}
+{"cmd":"PREPARING","roomid":"xxx","scatter":{"max":30,"min":10}}
+{"cmd":"PREPARING","roomid":"xxx"}
 ```
 ----
 ### DANMU_MSG
-[TOP](#直播弹幕)
-文档更新：2024-xx-xx
-弹幕！
-每?秒广播一次，每次最多n×20个
+[TOP](#直播弹幕)  
+文档更新：2024-xx-xx  
+弹幕！  
+每`n`秒广播一次，每次最多`n×20`个  
 | key 3,6		| type	| value	|
 |-|-|-|
 | cmd			| str	| "DANMU_MSG" / "DANMU_MSG:3:7:1:1:1:1" / "DANMU_MSG:4:0:2:2:2:0" |
 | info			| array	| |
 | dm_v2			| str	| base64(protobuf) UTF-8 |
-| p_is_ack		| bool	| |
-| p_msg_type	| num	| |
-| send_time		| num	| |
 #### DANMU_MSG__info
 | array	| type		| value	| 备注	|
 |-|-|-|-|
@@ -2254,7 +2232,7 @@ SC 删除
 | 16	| array		| `Wealth`荣耀等级 |
 | 17	| null/array	| `groupMedal` |
 #### DANMU_MSG__info__0
-弹幕属性
+弹幕属性  
 | array	| type		| value	| 备注	|
 |-|-|-|-|
 | 0[0]	| num		| 0 |
@@ -2276,7 +2254,7 @@ SC 删除
 | 0[16]	| obj 		| `Aggregation/danmakuAggre`[抽奖](#DANMU_MSG__info__0__16) |20230119
 | 0[17]	| num 		| `chatBubbleId/idV2` |20230708+
 #### DANMU_MSG__info__2
-用户主站信息/userInfo
+用户主站信息/userInfo  
 | array	| type	| desc	| value	|
 |-|-|-|-|
 | 2[0]	| num	| `uid` | 用户uid
@@ -2288,7 +2266,7 @@ SC 删除
 | 2[6]	| num	| `verify/MobileVerify`手机号验证 |
 | 2[7]	| str	| `usernameColor` | 舰长:`"#00D1F1"` <br> 提督:`"#E17AFF"` <br> 总督:`"#FF7C28"`
 #### DANMU_MSG__info__3
-粉丝勋章/fansMedal
+粉丝勋章/fansMedal  
 | array	| type	| value	|
 |-|-|-|
 | 3[0]	| num	| `level` 粉丝勋章 等级 |
@@ -2305,7 +2283,7 @@ SC 删除
 | 3[11]	| num	| [`isLight`](#粉丝勋章medal_info) |
 | 3[12]	| num	| `anchorId` 主播uid |
 #### DANMU_MSG__info__4
-用户直播区信息/userLevel/user_level
+用户直播区信息/userLevel/user_level  
 | array	| type		| value	|
 |-|-|-|
 | 4[0]	| num		| `userLevel` 用户UL等级 |
@@ -2314,36 +2292,36 @@ SC 删除
 | 4[3]	| str/num	| `rank` 用户直播排名 `">50000"` / 当前排名 |
 | 4[4]	| num		| `online_rank` \[0,1,2,3\] 高能榜实时排名(仅前三) |
 #### DANMU_MSG__info__5
-头衔/title
+头衔/title  
 | array	| type	| value	|
 |-|-|-|
 | 5[0]	| str	| `old_title` |
 | 5[1]	| str	| `title` |
 #### DANMU_MSG__info__8
-已废弃
+已废弃  
 | key	| type	| value	|
 |-|-|-|
 | uname_color	| str	| |
 #### DANMU_MSG__info__9
-validation
+validation  
 | key	| type	| value	|
 |-|-|-|
 | ts	| num	| TimeStamp(秒) |
 | ct	| str	| hex(64bit) |
 #### DANMU_MSG__info__16
-Wealth
+Wealth  
 | array	| type	| value	|
 |-|-|-|
 | 16[0]	| num	| `wealth level`荣耀等级 |
 #### DANMU_MSG__info__16
-groupMedal
+groupMedal  
 | array	| type	| value	|
 |-|-|-|
 | 17[0]	| num	| medal_id |
 | 17[1]	| str	| name |
 | 17[2]	| num	| is_lighted |
 #### DANMU_MSG__info__0__13
-表情包1
+表情包1  
 | key 7				| type	| value	|
 |-|-|-|
 | bulge_display		| num	| 0 / 1 |
@@ -2354,7 +2332,7 @@ groupMedal
 | url				| str	| 表情包URL(有可能http) |
 | width				| num	| 宽 px |
 #### DANMU_MSG__info__0__14
-voiceConfig
+voiceConfig  
 | key				| type	| value	|
 |-|-|-|
 | file_duration		| num	| |
@@ -2370,7 +2348,7 @@ voiceConfig
 | extra				| str	| [json](#DANMU_MSG__info__0_15__extra) |
 | user				| obj	| [uinfo](#PUBLIC_uinfo) |
 #### DANMU_MSG__info__0__15__extra
-| key 34					| type		| value	| 备注	|
+| key 37					| type		| value	| 备注	|
 |-|-|-|-|
 | send_from_me				| bool		| false |
 | master_player_hidden		| bool		| false |
@@ -2399,7 +2377,7 @@ voiceConfig
 | animation					| obj		| |202206-
 | emots						| obj/null	| 新的表情包 k:v{obj...} |202206-
 | is_audited				| bool		| false | 20230217
-| id_str					| str		| hex(132bit/144bit) 33-34 | 20230308
+| id_str					| str		| hex | 20230308
 | icon						| obj/null	| [荣耀装扮](https://link.xxx.com/p/eden/news#/newsdetail?id=3531 ) | 2023-06-30 10:58:2x
 | show_reply				| bool		| 弹幕回复 |202206-
 | reply_mid					| num		| 弹幕回复-uid |202206-
@@ -2451,38 +2429,38 @@ voiceConfig
 {"cmd":"DANMU_MSG","info":[[0,1,25, 16777215,xxx,xxx,0,"xxx",0,0,0,"",1,{"bulge_display":0,"emoticon_unique":"official_331","height":60,"in_player_area":1,"is_dynamic":1,"url":"http://i0.hdslb.com/bfs/live/cbf2746062242e77bdcb9eb08edbf9b151fe0c2e.png","width":200},"{}",{"extra":"{\"send_from_me\":false,\"mode\":0,\"color\":16777215,\"dm_type\":1,\"font_size\":25,\"player_mode\":1,\"show_player_type\":0,\"content\":\"啊\",\"user_hash\":\"xxx\",\"emoticon_unique\":\"official_331\",\"bulge_display\":0,\"recommend_score\":0,\"main_state_dm_color\":\"\",\"objective_state_dm_color\":\"\",\"direction\":0,\"pk_direction\":0,\"quartet_direction\":0,\"anniversary_crowd\":0,\"yeah_space_type\":\"\",\"yeah_space_url\":\"\",\"jump_to_url\":\"\",\"space_type\":\"\",\"space_url\":\"\",\"animation\":{},\"emots\":null,\"is_audited\":false,\"id_str\":\"xxxx\",\"icon\":null,\"show_reply\":true,\"reply_mid\":0,\"reply_uname\":\"\",\"reply_uname_color\":\"\",\"reply_is_mystery\":false,\"reply_type_enum\":0,\"hit_combo\":0,\"esports_jump_url\":\"\"}","mode":0,"show_player_type":0,"user":{"base":{"face":"xxx","is_mystery":false,"name":"xxx","name_color":0,"name_color_str":"","official_info":{"desc":"","role":0,"title":"","type":-1},"origin_info":{"face":"xxx","name":"xxx"},"risk_ctrl_info":null},"guard":null,"guard_leader":{"is_guard_leader":false},"medal":{"color":xxx,"color_border":xxx,"color_end":xxx,"color_start":xxx,"guard_icon":"","guard_level":0,"honor_icon":"","id":xxx,"is_light":1,"level":xxx,"name":"xxx","ruid":2222,"score":xxx,"typ":0,"user_receive_count":0,"v2_medal_color_border":"#xxx","v2_medal_color_end":"#xxx","v2_medal_color_level":"#xxx","v2_medal_color_start":"#xxx","v2_medal_color_text":"#xxx"},"title":{"old_title_css_id":"","title_css_id":""},"uhead_frame":null,"uid":xxx,"wealth":null}},{"activity_identity":"","activity_source":0,"not_show":0},0],"啊",[xxx,"xxx",0,0,0,10000,1,""],[xxx,"xxx","xxx",xxx,xxxx,"",0,xxxx,xxxx,xxxx,0,1,2222],[7,0,xxx,">50000",0],["",""],0,0,null,{"ct":"xxx","ts":xxx},0,0,null,null,0,xxx,[xx],null]}
 ```
 #### 弹幕颜色
-|name|color|color.hex|weight|color_id|origin|描述|
-|-|-|-|-|-|-|-|
-|白色|16777215|ffffff|-9999|-9999|0|普通|
-|紫色|14893055|e33fff|0|6|1|需要成为该主播的船员方可使用哦!|
-|松石绿|5566168|54eed8|99|66|2|需粉丝勋章达5级才能使用哦！|
-|雨后蓝|5816798|58c1de|98|67|2|需粉丝勋章达15级才能使用哦！|
-|星空蓝|4546550|455ff6|97|68|2|需粉丝勋章达22级才能使用哦！|
-|紫罗兰|9920249|975ef9|96|69|2|需粉丝勋章达26级才能使用哦！|
-|梦境红|12802438|c35986|95|70|2|需粉丝勋章达30级才能使用哦！|
-|热力橙|16747553|ff8c21|94|71|2|需粉丝勋章达34级才能使用哦！|
-|香槟金|16774434|fff522|93|72|2|需粉丝勋章达38级才能使用哦！|
-|红色|16738408|ff6868|0|8|3|成为老爷即可使用哦！|
-|蓝色|6737151|66ccff|0|7|3|成为年费老爷即可使用哦!|
-|盛典金|16766720|ffd700|100|44|4|在特定活动中才可以获得哦！|
-|升腾蓝|4286945|4169e1|100|43|4|在特定活动中才可以获得哦！|
-|青色|65532|00fffc|0|5|4|需要完成【度年如日】成就才能使用哦!|
-|绿色|8322816|7eff00|0|4|4|需要完成【如雷贯耳】成就才能使用哦!|
-|黄色弹幕|16772431|ffed4f|0|3|4|需要完成【腰缠万贯】成就才能使用哦!|
-|橙色|16750592|ff9800|0|2|4|需要完成【追云逐月】成就才能使用哦!|
-|粉色|16741274|ff739a|0|1|4|拥有“五魁首”头衔时才可使用哟！|
+|name|color|color.hex(RGB)|weight|color_id|origin|描述|
+|-|-:|-:|-:|-:|-:|-|
+|`普`白色|`16777215`|`0xffffff` `ffffff`|-9999|-9999|0|普通|
+|`航`紫色|`14893055`|`0xe33fff` `e33fff`|0|6|1|需要成为该主播的船员方可使用哦!|
+|`粉`松石绿|`5566168`|`0x54eed8` `54eed8`|99|66|2|需粉丝勋章达5级才能使用哦！|
+|`粉`雨后蓝|`5816798`|`0x58c1de` `58c1de`|98|67|2|需粉丝勋章达15级才能使用哦！|
+|`粉`星空蓝|`4546550`|`0x455ff6` `455ff6`|97|68|2|需粉丝勋章达22级才能使用哦！|
+|`粉`紫罗兰|`9920249`|`0x975ef9` `975ef9`|96|69|2|需粉丝勋章达26级才能使用哦！|
+|`粉`梦境红|`12802438`|`0xc35986` `c35986`|95|70|2|需粉丝勋章达30级才能使用哦！|
+|`粉`热力橙|`16747553`|`0xff8c21` `ff8c21`|94|71|2|需粉丝勋章达34级才能使用哦！|
+|`粉`香槟金|`16774434`|`0xfff522` `fff522`|93|72|2|需粉丝勋章达38级才能使用哦！|
+|`爷`红色|`16738408`|`0xff6868` `ff6868`|0|8|3|成为老爷即可使用哦！|
+|`爷`蓝色|`6737151`|`0x66ccff` `66ccff`|0|7|3|成为年费老爷即可使用哦!|
+|`活`盛典金|`16766720`|`0xffd700` `ffd700`|100|44|4|在特定活动中才可以获得哦！|
+|`活`升腾蓝|`4286945`|`0x4169e1` `4169e1`|100|43|4|在特定活动中才可以获得哦！|
+|`活`青色|`65532`|`0x00fffc` `00fffc`|0|5|4|需要完成【度年如日】成就才能使用哦!|
+|`活`绿色|`8322816`|`0x7eff00` `7eff00`|0|4|4|需要完成【如雷贯耳】成就才能使用哦!|
+|`活`黄色弹幕|`16772431`|`0xffed4f` `ffed4f`|0|3|4|需要完成【腰缠万贯】成就才能使用哦!|
+|`活`橙色|`16750592`|`0xff9800` `ff9800`|0|2|4|需要完成【追云逐月】成就才能使用哦!|
+|`活`粉色|`16741274`|`0xff739a` `ff739a`|0|1|4|拥有“五魁首”头衔时才可使用哟！|
 ----
 ### CUT_OFF
-[TOP](#直播弹幕)
-文档更新：2024-xx-xx
-切断直播！
+[TOP](#直播弹幕)  
+文档更新：2024-xx-xx  
+切断直播！  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "CUT_OFF" |
 | msg		| str	| |
 | room_id	| num	| 直播间id |
 ```json
-{"cmd":"CUT_OFF","msg":"xxx","msg_id":"xxx:xxx:xxx","p_is_ack":true,"room_id":xxx,"send_time":9999}
+{"cmd":"CUT_OFF","msg":"xxx","room_id":xxx}
 "版权相关"
 "分区错误，直播该游戏请到THE FINALS分区"
 "分区错误，直播该游戏请移至虚拟APEX分区直播"
@@ -2502,10 +2480,10 @@ voiceConfig
 ```
 ----
 ### SHOPPING_CART_SHOW
-[TOP](#直播弹幕)
-文档更新：2024-xx-xx
-?购物车
-开播后约30ms内发送`status=1`的包
+[TOP](#直播弹幕)  
+文档更新：2024-xx-xx  
+?购物车  
+开播后约30ms内发送`status=1`的包  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "SHOPPING_CART_SHOW" |
@@ -2520,11 +2498,11 @@ voiceConfig
 ```
 ----
 ### WIDGET_BANNER
-[TOP](#直播弹幕)
-文档更新：2024-xx-xx
+[TOP](#直播弹幕)  
+文档更新：2024-xx-xx  
 | key	| type	| value	|
 |-|-|-|
-| cmd	| str	| "ROOM_BANNER"/"WIDGET_BANNER" |
+| cmd	| str	| "ROOM_BANNER" / "WIDGET_BANNER" |
 | data	| obj	| |
 #### WIDGET_BANNER__data
 | key			| type	| value	|
@@ -2553,9 +2531,9 @@ voiceConfig
 | is_add			| bool		| true |
 ----
 ### GOTO_BUY_FLOW
-[TOP](#直播弹幕)
-文档更新：2024-xx-xx
-移动端 购买商品
+[TOP](#直播弹幕)  
+文档更新：2024-xx-xx  
+移动端 购买商品  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "GOTO_BUY_FLOW" |
@@ -2571,9 +2549,9 @@ voiceConfig
 ```
 ----
 ### RECOMMEND_CARD
-[TOP](#直播弹幕)
-文档更新：2024-05-28
-商品推销(移动端)
+[TOP](#直播弹幕)  
+文档更新：2024-05-28  
+商品推销(移动端)  
 | key					| type		| value	|
 |-|-|-|
 | cmd					| str		| "RECOMMEND_CARD" |
@@ -2637,7 +2615,7 @@ voiceConfig
 | key 2						| type		| value	|
 |-|-|-|
 | normal					| obj 		| |
-| ?activity				| null/?	| |
+| ?activity					| null/?	| |
 #### RECOMMEND_CARD__data__recommend_list__shopping_card_detail__price_info__normal
 | key 7						| type		| value	|
 |-|-|-|
@@ -2725,8 +2703,8 @@ recommend_list > shopping_card_detail > goods_icon
 ----
 ### LIKE_INFO_V3_NOTICE
 ### COMMON_NOTICE_DANMAKU
-[TOP](#直播弹幕)
-文档更新：2024-05-23
+[TOP](#直播弹幕)  
+文档更新：2024-05-23  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "COMMON_NOTICE_DANMAKU" "LIKE_INFO_V3_NOTICE" |
@@ -2816,9 +2794,9 @@ content_segments__text=[
 ```
 ----
 ### POPULARITY_RED_POCKET_NEW
-[TOP](#直播弹幕)
-文档更新：2024-05-23
-红包抽奖
+[TOP](#直播弹幕)  
+文档更新：2024-05-23  
+红包抽奖  
 | key			| type		| value	|
 |-|-|-|
 | cmd			| str		| "POPULARITY_RED_POCKET_NEW" "POPULARITY_RED_POCKET_V2_NEW" |
@@ -2851,9 +2829,9 @@ content_segments__text=[
 ```
 ----
 ### POPULARITY_RED_POCKET_START
-[TOP](#直播弹幕)
-文档更新：2024-05-23
-红包抽奖
+[TOP](#直播弹幕)  
+文档更新：2024-05-23  
+红包抽奖  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "POPULARITY_RED_POCKET_START" "POPULARITY_RED_POCKET_V2_START" |
@@ -2897,13 +2875,13 @@ content_segments__text=[
 {"cmd":"POPULARITY_RED_POCKET_START",   "data":{"lot_id":xxx,"sender_uid":xxx,"sender_name":"xxx","sender_face":"xxx","join_requirement":1,"danmu":"xxx","current_time":xxxxxxxxxx,"start_time":xxxxxxxxxx,"end_time":xxxxxxxxxx,"last_time":180,"remove_time":xxxxxxxxxx,"replace_time":xxxxxxxxxx,"lot_status":1,"h5_url":"xxx","user_status":2,"awards":[{"gift_id":31212,"gift_name":"打call","gift_pic":"https://s1.hdslb.com/bfs/live/461be640f60788c1d159ec8d6c5d5cf1ef3d1830.png","num":2},{"gift_id":34003,"gift_name":"人气票","gift_pic":"https://s1.hdslb.com/bfs/live/7164c955ec0ed7537491d189b821cc68f1bea20d.png","num":3},{"gift_id":31216,"gift_name":"小花花","gift_pic":"https://s1.hdslb.com/bfs/live/5126973892625f3a43a8290be6b625b5e54261a5.png","num":3}],"lot_config_id":3,"total_price":1600,"wait_num":xx,"wait_num_v2":xx,"is_mystery":false,"rp_type":0,"sender_uinfo":xxx,"icon_url":"","animation_icon_url":""}}
 {"cmd":"POPULARITY_RED_POCKET_V2_START","data":{"lot_id":123,"sender_uid":123,"sender_name":"xxx","sender_face":"xxx","join_requirement":1,"danmu":"xxx","current_time":xxxxxxxxxx,"start_time":xxxxxxxxxx,"end_time":xxxxxxxxxx,"last_time":180,"remove_time":xxxxxxxxxx,"replace_time":xxxxxxxxxx,"lot_status":1,"h5_url":"xxx","user_status":2,"awards":[{"gift_id":31212,"gift_name":"打call","gift_pic":"https://s1.hdslb.com/bfs/live/461be640f60788c1d159ec8d6c5d5cf1ef3d1830.png","num":2},{"gift_id":34003,"gift_name":"人气票","gift_pic":"https://s1.hdslb.com/bfs/live/7164c955ec0ed7537491d189b821cc68f1bea20d.png","num":3},{"gift_id":31216,"gift_name":"小花花","gift_pic":"https://s1.hdslb.com/bfs/live/5126973892625f3a43a8290be6b625b5e54261a5.png","num":3}],"lot_config_id":3,"total_price":1600,"wait_num":xx,"wait_num_v2":xx,"is_mystery":false,"rp_type":0,"sender_uinfo":xxx,"icon_url":"","animation_icon_url":""}}
 
-"danmu":["老板大气！点点红包抽礼物","点点红包，关注主播抽礼物～"]
+"danmu":["老板大气！点点红包抽礼物", "点点红包，关注主播抽礼物～"]
 ```
 ----
 ### POPULARITY_RED_POCKET_WINNER_LIST
-[TOP](#直播弹幕)
-文档更新：2024-05-23
-红包抽奖
+[TOP](#直播弹幕)  
+文档更新：2024-05-23  
+红包抽奖  
 | key	| type	| value	|
 |-|-|-|
 | cmd	| str	| "POPULARITY_RED_POCKET_WINNER_LIST" "POPULARITY_RED_POCKET_V2_WINNER_LIST" |
@@ -2922,14 +2900,14 @@ content_segments__text=[
 #### POPULARITY_RED_POCKET_WINNER_LIST__data__winner_info
 | array	| type	| value	|
 |-|-|-|
-| 0		| num	| 获奖者_uid |
-| 1		| str	| 获奖者昵称 |
-| 2		| num	| `bag_id` |
-| 3		| num	| gift_id |
-| 4		| bool	| ?false |
-| 5		| null	| ?null |
-| 6		| num	| `-> timestamp` |
-| 7		| num	| ruid |
+| 0 | num	| 获奖者_uid |
+| 1 | str	| 获奖者昵称 |
+| 2 | num	| `bag_id` |
+| 3 | num	| gift_id |
+| 4 | bool	| ?false |
+| 5 | null	| ?null |
+| 6 | num	| `-> timestamp` |
+| 7 | num	| ruid |
 #### POPULARITY_RED_POCKET_WINNER_LIST__data__awards
 | key			| type	| value	|
 |-|-|-|
@@ -2972,9 +2950,9 @@ content_segments__text=[
 ```
 ----
 ### ROOM_BLOCK_MSG
-[TOP](#直播弹幕)
-文档更新：2024-11-01
-用户封禁
+[TOP](#直播弹幕)  
+文档更新：2024-11-01  
+用户封禁  
 | key		| type		| value	|
 |-|-|-|
 | cmd		| str		| "ROOM_BLOCK_MSG" |
@@ -2999,9 +2977,9 @@ content_segments__text=[
 ```
 ----
 ### AREA_RANK_CHANGED
-[TOP](#直播弹幕)
-文档更新：2024-05-26
-timestamp: N×5
+[TOP](#直播弹幕)  
+文档更新：2024-05-26  
+timestamp: N×5  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "AREA_RANK_CHANGED" |
@@ -3046,8 +3024,8 @@ timestamp: N×5
 ```
 ----
 ### HOT_BUY_NUM
-[TOP](#直播弹幕)
-文档更新：2024-xx-xx
+[TOP](#直播弹幕)  
+文档更新：2024-xx-xx  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "HOT_BUY_NUM" |
@@ -3062,8 +3040,8 @@ timestamp: N×5
 ```
 ----
 ### WIDGET_GIFT_STAR_PROCESS
-[TOP](#直播弹幕)
-文档更新：2024-01-28
+[TOP](#直播弹幕)  
+文档更新：2024-01-28  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "WIDGET_GIFT_STAR_PROCESS" |
@@ -3111,7 +3089,7 @@ timestamp: N×5
 ```
 ----
 ### LIVE_INTERACTIVE_GAME
-[TOP](#直播弹幕)
+[TOP](#直播弹幕)  
 文档更新：2024-01-20
 | key				| type	| value	|
 |-|-|-|
@@ -3142,8 +3120,8 @@ timestamp: N×5
 ```
 ----
 ### LIVE_MULTI_VIEW_CHANGE
-[TOP](#直播弹幕)
-文档更新：2024-xx-xx
+[TOP](#直播弹幕)  
+文档更新：2024-xx-xx  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "LIVE_MULTI_VIEW_CHANGE" |
@@ -3157,8 +3135,8 @@ timestamp: N×5
 ```
 ----
 ### SUPER_CHAT_ENTRANCE
-[TOP](#直播弹幕)
-文档更新：2024-xx-xx
+[TOP](#直播弹幕)  
+文档更新：2024-xx-xx  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "SUPER_CHAT_ENTRANCE" |
@@ -3177,8 +3155,8 @@ timestamp: N×5
 ```
 ----
 ### SYS_MSG
-[TOP](#直播弹幕)
-文档更新：2024-11-01
+[TOP](#直播弹幕)  
+文档更新：2024-11-01  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "SYS_MSG" |
@@ -3189,9 +3167,9 @@ timestamp: N×5
 ```
 ----
 ### VOICE_JOIN_STATUS
-[TOP](#直播弹幕)
-文档更新：2024-04-22
-连麦用户
+[TOP](#直播弹幕)  
+文档更新：2024-04-22  
+连麦用户  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "VOICE_JOIN_STATUS" |
@@ -3215,14 +3193,14 @@ timestamp: N×5
 | web_share_link	| str		| 直播间URL |
 ```json
 {"cmd":"VOICE_JOIN_STATUS","data":{"room_id":12345,"status":0,"channel":"","channel_type":"voice","uid":0,"user_name":"","head_pic":"","guard":0,"start_at":0,"current_time":1111111111,"web_share_link":"https://live.xxx.com/h5/xxx"},"room_id":12345}
-{"cmd":"VOICE_JOIN_STATUS","data":{"channel":"",   "channel_type":"voice","current_time":1111111111,"guard":9,"head_pic":"",   "is_mystery":false,"room_id":12345,"start_at":0,         "status":0,"uid":0,    "uinfo":null,"user_name":"",   "web_share_link":"https://live.xxx.com/h5/12345"},"msg_id":"xxx:xxx:xxx","p_is_ack":true,"p_msg_type":1,"room_id":12345,"send_time":xxx}
-{"cmd":"VOICE_JOIN_STATUS","data":{"channel":"xxx","channel_type":"voice","current_time":1111111111,"guard":9,"head_pic":"xxx","is_mystery":false,"room_id":12345,"start_at":1111111111,"status":1,"uid":12345,"uinfo":null,"user_name":"xxx","web_share_link":"https://live.xxx.com/h5/12345"},"msg_id":"xxx:xxx:xxx","p_is_ack":true,"p_msg_type":1,"room_id":12345,"send_time":xxx}
+{"cmd":"VOICE_JOIN_STATUS","data":{"channel":"",   "channel_type":"voice","current_time":1111111111,"guard":9,"head_pic":"",   "is_mystery":false,"room_id":12345,"start_at":0,         "status":0,"uid":0,    "uinfo":null,"user_name":"",   "web_share_link":"https://live.xxx.com/h5/12345"},"room_id":12345}
+{"cmd":"VOICE_JOIN_STATUS","data":{"channel":"xxx","channel_type":"voice","current_time":1111111111,"guard":9,"head_pic":"xxx","is_mystery":false,"room_id":12345,"start_at":1111111111,"status":1,"uid":12345,"uinfo":null,"user_name":"xxx","web_share_link":"https://live.xxx.com/h5/12345"},"room_id":12345}
 ```
 ----
 ### DM_INTERACTION
-[TOP](#直播弹幕)
-文档更新：2025-04-01
-弹幕投票 / 他们都在说
+[TOP](#直播弹幕)  
+文档更新：2025-04-01  
+弹幕互动  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "DM_INTERACTION" |
@@ -3323,9 +3301,9 @@ timestamp: N×5
 ```
 ----
 ### PLAY_TAG
-[TOP](#直播弹幕)
-文档更新：2024-11-01
-比赛事件
+[TOP](#直播弹幕)  
+文档更新：2024-11-01  
+比赛事件  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "PLAY_TAG" |
@@ -3342,8 +3320,8 @@ timestamp: N×5
 ```
 ----
 ### FULL_SCREEN_SPECIAL_EFFECT
-[TOP](#直播弹幕)
-文档更新：2024-xx-xx
+[TOP](#直播弹幕)  
+文档更新：2024-xx-xx  
 | key	| type	| value	|
 |-|-|-|
 | cmd	| str	| "FULL_SCREEN_SPECIAL_EFFECT" |
@@ -3363,8 +3341,8 @@ timestamp: N×5
 ```
 ----
 ### TRADING_SCORE
-[TOP](#直播弹幕)
-文档更新：2024-04-12
+[TOP](#直播弹幕)  
+文档更新：2024-04-12  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "TRADING_SCORE" |
@@ -3384,8 +3362,8 @@ timestamp: N×5
 ```
 ----
 ### ROOM_SILENT
-[TOP](#直播弹幕)
-文档更新：2024-xx-xx
+[TOP](#直播弹幕)  
+文档更新：2024-xx-xx  
 `ROOM_SILENT_ON` 开启直播间全局禁言
 `ROOM_SILENT_OFF` 解除直播间全局禁言
 | key		| type	| value	|
@@ -3426,9 +3404,9 @@ match data["type"]:
 ```
 ----
 ### CHANGE_ROOM_INFO
-[TOP](#直播弹幕)
-文档更新：2024-11-11
-更换直播间背景(WEB)
+[TOP](#直播弹幕)  
+文档更新：2024-11-11  
+更换直播间背景(WEB)  
 | key			| type		| value	|
 |-|-|-|
 | cmd			| str		| "CHANGE_ROOM_INFO" |
@@ -3445,9 +3423,9 @@ match data["type"]:
 ```
 ----
 ### ROOM_CHANGE
-[TOP](#直播弹幕)
-文档更新：2024-11-01
-标题更改/分区更改
+[TOP](#直播弹幕)  
+文档更新：2024-11-01  
+标题更改/分区更改  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "ROOM_CHANGE" |
@@ -3468,8 +3446,8 @@ match data["type"]:
 ```
 ----
 ### OBS_SHIELD_STATUS_UPDATE
-文档更新：2024-xx-xx
-[TOP](#直播弹幕)
+[TOP](#直播弹幕)  
+文档更新：2024-xx-xx  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "OBS_SHIELD_STATUS_UPDATE" |
@@ -3484,8 +3462,8 @@ match data["type"]:
 ```
 ----
 ### RING_STATUS_CHANGE
-文档更新：2024-11-01
-[TOP](#直播弹幕)
+[TOP](#直播弹幕)  
+文档更新：2024-11-01  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "RING_STATUS_CHANGE" "RING_STATUS_CHANGE_V2" |
@@ -3500,8 +3478,8 @@ match data["type"]:
 {"cmd":"RING_STATUS_CHANGE_V2","data":{"reserve_type":0,"status":1}}
 ```
 ### VOICE_JOIN_LIST
-[TOP](#直播弹幕)
-文档更新：2024-04-22
+[TOP](#直播弹幕)  
+文档更新：2024-04-22  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "VOICE_JOIN_LIST" |
@@ -3517,12 +3495,12 @@ match data["type"]:
 | red_point		| num	| |
 | refresh		| num	| |
 ```json
-{"cmd":"VOICE_JOIN_LIST","data":{"apply_count":x,"category":1,"cmd":"","red_point":1,"refresh":1,"room_id":12345},"msg_id":"xxx:xxx:xxx","p_is_ack":true,"p_msg_type":1,"room_id":12345,"send_time":xxx}
+{"cmd":"VOICE_JOIN_LIST","data":{"apply_count":x,"category":1,"cmd":"","red_point":1,"refresh":1,"room_id":12345},"room_id":12345}
 ```
 ----
 ### VOICE_JOIN_ROOM_COUNT_INFO
-[TOP](#直播弹幕)
-文档更新：2024-04-22
+[TOP](#直播弹幕)  
+文档更新：2024-04-22  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "VOICE_JOIN_ROOM_COUNT_INFO" |
@@ -3539,7 +3517,7 @@ match data["type"]:
 | notify_count	| num	| |
 | red_point		| num	| |
 ```json
-{"cmd":"VOICE_JOIN_ROOM_COUNT_INFO","data":{"apply_count":xx,"cmd":"","notify_count":0,"red_point":1,"room_id":12345,"room_status":1,"root_status":1},"msg_id":"xxx:xxx:xxx","p_is_ack":true,"p_msg_type":1,"room_id":12345,"send_time":xxx}
+{"cmd":"VOICE_JOIN_ROOM_COUNT_INFO","data":{"apply_count":xx,"cmd":"","notify_count":0,"red_point":1,"room_id":12345,"room_status":1,"root_status":1},"room_id":12345}
 {"cmd":"VOICE_JOIN_ROOM_COUNT_INFO","data":{"cmd":"","room_id":12345,"root_status":1,"room_status":1,"apply_count":xx,"notify_count":0,"red_point":1},"room_id":12345}
 {"cmd":"VOICE_JOIN_ROOM_COUNT_INFO","data":{"cmd":"","room_id":12345,"root_status":1,"room_status":1,"apply_count":xx,"notify_count":0,"red_point":0},"room_id":12345}
 {"cmd":"VOICE_JOIN_ROOM_COUNT_INFO","data":{"apply_count":xx,"cmd":"","notify_count":0,"red_point":1,"room_id":12345,"room_status":1,"root_status":1},"room_id":12345}
@@ -3547,8 +3525,8 @@ match data["type"]:
 ```
 ----
 ### ROOM_SKIN_MSG
-[TOP](#直播弹幕)
-文档更新：2024-xx-xx
+[TOP](#直播弹幕)  
+文档更新：2024-xx-xx  
 | key 10,11		| type	| value	|
 |-|-|-|
 | cmd			| str	| "ROOM_SKIN_MSG" |
@@ -3580,8 +3558,8 @@ match data["type"]:
 ```
 ----
 ### PK_BATTLE_ENTRANCE
-[TOP](#直播弹幕)
-文档更新：2024-xx-xx
+[TOP](#直播弹幕)  
+文档更新：2024-xx-xx  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "PK_BATTLE_ENTRANCE" |
@@ -3597,8 +3575,8 @@ match data["type"]:
 ```
 ----
 ### LIVE_PANEL_CHANGE
-[TOP](#直播弹幕)
-文档更新：2024-xx-xx
+[TOP](#直播弹幕)  
+文档更新：2024-xx-xx  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "LIVE_PANEL_CHANGE" |
@@ -3614,8 +3592,8 @@ match data["type"]:
 ```
 ----
 ### RANK_REM
-[TOP](#直播弹幕)
-文档更新：2024-07-24
+[TOP](#直播弹幕)  
+文档更新：2024-07-24  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "RANK_REM" |
@@ -3644,8 +3622,8 @@ RANK_REM_RANK_NEW
 ```
 ----
 ### GUARD_ACHIEVEMENT_ROOM
-[TOP](#直播弹幕)
-文档更新：2024-xx-xx
+[TOP](#直播弹幕)  
+文档更新：2024-xx-xx  
 | key	| type	| value	|
 |-|-|-|
 | cmd	| str	| "GUARD_ACHIEVEMENT_ROOM" |
@@ -3691,8 +3669,8 @@ RANK_REM_RANK_NEW
 ```
 ----
 ### SHOPPING_BUBBLES_STYLE
-[TOP](#直播弹幕)
-文档更新：2024-xx-xx
+[TOP](#直播弹幕)  
+文档更新：2024-xx-xx  
 | key	| type	| value	|
 |-|-|-|
 | cmd	| str	| "SHOPPING_BUBBLES_STYLE" |
@@ -3714,8 +3692,8 @@ RANK_REM_RANK_NEW
 ```
 ----
 ### GIFT_STAR_PROCESS
-[TOP](#直播弹幕)
-文档更新：2024-11-11
+[TOP](#直播弹幕)  
+文档更新：2024-11-11  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "GIFT_STAR_PROCESS" |
@@ -3731,8 +3709,8 @@ RANK_REM_RANK_NEW
 ```
 ----
 ### ANCHOR_NORMAL_NOTIFY
-[TOP](#直播弹幕)
-文档更新：2024-11-01
+[TOP](#直播弹幕)  
+文档更新：2024-11-01  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "ANCHOR_NORMAL_NOTIFY" |
@@ -3749,8 +3727,8 @@ RANK_REM_RANK_NEW
 ```
 ----
 ### LIVE_OPEN_PLATFORM_GAME
-[TOP](#直播弹幕)
-文档更新：2024-xx-xx
+[TOP](#直播弹幕)  
+文档更新：2024-xx-xx  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "LIVE_OPEN_PLATFORM_GAME" |
@@ -3771,9 +3749,9 @@ RANK_REM_RANK_NEW
 | block_uids				| null/\[?\]	| |
 ----
 ### room_admin_entrance
-[TOP](#直播弹幕)
-文档更新：2024-xx-xx
-设置房管
+[TOP](#直播弹幕)  
+文档更新：2024-xx-xx  
+设置房管  
 | key	| type	| value	|
 |-|-|-|
 | cmd		| str	| "room_admin_entrance" |
@@ -3786,7 +3764,7 @@ RANK_REM_RANK_NEW
 ```
 ----
 ### ROOM_ADMINS
-[TOP](#直播弹幕)
+[TOP](#直播弹幕)  
 文档更新：2024-xx-xx
 | key		| type		| value	|
 |-|-|-|
@@ -3797,9 +3775,9 @@ RANK_REM_RANK_NEW
 ```
 ----
 ### ROOM_ADMIN_REVOKE
-[TOP](#直播弹幕)
-文档更新：2024-xx-xx
-移除房管
+[TOP](#直播弹幕)  
+文档更新：2024-xx-xx  
+移除房管  
 | key 6		| type	| value	|
 |-|-|-|
 | cmd		| str	| "ROOM_ADMIN_REVOKE" |
@@ -3810,8 +3788,8 @@ RANK_REM_RANK_NEW
 ```
 ----
 ### MVROLECHANGE
-[TOP](#直播弹幕)
-文档更新：2024-xx-xx
+[TOP](#直播弹幕)  
+文档更新：2024-xx-xx  
 | key			| type	| value	|
 |-|-|-|
 | cmd			| str	| "MVROLECHANGE" |
@@ -3829,8 +3807,8 @@ RANK_REM_RANK_NEW
 ```
 ----
 ### VOICE_CHAT_UPDATE
-[TOP](#直播弹幕)
-文档更新：2024-06-01
+[TOP](#直播弹幕)  
+文档更新：2024-06-01  
 | key	| type	| value	|
 |-|-|-|
 | cmd	| str	| "VOICE_CHAT_UPDATE" |
@@ -3844,8 +3822,8 @@ RANK_REM_RANK_NEW
 ```
 ----
 ### MESSAGEBOX_USER_GAIN_MEDAL
-[TOP](#直播弹幕)
-文档更新：2024-xx-xx
+[TOP](#直播弹幕)  
+文档更新：2024-xx-xx  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "MESSAGEBOX_USER_GAIN_MEDAL" |
@@ -3891,9 +3869,9 @@ RANK_REM_RANK_NEW
 ```
 ----
 ### COMBO_SEND
-[TOP](#直播弹幕)
-文档更新：2024-04-12
-礼物连击
+[TOP](#直播弹幕)  
+文档更新：2024-04-12  
+礼物连击  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "COMBO_SEND" |
@@ -3929,12 +3907,13 @@ RANK_REM_RANK_NEW
 | uname				| str		| 昵称 |
 | wealth_level		| num		| |
 ```python
-import hashlib;hashlib.md5().hexdigest()
+import hashlib
+hashlib.md5().hexdigest()
+
 combo_id       = ":".join(["batch","gift","combo_id",sender_uid,receiver_uid,gift_id,time.time():.4f])
-time.sleep(0.01)
 batch_combo_id = ":".join(["batch","gift","combo_id",sender_uid,receiver_uid,gift_id,time.time():.4f])
-sender_uid = str(binascii.b2a_hex(bytes(str(sender_uid),"ascii")),"ascii")+"d41d8cd98f00b204e9800998ecf8427e"
-recovered_sender_uid
+
+enc_sender_uid = str(binascii.b2a_hex(bytes(str(sender_uid),"ascii")),"ascii")+"d41d8cd98f00b204e9800998ecf8427e"
 ```
 ```json
 // empty md5:d41d8cd98f00b204e9800998ecf8427e
@@ -3975,15 +3954,12 @@ recovered_sender_uid
 ```
 ----
 ### COMBO_END
-[TOP](#直播弹幕)
-文档更新：2024-04-30
+[TOP](#直播弹幕)  
+文档更新：2024-04-30  
 | key				| type	| value	|
 |-|-|-|
 | cmd				| str	| "COMBO_SEND" |
 | data				| obj	| |
-| is_report			| bool	| true |
-| msg_id			| str	| |
-| send_time			| num	| |
 #### COMBO_SEND__data
 | key				| type	| value	|
 |-|-|-|
@@ -4009,8 +3985,8 @@ recovered_sender_uid
 ```
 ----
 ### ANCHOR_ECOMMERCE_STATUS
-[TOP](#直播弹幕)
-文档更新：2023-xx-xx
+[TOP](#直播弹幕)  
+文档更新：2023-xx-xx  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "ANCHOR_ECOMMERCE_STATUS" |
@@ -4024,9 +4000,9 @@ recovered_sender_uid
 ```
 ----
 ### ADMIN_SHIELD_KEYWORD
-[TOP](#直播弹幕)
-文档更新：2024-xx-xx
-房管: 全局屏蔽字符串
+[TOP](#直播弹幕)  
+文档更新：2024-xx-xx  
+房管: 全局屏蔽字符串  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "ADMIN_SHIELD_KEYWORD" |
@@ -4044,8 +4020,8 @@ recovered_sender_uid
 ```
 ----
 ### ANCHOR_HELPER_DANMU
-[TOP](#直播弹幕)
-文档更新：2024-xx-xx
+[TOP](#直播弹幕)  
+文档更新：2024-xx-xx  
 | key				| type	| value	|
 |-|-|-|
 | cmd				| str	| "ANCHOR_HELPER_DANMU" |
@@ -4078,8 +4054,8 @@ recovered_sender_uid
 ```
 ----
 ### CARD_MSG
-[TOP](#直播弹幕)
-文档更新：2024-04-30
+[TOP](#直播弹幕)  
+文档更新：2024-04-30  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "CARD_MSG" |
@@ -4106,8 +4082,8 @@ recovered_sender_uid
 ```
 ----
 ### USER_PANEL_RED_ALARM
-[TOP](#直播弹幕)
-文档更新：2024-xx-xx
+[TOP](#直播弹幕)  
+文档更新：2024-xx-xx  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "USER_PANEL_RED_ALARM" |
@@ -4126,8 +4102,8 @@ recovered_sender_uid
 ```
 ----
 ### USER_INFO_UPDATE
-[TOP](#直播弹幕)
-文档更新：2024-xx-xx
+[TOP](#直播弹幕)  
+文档更新：2024-xx-xx  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "USER_INFO_UPDATE" |
@@ -4143,9 +4119,9 @@ recovered_sender_uid
 ```
 ----
 ### MESSAGEBOX_USER_MEDAL_CHANGE
-[TOP](#直播弹幕)
-文档更新：2024-11-xx
-粉丝牌升级
+[TOP](#直播弹幕)  
+文档更新：2024-11-xx  
+粉丝牌升级  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "MESSAGEBOX_USER_MEDAL_CHANGE" |
@@ -4175,8 +4151,8 @@ recovered_sender_uid
 ```
 ----
 ### WEALTH_NOTIFY
-[TOP](#直播弹幕)
-文档更新：2024-xx-xx
+[TOP](#直播弹幕)  
+文档更新：2024-xx-xx  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "WEALTH_NOTIFY" |
@@ -4200,8 +4176,8 @@ recovered_sender_uid
 ```
 ----
 ### ACTIVITY_BANNER_CHANGE
-[TOP](#直播弹幕)
-文档更新：2024-xx-xx
+[TOP](#直播弹幕)  
+文档更新：2024-xx-xx  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "ACTIVITY_BANNER_CHANGE/ACTIVITY_BANNER_CHANGE_V2" |
@@ -4231,8 +4207,8 @@ recovered_sender_uid
 ```
 ----
 ### SPREAD_SHOW_FEET_V2
-[TOP](#直播弹幕)
-文档更新：2024-xx-xx
+[TOP](#直播弹幕)  
+文档更新：2024-xx-xx  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "SPREAD_SHOW_FEET_V2" |
@@ -4265,8 +4241,8 @@ recovered_sender_uid
 ```
 ----
 ### PLAYTOGETHER_ICON_CHANGE
-[TOP](#直播弹幕)
-文档更新：2024-11-11
+[TOP](#直播弹幕)  
+文档更新：2024-11-11  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "PLAYTOGETHER_ICON_CHANGE" |
@@ -4283,8 +4259,8 @@ recovered_sender_uid
 ```
 ----
 ### STUDIO_ROOM_CLOSE
-[TOP](#直播弹幕)
-文档更新：2024-xx-xx
+[TOP](#直播弹幕)  
+文档更新：2024-xx-xx  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "STUDIO_ROOM_CLOSE" |
@@ -4295,8 +4271,8 @@ recovered_sender_uid
 ```
 ----
 ### PK_BATTLE_SETTLE_USER
-[TOP](#直播弹幕)
-文档更新：2024-xx-xx
+[TOP](#直播弹幕)  
+文档更新：2024-xx-xx  
 | key 9			| type	| value	|
 |-|-|-|
 | cmd			| str	| "PK_BATTLE_SETTLE_USER" |
@@ -4356,8 +4332,8 @@ recovered_sender_uid
 | winner_count_score	| num	| |
 ---
 ### MULTI_VOICE_STATUS_SYNC_ANCHOR
-[TOP](#直播弹幕)
-文档更新：2024-xx-xx
+[TOP](#直播弹幕)  
+文档更新：2024-xx-xx  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "MULTI_VOICE_STATUS_SYNC_ANCHOR" |
@@ -4396,8 +4372,8 @@ recovered_sender_uid
 ```
 ---
 ### NEW_PK_START
-[TOP](#直播弹幕)
-文档更新：2024-xx-xx
+[TOP](#直播弹幕)  
+文档更新：2024-xx-xx  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "NEW_PK_START" |
@@ -4427,8 +4403,8 @@ recovered_sender_uid
 ```
 ---
 ### MULTI_VOICE_OPERATIN
-[TOP](#直播弹幕)
-文档更新：2024-04-30
+[TOP](#直播弹幕)  
+文档更新：2024-04-30  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "MULTI_VOICE_OPERATIN" |
@@ -4450,14 +4426,14 @@ recovered_sender_uid
 | uid							| num		| |
 | version						| num		| --> ts |
 ```json
-{"cmd":"MULTI_VOICE_OPERATIN","data":{"battle_info":null,"hat":null,"pk_group_id":"xxx","pk_group_total_price":xxx,"pk_group_total_price_text":"xxx","pk_total_price":xxx,"pk_total_price_text":"xxx","position":xxx,"room_id":xxx,"total_price":xxx,"total_price_text":"xxx","ts":xxx,"uid":xxx,"version":xxx},"msg_id":"xxx:xxx:xxx","p_is_ack":true,"p_msg_type":1,"send_time":xxx}
-{"cmd":"MULTI_VOICE_OPERATIN","data":{"battle_info":null,"hat":null,"pk_group_total_price_text":"xxx","pk_total_price_text":"xxx","position":xxx,"room_id":xxx,"total_price":xxx,"total_price_text":"xxx","ts":xxx,"uid":xxx,"version":xxx},"msg_id":"xxx:xxx:xxx","p_is_ack":true,"p_msg_type":1,"send_time":xxx}
-{"cmd":"MULTI_VOICE_OPERATIN","data":{"battle_info":null,"hat":null,"position":xxx,"room_id":xxx,"total_price":xxx,"total_price_text":"xxx","ts":xxx,"uid":xxx,"version":xxx},"msg_id":"xxx:xxx:xxx","p_is_ack":true,"p_msg_type":1,"send_time":xxx}
+{"cmd":"MULTI_VOICE_OPERATIN","data":{"battle_info":null,"hat":null,"pk_group_id":"xxx","pk_group_total_price":xxx,"pk_group_total_price_text":"xxx","pk_total_price":xxx,"pk_total_price_text":"xxx","position":xxx,"room_id":xxx,"total_price":xxx,"total_price_text":"xxx","ts":xxx,"uid":xxx,"version":xxx}}
+{"cmd":"MULTI_VOICE_OPERATIN","data":{"battle_info":null,"hat":null,"pk_group_total_price_text":"xxx","pk_total_price_text":"xxx","position":xxx,"room_id":xxx,"total_price":xxx,"total_price_text":"xxx","ts":xxx,"uid":xxx,"version":xxx}}
+{"cmd":"MULTI_VOICE_OPERATIN","data":{"battle_info":null,"hat":null,"position":xxx,"room_id":xxx,"total_price":xxx,"total_price_text":"xxx","ts":xxx,"uid":xxx,"version":xxx}}
 ```
 ---
 ### MULTI_VOICE_ENTER_ANCHOR
-[TOP](#直播弹幕)
-文档更新：2024-xx-xx
+[TOP](#直播弹幕)  
+文档更新：2024-xx-xx  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "MULTI_VOICE_ENTER_ANCHOR" |
@@ -4475,8 +4451,8 @@ role 0 1 2
 ```
 ---
 ### MULTI_VOICE_OWNER_LEAVE
-[TOP](#直播弹幕)
-文档更新：2024-xx-xx
+[TOP](#直播弹幕)  
+文档更新：2024-xx-xx  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "MULTI_VOICE_OWNER_LEAVE" |
@@ -4490,8 +4466,8 @@ role 0 1 2
 ```
 ---
 ### MULTI_VOICE_PK_STATUS
-[TOP](#直播弹幕)
-文档更新：2024-xx-xx
+[TOP](#直播弹幕)  
+文档更新：2024-xx-xx  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "MULTI_VOICE_PK_STATUS" |
@@ -4547,8 +4523,8 @@ role 0 1 2
 | uid					| num		| |
 ---
 ### SPREAD_ORDER
-[TOP](#直播弹幕)
-文档更新：2024-xx-xx
+[TOP](#直播弹幕)  
+文档更新：2024-xx-xx  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "SPREAD_ORDER_START" "SPREAD_ORDER_OVER" |
@@ -4563,8 +4539,8 @@ role 0 1 2
 ```
 ---
 ### ANCHOR_BROADCAST
-[TOP](#直播弹幕)
-文档更新：2024-xx-xx
+[TOP](#直播弹幕)  
+文档更新：2024-xx-xx  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "ANCHOR_BROADCAST" |
@@ -4581,9 +4557,9 @@ role 0 1 2
 ```
 ---
 ### ROOM_NEWS_UPDATE
-[TOP](#直播弹幕)
-文档更新：2024-xx-xx
-主播公告 更新?
+[TOP](#直播弹幕)  
+文档更新：2024-xx-xx  
+主播公告 更新?  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "ROOM_NEWS_UPDATE" |
@@ -4598,8 +4574,8 @@ role 0 1 2
 ```
 ---
 ### MULTI_VOICE_APPLICATION_ANCHOR
-[TOP](#直播弹幕)
-文档更新：2024-xx-xx
+[TOP](#直播弹幕)  
+文档更新：2024-xx-xx  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "MULTI_VOICE_APPLICATION_ANCHOR" |
@@ -4615,8 +4591,8 @@ role 0 1 2
 ```
 ---
 ### MULTI_VOICE_APPLICATION_USER
-[TOP](#直播弹幕)
-文档更新：2024-xx-xx
+[TOP](#直播弹幕)  
+文档更新：2024-xx-xx  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "MULTI_VOICE_APPLICATION_USER" |
@@ -4631,8 +4607,8 @@ role 0 1 2
 ```
 ---
 ### GIFT_BOARD_RED_DOT
-[TOP](#直播弹幕)
-文档更新：2024-xx-xx
+[TOP](#直播弹幕)  
+文档更新：2024-xx-xx  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "GIFT_BOARD_RED_DOT" |
@@ -4646,8 +4622,8 @@ role 0 1 2
 ```
 ---
 ### LITTLE_MESSAGE_BOX
-[TOP](#直播弹幕)
-文档更新：2024-xx-xx
+[TOP](#直播弹幕)  
+文档更新：2024-xx-xx  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "LITTLE_MESSAGE_BOX" |
@@ -4661,9 +4637,9 @@ role 0 1 2
 ```
 ---
 ### ROOM_NEWS_AUDIT_CHANGE
-[TOP](#直播弹幕)
-文档更新：2024-xx-xx
-主播公告 更新?
+[TOP](#直播弹幕)  
+文档更新：2024-xx-xx  
+主播公告 更新?  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "ROOM_NEWS_AUDIT_CHANGE" |
@@ -4677,8 +4653,8 @@ role 0 1 2
 ```
 ---
 ### MULTI_VOICE_PK_HAT_STATUS
-[TOP](#直播弹幕)
-文档更新：2024-xx-xx
+[TOP](#直播弹幕)  
+文档更新：2024-xx-xx  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "MULTI_VOICE_PK_HAT_STATUS" |
@@ -4689,8 +4665,8 @@ role 0 1 2
 | data	| xxx	| |
 ---
 ### PK_BATTLE_SETTLE
-[TOP](#直播弹幕)
-文档更新：2024-xx-xx
+[TOP](#直播弹幕)  
+文档更新：2024-xx-xx  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "PK_BATTLE_SETTLE" |
@@ -4704,8 +4680,8 @@ role 0 1 2
 ```
 ---
 ### LIVE_ROOM_TOAST_MESSAGE
-[TOP](#直播弹幕)
-文档更新：2024-xx-xx
+[TOP](#直播弹幕)  
+文档更新：2024-xx-xx  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "LIVE_ROOM_TOAST_MESSAGE" |
@@ -4722,8 +4698,8 @@ role 0 1 2
 ---
 ---
 ### LIVE_PANEL_CHANGE_CONTENT
-[TOP](#直播弹幕)
-文档更新：2024-xx-xx
+[TOP](#直播弹幕)  
+文档更新：2024-xx-xx  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "LIVE_PANEL_CHANGE_CONTENT" |
@@ -4775,8 +4751,8 @@ role 0 1 2
 ```
 ---
 ### GIFT_PANEL_PLAN
-[TOP](#直播弹幕)
-文档更新：2024-xx-xx
+[TOP](#直播弹幕)  
+文档更新：2024-xx-xx  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "GIFT_PANEL_PLAN" |
@@ -4898,21 +4874,21 @@ role 0 1 2
 ```
 ---
 ### ROOM_LOCK
-[TOP](#直播弹幕)
-文档更新：2024-xx-xx
-直播间封禁
+[TOP](#直播弹幕)  
+文档更新：2024-xx-xx  
+封禁直播间  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "ROOM_LOCK" |
 | expire	| str	| UTC+8 |
 | roomid	| num	| |
 ```json
-{"cmd":"ROOM_LOCK","expire":"yyyy-mm-dd hh:mm:ss","msg_id":"xxx:xxx:xxx","p_is_ack":true,"p_msg_type":1,"roomid":xxx,"send_time":xxx}
+{"cmd":"ROOM_LOCK","expire":"yyyy-mm-dd hh:mm:ss","roomid":xxx}
 ```
 ---
 ### OFFICIAL_ROOM_EVENT
-[TOP](#直播弹幕)
-文档更新：2024-xx-xx
+[TOP](#直播弹幕)  
+文档更新：2024-xx-xx  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "OFFICIAL_ROOM_EVENT" |
@@ -4948,8 +4924,8 @@ role 0 1 2
 ```
 ---
 ### BENEFIT_CARD_CLEAN
-[TOP](#直播弹幕)
-文档更新：2024-xx-xx
+[TOP](#直播弹幕)  
+文档更新：2024-xx-xx  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "BENEFIT_CARD_CLEAN" |
@@ -4963,9 +4939,9 @@ role 0 1 2
 ```
 ---
 ### LIVE_MULTI_VIEW_NEW_INFO
-[TOP](#直播弹幕)
-文档更新：2024-11-01
-直播多视角
+[TOP](#直播弹幕)  
+文档更新：2024-11-01  
+直播多视角  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "LIVE_MULTI_VIEW_NEW_INFO" |
@@ -5074,8 +5050,8 @@ role 0 1 2
 ```
 ---
 ### INTERACTIVE_USER
-[TOP](#直播弹幕)
-文档更新：2024-01-20
+[TOP](#直播弹幕)  
+文档更新：2024-01-20  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "INTERACTIVE_USER" |
@@ -5091,8 +5067,8 @@ role 0 1 2
 ```
 ---
 ### PANEL_INTERACTIVE_NOTIFY_CHANGE
-[TOP](#直播弹幕)
-文档更新：2024-01-20
+[TOP](#直播弹幕)  
+文档更新：2024-01-20  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "PANEL_INTERACTIVE_NOTIFY_CHANGE" |
@@ -5107,8 +5083,8 @@ role 0 1 2
 ```
 ---
 ### LIVE_INTERACT_GAME_STATE_CHANGE
-[TOP](#直播弹幕)
-文档更新：2024-01-01
+[TOP](#直播弹幕)  
+文档更新：2024-01-01  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "LIVE_INTERACT_GAME_STATE_CHANGE" |
@@ -5122,9 +5098,9 @@ role 0 1 2
 ```
 ---
 ### GUARD_LEADER_NOTICE
-[TOP](#直播弹幕)
-文档更新：2025-06-10
-舰队指挥官
+[TOP](#直播弹幕)  
+文档更新：2025-06-10  
+舰队指挥官  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "GUARD_LEADER_NOTICE" |
@@ -5177,8 +5153,8 @@ role 0 1 2
 ```
 ---
 ### WIDGET_WISH_LIST
-[TOP](#直播弹幕)
-文档更新：2024-01-01
+[TOP](#直播弹幕)  
+文档更新：2024-01-01  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "WIDGET_WISH_LIST" |
@@ -5239,8 +5215,8 @@ role 0 1 2
 ```
 ---
 ### UNIVERSAL_EVENT_GIFT
-[TOP](#直播弹幕)
-文档更新：2024-01-01
+[TOP](#直播弹幕)  
+文档更新：2024-01-01  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "UNIVERSAL_EVENT_GIFT" |
@@ -5315,20 +5291,16 @@ role 0 1 2
 			"version":xxx
 		},
 		"room_id":xxx
-	},
-	"msg_id":"xxx:xxx:xxx",
-	"p_is_ack":true,
-	"p_msg_type":1,
-	"send_time":xxx
+	}
 }
-{"cmd":"UNIVERSAL_EVENT_GIFT","data":{"anchor_uid":xxx,"info":{"biz_session_id":"xxx","business_label":"universal_multi_conn","interact_channel_id":"xxx","interact_connect_type":0,"interact_max_users":9,"interact_mode":{"apply_timeout":xxx,"interact_mode_type":0,"invite_timeout":xxx,"join_types":[1,2],"position_mode":0},"interact_template":{"is_variable_layout":true,"layout_data":{"best_area_show_pos":-1,"cells":[{"can_zoom":0,"default_open":0,"height":0,"mobile_avatar_size":0,"mobile_font_size":0,"pc_web_avatar_size":0,"pc_web_font_size":0,"position":0,"width":0,"x":0,"y":0,"z_index":0},{"can_zoom":0,"default_open":0,"height":0,"mobile_avatar_size":0,"mobile_font_size":0,"pc_web_avatar_size":0,"pc_web_font_size":0,"position":1,"width":0,"x":5,"y":0,"z_index":0}],"default_cell":{"can_zoom":0,"default_open":1,"height":8,"mobile_avatar_size":xxx,"mobile_font_size":xxx,"pc_web_avatar_size":xxx,"pc_web_font_size":xxx,"position":0,"width":5,"x":0,"y":0,"z_index":0},"height":8,"rtc_resolution":{"code_rate_init":xxx,"code_rate_max":xxx,"code_rate_min":xxx,"horizontal_height":xxx,"horizontal_width":xxx,"vertical_height":xxx,"vertical_width":xxx},"width":xxx},"layout_id":"left1_right1","layout_list":null,"show_interact_ui":false,"template_id":"multi_conn_grid"},"invoking_time":1,"members":[{"face":"xxx","gender":1,"join_time":xxx,"link_id":"xxx","position":0,"room_id":xxx,"uid":xxx,"uname":"xxx"},{"face":"xxx","gender":0,"join_time":xxx,"link_id":"xxx","position":1,"room_id":xxx,"uid":xxx,"uname":"xxx"}],"members_version":xxx,"multi_conn_info":{"room_owner":xxx,"scores":[{"price":xxx,"price_text":"xxx","uid":xxx},{"price":xxx,"price_text":"xxx","uid":xxx}],"show_score":1},"room_owner":xxx,"room_start_at":"","room_start_at_ts":0,"room_status":1,"session_start_at":"","session_start_at_ts":0,"session_status":1,"system_time_unix":xxx,"trace_id":"","version":xxx},"room_id":xxx},"msg_id":"xxx:xxx:xxx","p_is_ack":true,"p_msg_type":1,"send_time":xxx}
-{"cmd":"UNIVERSAL_EVENT_GIFT","data":{"anchor_uid":xxx,"info":{"biz_session_id":"xxx","business_label":"universal_multi_conn","interact_channel_id":"xxx","interact_connect_type":0,"interact_max_users":9,"interact_mode":{"apply_timeout":xxx,"interact_mode_type":0,"invite_timeout":xxx,"join_types":[1,2],"position_mode":0},"interact_template":{"is_variable_layout":true,"layout_data":{"best_area_show_pos":-1,"cells":[{"can_zoom":0,"default_open":0,"height":0,"mobile_avatar_size":0,"mobile_font_size":0,"pc_web_avatar_size":0,"pc_web_font_size":0,"position":0,"width":0,"x":0,"y":0,"z_index":0},{"can_zoom":0,"default_open":0,"height":0,"mobile_avatar_size":0,"mobile_font_size":0,"pc_web_avatar_size":0,"pc_web_font_size":0,"position":1,"width":0,"x":5,"y":0,"z_index":0}],"default_cell":{"can_zoom":0,"default_open":1,"height":8,"mobile_avatar_size":xxx,"mobile_font_size":xxx,"pc_web_avatar_size":xxx,"pc_web_font_size":xxx,"position":0,"width":5,"x":0,"y":0,"z_index":0},"height":8,"rtc_resolution":{"code_rate_init":xxx,"code_rate_max":xxx,"code_rate_min":xxx,"horizontal_height":xxx,"horizontal_width":xxx,"vertical_height":xxx,"vertical_width":xxx},"width":xxx},"layout_id":"left1_right1","layout_list":null,"show_interact_ui":true,"template_id":"multi_conn_grid"},"invoking_time":1,"members":[{"face":"xxx","gender":1,"join_time":xxx,"link_id":"xxx","position":0,"room_id":xxx,"uid":xxx,"uname":"xxx"},{"face":"xxx","gender":0,"join_time":xxx,"link_id":"xxx","position":1,"room_id":xxx,"uid":xxx,"uname":"xxx"}],"members_version":xxx,"multi_conn_info":{"room_owner":xxx,"scores":[{"price":xxx,"price_text":"xxx","uid":xxx},{"price":xxx,"price_text":"xxx","uid":xxx}],"show_score":1},"room_owner":xxx,"room_start_at":"","room_start_at_ts":0,"room_status":1,"session_start_at":"","session_start_at_ts":0,"session_status":1,"system_time_unix":xxx,"trace_id":"","version":xxx},"room_id":xxx},"msg_id":"xxx:xxx:xxx","p_is_ack":true,"p_msg_type":1,"send_time":xxx}
+{"cmd":"UNIVERSAL_EVENT_GIFT","data":{"anchor_uid":xxx,"info":{"biz_session_id":"xxx","business_label":"universal_multi_conn","interact_channel_id":"xxx","interact_connect_type":0,"interact_max_users":9,"interact_mode":{"apply_timeout":xxx,"interact_mode_type":0,"invite_timeout":xxx,"join_types":[1,2],"position_mode":0},"interact_template":{"is_variable_layout":true,"layout_data":{"best_area_show_pos":-1,"cells":[{"can_zoom":0,"default_open":0,"height":0,"mobile_avatar_size":0,"mobile_font_size":0,"pc_web_avatar_size":0,"pc_web_font_size":0,"position":0,"width":0,"x":0,"y":0,"z_index":0},{"can_zoom":0,"default_open":0,"height":0,"mobile_avatar_size":0,"mobile_font_size":0,"pc_web_avatar_size":0,"pc_web_font_size":0,"position":1,"width":0,"x":5,"y":0,"z_index":0}],"default_cell":{"can_zoom":0,"default_open":1,"height":8,"mobile_avatar_size":xxx,"mobile_font_size":xxx,"pc_web_avatar_size":xxx,"pc_web_font_size":xxx,"position":0,"width":5,"x":0,"y":0,"z_index":0},"height":8,"rtc_resolution":{"code_rate_init":xxx,"code_rate_max":xxx,"code_rate_min":xxx,"horizontal_height":xxx,"horizontal_width":xxx,"vertical_height":xxx,"vertical_width":xxx},"width":xxx},"layout_id":"left1_right1","layout_list":null,"show_interact_ui":false,"template_id":"multi_conn_grid"},"invoking_time":1,"members":[{"face":"xxx","gender":1,"join_time":xxx,"link_id":"xxx","position":0,"room_id":xxx,"uid":xxx,"uname":"xxx"},{"face":"xxx","gender":0,"join_time":xxx,"link_id":"xxx","position":1,"room_id":xxx,"uid":xxx,"uname":"xxx"}],"members_version":xxx,"multi_conn_info":{"room_owner":xxx,"scores":[{"price":xxx,"price_text":"xxx","uid":xxx},{"price":xxx,"price_text":"xxx","uid":xxx}],"show_score":1},"room_owner":xxx,"room_start_at":"","room_start_at_ts":0,"room_status":1,"session_start_at":"","session_start_at_ts":0,"session_status":1,"system_time_unix":xxx,"trace_id":"","version":xxx},"room_id":xxx}}
+{"cmd":"UNIVERSAL_EVENT_GIFT","data":{"anchor_uid":xxx,"info":{"biz_session_id":"xxx","business_label":"universal_multi_conn","interact_channel_id":"xxx","interact_connect_type":0,"interact_max_users":9,"interact_mode":{"apply_timeout":xxx,"interact_mode_type":0,"invite_timeout":xxx,"join_types":[1,2],"position_mode":0},"interact_template":{"is_variable_layout":true,"layout_data":{"best_area_show_pos":-1,"cells":[{"can_zoom":0,"default_open":0,"height":0,"mobile_avatar_size":0,"mobile_font_size":0,"pc_web_avatar_size":0,"pc_web_font_size":0,"position":0,"width":0,"x":0,"y":0,"z_index":0},{"can_zoom":0,"default_open":0,"height":0,"mobile_avatar_size":0,"mobile_font_size":0,"pc_web_avatar_size":0,"pc_web_font_size":0,"position":1,"width":0,"x":5,"y":0,"z_index":0}],"default_cell":{"can_zoom":0,"default_open":1,"height":8,"mobile_avatar_size":xxx,"mobile_font_size":xxx,"pc_web_avatar_size":xxx,"pc_web_font_size":xxx,"position":0,"width":5,"x":0,"y":0,"z_index":0},"height":8,"rtc_resolution":{"code_rate_init":xxx,"code_rate_max":xxx,"code_rate_min":xxx,"horizontal_height":xxx,"horizontal_width":xxx,"vertical_height":xxx,"vertical_width":xxx},"width":xxx},"layout_id":"left1_right1","layout_list":null,"show_interact_ui":true,"template_id":"multi_conn_grid"},"invoking_time":1,"members":[{"face":"xxx","gender":1,"join_time":xxx,"link_id":"xxx","position":0,"room_id":xxx,"uid":xxx,"uname":"xxx"},{"face":"xxx","gender":0,"join_time":xxx,"link_id":"xxx","position":1,"room_id":xxx,"uid":xxx,"uname":"xxx"}],"members_version":xxx,"multi_conn_info":{"room_owner":xxx,"scores":[{"price":xxx,"price_text":"xxx","uid":xxx},{"price":xxx,"price_text":"xxx","uid":xxx}],"show_score":1},"room_owner":xxx,"room_start_at":"","room_start_at_ts":0,"room_status":1,"session_start_at":"","session_start_at_ts":0,"session_status":1,"system_time_unix":xxx,"trace_id":"","version":xxx},"room_id":xxx}}
 ```
 ---
 ### LITTLE_TIPS
-[TOP](#直播弹幕)
-文档更新：2024-04-24
-用户提示
+[TOP](#直播弹幕)  
+文档更新：2024-04-24  
+用户提示  
 | key	| type	| value	|
 |-|-|-|
 | cmd	| str	| "LITTLE_TIPS" |
@@ -5342,8 +5314,8 @@ role 0 1 2
 ```
 ---
 ### LIKE_GUIDE_USER
-[TOP](#直播弹幕)
-文档更新：2024-01-01
+[TOP](#直播弹幕)  
+文档更新：2024-01-01  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "LIKE_GUIDE_USER" |
@@ -5357,8 +5329,8 @@ role 0 1 2
 ```
 ---
 ### REENTER_LIVE_ROOM
-[TOP](#直播弹幕)
-文档更新：2025-01-01
+[TOP](#直播弹幕)  
+文档更新：2025-01-01  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "REENTER_LIVE_ROOM/REENTER_LIVE_ROOM_V2" |
@@ -5375,8 +5347,8 @@ role 0 1 2
 ```
 ---
 ### DANMU_ACTIVITY_CONFIG
-[TOP](#直播弹幕)
-文档更新：2024-01-01
+[TOP](#直播弹幕)  
+文档更新：2024-01-01  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "DANMU_ACTIVITY_CONFIG" |
@@ -5420,17 +5392,13 @@ role 0 1 2
 		"screen_type":3,
 		"status":1,
 		"stime":-28800
-	},
-	"msg_id":"xxx:xxx:xxx",
-	"p_is_ack":true,
-	"p_msg_type":1,
-	"send_time":xxx
+	}
 }
 ```
 ---
 ### POPULAR_RANK_GUIDE_CARD
-[TOP](#直播弹幕)
-文档更新：2024-06-01
+[TOP](#直播弹幕)  
+文档更新：2024-06-01  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "POPULAR_RANK_GUIDE_CARD" |
@@ -5450,9 +5418,9 @@ role 0 1 2
 {"data":{"ruid":12345,"title":"目前人气榜NO.xxx","sub_text":"帮我投喂人气票冲榜吧~","icon_img":"xxx","gift_id":33988,"countdown":10,"popup_title":"投喂一个人气票帮助主播打榜~"},"cmd":"POPULAR_RANK_GUIDE_CARD"}
 ```
 ### HOT_RANK_CHANGED
-[TOP](#直播弹幕格式)
+[TOP](#直播弹幕格式)  
 文档更新：2024-xx-xx  
-[已移除][热门榜功能下线公告]  
+**已移除**  
 计时器每半小时(1800秒)重置一次，计时重置后，约每15秒或(N×15)秒发送一次  
 计时器每半小时(1800秒)重置一次，计时重置后，约每5秒或(N×5)秒发送一次  
 | key | type | value |
@@ -5480,7 +5448,7 @@ role 0 1 2
 ### HOT_RANK_SETTLEMENT
 [TOP](#直播弹幕格式)  
 文档更新：2024-xx-xx  
-[已移除][热门榜功能下线公告]  
+**已移除**  
 每30分(1800秒 `HH:25:05,HH:55:05`)广播一次，大/小分区排行榜topxx  
 | key		| type	 | value |
 |-|-|-|
@@ -5504,9 +5472,9 @@ role 0 1 2
 ```
 ---
 ### USER_VIRTUAL_MVP
-[TOP](#直播弹幕)
-文档更新：2023-05-12
-守护圣法师
+[TOP](#直播弹幕)  
+文档更新：2023-05-12  
+守护圣法师  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "USER_VIRTUAL_MVP" |
@@ -5535,8 +5503,8 @@ role 0 1 2
 ```
 ---
 ### ROOM_MODULE_DISPLAY
-[TOP](#直播弹幕)
-文档更新：2024-01-01
+[TOP](#直播弹幕)  
+文档更新：2024-01-01  
 | key			| type	| value	|
 |-|-|-|
 | cmd			| str	| "ROOM_MODULE_DISPLAY" |
@@ -5557,8 +5525,8 @@ role 0 1 2
 ```
 ---
 ### SHOPPING_EXPLAIN_CARD
-[TOP](#直播弹幕)
-文档更新：2024-01-01
+[TOP](#直播弹幕)  
+文档更新：2024-01-01  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "SHOPPING_EXPLAIN_CARD" |
@@ -5609,8 +5577,8 @@ role 0 1 2
 ```
 ---
 ### LIVE_MULTI_VIEW_EVENT_CHANGE
-[TOP](#直播弹幕)
-文档更新：2024-11-01
+[TOP](#直播弹幕)  
+文档更新：2024-11-01  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "LIVE_MULTI_VIEW_EVENT_CHANGE" |
@@ -5632,8 +5600,8 @@ role 0 1 2
 ```
 ---
 ### POPULARITY_RANK_TAB_CHG
-[TOP](#直播弹幕)
-文档更新：2024-01-01
+[TOP](#直播弹幕)  
+文档更新：2024-01-01  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "POPULARITY_RANK_TAB_CHG" |
@@ -5650,8 +5618,8 @@ role 0 1 2
 ```
 ---
 ### RANK_CHANGED
-[TOP](#直播弹幕)
-文档更新：2025-07-02
+[TOP](#直播弹幕)  
+文档更新：2025-07-02  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "RANK_CHANGED" / "RANK_CHANGED_V2" |
@@ -5675,8 +5643,8 @@ role 0 1 2
 ```
 ---
 ### CHG_RANK_REFRESH
-[TOP](#直播弹幕)
-文档更新：2024-07-24
+[TOP](#直播弹幕)  
+文档更新：2024-07-24  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "CHG_RANK_REFRESH" |
@@ -5697,8 +5665,8 @@ role 0 1 2
 ```
 ---
 ### USER_TOAST_MSG_V2
-[TOP](#直播弹幕)
-文档更新：2024-08-01
+[TOP](#直播弹幕)  
+文档更新：2024-08-01  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "USER_TOAST_MSG_V2" |
@@ -5771,8 +5739,8 @@ role 0 1 2
 ```
 ---
 ### WIN_ACTIVITY
-[TOP](#直播弹幕)
-文档更新：2024-01-01
+[TOP](#直播弹幕)  
+文档更新：2024-01-01  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "WIN_ACTIVITY" |
@@ -5798,8 +5766,8 @@ role 0 1 2
 ```
 ---
 ### COMMON_ANIMATION
-[TOP](#直播弹幕)
-文档更新：2024-01-01
+[TOP](#直播弹幕)  
+文档更新：2024-01-01  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "COMMON_ANIMATION" |
@@ -5819,8 +5787,8 @@ role 0 1 2
 ```
 ---
 ### REVENUE_RANK_CHANGED
-[TOP](#直播弹幕)
-文档更新：2024-11-01
+[TOP](#直播弹幕)  
+文档更新：2024-11-01  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "REVENUE_RANK_CHANGED" |
@@ -5834,8 +5802,8 @@ role 0 1 2
 ```
 ---
 ### LIVE_ANI_RES_UPDATE
-[TOP](#直播弹幕)
-文档更新：2024-01-01
+[TOP](#直播弹幕)  
+文档更新：2024-01-01  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "LIVE_ANI_RES_UPDATE" |
@@ -5880,8 +5848,8 @@ role 0 1 2
 ```
 ---
 ### LPL_REALTIME_STATUS_CHANGED
-[TOP](#直播弹幕)
-文档更新：2024-11-01
+[TOP](#直播弹幕)  
+文档更新：2024-11-01  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "LPL_REALTIME_STATUS_CHANGED" |
@@ -5895,8 +5863,8 @@ role 0 1 2
 ```
 ---
 ### LOL_PLAYER_GRADE
-[TOP](#直播弹幕)
-文档更新：2024-11-01
+[TOP](#直播弹幕)  
+文档更新：2024-11-01  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "LOL_PLAYER_GRADE" |
@@ -5911,8 +5879,8 @@ role 0 1 2
 ```
 ---
 ### ON_COMMON_CARD_UPDATE
-[TOP](#直播弹幕)
-文档更新：2024-11-01
+[TOP](#直播弹幕)  
+文档更新：2024-11-01  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "ON_COMMON_CARD_UPDATE" |
@@ -5927,7 +5895,7 @@ role 0 1 2
 ```
 ---
 ### PK_PRT_2
-[TOP](#直播弹幕)
+[TOP](#直播弹幕)  
 文档更新：2024-11-01  
 PK_BATTLE_CRIT  
 PK_BATTLE_END  
@@ -5955,7 +5923,6 @@ PK_BATTLE_VOTES_ADD
 | roomid		| num		| |
 | send_time		| num		| `pk_start_time` |
 | timestamp		| num		| TimeStamp(秒) |
----
 #### PK_PRT_2__data
 | key				| type		| value	| switch-case	|
 |-|-|-|-|
@@ -6009,8 +5976,8 @@ PK_BATTLE_VOTES_ADD
 | start_time	| num	| pk_start_time + 120 |
 | switch		| num	| pk_start_time + 180 |
 ```json
-{"cmd":"PK_BATTLE_END","data":{"battle_sub_type":xxx,"battle_type":xxx,"dm_conf":{"bg_color":"#72C5E2","font_color":"#FFE10B"},"init_info":{"assist_info":[{"award_content":"","face":"xxx","is_mystery":false,"rank":"1","score":"xxx","uid":"xxx","uinfo":xxx,"uname":"xxx"}],"best_uname":"xxx","room_id":xxx,"votes":xxx,"winner_type":-1},"match_info":{"assist_info":[{"award_content":"获得限量气泡框、头像框和进场特效奖励~","face":"xxx","is_mystery":false,"rank":"1","score":"xxx","uid":"xxx","uinfo":xxx,"uname":"xxx"}],"best_uname":"xxx","room_id":xxx,"votes":xxx,"winner_type":xxx},"show_streak":false,"timer":xxx},"msg_id":"xxx","p_is_ack":true,"p_msg_type":xxx,"pk_id":"xxx","pk_status":xxx,"send_time":xxx,"timestamp":xxx}
-{"cmd":"PK_BATTLE_END","data":{"battle_sub_type":xxx,"battle_type":xxx,"dm_conf":{"bg_color":"#72C5E2","font_color":"#FFE10B"},"init_info":{"assist_info":[{"award_content":"","face":"xxx","is_mystery":false,"rank":"1","score":"xxx","uid":"xxx","uinfo":xxx,"uname":"xxx"}],"best_uname":"xxx","room_id":xxx,"votes":xxx,"winner_type":xxx},"match_info":{"assist_info":[],"best_uname":"","room_id":xxx,"votes":xxx,"winner_type":-1},"show_streak":false,"timer":xxx},"msg_id":"xxx:xxx:xxx","p_is_ack":true,"p_msg_type":xxx,"pk_id":"xxx","pk_status":xxx,"send_time":xxx,"timestamp":xxx}
+{"cmd":"PK_BATTLE_END","data":{"battle_sub_type":xxx,"battle_type":xxx,"dm_conf":{"bg_color":"#72C5E2","font_color":"#FFE10B"},"init_info":{"assist_info":[{"award_content":"","face":"xxx","is_mystery":false,"rank":"1","score":"xxx","uid":"xxx","uinfo":xxx,"uname":"xxx"}],"best_uname":"xxx","room_id":xxx,"votes":xxx,"winner_type":-1},"match_info":{"assist_info":[{"award_content":"获得限量气泡框、头像框和进场特效奖励~","face":"xxx","is_mystery":false,"rank":"1","score":"xxx","uid":"xxx","uinfo":xxx,"uname":"xxx"}],"best_uname":"xxx","room_id":xxx,"votes":xxx,"winner_type":xxx},"show_streak":false,"timer":xxx},"pk_id":"xxx","pk_status":xxx,"send_time":xxx,"timestamp":xxx}
+{"cmd":"PK_BATTLE_END","data":{"battle_sub_type":xxx,"battle_type":xxx,"dm_conf":{"bg_color":"#72C5E2","font_color":"#FFE10B"},"init_info":{"assist_info":[{"award_content":"","face":"xxx","is_mystery":false,"rank":"1","score":"xxx","uid":"xxx","uinfo":xxx,"uname":"xxx"}],"best_uname":"xxx","room_id":xxx,"votes":xxx,"winner_type":xxx},"match_info":{"assist_info":[],"best_uname":"","room_id":xxx,"votes":xxx,"winner_type":-1},"show_streak":false,"timer":xxx},"pk_id":"xxx","pk_status":xxx,"send_time":xxx,"timestamp":xxx}
 {"cmd":"PK_BATTLE_END","data":{"battle_type":xxx,"timer":xxx,"init_info":{"room_id":xxx,"votes":xxx,"winner_type":xxx,"best_uname":"xxx"},"match_info":{"room_id":xxx,"votes":xxx,"winner_type":-1,"best_uname":"xxx"}}}
 {"cmd":"PK_BATTLE_FINAL_PROCESS","data":{"battle_type":xxx,"pk_frozen_time":xxx},"pk_id":xxx,"pk_status":xxx,"timestamp":xxx}
 {"cmd":"PK_BATTLE_MATCH_TIMEOUT","data":{"battle_type":2}}
@@ -6019,155 +5986,18 @@ PK_BATTLE_VOTES_ADD
 {"cmd":"PK_BATTLE_PRE_NEW","pk_id":xxx,"pk_status":xxx,"status_msg":"","timestamp":xxxxxxxxxx,"data":{"is_followed":xxx,"uname":"xxx","face":"xxx","uid":xxx,"room_id":xxx,"season_id":xxx,"pre_timer":xxx,"pk_votes_name":"PK值","end_win_task":null,"battle_type":xxx,"match_type":xxx,"battle_sub_type":0},"template_id":"multi_conn_grid"}
 {"cmd":"PK_BATTLE_PRE_NEW","pk_status":xxx,"pk_id":xxx,"timestamp":xxxxxxxxxx,"data":{"battle_type":xxx,"match_type":xxx,"battle_sub_type":0,"uname":"xxx","face":"xxx","uid":xxx,"room_id":xxx,"season_id":xxx,"pre_timer":xxx,"pk_votes_name":"PK值","end_win_task":null},"roomid":xxx}
 {"cmd":"PK_BATTLE_PRE_NEW","pk_status":xxx,"pk_id":xxx,"timestamp":xxxxxxxxxx,"data":{"battle_type":xxx,"match_type":xxx,"uname":"xxx","face":"xxx","uid":xxx,"room_id":xxx,"season_id":xxx,"pre_timer":xxx,"pk_votes_name":"乱斗值","end_win_task":null},"roomid":xxx}
-{"cmd":"PK_BATTLE_PROCESS_NEW","data":{"battle_type":xxx,"init_info":{"assist_info":[{"award_content":"","face":"xxx","is_mystery":false,"rank":xxx,"uid":xxx,"uinfo":xxx,"uname":"xxx"}],"best_uname":"xxx","room_id":xxx,"vision_desc":xxx,"votes":xxx},"match_info":{"assist_info":[{xxx}],"best_uname":"xxx","room_id":xxx,"vision_desc":xxx,"votes":xxx},"trace_id":"{128bit}"},"msg_id":"xxx","p_is_ack":true,"p_msg_type":xxx,"pk_id":xxx,"pk_status":xxx,"send_time":xxx,"timestamp":xxx}
-{"cmd":"PK_BATTLE_PROCESS_NEW","data":{"battle_type":xxx,"init_info":{"assist_info":[{"award_content":"","face":"xxx","is_mystery":false,"rank":xxx,"uid":xxx,"uinfo":xxx,"uname":"xxx"}],"best_uname":"xxx","room_id":xxx,"vision_desc":xxx,"votes":xxx},"match_info":{"assist_info":null,"best_uname":"","room_id":xxx,"vision_desc":xxx,"votes":xxx},"trace_id":"xxxxxxxxxxxxxfffffff"},"msg_id":"xxx:xxx:xxx","p_is_ack":true,"p_msg_type":xxx,"pk_id":xxx,"pk_status":xxx,"send_time":xxx,"timestamp":xxx}
+{"cmd":"PK_BATTLE_PROCESS_NEW","data":{"battle_type":xxx,"init_info":{"assist_info":[{"award_content":"","face":"xxx","is_mystery":false,"rank":xxx,"uid":xxx,"uinfo":xxx,"uname":"xxx"}],"best_uname":"xxx","room_id":xxx,"vision_desc":xxx,"votes":xxx},"match_info":{"assist_info":[{xxx}],"best_uname":"xxx","room_id":xxx,"vision_desc":xxx,"votes":xxx},"trace_id":"{128bit}"},"pk_id":xxx,"pk_status":xxx,"send_time":xxx,"timestamp":xxx}
+{"cmd":"PK_BATTLE_PROCESS_NEW","data":{"battle_type":xxx,"init_info":{"assist_info":[{"award_content":"","face":"xxx","is_mystery":false,"rank":xxx,"uid":xxx,"uinfo":xxx,"uname":"xxx"}],"best_uname":"xxx","room_id":xxx,"vision_desc":xxx,"votes":xxx},"match_info":{"assist_info":null,"best_uname":"","room_id":xxx,"vision_desc":xxx,"votes":xxx},"trace_id":"xxxxxxxxxxxxxfffffff"},"pk_id":xxx,"pk_status":xxx,"send_time":xxx,"timestamp":xxx}
 {"cmd":"PK_BATTLE_PUNISH_END","data":{"battle_sub_type":0,"battle_type":xxx},"pk_id":xxx,"pk_status":xxx,"send_time":xxx,"status_msg":"","template_id":"multi_conn_grid","timestamp":xxx}
 {"cmd":"PK_BATTLE_SETTLE_V2","pk_id":xxx,"pk_status":401,"settle_status":1,"timestamp":xxx,"data":{"pk_id":"xxx","season_id":66,"pk_type":2,"result_type":2,"result_info":{"total_score":xxx,"pk_votes":xxx,"pk_votes_name":"PK值","pk_extra_value":0},"level_info":{"uid":"455592866","first_rank_name":"青铜萌新","second_rank_num":2,"first_rank_img":"https://i0.hdslb.com/bfs/live/bd6ca767900adbda7cd7148db06f72726bef7813.png","second_rank_icon":"https://i0.hdslb.com/bfs/live/1f8c2a959f92592407514a1afeb705ddc55429cd.png"},"assist_list":[{"id":xxx,"uname":"xxx","face":"x","score":60},{"id":xxx,"uname":"xxx","face":"xxx","score":xxx},{"id":xxx,"uname":"xxx","face":"xxx","score":xxx},{"id":xxx,"uname":"xxx","face":"xxx","score":xxx},{"id":xxx,"uname":"xxx","face":"xxx","score":xxx}],"star_light_msg":""}}
-{"cmd":"PK_BATTLE_START_NEW","data":{"battle_sub_type":0,"battle_type":xxx,"final_conf":{"end_time":xxx,"start_time":xxx,"switch":xxx},"final_hit_votes":0,"init_info":{"date_streak":xxx,"room_id":AAAA},"match_info":{"date_streak":xxx,"room_id":BBBB},"pk_countdown":xxx,"pk_end_time":xxx,"pk_frozen_time":xxx,"pk_start_time":xxx,"pk_votes_add":0,"pk_votes_name":"PK值","pk_votes_type":0,"star_light_msg":""},"msg_id":"xxx:xxx:xxx","p_is_ack":true,"p_msg_type":xxx,"pk_id":xxx,"pk_status":xxx,"roomid":"xxx","send_time":xxx,"timestamp":xxx}
+{"cmd":"PK_BATTLE_START_NEW","data":{"battle_sub_type":0,"battle_type":xxx,"final_conf":{"end_time":xxx,"start_time":xxx,"switch":xxx},"final_hit_votes":0,"init_info":{"date_streak":xxx,"room_id":AAAA},"match_info":{"date_streak":xxx,"room_id":BBBB},"pk_countdown":xxx,"pk_end_time":xxx,"pk_frozen_time":xxx,"pk_start_time":xxx,"pk_votes_add":0,"pk_votes_name":"PK值","pk_votes_type":0,"star_light_msg":""},"pk_id":xxx,"pk_status":xxx,"roomid":"xxx","send_time":xxx,"timestamp":xxx}
 {"cmd":"PK_BATTLE_START_NEW","pk_id":xxx,"pk_status":xxx,"timestamp":xxx,"data":{"battle_type":xxx,"final_hit_votes":0,"pk_start_time":xxx,"pk_frozen_time":xxx,"pk_end_time":xxx,"pk_votes_type":0,"pk_votes_add":0,"pk_votes_name":"乱斗值","star_light_msg":"","pk_countdown":xxx,"final_conf":{"switch":xxx,"start_time":xxx,"end_time":xxx},"init_info":{"room_id":xxx,"date_streak":xxx},"match_info":{"room_id":xxx,"date_streak":xxx}},"roomid":"xxx"}
 {"cmd":"PK_BATTLE_VIDEO_PUNISH_BEGIN","pk_id":"xxx","pk_status":xxx,"timestamp":xxx,"data":{"battle_type":xxx,"init_info":{"room_id":xxx,"votes":xxx,"winner_type":-1,"best_uname":"xxx"},"match_info":{"room_id":xxx,"votes":xxx,"winner_type":xxx,"best_uname":"xxx"},"video_punish":{"duration":xxx,"punish_name":"惩罚"}}}
 {"cmd":"PK_BATTLE_VIDEO_PUNISH_END","pk_id":"xxx","pk_status":xxx,"timestamp":xxx}
 ```
-```python
-# pk_status
-{
-	101:"pre",
-	201:"process",
-	301:"lastMinute",
-	304:"abnormal",
-	401:"normalFreeze",
-	402:"combineStreamFreeze",
-	501:"lastMinuteFreeze",
-	601:"punish",
-	610:"punishError",
-	701:"videoPunishWithNormal",
-	702:"videoPunishWithFinalHit",
-	1001:"end",
-	1101:"lastMinuteEnd",
-	1201:"matchOverTime",
-	1301:"cancelMatch",
-	1401:"combineStreamFailed",
-}
-# xxx-status
-function (t) {
-	t[t.pre = 0] = "pre",
-	t[t.process = 1] = "process",
-	t[t.lastMinute = 2] = "lastMinute",
-	t[t.end = 3] = "end",
-	t[t.freeze = 4] = "freeze",
-	t[t.punish = 5] = "punish",
-	t[t.lastMinuteFreeze = 6] = "lastMinuteFreeze",
-	t[t.lastMinuteEnd = 7] = "lastMinuteEnd",
-	t[t.videoPunish = 8] = "videoPunish"
-}(o || (o = {})),
-# supportUserAndAnchorVisible
-t[t.pre = 0] = "pre",
-t[t.start = 1] = "start",
-t[t.process = 2] = "process",
-t[t.changeType = 3] = "changeType",
-t[t.end = 4] = "end",
-t[t.settle = 5] = "settle",
-t[t.sendGift = 6] = "sendGift",
-t[t.buffer = 7] = "buffer",
-t[t.triggerBoom = 8] = "triggerBoom",
-t[t.punish = 9] = "punish",
-t[t.settleNew = 10] = "settleNew",
-t[t.finalHit = 11] = "finalHit",
-t[t.videoPunishBegin = 12] = "videoPunishBegin",
-t[t.videoPunishEnd = 13] = "videoPunishEnd",
-t[t.abnormal = 14] = "abnormal"
-# winner_type
-{
-	1:"draw"
-	2:"normalWin"
-	3:"lastMinuteWin"
-	-1:"fail"
-}
-# PlayerStatus
-function (t) {
-	t[t.normal = 0] = "normal",
-	t[t.immune = 1] = "immune",
-	t[t.kill = 2] = "kill",
-	t[t.beKill = 3] = "beKill"
-}(a || (a = {})),
-# CritStatus
-function (t) {
-	t[t.normal = 0] = "normal",
-	t[t.antiBoom = 1] = "antiBoom"
-}(c || (c = {})),
-# xxxx
-function (t) {
-	t[t.draw = 1] = "draw",
-	t[t.normalWin = 2] = "normalWin",
-	t[t.lastMinuteWin = 3] = "lastMinuteWin",
-	t[t.fail = -1] = "fail"
-}(u || (u = {})),
-# xxxx
-function (t) {
-	t[t.none = 0] = "none",
-	t[t.draw = 1] = "draw",
-	t[t.win = 2] = "win",
-	t[t.fail = 3] = "fail",
-	t[t.passive = -10] = "passive"
-}(s || (s = {})),
-# xxxx
-function (t) {
-	t[t.none = 0] = "none",
-	t[t.draw = 1] = "draw",
-	t[t.win = 2] = "win",
-	t[t.fail = -1] = "fail",
-	t[t.passive = -10] = "passive"
-}(l || (l = {})),
-# pkMultiplierStage
-function (t) {
-	t[t.NOTHING = 0] = "NOTHING",
-	t[t.PREDRAW = 1] = "PREDRAW",
-	t[t.DRAWING = 2] = "DRAWING",
-	t[t.DRAWFINALISED = 3] = "DRAWFINALISED",
-	t[t.MULTIPLYING = 4] = "MULTIPLYING",
-	t[t.FINISHED = 5] = "FINISHED"
-}(h || (h = {})),
-# pkMultiplierAwardStatus
-function (t) {
-	t[t.REWARDING = 5] = "REWARDING",
-	t[t.AWARD_FIN = 6] = "AWARD_FIN"
-}(d || (d = {})),
-# pkMultiplierOpponentStatus
-function (t) {
-	t[t.NOTHING = 0] = "NOTHING",
-	t[t.MULTIPLYING = 1] = "MULTIPLYING"
-}(p || (p = {})),
-# xxxx-status
-function (t) {
-	t[t.INIT = 0] = "INIT",
-	t[t.VOTING = 1] = "VOTING",
-	t[t.VOTE_PASS = 2] = "VOTE_PASS",
-	t[t.VOTE_FAIL = 3] = "VOTE_FAIL",
-	t[t.DRAW_FINISH = 4] = "DRAW_FINISH",
-	t[t.REWARDING = 5] = "REWARDING",
-	t[t.FINISHED = 6] = "FINISHED"
-}(v || (v = {}))
-# battleType
-function (t) {
-	t[t.chaosPK = 1] = "chaosPK",
-	t[t.videoChaosPK = 2] = "videoChaosPK",
-	t[t.videoPK = 6] = "videoPK"
-}(n || (n = {})),
-# xxxx
-function (t) {
-	t[t.battle = 7] = "battle"
-}(o || (o = {}))
-# pkResult
-function (t) {
-	t[t.SUCCESS = 1] = "SUCCESS",
-	t[t.FAIL = 2] = "FAIL",
-	t[t.DRAW = 3] = "DRAW",
-	t[t.NO_RES = 0] = "NO_RES"
-}(n || (n = {}))
-```
 ---
 ### PK_PRT_1
-[TOP](#直播弹幕)
+[TOP](#直播弹幕)  
 文档更新：2024-11-01  
 PK_AGAIN  
 PK_END  
@@ -6177,11 +6007,18 @@ PK_PRE
 PK_PROCESS  
 PK_SETTLE  
 PK_START  
+| key		| type	| value	|
+|-|-|-|
+| cmd		| str	| "ROOM_REFRESH" |
+| time		| num	| |
+```json
+{}
+```
 ---
 ### ROOM_REFRESH
-[TOP](#直播弹幕)
-文档更新：2024-11-01
-TODO!
+[TOP](#直播弹幕)  
+文档更新：2024-11-01  
+TODO!  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "ROOM_REFRESH" |
@@ -6191,9 +6028,9 @@ TODO!
 ```
 ---
 ### WIDGET_WISH_INFO
-[TOP](#直播弹幕)
-文档更新：2024-11-11
-礼物星球
+[TOP](#直播弹幕)  
+文档更新：2024-11-11  
+礼物星球  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "WIDGET_WISH_INFO" |
@@ -6223,8 +6060,8 @@ TODO!
 ```
 ---
 ### PK_INFO
-[TOP](#直播弹幕)
-文档更新：2024-11-01
+[TOP](#直播弹幕)  
+文档更新：2024-11-01  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "PK_INFO" |
@@ -6234,11 +6071,11 @@ TODO!
 |-|-|-|
 | data	| xxx	| |
 ```json
-{"cmd":"PK_INFO","data":{"audience_open":false,"invite_pk_resp":null,"members":[{"assist_info":[{"award_content":"","face":"xxx","is_mystery":false,"rank":1,"uid":xxx,"uname":"xxx"},{"award_content":"","face":"xxx","is_mystery":false,"rank":2,"uid":xxx,"uname":"xxx"}],"capsules":null,"date_streak":0,"face":"xxx","golds":xxx,"group_id":0,"is_follow":0,"is_latest_streak":false,"is_winner":1,"pk_cards":null,"pk_multiple_status":0,"power":"","rank":1,"room_id":xxx,"status":xxx,"uid":xxx,"uname":"xxx","votes":0,"votes_text":"0"},{"assist_info":null,"capsules":null,"date_streak":0,"face":"xxx","golds":0,"group_id":0,"is_follow":0,"is_latest_streak":false,"is_winner":0,"pk_cards":null,"pk_multiple_status":0,"power":"","rank":2,"room_id":xxx,"status":3,"uid":xxx,"uname":"xxx","votes":0,"votes_text":"0"}],"mill_timestamp":xxx,"pk_basic":{"biz_session_id":"xxx","end_time":xxx,"init_id":xxx,"init_uid":xxx,"main_page":"xxx","muti_pk_type":4,"pk_id":xxx,"punish_end_time":xxx,"punish_text":"惩罚","satellite_info":null,"season_id":82,"sprint_duration":10,"start_time":xxx,"status":xxx,"status_msg":"","sub_type":xxx,"template_id":"multi_conn_grid","type":6},"pk_group":null,"pk_match_info":null,"pk_play":{"dm_conf":{"bg_color":"#72C5E2","font_color":"#FFE10B"},"pk_play_text":"比拼伪音","pk_punish_text":"大冒险","pk_text_enabled":true,"pk_text_hash":xxx,"pre_duration":10},"timestamp":xxx},"send_time":xxx}
+{"cmd":"PK_INFO","data":{"audience_open":false,"invite_pk_resp":null,"members":[{"assist_info":[{"award_content":"","face":"xxx","is_mystery":false,"rank":1,"uid":xxx,"uname":"xxx"},{"award_content":"","face":"xxx","is_mystery":false,"rank":2,"uid":xxx,"uname":"xxx"}],"capsules":null,"date_streak":0,"face":"xxx","golds":xxx,"group_id":0,"is_follow":0,"is_latest_streak":false,"is_winner":1,"pk_cards":null,"pk_multiple_status":0,"power":"","rank":1,"room_id":xxx,"status":xxx,"uid":xxx,"uname":"xxx","votes":0,"votes_text":"0"},{"assist_info":null,"capsules":null,"date_streak":0,"face":"xxx","golds":0,"group_id":0,"is_follow":0,"is_latest_streak":false,"is_winner":0,"pk_cards":null,"pk_multiple_status":0,"power":"","rank":2,"room_id":xxx,"status":3,"uid":xxx,"uname":"xxx","votes":0,"votes_text":"0"}],"mill_timestamp":xxx,"pk_basic":{"biz_session_id":"xxx","end_time":xxx,"init_id":xxx,"init_uid":xxx,"main_page":"xxx","muti_pk_type":4,"pk_id":xxx,"punish_end_time":xxx,"punish_text":"惩罚","satellite_info":null,"season_id":82,"sprint_duration":10,"start_time":xxx,"status":xxx,"status_msg":"","sub_type":xxx,"template_id":"multi_conn_grid","type":6},"pk_group":null,"pk_match_info":null,"pk_play":{"dm_conf":{"bg_color":"#72C5E2","font_color":"#FFE10B"},"pk_play_text":"比拼伪音","pk_punish_text":"大冒险","pk_text_enabled":true,"pk_text_hash":xxx,"pre_duration":10},"timestamp":xxx}}
 ```
 ---
 ### OTHER_SLICE_LOADING_RESULT
-[TOP](#直播弹幕)
+[TOP](#直播弹幕)  
 文档更新：2024-12-01  
 | key		| type	| value	|
 |-|-|-|
@@ -6253,8 +6090,8 @@ TODO!
 ```
 ---
 ### ANCHOR_LOT_NOTICE
-[TOP](#直播弹幕)
-文档更新：2024-11-01
+[TOP](#直播弹幕)  
+文档更新：2024-11-01  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "ANCHOR_LOT_NOTICE" |
@@ -6276,8 +6113,8 @@ TODO!
 ```
 ---
 ### RECALL_DANMU_MSG
-[TOP](#直播弹幕)
-文档更新：2025-01-01
+[TOP](#直播弹幕)  
+文档更新：2025-01-01  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "RECALL_DANMU_MSG" |
@@ -6295,8 +6132,8 @@ enum recall_type={NOTHING:0,DANMAKU:1,USER:2,ALL:3}
 ```
 ---
 ### OTHER_SLICE_SETTING_CHANGED
-[TOP](#直播弹幕)
-文档更新：2025-01-01
+[TOP](#直播弹幕)  
+文档更新：2025-01-01  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "OTHER_SLICE_SETTING_CHANGED" |
@@ -6310,8 +6147,8 @@ enum recall_type={NOTHING:0,DANMAKU:1,USER:2,ALL:3}
 ```
 ---
 ### TAB_LONG_LIVE_CHANGE
-[TOP](#直播弹幕)
-文档更新：2025-01-01
+[TOP](#直播弹幕)  
+文档更新：2025-01-01  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "TAB_LONG_LIVE_CHANGE" |
@@ -6325,7 +6162,7 @@ enum recall_type={NOTHING:0,DANMAKU:1,USER:2,ALL:3}
 ```
 ---
 ### CNY_SESSION_CHANGE
-[TOP](#直播弹幕)
+[TOP](#直播弹幕)  
 文档更新：2025-01-01  
 2025春节专用  
 | key		| type	| value	|
@@ -6334,8 +6171,8 @@ enum recall_type={NOTHING:0,DANMAKU:1,USER:2,ALL:3}
 | data		| obj	| |
 ---
 ### UNIVERSAL_EVENT_GIFT_V2
-[TOP](#直播弹幕)
-文档更新：2025-01-01
+[TOP](#直播弹幕)  
+文档更新：2025-01-01  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "UNIVERSAL_EVENT_GIFT_V2" |
@@ -6346,8 +6183,8 @@ enum recall_type={NOTHING:0,DANMAKU:1,USER:2,ALL:3}
 ```
 ---
 ### RADIO_BACKGROUND
-[TOP](#直播弹幕)
-文档更新：2025-01-01
+[TOP](#直播弹幕)  
+文档更新：2025-01-01  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "RADIO_BACKGROUND" |
@@ -6361,16 +6198,16 @@ enum recall_type={NOTHING:0,DANMAKU:1,USER:2,ALL:3}
 ```
 ---
 ### master_qn_strategy_chg
-[TOP](#直播弹幕)
-文档更新：2025-01-01
+[TOP](#直播弹幕)  
+文档更新：2025-01-01  
 ```json
 {"cmd":"master_qn_strategy_chg","data":"{\"mtime\":xxx,\"scatter\":[0,300]}"}
 {"mtime":xxx,"scatter":[0,300]}
 ```
 ---
 ### PLAYURL_RELOAD
-[TOP](#直播弹幕)
-文档更新：2025-06-01
+[TOP](#直播弹幕)  
+文档更新：2025-06-01  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "PLAYURL_RELOAD" |
@@ -6384,8 +6221,8 @@ enum recall_type={NOTHING:0,DANMAKU:1,USER:2,ALL:3}
 ```
 ---
 ### HALF_SCREEN_TRIGGER
-[TOP](#直播弹幕)
-文档更新：2025-01-01
+[TOP](#直播弹幕)  
+文档更新：2025-01-01  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "HALF_SCREEN_TRIGGER" |
@@ -6402,8 +6239,8 @@ enum recall_type={NOTHING:0,DANMAKU:1,USER:2,ALL:3}
 ```
 ---
 ### XXXXXXXXXXXX
-[TOP](#直播弹幕)
-文档更新：2025-01-01
+[TOP](#直播弹幕)  
+文档更新：2025-07-01  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "XXXXXXXXXXXX" |
@@ -6418,22 +6255,16 @@ enum recall_type={NOTHING:0,DANMAKU:1,USER:2,ALL:3}
 ---
 
 ### others
-[TOP](#直播弹幕)
+[TOP](#直播弹幕)  
 | key				| type	| value	|
 |-|-|-|
 | guard_level		| num	| 大航海等级 <br> 0:无 <br> 1:总督GOVERNOR <br> 2:提督PREFECT <br> 3:舰长CAPTAIN |
 | privilege_type	| num	| ！待确定 2:提督 3:舰长 |
 | lot_status		| num	| 抽奖状态 0:开始 1:正在抽奖 2:开奖 |
-| identities		| \[\]num	| 身份 1:"Normal" 2:"管理员" 3:"粉丝" 4:"Vip" 5:"SVip" 6:"舰长" 7:"提督" 8:"总督" 22:"" |
-```json
-"face_frame":{
-	"舰长":"https://i0.hdslb.com/bfs/live/80f732943cc3367029df65e267960d56736a82ee.png",
-	"提督":"https://i0.hdslb.com/bfs/live/09937c3beb0608e267a50ac3c7125c3f2d709098.png",
-	"总督":"https://i0.hdslb.com/bfs/live/39164ebfdd39db3d284b1221765e7e57f5a49958.png",
-}
-```
+| identities		| ...	| 身份 1:"Normal" 2:"管理员" 3:"粉丝" 4:"Vip" 5:"SVip" 6:"舰长" 7:"提督" 8:"总督" 22:"" |
 
 ### 粉丝勋章medal_info
+[TOP](#直播弹幕)  
 | key					| type		| value	| 备注 |
 |-|-|-|-|
 | anchor_roomid			| num		| 主播 短直播间ID |
@@ -6452,7 +6283,7 @@ enum recall_type={NOTHING:0,DANMAKU:1,USER:2,ALL:3}
 | target_id				| !num		| 主播uid |
 
 ### PUBLIC_uinfo
-文档更新：2024-01-28
+[TOP](#直播弹幕)  
 | key						| type		| value	|
 |-|-|-|
 | base						| obj		| |
