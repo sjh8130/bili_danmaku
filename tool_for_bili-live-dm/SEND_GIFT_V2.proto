@@ -1,6 +1,7 @@
 syntax = "proto3";
 package bilibili.live.gift.v1;
 
+// SEND_GIFT_V2
 message SendGiftBroadcast {
   int64 uid = 1;
   string uname = 2;

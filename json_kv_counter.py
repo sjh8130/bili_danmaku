@@ -10,7 +10,7 @@ from tqdm import tqdm
 try:
     import simdjson
 except ImportError:
-    simdjson = json  # type:ignore
+    simdjson = json
 
 result: dict[str, dict[str, dict[str, Any]]] = {}
 DONT_CARE_INDEX_LIST = {
