@@ -1,5 +1,7 @@
 syntax = "proto3";
 package live.xuserreward.v1;
+
+// INTERACT_WORD_V2
 message InteractWord {
   uint64 uid = 1;
   string uname = 2;

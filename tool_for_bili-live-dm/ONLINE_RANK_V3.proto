@@ -1,6 +1,7 @@
 syntax = "proto3";
 package bilibili.live.rankdb.v1;
 
+// ONLINE_RANK_V3
 message GoldRankBroadcast {
   string rank_type = 1;
   repeated GoldRankBroadcastItem list = 2;
