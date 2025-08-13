@@ -3,6 +3,7 @@ import gc
 import json
 import sys
 import time
+from collections.abc import Hashable
 from decimal import Decimal
 from pathlib import Path
 from typing import Any
@@ -16,7 +17,7 @@ from tqdm import tqdm
 
 _E_MD5 = "d41d8cd98f00b204e9800998ecf8427e"
 _log = logger.bind(user="deduplicate jsonl")
-_deduplicate_dict: set[str] = set()
+_deduplicate_dict: set[Hashable] = set()
 
 
 def check_username(uname: str) -> bool:
@@ -24,7 +25,7 @@ def check_username(uname: str) -> bool:
     return len(uname) == 4 and uname[1:] == "***"
 
 
-def gift_id_recover(batch_combo_id: str = "", combo_id: str = "", uid: int = 0) -> tuple[str, str]:
+def gift_id_recover(batch_combo_id: str = "", combo_id: str = "") -> tuple[str, str]:
     """de-censor gift_id."""
     a = combo_id.split(":")
     b = batch_combo_id.split(":")
@@ -35,7 +36,7 @@ def gift_id_recover(batch_combo_id: str = "", combo_id: str = "", uid: int = 0) 
     return ":".join(b), ":".join(a)
 
 
-def gift_id_enc(batch_combo_id: str = "", combo_id: str = "", uid: int = 0) -> tuple[str, str]:
+def gift_id_enc(batch_combo_id: str = "", combo_id: str = "") -> tuple[str, str]:
     """re-censor gift_id."""
     a = combo_id.split(":")
     b = batch_combo_id.split(":")
@@ -46,14 +47,16 @@ def gift_id_enc(batch_combo_id: str = "", combo_id: str = "", uid: int = 0) -> t
     return ":".join(b), ":".join(a)
 
 
-def _deduplicate_it(itm: dict[str, Any], timestamp: int | Decimal | float, str_itm: str) -> bool:
+def _deduplicate_it(itm: dict[str, Any], timestamp: Decimal, str_itm: str) -> bool:
     """If exist: return false."""
-    id_1: str
-    id_2: str = ""
+    if itm == {"code": 0}:
+        return False
+    id_1: Hashable
+    id_2: Hashable = ""
     dm_id_str: str
     cmd: str = itm.get("cmd", "")
     if not cmd:
-        print("No CMD", itm)
+        print("No CMD", str_itm)
         return True
     data: dict[str, Any] = itm.get("data")  # type: ignore
     msg_id = str(itm.get("msg_id", 0))
@@ -86,7 +89,7 @@ def _deduplicate_it(itm: dict[str, Any], timestamp: int | Decimal | float, str_i
         case "COMBO_END":
             id_1 = f"""{cmd}${data["start_time"]}${data["end_time"]}${data["ruid"]}${data.get("uid", 0)}${msg_id}"""
         case "SUPER_CHAT_MESSAGE":
-            id_1 = f"""{cmd}${data["id"]}${data.get("uid", 0)}${data["user_info"]["uname"]}${data["message"]}${data["message_trans"]}${msg_id}"""
+            id_1 = f"""{cmd}${data["id"]}${data.get("uid", 0)}${data["user_info"]["uname"]}${data["message"]}${data.get("message_trans", "")}${msg_id}"""
             if not (data.get("uid", 0) == 0 and check_username(data["user_info"]["uname"])):
                 return True
         case "SUPER_CHAT_MESSAGE_JPN":
@@ -139,32 +142,26 @@ def _deduplicate_it(itm: dict[str, Any], timestamp: int | Decimal | float, str_i
         case "LIVE_INTERACT_GAME_STATE_CHANGE":
             id_1 = f"""{cmd}${data["game_id"]}${msg_id}"""
         # special:
-        case (
-            "COMMON_NOTICE_DANMAKU"
-            | "GIFT_STAR_PROCESS"
-            | "GOTO_BUY_FLOW"
-            | "HOT_BUY_NUM"
-            | "LIKE_INFO_V3_NOTICE"
-            | "LIKE_INFO_V3_UPDATE"
-            | "NOTICE_MSG"
-            | "ONLINE_RANK_V2"
-            | "RADIO_BACKGROUND"
-            | "ROOM_REAL_TIME_MESSAGE_UPDATE"
-            | "SUPER_CHAT_MESSAGE_DELETE"
-            | "WATCHED_CHANGE"
-            | "WIDGET_GIFT_STAR_PROCESS"
-        ):
+        case "COMMON_NOTICE_DANMAKU" | "GIFT_STAR_PROCESS" | "GOTO_BUY_FLOW" | "HOT_BUY_NUM" | "NOTICE_MSG" | "RADIO_BACKGROUND" | "SUPER_CHAT_MESSAGE_DELETE" | "WIDGET_GIFT_STAR_PROCESS":
             # id_1 = f"""{cmd}${str(data)}${msg_id}"""
             id_1 = str_itm
         case "WIDGET_WISH_INFO" | "WIDGET_WISH_INFO_V2":
             id_1 = f"""{cmd}${data["ts"]}${data["sid"]}${data["tid"]}${msg_id}"""
+        case "RECALL_DANMU_MSG":
+            id_1 = (str_itm, int(timestamp / 1000 / 3600))
+            id_2 = (str_itm, int(timestamp / 1000 / 3600) - 1)
+        case "INTERACT_WORD_V2":
+            id_1 = f"""{cmd}${data["pb"]}"""
         case (
             "AREA_RANK_CHANGED"
             | "GUARD_HONOR_THOUSAND"
             | "HOT_ROOM_NOTIFY"
+            | "LIKE_INFO_V3_NOTICE"
+            | "LIKE_INFO_V3_UPDATE"
             | "LOG_IN_NOTICE"
             | "master_qn_strategy_chg"
             | "ONLINE_RANK_TOP3"
+            | "ONLINE_RANK_V2"
             | "ONLINE_RANK_V3"
             | "OTHER_SLICE_LOADING_RESULT"
             | "PLAYURL_RELOAD"
@@ -172,10 +169,12 @@ def _deduplicate_it(itm: dict[str, Any], timestamp: int | Decimal | float, str_i
             | "RANK_CHANGED_V2"
             | "RANK_CHANGED"
             | "REVENUE_RANK_CHANGED"
+            | "ROOM_REAL_TIME_MESSAGE_UPDATE"
             | "STOP_LIVE_ROOM_LIST"
             | "SUPER_CHAT_ENTRANCE"
             | "VOICE_JOIN_SWITCH_V2"
             | "VOICE_JOIN_SWITCH"
+            | "WATCHED_CHANGE"
         ):
             return False
         case (
@@ -192,11 +191,13 @@ def _deduplicate_it(itm: dict[str, Any], timestamp: int | Decimal | float, str_i
             | "CARD_MSG"
             | "CHANGE_ROOM_INFO"
             | "CUT_OFF"
+            | "DANMU_ACTIVITY_CONFIG"
             | "FULL_SCREEN_SPECIAL_EFFECT"
             | "GIFT_PANEL_PLAN"
             | "GUARD_ACHIEVEMENT_ROOM"
             | "GUARD_LEADER_NOTICE"
             | "LIVE_ANI_RES_UPDATE"
+            | "LIVE_MULTI_VIEW_NEW_INFO"
             | "LIVE_PANEL_CHANGE_CONTENT"
             | "LIVE_PANEL_CHANGE"
             | "LIVE"
@@ -215,9 +216,11 @@ def _deduplicate_it(itm: dict[str, Any], timestamp: int | Decimal | float, str_i
             | "ROOM_ADMINS"
             | "ROOM_BLOCK_MSG"
             | "ROOM_CHANGE"
+            | "ROOM_LOCK"
             | "ROOM_SILENT_OFF"
             | "ROOM_SILENT_ON"
             | "SHOPPING_CART_SHOW"
+            | "SPECIAL_GIFT"
             | "STUDIO_ROOM_CLOSE"
             | "SYS_MSG"
             | "VOICE_CHAT_UPDATE"
@@ -229,11 +232,13 @@ def _deduplicate_it(itm: dict[str, Any], timestamp: int | Decimal | float, str_i
         case _:
             tqdm.write(cmd)
             id_1 = ""
-            # return True
+            return True
     if (id_1 and (id_1 in _deduplicate_dict)) or (id_2 and (id_2 in _deduplicate_dict)):
         return False
-    _deduplicate_dict.add(id_1) if id_1 else ...
-    _deduplicate_dict.add(id_2) if id_2 else ...
+    if id_1:
+        _deduplicate_dict.add(id_1)
+    if id_2:
+        _deduplicate_dict.add(id_2)
     # _deduplicate_dict.add(str_itm)
     return True
 
