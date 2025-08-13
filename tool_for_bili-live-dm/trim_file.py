@@ -13,7 +13,7 @@ _SKIP_KEYWORDS = []
 
 
 def _trim_file(in_path: str) -> None:
-    with Path(in_path).open(encoding="utf-8") as input_file, Path(in_path + "_trim").open("a", 1048576, "utf-8") as out_file:
+    with Path(in_path).open(encoding="utf-8") as input_file, Path(in_path).with_suffix(".TRIM.jsonl").open("a", 1048576, "utf-8") as out_file:
         for line in input_file:
             # if any(keyword in line for keyword in _SKIP_KEYWORDS):
             #     continue

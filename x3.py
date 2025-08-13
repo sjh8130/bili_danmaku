@@ -84,15 +84,12 @@ def _F(a: Path, b: EmoteMain) -> None:
         e = a.read_text(encoding="utf-8")
         if d == e:
             return
-        c: EmoteMain = json.loads(e)
-        if "emote" in c:
+        if "emote" in (c := json.loads(e)):
             if "emote" not in b:
                 b["emote"] = c["emote"]
             else:
-                f = {json.dumps(item, ensure_ascii=False, sort_keys=True) for item in b["emote"]}
                 for g in c["emote"]:
-                    h = json.dumps(g, ensure_ascii=False, sort_keys=True)
-                    if h not in f:
+                    if (h := json.dumps(g, ensure_ascii=False, sort_keys=True)) not in (f := {json.dumps(item, ensure_ascii=False, sort_keys=True) for item in b["emote"]}):
                         b["emote"].append(g)
                         f.add(h)
     if "emote" in b:
@@ -105,11 +102,10 @@ def _F(a: Path, b: EmoteMain) -> None:
 
 def _G(a: Path, b: str) -> None:
     """csv"""
-    c = b + "\n"
-    if a.is_file() and (c in (x := a.read_text(encoding="utf-8").splitlines(keepends=True)) or b in x):
+    if a.is_file() and b in a.read_text(encoding="utf-8"):
         return
     with a.open("a", 1048576, "utf-8") as fp:
-        fp.write(c)
+        fp.write(b)
 
 
 def _K(a: int | str, item: dict) -> None:
@@ -126,13 +122,13 @@ def _K(a: int | str, item: dict) -> None:
     replace_str(item, "https://i2.hdslb.com", "https://i0.hdslb.com")
     # replace_str(item, "fasle", "false")
     _F(_D / f"{a}.json", item)  # type: ignore
-    _G(_D / "ids.csv", f"{a},{item['text']}")
+    _G(_D / "ids.csv", f"{a},{item['text']}\n")
 
 
 def _L(*, j: bool = False) -> None:
     a = _N()
     b = 1
-    c = 8200 if not j else 1
+    c: int = 8400 if not j else 1
     d = 10000
     with (
         requests.Session() as e,

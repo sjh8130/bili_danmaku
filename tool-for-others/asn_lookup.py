@@ -1,4 +1,3 @@
-import csv
 import dataclasses
 import ipaddress
 import json
@@ -436,12 +435,8 @@ def _download_file(url: str, file_name: Path, *, overwrite: bool) -> None:
         # file {} exist
         # print(f"文件 {file_name} 已存在.")
         return
-    if overwrite:
-        # file {} not exist, downloading...
-        print(f"文件 {file_name} 正在下载...")
-    else:
-        # file {} not exist, downloading...
-        print(f"文件 {file_name} 不存在，正在下载...")
+    # file {} , downloading...
+    print(f"文件 {file_name} 不存在，正在下载...")
     response = requests.get(url, headers={"Accept-Encoding": "gzip, deflate, bzip2, br, zstd"})
     if response.status_code == 200:
         file_name.write_bytes(response.content)
@@ -462,8 +457,8 @@ def _process_file(file_name: Path) -> None:
     """
     # import math
     with file_name.open(encoding="utf-8") as file:
-        reader = csv.reader(file, delimiter="|")
-        for line in reader:
+        for line_r in file.readlines():
+            line = line_r.split("|")
             if line[0].startswith("#"):
                 continue
             if line[1] in {"afrinic", "apnic", "arin", "iana", "lacnic", "ripe-ncc", "ripencc"}:
@@ -485,7 +480,7 @@ def _process_file(file_name: Path) -> None:
 
 def _process_tld(file_name: Path) -> None:
     with file_name.open(encoding="utf-8") as file:
-        for i in file:
+        for i in file.readlines():
             if i.startswith("#"):
                 continue
             _tld.add(f".{i.lower().strip()}")
@@ -572,7 +567,7 @@ def _ip_in_custom_range(ip: str, ip_range: str) -> bool:
 
 
 if __name__ == "__main__":
-    ips = _IPS_DEFAULT.copy()
+    ips.update(_IPS_DEFAULT)
     _init()
     try:
         while True:
@@ -597,7 +592,7 @@ if __name__ == "__main__":
                     _query_status(query_string)
                 case "update":
                     ips.clear()
-                    ips = _IPS_DEFAULT.copy()
+                    ips.update(_IPS_DEFAULT)
                     _init(overwrite=True)
                 case _:
                     if query_string in _ISO3166_1:

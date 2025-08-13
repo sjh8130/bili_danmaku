@@ -55,7 +55,7 @@ Z = {
 
 
 def read_text(path, encoding=None, errors=None):
-    with open(path, encoding=encoding, errors=errors) as f:
+    with open(path, encoding=encoding, errors=errors) as f:  # noqa: FURB101
         return f.read()
 
 
@@ -69,6 +69,10 @@ class SuitItems(TypedDict):
     timing_online_unix: str
     type: str
     properties: Properties
+
+
+def __():
+    [] and _I  # type: ignore  # noqa: B018, SIM223
 
 
 class CurrentNextActivity(TypedDict):
@@ -128,7 +132,7 @@ def _E(b: requests.Session, d: int | str) -> bytes:
         except requests.RequestException as e:
             retry += 1
             log.error(f" {d} {retry=}")
-            log.exception(e)
+            # log.exception(e)
             time.sleep(1)
         except KeyboardInterrupt:
             raise KeyboardInterrupt  # noqa: B904
@@ -154,10 +158,8 @@ def _F(a: str, b: X1) -> None:
                 if i not in b[S]:
                     b[S][i] = c[S][i]
                 else:
-                    f = {json.dumps(j, ensure_ascii=False) for j in b[S][i]}
                     for g in c[S][i]:
-                        h = json.dumps(g, ensure_ascii=False)
-                        if h not in f:
+                        if (h := json.dumps(g, ensure_ascii=False)) not in (f := {json.dumps(j, ensure_ascii=False) for j in b[S][i]}):
                             b[S][i].append(g)
                             f.add(h)
             if i in b[S]:
@@ -173,13 +175,10 @@ def _G(a: str, b: str) -> None:
     if isinstance(b, dict):
         b = json.dumps(b, ensure_ascii=False, separators=(",", ":"))
     """Csv / jsonl."""
-    c = b + "\n"
-    if b in Z or c in Z:
-        return
-    if os.path.isfile(a) and c in open(a, encoding="utf-8").read():
+    if b in Z or (os.path.isfile(a) and b in open(a, encoding="utf-8").read()):
         return
     with open(a, "a", encoding="utf-8") as fp:
-        fp.write(c)
+        fp.write(b + "\n")
 
 
 def _H(a: int | str, item: X1) -> None:
@@ -295,19 +294,19 @@ def _I(a: str) -> None:
     match a:
         case "2":
             e = 100000001
-            f = 140000102
+            f = 140000001
         case "3":
             e = 200000001
             # e = 232434101
-            f = 250000002
+            f = 250000001
         case "4":
             e = 300000001
-            e = 318000001
-            f = 319000001
+            e = 321000001
+            f = 322000001
         case "0" | "1" | _:
             d = 1
-            e = 73000
-            f = 73600
+            e = 73700
+            f = 73900
     with (
         requests.Session() as g,
         tqdm(total=int((f - e) / d) + 1, initial=0, bar_format="{desc}{percentage:3.0f}%|{bar}| {n_fmt}->{total_fmt} [{elapsed}->{remaining}]") as h,
@@ -334,28 +333,34 @@ def _I(a: str) -> None:
 
 
 def _N(j) -> None:
+    a = _K()
     match j:
         case "0":
             k = range(1, 9999)
+            m = 4450
         case "2":
             k = range(100000000, 199999999)
+            m = 1691 - 431
         case "3":
             k = range(200000000, 299999999)
+            m = 1061 - 166
         case "4":
             k = range(300000000, 399999999)
+            m = 400 - 5
         case "1":
             k = range(10000, 100000000 - 1)
+            m = 30000
         case _:
             k = range(2**32)
-    a = _K()
-    h = json.loads(open(_M + f"{TRASH}.json", encoding="utf-8").read())
+            m = len(a) - 660
+    # h: list[int] = json.loads(open(_M + f"{TRASH}.json", encoding="utf-8").read())
+    h = []
     b = 1
     with (
         requests.Session() as c,
-        tqdm(total=len(a), initial=0, bar_format="{percentage:3.0f}%|{bar}| {n_fmt}->{total_fmt} [{elapsed}->{remaining}]") as d,
+        tqdm(total=m, initial=0, bar_format="{percentage:3.0f}%|{bar}| {n_fmt}->{total_fmt} [{elapsed}->{remaining}]") as d,
     ):
         for g in a:
-            d.update()
             if g in h or str(g) in h or (g not in k):
                 continue
             time.sleep(b)
@@ -366,16 +371,17 @@ def _N(j) -> None:
                 continue
             try:
                 f: X1 = json.loads(e)["data"]
-            except json.JSONDecodeError as h:  # type: ignore
-                print(h)
-                raise h
+            except json.JSONDecodeError as n:  # type: ignore
+                print(n)
+                raise n
             _H(g, f)
+            d.update()
             d.write(f"{time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()):<32}{g:<12}{f['name']:20}{len(e):>8}")
 
 
 def _P(a: Path) -> None:
+    # for b in a.iterdir():
     for b in tqdm(list(a.iterdir()), leave=False):
-        # for b in a.iterdir():
         if b.is_dir():
             _P(b)
             continue

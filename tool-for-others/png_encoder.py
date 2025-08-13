@@ -20,6 +20,8 @@ except ImportError:
     logger = logging.getLogger("PNG")
 try:
     import oxipng
+
+    raise ImportError
 except ImportError:
     oxipng = None
 
@@ -66,7 +68,6 @@ class ColorType(IntEnum):
     TRUECOLOR_WITH_ALPHA = 6
     TRUECOLORWITHALPHA = TRUECOLOR_WITH_ALPHA
     truecolorwithalpha = TRUECOLOR_WITH_ALPHA
-    truecolorWithAlpha = TRUECOLOR_WITH_ALPHA
     TruecolorWithAlpha = TRUECOLOR_WITH_ALPHA
     TrueColorWithAlpha = TRUECOLOR_WITH_ALPHA
     Truecolor_with_alpha = TRUECOLOR_WITH_ALPHA
@@ -249,9 +250,7 @@ class P1:
     def PLTE(self, palette: list[Palette]) -> bytes:
         if 0 >= len(palette) > 256:
             raise ValueError
-        data = b""
-        for color in palette:
-            data += struct.pack(">BBB", color[0], color[1], color[2])
+        data = b"".join([struct.pack(">BBB", color[0], color[1], color[2]) for color in palette])
         return self._sign(_CHUNK_TYPE.PLTE, data)
 
     def XDAT(
@@ -427,9 +426,7 @@ class P1:
         return self._sign(_CHUNK_TYPE.tIME, data)
 
     def sBIT(self, significant_bits: list[int]) -> bytes:
-        data = b""
-        for bit in significant_bits:
-            data += struct.pack(">B", bit)
+        data = b"".join(struct.pack(">B", bit) for bit in significant_bits)
         return self._sign(_CHUNK_TYPE.sBIT, data)
 
 
@@ -438,14 +435,16 @@ def create_png(
     height: int,
     image_data: list[bytes],
     chunk_size: int = 16384,
-    apng: bool = False,
+    bit_depth: int = 8,
+    color_type: ColorType = ColorType.RGB32,
+    compression_level: CompressionLevel | int = CompressionLevel.LV_9,
     num_frames: int = -1,
     delay_num: int = 1,
     delay_den: int = 30,
     loop_times: int = 1,
-    bit_depth: int = 8,
-    color_type: ColorType = ColorType.RGB32,
-    compression_level: CompressionLevel | int = CompressionLevel.LV_9,
+    *,
+    apng: bool = False,
+    apng_include_first_frame: bool = False,
 ) -> bytes:
     if apng and num_frames == -1:
         num_frames = len(image_data)
@@ -454,10 +453,10 @@ def create_png(
     x.tEXt("Software", "SJH8130:png_encoder")
     if apng:
         x.acTL(num_frames, loop_times)
-        if num_frames == -1:
-            num_frames = len(image_data)
+        num_frames = len(image_data) if num_frames == -1 else num_frames
     x.XDAT(image_data[0], width, height, bit_depth, color_type, chunk_size)
-    if apng and False:
+    apng_include_first_frame = False
+    if apng and apng_include_first_frame:
         x.fcTL(width, height, 0, 0, delay_num, delay_den)
     if apng:
         for idx in trange(0, num_frames):
@@ -581,7 +580,7 @@ def recompress_png(png_path: Path, chunk_size=1048576, compression_level=Compres
         case _:
             color_type = -1
             bit_depth = -1
-            raise
+            raise ValueError("[recompress_png]color_type")
     r = create_png(
         width,
         height,
@@ -617,6 +616,7 @@ if __name__ == "__main__":
             Path(),
             256,
             256,
+            fps=30,
             frame_cont=120,
             remove_alpha=False,
         )
