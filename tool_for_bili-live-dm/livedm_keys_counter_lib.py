@@ -8,7 +8,7 @@ from tqdm import tqdm
 try:
     import simdjson
 except ImportError:
-    simdjson = json  # type:ignore
+    simdjson = json
 
 result: dict[str, dict[str, dict[str, Any]]] = {}
 SW1: bool = False
@@ -16,7 +16,7 @@ SW2: bool = False
 SW3: bool = False
 try:
     with Path("livedm_keys_not_interest.json").open(encoding="utf-8") as fp:
-        _D1: dict[str, list[str]] = json.load(fp)
+        _D1: dict[str, list[str]] = simdjson.load(fp)
 except FileNotFoundError:
     pass
 else:
@@ -41,7 +41,7 @@ def _a(cmd: str, item: int | str | list[Any] | dict[str, Any] | bool | None, tk:
     fk: str = f"{cmd}{tk}"
     typ: str = type(item).__name__
     if SW3 and fk in STR_LIST:
-        item = simdjson.loads(item)  # type:ignore[reportArgumentType]
+        item = simdjson.loads(item)  # pyright: ignore[reportArgumentType]
         typ = "str_dict"
     if result.get(fk) is None:
         result[fk] = {"type": {}}
@@ -75,8 +75,8 @@ def p_main(in_path: Path) -> dict[str, Any]:
     with in_path.open(encoding="utf-8") as file_in:
         for line in tqdm(file_in.readlines(), leave=False, desc=in_path.name):
             try:
-                item: dict = simdjson.loads(line[line.find("{") :])  # type:ignore
-            except Exception:
+                item: dict = simdjson.loads(line[line.find("{") :])
+            except Exception:  # noqa: S112
                 continue
             _a(item["cmd"], item)
     return result

@@ -10,7 +10,7 @@ import sys
 import zlib
 from typing import NamedTuple
 
-import brotli  # type: ignore[import-untyped]
+import brotli
 from mitmproxy import dns, http, io
 from mitmproxy.exceptions import FlowReadException
 
@@ -146,18 +146,18 @@ def main():
     with open(sys.argv[1], "rb") as logfile:
         freader = io.FlowReader(logfile)
         try:
-            for f in freader.stream():
-                if isinstance(f, http.HTTPFlow):
-                    if f.request.method == "POST":
+            for frame in freader.stream():
+                if isinstance(frame, http.HTTPFlow):
+                    if frame.request.method == "POST":
                         continue
-                    if f.websocket:
-                        if "live-comet" in f.request.headers.get(b"Host", "") and "chat.bilibili.com" in f.request.headers.get(b"Host", ""):
+                    if frame.websocket:
+                        if "live-comet" in frame.request.headers.get(b"Host", "") and "chat.bilibili.com" in frame.request.headers.get(b"Host", ""):
                             pass
                         else:
                             continue
-                        id_ = f.id
-                        for seq, msg in enumerate(f.websocket.messages):
-                            if msg.from_client and seq != 0:
+                        frame_uuid = frame.id
+                        for seq, msg in enumerate(frame.websocket.messages):
+                            if msg.from_client and seq == 0:
                                 continue
                             if msg.content:
                                 pass
@@ -168,11 +168,11 @@ def main():
                                 continue
                             if not dms:
                                 continue
-                            with open(f"{id_}", "a", encoding="utf-8") as fp:
-                                fp.writelines(ts + dm + "\n" for dm in dms)
-                        print(f.request.get_state())
-                        print(f)
-                elif isinstance(f, dns.DNSFlow):
+                            with open(f"{frame_uuid}.jsonl", "a", encoding="utf-8") as fp:
+                                fp.writelines((ts + dm + "\n") for dm in dms)
+                        print(frame.request.get_state())
+                        print(frame)
+                elif isinstance(frame, dns.DNSFlow):
                     pass
             # print(f)
             # break

@@ -42,7 +42,7 @@ class FFProbeFilePackets:
 
 @dataclasses.dataclass
 class FFProbeFile:
-    packets: list[FFProbeFilePackets] = None  # type:ignore[assignment]
+    packets: list[FFProbeFilePackets]
 
     def __init__(self, packet_list: list[dict]) -> None:
         if self.packets is None:
@@ -102,8 +102,8 @@ def _main() -> None:
     out_path = IN_FILE_1.with_name(IN_FILE_1.stem + "_OUT" + SUFFIX)
 
     with IN_INFO_1.open(encoding="utf-8") as HASH_1, IN_INFO_2.open(encoding="utf-8") as HASH_2:
-        PACKETS_1 = FFProbeFile(simdjson.load(HASH_1)["packets"])  # type: ignore
-        PACKETS_2 = FFProbeFile(simdjson.load(HASH_2)["packets"])  # type: ignore
+        PACKETS_1 = FFProbeFile(simdjson.load(HASH_1)["packets"])
+        PACKETS_2 = FFProbeFile(simdjson.load(HASH_2)["packets"])
         LEN_1 = len(PACKETS_1)
         LEN_2 = len(PACKETS_2)
     with IN_FILE_1.open("rb") as FILE_1, IN_FILE_2.open("rb") as FILE_2, out_path.open("wb") as OUT_FI:
@@ -125,7 +125,7 @@ def _main() -> None:
             pktL = PACKETS_1[idx_1]
             pktR = PACKETS_2[idx_2] if idx_2 < LEN_2 else PACKETS_2[-1]
 
-            if pktL.data_hash == pktR.data_hash and idx_1 != LEN_1 - 1:  # type:ignore[unbound]
+            if pktL.data_hash == pktR.data_hash and idx_1 != LEN_1 - 1:
                 FILE_1.seek(pktL.pos)
                 OUT_FI.write(FILE_1.read(pktL.size))
                 if print_control != 1:

@@ -7,7 +7,7 @@ import sys
 from enum import StrEnum
 
 try:
-    import pyperclip  # type: ignore
+    import pyperclip  # pyright: ignore[reportAssignmentType]
 except ImportError:
 
     class pyperclip:
@@ -219,7 +219,7 @@ def process(data: list[str]) -> None:
         final_str += f"\n//\n{MsgType.service} {msg_name} \x7b{combine_rpc(list_1, list_2)}\n\x7d\n"
     if final_str:
         print(final_str)
-        pyperclip.copy(final_str)  # type: ignore
+        pyperclip.copy(final_str)  # pyright: ignore[reportCallIssue]
     else:
         sys.stderr.write("no data found\n")
 
@@ -237,10 +237,10 @@ def main() -> None:
             in_strings.clear()
         elif a.startswith("/* loaded from:"):
             continue
-        elif a == "" and len(in_strings) == 0:
+        elif a == "" and len(in_strings) == 0:  # noqa: PLC1901
             if not paste:
                 paste = True
-                process(pyperclip.paste().splitlines())  # type: ignore
+                process(pyperclip.paste().splitlines())  # pyright: ignore[reportCallIssue]
                 in_strings.clear()
         else:
             in_strings.append(a)

@@ -7,7 +7,7 @@ import sys
 import zlib
 from typing import NamedTuple
 
-import brotli  # type: ignore[import-untyped]
+import brotli
 
 HEADER_STRUCT = struct.Struct(">I2H2I")
 

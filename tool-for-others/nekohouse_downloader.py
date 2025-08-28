@@ -66,7 +66,7 @@ def _get_posts_page(p: Post) -> Post:
     p.content = content_tag.decode_contents().strip() if content_tag else ""
     # Extract additional items (like media attachments)
     attachment_links = soup.select("a.scrape__attachment-link, div.fileThumb")
-    p.items = ["https://nekohouse.su" + itm.attrs["href"] for itm in attachment_links]  # type: ignore
+    p.items = ["https://nekohouse.su" + itm.attrs["href"] for itm in attachment_links]  # pyright: ignore[reportOperatorIssue]
     return p
 
 
@@ -85,15 +85,15 @@ def _get_user_page(pl: str, user_id: str, pn: int) -> UserPage:
     response = session.get(url, headers=headers, verify=False)
     soup = bs4.BeautifulSoup(response.content, "lxml")
     try:
-        total = int(soup.select(".paginator")[0].small.contents[0].strip().split(" ")[-1])  # type: ignore[union-attr]
+        total = int(soup.select(".paginator")[0].small.contents[0].strip().split(" ")[-1])  # pyright: ignore[reportAttributeAccessIssue, reportOptionalMemberAccess]
     except AttributeError:
         total = 0
     posts = []
     for itm in soup.select(".post-card.post-card--preview.post-card--scrape"):
-        post_id = itm.a["href"].split("/")[-1]  # type: ignore[union-attr,index]
-        pub_time = time.mktime(time.strptime(itm.footer.time["datetime"], "%Y-%m-%d %H:%M:%S%z"))  # type: ignore[arg-type,union-attr,index]
-        thumb = "https://nekohouse.su" + itm.select(".post-card__image")[0].attrs["src"]  # type: ignore
-        title = itm.header.text.strip()  # type: ignore[union-attr]
+        post_id = itm.a["href"].split("/")[-1]  # pyright: ignore[reportOptionalSubscript, reportAttributeAccessIssue]
+        pub_time = time.mktime(time.strptime(itm.footer.time["datetime"], "%Y-%m-%d %H:%M:%S%z"))  # pyright: ignore[reportOptionalMemberAccess, reportArgumentType, reportOptionalSubscript]
+        thumb = "https://nekohouse.su" + itm.select(".post-card__image")[0].attrs["src"]  # pyright: ignore[reportOperatorIssue]
+        title = itm.header.text.strip()  # pyright: ignore[reportOptionalMemberAccess]
         posts.append(Post(platform=pl, user_id=user_id, post_id=post_id, pub_time=pub_time, thumb=thumb, title=title))
     return UserPage(total=total, posts=posts)
 
@@ -145,7 +145,8 @@ def _get_users(p, u) -> tuple[str, str]:
 
 def _get_posts_file(bp: Path, p: Post) -> None:
     logger.info(f"[getPostsFile] {p.platform} {p.post_id} {p.title}")
-    date = datetime.datetime.fromtimestamp(p.pub_time).strftime("%Y%m%d")
+    tz = datetime.timezone(datetime.timedelta(milliseconds=0))
+    date = datetime.datetime.fromtimestamp(p.pub_time, tz).strftime("%Y%m%d")
     path = bp / f"[{date}] [{p.post_id}] {_escape_path(p.title)}"
     for i in p.items:
         _aria2_downloader(path, i)

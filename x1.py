@@ -21,7 +21,7 @@ from my_lib.xx_util import OPR, del_keys, replace_str, sort_list_dict, sort_p6_e
 
 log = logger.bind(user="X1")
 ssl._create_default_https_context = ssl._create_unverified_context  # noqa: S323, SLF001
-requests.packages.urllib3.disable_warnings()  # type: ignore[attr-defined]
+requests.packages.urllib3.disable_warnings()  # pyright: ignore[reportAttributeAccessIssue]
 config = json.loads(Path("config.json").read_text(encoding="utf-8"))
 _A = {
     "User-Agent": config["ua"],
@@ -71,8 +71,8 @@ class SuitItems(TypedDict):
     properties: Properties
 
 
-def __():
-    [] and _I  # type: ignore  # noqa: B018, SIM223
+def __():  # noqa: N807
+    [] and _I  # pyright: ignore[reportUnusedExpression]  # noqa: B018, SIM223
 
 
 class CurrentNextActivity(TypedDict):
@@ -129,7 +129,7 @@ def _E(b: requests.Session, d: int | str) -> bytes:
             c = b.get(_L.format(q=d), headers=_A, verify=False, timeout=20)
             c.raise_for_status()
             return c.content
-        except requests.RequestException as e:
+        except requests.RequestException as e:  # noqa: F841
             retry += 1
             log.error(f" {d} {retry=}")
             # log.exception(e)
@@ -163,7 +163,7 @@ def _F(a: str, b: X1) -> None:
                             b[S][i].append(g)
                             f.add(h)
             if i in b[S]:
-                sort_list_dict(b[S][i], "item_id", "name")  # type: ignore
+                sort_list_dict(b[S][i], "item_id", "name")
     # ============================
     d = json.dumps(b, ensure_ascii=False, separators=(",", ":"), indent="\t")
     if e and d == e:
@@ -192,25 +192,25 @@ def _H(a: int | str, item: X1) -> None:
             item[P]["fan_item_ids"] = sort_str_list(item[P]["fan_item_ids"])
     if isinstance(item.get(S), dict):
         if isinstance(item[S].get("emoji"), list):
-            sort_list_dict(item[S]["emoji"])  # type: ignore
+            sort_list_dict(item[S]["emoji"])
         if isinstance(item[S].get("card"), list):
-            sort_list_dict(item[S]["card"])  # type: ignore
+            sort_list_dict(item[S]["card"])
         if isinstance(item[S].get("card_bg"), list):
-            sort_list_dict(item[S]["card_bg"])  # type: ignore
+            sort_list_dict(item[S]["card_bg"])
         if isinstance(item[S].get("loading"), list):
-            sort_list_dict(item[S]["loading"])  # type: ignore
+            sort_list_dict(item[S]["loading"])
         if isinstance(item[S].get("pendant"), list):
-            sort_list_dict(item[S]["pendant"])  # type: ignore
+            sort_list_dict(item[S]["pendant"])
         if isinstance(item[S].get("play_icon"), list):
-            sort_list_dict(item[S]["play_icon"])  # type: ignore
+            sort_list_dict(item[S]["play_icon"])
         if isinstance(item[S].get("skin"), list):
-            sort_list_dict(item[S]["skin"])  # type: ignore
+            sort_list_dict(item[S]["skin"])
         if isinstance(item[S].get("space_bg"), list):
-            sort_list_dict(item[S]["space_bg"])  # type: ignore
+            sort_list_dict(item[S]["space_bg"])
         if isinstance(item[S].get("thumbup"), list):
-            sort_list_dict(item[S]["thumbup"])  # type: ignore
+            sort_list_dict(item[S]["thumbup"])
         if isinstance(item[S].get("emoji_package"), list):
-            sort_p6_emoji(item[S]["emoji_package"])  # type: ignore
+            sort_p6_emoji(item[S]["emoji_package"])  # pyright: ignore[reportArgumentType]
     match c:
         case 1:
             f = "PART_1_头像框.jsonl"
@@ -279,12 +279,12 @@ def _H(a: int | str, item: X1) -> None:
     del_keys(item, "properties", {})
     del_keys(item, "suit_items", {})
     with contextlib.suppress(KeyError):
-        del item["fan_user"]["avatar"]  # type: ignore
+        del item["fan_user"]["avatar"]  # pyright: ignore[reportGeneralTypeIssues]
     replace_str(item, "http://", "https://")
     replace_str(item, "https://i1.hdslb.com", "https://i0.hdslb.com")
     replace_str(item, "https://i2.hdslb.com", "https://i0.hdslb.com")
     # replace_str(item, "fasle", "false")
-    d(_M + f, item)  # type: ignore
+    d(_M + f, item)  # pyright: ignore[reportArgumentType]
 
 
 def _I(a: str) -> None:
@@ -301,12 +301,12 @@ def _I(a: str) -> None:
             f = 250000001
         case "4":
             e = 300000001
-            e = 321000001
-            f = 322000001
+            e = 322000001
+            f = 324000001
         case "0" | "1" | _:
             d = 1
-            e = 73700
-            f = 73900
+            e = 73800
+            f = 74000
     with (
         requests.Session() as g,
         tqdm(total=int((f - e) / d) + 1, initial=0, bar_format="{desc}{percentage:3.0f}%|{bar}| {n_fmt}->{total_fmt} [{elapsed}->{remaining}]") as h,
@@ -325,7 +325,7 @@ def _I(a: str) -> None:
                 print(f"{i:<12}N", end="\r")
             try:
                 k: X1 = json.loads(j)["data"]
-            except json.JSONDecodeError as e:  # type: ignore
+            except json.JSONDecodeError as e:  # pyright: ignore[reportAttributeAccessIssue]
                 print(j)
                 raise e
             _H(i, k)
@@ -371,7 +371,7 @@ def _N(j) -> None:
                 continue
             try:
                 f: X1 = json.loads(e)["data"]
-            except json.JSONDecodeError as n:  # type: ignore
+            except json.JSONDecodeError as n:  # pyright: ignore[reportAttributeAccessIssue]
                 print(n)
                 raise n
             _H(g, f)
@@ -396,7 +396,7 @@ def _P(a: Path) -> None:
             try:
                 _H(d["item_id"], d)
             except KeyError:
-                _H(d["data"]["item_id"], d["data"])  # type: ignore
+                _H(d["data"]["item_id"], d["data"])  # pyright: ignore[reportGeneralTypeIssues]
 
 
 def _J() -> None:
@@ -410,7 +410,7 @@ def _J() -> None:
             else:
                 try:
                     e: X1 = json.loads(d)["data"]
-                except json.JSONDecodeError as f:  # type: ignore
+                except json.JSONDecodeError as f:  # pyright: ignore[reportAttributeAccessIssue]
                     print(d)
                     raise f
                 _H(c, e)

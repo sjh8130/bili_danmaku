@@ -10,7 +10,7 @@ import requests
 from my_lib.file_writer import write_file
 
 ssl._create_default_https_context = ssl._create_unverified_context  # noqa: S323, SLF001
-requests.packages.urllib3.disable_warnings()  # type: ignore[attr-defined]
+requests.packages.urllib3.disable_warnings()  # pyright: ignore[reportAttributeAccessIssue]
 config = json.loads(Path("config.json").read_text(encoding="utf-8"))
 
 _TWITCASTING_URL_JP = "ja.twitcasting.tv"
@@ -51,7 +51,7 @@ def _downloader(
             print(f"Error fetching {url}: {e}, {retry_count}")
             time.sleep(1)
         if retry_count > 5:
-            raise
+            raise  # noqa: PLE0704
 
 
 def _get_user_and_movie_id() -> tuple[str, str]:
@@ -93,20 +93,20 @@ def _main(user: str, movie_id: str, host: str) -> None:
             break
         downloaded_comments = list(bs4.BeautifulSoup(page, "lxml").select(".tw-comment-history-item", limit=999))
         if current_page == 0:
-            out["info"]["title"] = str(bs4.BeautifulSoup(page, "lxml").select(".tw-basic-page-header-path", limit=1)[0].contents[3].contents[1].contents[0]).strip()  # type: ignore[index,attr-defined]
-            page_count = int(bs4.BeautifulSoup(page, "lxml").select(".tw-pager", limit=1)[0].contents[-1].contents[0])  # type: ignore[attr-defined]
+            out["info"]["title"] = str(bs4.BeautifulSoup(page, "lxml").select(".tw-basic-page-header-path", limit=1)[0].contents[3].contents[1].contents[0]).strip()  # pyright: ignore[reportAttributeAccessIssue]
+            page_count = int(bs4.BeautifulSoup(page, "lxml").select(".tw-pager", limit=1)[0].contents[-1].contents[0])  # pyright: ignore[reportAttributeAccessIssue]
             print(page_count)
         for comment in downloaded_comments:
             comment_list.append(
                 {
                     "type": "comment",
-                    "id": int(comment.attrs["data-comment-id"]),  # type: ignore
+                    "id": int(comment.attrs["data-comment-id"]),  # pyright: ignore[reportArgumentType]
                     "message": str(comment.select(".tw-comment-history-item__content__text")[0].contents[0]).strip("\n").strip("\t").strip(),
-                    "createdAt": int(time.mktime(time.strptime(comment.select(".tw-comment-history-item__info__date")[0].attrs["datetime"], "%a, %d %b %Y %H:%M:%S %z"))),  # type: ignore
+                    "createdAt": int(time.mktime(time.strptime(comment.select(".tw-comment-history-item__info__date")[0].attrs["datetime"], "%a, %d %b %Y %H:%M:%S %z"))),  # pyright: ignore[reportArgumentType]
                     "author": {
                         "id": comment.select(".tw-comment-history-item__details__user-link")[0].attrs["href"][1:],
                         "name": str(comment.select(".tw-comment-history-item__details__user-link")[0].contents[0]).strip("\n").strip("\t").strip(),
-                        "profileImage": ("https:" + comment.select(".tw-comment-history-item__user__icon")[0].attrs["src"]).replace("https:https://", "https://"),  # type: ignore
+                        "profileImage": ("https:" + comment.select(".tw-comment-history-item__user__icon")[0].attrs["src"]).replace("https:https://", "https://"),  # pyright: ignore[reportOperatorIssue]
                     },
                 },
             )

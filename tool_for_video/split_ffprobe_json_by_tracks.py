@@ -61,7 +61,7 @@ def main(d: dict) -> None:
 if __name__ == "__main__":
     file_name = Path(sys.argv[1]).resolve()
     with file_name.open(encoding="utf-8") as f:
-        data: dict = simdjson.load(f)  # type: ignore
+        data: dict = simdjson.load(f)
     if not data:
         sys.exit()
     main(data)

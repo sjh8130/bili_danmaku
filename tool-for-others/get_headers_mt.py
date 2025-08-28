@@ -17,8 +17,7 @@ class HostHeaderSSLAdapter(requests.adapters.HTTPAdapter):
         super().__init__()
         self.resolved_ip = resolved_ip
 
-    def send(self, request, **kwargs):  # type:ignore
-
+    def send(self, request, **kwargs):  # pyright: ignore[reportIncompatibleMethodOverride]
         connection_pool_kwargs = self.poolmanager.connection_pool_kw
         result = urlparse(request.url)
         if result.scheme == "https" and self.resolved_ip:

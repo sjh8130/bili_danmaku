@@ -30,8 +30,8 @@ with (
     print_control = 0
     output_frames = 0
     output_f_size = 0
-    PKT_L = json.load(HASH_L)["packets"]  # type: ignore
-    PKT_R = json.load(HASH_R)["packets"]  # type: ignore
+    PKT_L = json.load(HASH_L)["packets"]
+    PKT_R = json.load(HASH_R)["packets"]
     HASH_L.close()
     HASH_R.close()
     OUT_L = "========        "  # 输出文件1
