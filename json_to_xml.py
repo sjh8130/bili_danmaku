@@ -9,7 +9,7 @@ from pathlib import Path
 try:
     import simdjson
 except ImportError:
-    simdjson = json  # type:ignore
+    simdjson = json
 from my_lib.file_writer import write_file
 from my_lib.json2xml import json2XML, json2XML_CMD
 
@@ -20,12 +20,12 @@ def main(file_name: Path) -> None:
         preload = fp.read(4)
         fp.seek(0)
         if preload.startswith((b'{"el', b"\xeb\xbb\xbf")):
-            data = simdjson.load(fp)  # type:ignore
+            data = simdjson.load(fp)
         elif preload.startswith(b"\x1f\x8b"):
             with gzip.open(fp, "r", encoding="utf-8") as gfp:
-                data = simdjson.load(gfp)  # type:ignore
+                data = simdjson.load(gfp)
         else:
-            raise
+            raise  # noqa: PLE0704
     try:
         cid = 0
     except KeyError:

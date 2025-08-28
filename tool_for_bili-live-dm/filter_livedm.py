@@ -20,7 +20,7 @@ def main(in_paths: list[str], out_path: Path) -> None:
         return
     try:
         with out_path.open(encoding="utf-8") as fp:
-            final_write = simdjson.load(fp)  # type: ignore
+            final_write = simdjson.load(fp)
     except FileNotFoundError:
         final_write = {}
     except json.JSONDecodeError as e:
@@ -30,24 +30,21 @@ def main(in_paths: list[str], out_path: Path) -> None:
             raise
     len_i = len(in_paths)
     p_i = 1
-    for in_path_s in in_paths:
+    for p_i, in_path_s in enumerate(in_paths):
         in_path = Path(in_path_s).resolve()
         f_s = f"{p_i}/{len_i}"
-        p_i += 1
         is_err = False
-        lineno = 1
         if in_path == out_path:
             continue
         with in_path.open(encoding="utf-8") as fp:
-            for line in tqdm(fp.readlines(), unit="line", bar_format="{desc}{percentage:3.0f}%|{bar}| {n_fmt}->{total_fmt} ", desc=f"{f_s:8} {in_path.name} "):
+            for lineno, line in enumerate(tqdm(fp.readlines(), unit="line", bar_format="{desc}{percentage:3.0f}%|{bar}| {n_fmt}->{total_fmt} ", desc=f"{f_s:8} {in_path.name} ")):
                 # if "DANMU_MSG" not in line:
                 #     continue
                 # if line.find("DANMU_MSG:3:7:1:1:1:1") == 1:
                 #     continue
-                lineno += 1
                 left_pos = line.find("{")
                 try:
-                    cmd: dict = simdjson.loads(line[left_pos:])  # type: ignore
+                    cmd: dict = simdjson.loads(line[left_pos:])
                 except json.JSONDecodeError:
                     print(lineno)
                     if not is_err:

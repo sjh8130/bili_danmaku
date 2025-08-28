@@ -46,7 +46,7 @@ def _a(item: int | str | list[Any] | dict[str, Any] | bool | None, target_key: s
 
 def _b(ii: Path) -> dict[str, Any]:
     with ii.open(encoding="utf-8") as fp:
-        item: dict = simdjson.load(fp)  # type:ignore
+        item: dict = simdjson.load(fp)
         _a(item)
     return result
 
@@ -55,7 +55,7 @@ def main() -> None:
     p1 = "json_kvs.json"
     if True and (od / p1).exists():
         with (od / p1).open(encoding="utf-8") as fp:
-            result.update(simdjson.load(fp))  # type:ignore
+            result.update(simdjson.load(fp))
     for path_str in tqdm(paths, leave=False):
         if not od.exists() and od.is_dir():
             od.mkdir()

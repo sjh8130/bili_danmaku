@@ -276,7 +276,7 @@ def crc32_last_index(string: str) -> int:
     for i in range(len(str(string))):
         index = (crcstart ^ ord(str(string)[i])) & 255
         crcstart = (crcstart >> 8) ^ crc_table[index]
-    return index  # type:ignore
+    return index  # pyright: ignore[reportPossiblyUnboundVariable]
 
 
 def get_crc_index(t) -> int:
@@ -318,7 +318,7 @@ def main(string) -> None:
         snum = crc_table[index[3 - i]]
         ht ^= snum >> ((3 - i) * 8)
     for i in range(2147483648):
-        lastindex = crc32_last_index(i)
+        lastindex = crc32_last_index(i)  # pyright: ignore[reportArgumentType]
         if lastindex == index[3]:
             deepCheckData = deep_check(i, index)
             if deepCheckData[0]:

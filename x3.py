@@ -14,7 +14,7 @@ from my_lib.xx_util import OPR, del_keys, replace_str, sort_list_dict
 
 log = logger.bind(user="X3")
 ssl._create_default_https_context = ssl._create_unverified_context  # noqa: S323, SLF001
-requests.packages.urllib3.disable_warnings()  # type: ignore[attr-defined]
+requests.packages.urllib3.disable_warnings()  # pyright: ignore[reportAttributeAccessIssue]
 config = json.loads(Path("config.json").read_text(encoding="utf-8"))
 _A = {
     "User-Agent": config["ua"],
@@ -64,13 +64,13 @@ def _E(a: requests.Session, b: int | str, c: int) -> bytes:
     while d < 5:
         try:
             _a += 1
-            e = a.get(_C.format(q=b), headers=_A, verify=False, timeout=20)
-            e.raise_for_status()
-            return e.content
-        except requests.RequestException as e:
+            f = a.get(_C.format(q=b), headers=_A, verify=False, timeout=20)
+            f.raise_for_status()
+            return f.content
+        except requests.RequestException as e:  # noqa: F841
             d += 1
             print(" ")
-            log.exception(e)
+            # log.exception(e)
             time.sleep(c + d)
         except KeyboardInterrupt:
             raise KeyboardInterrupt  # noqa: B904
@@ -121,14 +121,14 @@ def _K(a: int | str, item: dict) -> None:
     replace_str(item, "https://i1.hdslb.com", "https://i0.hdslb.com")
     replace_str(item, "https://i2.hdslb.com", "https://i0.hdslb.com")
     # replace_str(item, "fasle", "false")
-    _F(_D / f"{a}.json", item)  # type: ignore
+    _F(_D / f"{a}.json", item)  # pyright: ignore[reportArgumentType]
     _G(_D / "ids.csv", f"{a},{item['text']}\n")
 
 
 def _L(*, j: bool = False) -> None:
     a = _N()
     b = 1
-    c: int = 8400 if not j else 1
+    c: int = 8500 if not j else 1
     d = 10000
     with (
         requests.Session() as e,

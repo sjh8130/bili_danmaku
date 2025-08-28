@@ -7,7 +7,7 @@ from pathlib import Path
 try:
     import simdjson
 except ImportError:
-    simdjson = json  # type:ignore
+    simdjson = json
 
 import livedm_keys_counter_lib
 from tqdm import tqdm
@@ -17,7 +17,7 @@ def main() -> None:
     n = "livedm_keys.json"
     if True and (a := (output_dir / n)).exists():
         with a.open(encoding="utf-8") as fp:
-            livedm_keys_counter_lib.result.update(simdjson.load(fp))  # type:ignore
+            livedm_keys_counter_lib.result.update(simdjson.load(fp))
     for path_s in tqdm(paths, leave=False):
         if not output_dir.exists():
             output_dir.mkdir()

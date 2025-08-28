@@ -24,8 +24,8 @@ with in_path.open(encoding="utf-8") as F_in, out_path.open("w", encoding="utf-8"
             continue
         right_pos_cache = len(line)
         try:
-            dm_proto.ParseFromString(binascii.a2b_base64(simdjson.loads(line[line.find("{") : right_pos_cache])["dm_v2"]))  # type: ignore
-        except json.decoder.JSONDecodeError as err:
+            dm_proto.ParseFromString(binascii.a2b_base64(simdjson.loads(line[line.find("{") : right_pos_cache])["dm_v2"]))
+        except json.JSONDecodeError as err:
             if err.msg == "Extra data":
                 left_pos_cache = err.pos
             if err.msg == "Expecting value":

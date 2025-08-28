@@ -58,12 +58,12 @@ def _deduplicate_it(itm: dict[str, Any], timestamp: Decimal, str_itm: str) -> bo
     if not cmd:
         print("No CMD", str_itm)
         return True
-    data: dict[str, Any] = itm.get("data")  # type: ignore
+    data: dict[str, Any] = itm.get("data")  # pyright: ignore[reportAssignmentType]
     msg_id = str(itm.get("msg_id", 0))
     match cmd:
         # sort by hot-spot
         case "DANMU_MSG" | "DANMU_MSG:4:0:2:2:2:0":
-            dm_id_str = simdjson.loads(itm["info"][0][15]["extra"]).get("id_str", "")  # type: ignore
+            dm_id_str = simdjson.loads(itm["info"][0][15]["extra"]).get("id_str", "")
             id_1 = f"""{cmd}${itm["info"][0][7]}${itm["info"][0][4]}${itm["info"][0][5]}${itm["info"][9]["ct"]}${itm["info"][9]["ts"]}${itm["info"][2][0]}${itm["info"][2][1]}${dm_id_str}${msg_id}"""
             # mid_hash,time.Now().Unix(),rnd,ct,ts,uid,uname,extra:dm_id_str,msg_id
             if not (itm["info"][2][1] == 0 and check_username(itm["info"][2][0])):
@@ -91,11 +91,11 @@ def _deduplicate_it(itm: dict[str, Any], timestamp: Decimal, str_itm: str) -> bo
         case "SUPER_CHAT_MESSAGE":
             id_1 = f"""{cmd}${data["id"]}${data.get("uid", 0)}${data["user_info"]["uname"]}${data["message"]}${data.get("message_trans", "")}${msg_id}"""
             if not (data.get("uid", 0) == 0 and check_username(data["user_info"]["uname"])):
-                return True
+                pass
         case "SUPER_CHAT_MESSAGE_JPN":
             id_1 = f"""{cmd}${data["id"]}${data.get("uid", 0)}${data["user_info"]["uname"]}${data["message"]}${data["message_jpn"]}${msg_id}"""
             if not (data.get("uid", 0) == 0 and check_username(data["user_info"]["uname"])):
-                return True
+                pass
         case "ANCHOR_LOT_AWARD" | "ANCHOR_LOT_END" | "ANCHOR_LOT_START":
             id_1 = f"""{cmd}${data["id"]}${msg_id}"""
         case "RANK_REM":
@@ -124,7 +124,7 @@ def _deduplicate_it(itm: dict[str, Any], timestamp: Decimal, str_itm: str) -> bo
         case "DANMU_AGGREGATION":
             id_1 = f"""{cmd}${data["timestamp"]}${data["activity_identity"]}${msg_id}"""
         case "WIDGET_BANNER" | "ROOM_BANNER":
-            id_1 = f"""{cmd}${itm["timestamp"]}${msg_id}"""
+            id_1 = f"""{cmd}${data["timestamp"]}${msg_id}"""
         case "PK_BATTLE_ENTRANCE":
             id_1 = f"""{cmd}${itm["timestamp"]}${msg_id}"""
         case "PLAY_TAG" | "VOICE_JOIN_STATUS":
@@ -147,9 +147,8 @@ def _deduplicate_it(itm: dict[str, Any], timestamp: Decimal, str_itm: str) -> bo
             id_1 = str_itm
         case "WIDGET_WISH_INFO" | "WIDGET_WISH_INFO_V2":
             id_1 = f"""{cmd}${data["ts"]}${data["sid"]}${data["tid"]}${msg_id}"""
-        case "RECALL_DANMU_MSG":
-            id_1 = (str_itm, int(timestamp / 1000 / 3600))
-            id_2 = (str_itm, int(timestamp / 1000 / 3600) - 1)
+        case "RECALL_DANMU_MSG" | "RING_STATUS_CHANGE_V2" | "SYS_MSG" | "LIVE" | "PREPARING":
+            id_1 = (str_itm, timestamp.to_integral("ROUND_DOWN"))
         case "INTERACT_WORD_V2":
             id_1 = f"""{cmd}${data["pb"]}"""
         case (
@@ -160,6 +159,7 @@ def _deduplicate_it(itm: dict[str, Any], timestamp: Decimal, str_itm: str) -> bo
             | "LIKE_INFO_V3_UPDATE"
             | "LOG_IN_NOTICE"
             | "master_qn_strategy_chg"
+            | "ONLINE_RANK_COUNT"
             | "ONLINE_RANK_TOP3"
             | "ONLINE_RANK_V2"
             | "ONLINE_RANK_V3"
@@ -172,11 +172,16 @@ def _deduplicate_it(itm: dict[str, Any], timestamp: Decimal, str_itm: str) -> bo
             | "ROOM_REAL_TIME_MESSAGE_UPDATE"
             | "STOP_LIVE_ROOM_LIST"
             | "SUPER_CHAT_ENTRANCE"
+            | "HEARTBEAT_REPLY"  # special
             | "VOICE_JOIN_SWITCH_V2"
             | "VOICE_JOIN_SWITCH"
             | "WATCHED_CHANGE"
         ):
             return False
+        case "ANCHOR_LOT_CHECKSTATUS":
+            id_1 = (cmd, data["id"], data["status"])
+        case "LIKE_INFO_V3_CLICK":
+            id_1 = (cmd, data["uid"], timestamp.to_integral("ROUND_DOWN"))
         case (
             "ACTIVITY_BANNER_CHANGE_V2"
             | "ACTIVITY_BANNER_CHANGE"
@@ -184,7 +189,6 @@ def _deduplicate_it(itm: dict[str, Any], timestamp: Decimal, str_itm: str) -> bo
             | "ANCHOR_BROADCAST"
             | "ANCHOR_ECOMMERCE_STATUS"
             | "ANCHOR_HELPER_DANMU"
-            | "ANCHOR_LOT_CHECKSTATUS"
             | "ANCHOR_LOT_NOTICE"
             | "ANCHOR_NORMAL_NOTIFY"
             | "BENEFIT_CARD_CLEAN"
@@ -200,15 +204,15 @@ def _deduplicate_it(itm: dict[str, Any], timestamp: Decimal, str_itm: str) -> bo
             | "LIVE_MULTI_VIEW_NEW_INFO"
             | "LIVE_PANEL_CHANGE_CONTENT"
             | "LIVE_PANEL_CHANGE"
-            | "LIVE"
             | "MESSAGEBOX_USER_GAIN_MEDAL"
             | "OBS_SHIELD_STATUS_UPDATE"
+            | "OFFICIAL_ROOM_EVENT"
             | "OTHER_SLICE_SETTING_CHANGED"
             | "PLAYTOGETHER_ICON_CHANGE"
             | "POPULAR_RANK_GUIDE_CARD"
             | "POPULARITY_RANK_TAB_CHG"
-            | "PREPARING"
-            | "RECALL_DANMU_MSG"
+            | "PROGRAM_CHANGE"
+            | "REENTER_LIVE_ROOM"
             | "RING_STATUS_CHANGE_V2"
             | "RING_STATUS_CHANGE"
             | "room_admin_entrance"
@@ -222,7 +226,6 @@ def _deduplicate_it(itm: dict[str, Any], timestamp: Decimal, str_itm: str) -> bo
             | "SHOPPING_CART_SHOW"
             | "SPECIAL_GIFT"
             | "STUDIO_ROOM_CLOSE"
-            | "SYS_MSG"
             | "VOICE_CHAT_UPDATE"
             | "VOICE_JOIN_LIST"
             | "VOICE_JOIN_ROOM_COUNT_INFO"
@@ -253,8 +256,19 @@ def _deduplicate(in_path: Path) -> int:
                 continue
             pos = line.find("{")
             str_itm = line[pos:]
-            itm: dict = simdjson.loads(str_itm)  # type: ignore
-            if _deduplicate_it(itm, Decimal(line[:pos]), str_itm):
+            timestamp = line[:pos]
+            timestamp_f: Decimal
+            match len(timestamp):
+                case 13:
+                    timestamp_f = Decimal(timestamp) / 1_000
+                case 16:
+                    timestamp_f = Decimal(timestamp) / 1_000_000
+                case 19:
+                    timestamp_f = Decimal(timestamp) / 1_000_000_000
+                case _:
+                    timestamp_f = Decimal(timestamp)
+            itm: dict = simdjson.loads(str_itm)
+            if _deduplicate_it(itm, timestamp_f, str_itm):
                 output_file.write(line)
             _deduplicate_dict.add(line)
     return total_

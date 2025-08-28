@@ -16,7 +16,7 @@ from my_lib.file_writer import write_file
 from my_lib.gen_wib import gen_w_rid
 
 ssl._create_default_https_context = ssl._create_unverified_context  # noqa: S323, SLF001
-requests.packages.urllib3.disable_warnings()  # type: ignore[attr-defined]
+requests.packages.urllib3.disable_warnings()  # pyright: ignore[reportAttributeAccessIssue]
 MAX_RETRIES = 2
 RETRY_SIZE = 2048
 SLEEP_TIME = 1.0

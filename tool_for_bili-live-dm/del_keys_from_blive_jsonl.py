@@ -43,16 +43,16 @@ def _del_keys(d: dict[Any, Any], k: str, v: Any, o: OPR) -> None:
             case OPR.ANY:
                 d.pop(k)
             case OPR.GT:
-                if d.get(k) > v:  # type: ignore[reportOptionalOperand]
+                if d.get(k) > v:
                     d.pop(k)
             case OPR.LT:
-                if d.get(k) < v:  # type: ignore[reportOptionalOperand]
+                if d.get(k) < v:
                     d.pop(k)
             case OPR.GEQ:
-                if d.get(k) >= v:  # type: ignore[reportOptionalOperand]
+                if d.get(k) >= v:
                     d.pop(k)
             case OPR.LEQ:
-                if d.get(k) <= v:  # type: ignore[reportOptionalOperand]
+                if d.get(k) <= v:
                     d.pop(k)
             case OPR.NEQ:
                 if d.get(k) != v:
@@ -70,17 +70,15 @@ def _del_keys(d: dict[Any, Any], k: str, v: Any, o: OPR) -> None:
                 raise Exception("*ToDo")
 
 
-def _del_keys_prep(d: dict[Any, Any], k: str, v: Any, o: OPR, cmd="", dep: int = 0) -> None:
+def _del_keys_prep(d: dict[Any, Any], k: str, v: Any, o: OPR, cmd="", dep: int = 0) -> None:  # noqa: ARG001
     cmd = d["cmd"] if cmd == "" else cmd
     # print("_del_keys_prep", cmd)
-    for key_1 in d:
+    for key_1 in d:  # noqa: PLC0206
         if isinstance(d[key_1], dict):
-            ...
+            pass
         elif isinstance(d[key_1], list):
-            for index_1, item_1 in enumerate(d[key_1]):
-                ...
-                if ... in ...:
-                    pass
+            for index_1, item_1 in enumerate(d[key_1]):  # noqa: B007
+                pass
 
 
 # no order
@@ -279,7 +277,7 @@ def _clean_dm(a: str) -> None:
             e = f.find("{")
             b = f[:e]
             c = ((b.replace(".", "") + "0000000000000")[:13]).lstrip("0")
-            d: dict = simdjson.loads(f[e:])  # type:ignore
+            d: dict = simdjson.loads(f[e:])
             # complex region
             _del_keys_prep(d, "contribution_v2", E_1, OPR.EQ)
             _del_keys_prep(d, "contribution", E_2, OPR.EQ)

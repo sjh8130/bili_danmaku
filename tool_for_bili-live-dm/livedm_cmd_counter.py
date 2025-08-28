@@ -9,7 +9,7 @@ from tqdm import tqdm
 try:
     import simdjson
 except ImportError:
-    simdjson = json  # type:ignore
+    simdjson = json
 
 _cmd_count: dict[str, int] = {}
 
@@ -17,7 +17,7 @@ _cmd_count: dict[str, int] = {}
 def _p1() -> None:
     try:
         with _out_path.open(encoding="utf-8") as file_io:
-            _cmd_count.update(simdjson.load(file_io))  # type:ignore
+            _cmd_count.update(simdjson.load(file_io))
     except FileNotFoundError:
         pass
     except json.JSONDecodeError as e:
@@ -41,13 +41,11 @@ def _main(in_paths: list[str]) -> None:
         if in_path == _out_path:
             continue
         is_err = False
-        lineno = 1
         with in_path.open(encoding="utf-8") as file_in:
-            for line in tqdm(file_in.readlines(), leave=False, desc=in_path.name):
-                lineno += 1
+            for lineno, line in enumerate(tqdm(file_in.readlines(), leave=False, desc=in_path.name, bar_format="{desc}{percentage:3.0f}%|{bar}| {n_fmt}->{total_fmt} ")):
                 left_pos = line.find("{")
                 try:
-                    l_line: dict[str, Any] = json.loads(line[left_pos:])
+                    l_line: dict[str, Any] = simdjson.loads(line[left_pos:])
                 except json.JSONDecodeError as e:
                     print(lineno)
                     print(e)
@@ -55,7 +53,7 @@ def _main(in_paths: list[str]) -> None:
                         print(in_path)
                         is_err = True
                     continue
-                cmd = l_line["cmd"]
+                cmd = l_line.get("cmd", "ERR!NO_CMD")
                 _cmd_count[cmd] = _cmd_count.get(cmd, 0) + 1
 
 

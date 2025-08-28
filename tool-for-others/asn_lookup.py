@@ -458,7 +458,7 @@ def _process_file(file_name: Path) -> None:
     # import math
     with file_name.open(encoding="utf-8") as file:
         for line_r in file.readlines():
-            line = line_r.split("|")
+            line = line_r.rstrip().split("|")
             if line[0].startswith("#"):
                 continue
             if line[1] in {"afrinic", "apnic", "arin", "iana", "lacnic", "ripe-ncc", "ripencc"}:
