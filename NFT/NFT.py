@@ -32,7 +32,7 @@ _a = 0
 
 
 def _downloader(pn: int | str, item_id: int | str, ps: int | str) -> bytes:
-    global _a
+    global _a  # noqa: PLW0603
     retries = 0
     item_id = str(item_id)
     while retries < 3:

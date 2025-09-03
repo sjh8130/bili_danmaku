@@ -9,3 +9,5 @@ py -3.12 setup.py build_ext --inplace
 del livedm_keys_counter_lib.c
 py -3.13 setup.py build_ext --inplace
 del livedm_keys_counter_lib.c
+py -3.13t setup.py build_ext --inplace
+del livedm_keys_counter_lib.c

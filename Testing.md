@@ -2450,7 +2450,7 @@ voiceConfig
 | emots						| obj/null	| 新的表情包 k:v{obj...} |202206-
 | is_audited				| bool		| false | 20230217
 | id_str					| str		| hex | 20230308
-| icon						| obj/null	| [荣耀装扮](https://__bili_link_site__/p/eden/news#/newsdetail?id=3531 ) | 2023-06-30 10:58:2x
+| icon						| obj/null	| [荣耀装扮](https://__bili_link_site__/p/eden/news#/newsdetail?id=3531 ) | 2023-06-30 10:58
 | show_reply				| bool		| 弹幕回复 |202206-
 | reply_mid					| num		| 弹幕回复-uid |202206-
 | reply_uname				| str		| 弹幕回复-昵称 |202206-
@@ -2459,6 +2459,8 @@ voiceConfig
 | reply_type_enum			| num		| 弹幕回复 |2025-
 | hit_combo					| num		| 0,1 +1弹幕 |202206-
 | esports_jump_url			| str		| |20240905
+| is_mirror					| bool		| |20250822 16:11
+| is_collaboration_member	| bool		| |20250822 16:11
 #### DANMU_MSG__info__0__15__extra__emots
 | key 8				| type	| value	|
 |-|-|-|
@@ -6055,6 +6057,7 @@ TODO!
 | data			| num	| |
 ```json
 {"cmd":"RECALL_DANMU_MSG","data":{"recall_type":2,"target_id":xxx}}
+{"cmd":"RECALL_DANMU_MSG","data":{"recall_type":3,"target_id":0}}
 ```
 ```javascript
 enum recall_type={NOTHING:0,DANMAKU:1,USER:2,ALL:3}

@@ -11,7 +11,7 @@ import zlib
 from typing import NamedTuple
 
 import brotli
-from mitmproxy import dns, http, io
+from mitmproxy import http, io
 from mitmproxy.exceptions import FlowReadException
 
 HEADER_STRUCT = struct.Struct(">I2H2I")
@@ -147,33 +147,29 @@ def main():
         freader = io.FlowReader(logfile)
         try:
             for frame in freader.stream():
-                if isinstance(frame, http.HTTPFlow):
-                    if frame.request.method == "POST":
+                if isinstance(frame, http.HTTPFlow) and frame.websocket:
+                    if "live-comet" in frame.request.headers.get(b"Host", "") and "chat.bilibili.com" in frame.request.headers.get(b"Host", ""):
+                        pass
+                    else:
                         continue
-                    if frame.websocket:
-                        if "live-comet" in frame.request.headers.get(b"Host", "") and "chat.bilibili.com" in frame.request.headers.get(b"Host", ""):
-                            pass
-                        else:
+                    frame_uuid = frame.id
+                    room_id: str = json.loads(frame.websocket.messages[0].content[16:])["roomid"]
+                    for msg in frame.websocket.messages:
+                        if msg.from_client:
                             continue
-                        frame_uuid = frame.id
-                        for seq, msg in enumerate(frame.websocket.messages):
-                            if msg.from_client and seq == 0:
-                                continue
-                            if msg.content:
-                                pass
-                                # continue
-                            ts = (str(msg.timestamp).replace(".", "") + "00000000")[:16]
-                            dms = decode_blc(msg.content)
-                            if dms == ['{"code":0}'] or dms == ['{"code": 0}']:
-                                continue
-                            if not dms:
-                                continue
-                            with open(f"{frame_uuid}.jsonl", "a", encoding="utf-8") as fp:
-                                fp.writelines((ts + dm + "\n") for dm in dms)
-                        print(frame.request.get_state())
-                        print(frame)
-                elif isinstance(frame, dns.DNSFlow):
-                    pass
+                        # if msg.content:
+                        #     pass
+                        #     # continue
+                        ts = (str(msg.timestamp).replace(".", "") + "00000000")[:16]
+                        dms = decode_blc(msg.content)
+                        if dms == ['{"code":0}'] or dms == ['{"code": 0}']:
+                            continue
+                        if not dms:
+                            continue
+                        with open(f"{room_id}_{frame_uuid}.jsonl", "a", encoding="utf-8") as fp:
+                            fp.writelines((ts + dm + "\n") for dm in dms)
+                    print(frame.request.get_state())
+                    print(frame)
             # print(f)
             # break
         except FlowReadException as e:

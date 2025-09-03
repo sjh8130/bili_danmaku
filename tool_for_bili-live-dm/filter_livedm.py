@@ -9,6 +9,7 @@ except ImportError:
     simdjson = json
 
 
+from filter2 import FILTER2
 from filters import FILTER_MID, FILTER_MID_HASH_STR_LOWER, FILTER_WORDS
 from tqdm import tqdm
 
@@ -29,8 +30,7 @@ def main(in_paths: list[str], out_path: Path) -> None:
         else:
             raise
     len_i = len(in_paths)
-    p_i = 1
-    for p_i, in_path_s in enumerate(in_paths):
+    for p_i, in_path_s in enumerate(in_paths, start=1):
         in_path = Path(in_path_s).resolve()
         f_s = f"{p_i}/{len_i}"
         is_err = False
@@ -73,8 +73,8 @@ def main(in_paths: list[str], out_path: Path) -> None:
                     .replace("\u3000", "")
                     .replace("\U000e0020", "")
                     .strip()
-                )
-                if dm_text in FILTER_WORDS or dm_text.lower() in FILTER_WORDS:
+                ).lower()
+                if dm_text in FILTER_WORDS or dm_text.lower() in FILTER_WORDS or dm_text.lower() in FILTER2:
                     final_write.pop(dm_text, None)
                     continue
                 try:
@@ -86,6 +86,15 @@ def main(in_paths: list[str], out_path: Path) -> None:
                     final_write[dm_text] += 1
                 except KeyError:
                     final_write[dm_text] = 1
+    if in_path == out_path:  # pyright: ignore[reportPossiblyUnboundVariable]
+        for fw in FILTER_WORDS:
+            final_write.pop(fw, None)
+            final_write.pop(fw.lower(), None)
+            final_write.pop(fw.upper(), None)
+        for fw in FILTER2:
+            final_write.pop(fw, None)
+            final_write.pop(fw.lower(), None)
+            final_write.pop(fw.upper(), None)
     with out_path.open("w", encoding="utf-8") as fp:
         json.dump(final_write, fp, ensure_ascii=False, indent="\t", sort_keys=True)
 
@@ -94,7 +103,11 @@ if __name__ == "__main__":
     in_path = sys.argv[1:]
     out_path = Path("Z:\\test.json").resolve()
     start_time = time.time()
-    main(in_path, out_path)
-    total_time = time.time() - start_time
-    print(f"处理完成，耗时：{total_time:.3f}秒")
-    time.sleep(5)
+    try:
+        main(in_path, out_path)
+    except Exception as e:
+        print(e)
+    finally:
+        total_time = time.time() - start_time
+        print(f"处理完成，耗时：{total_time:.3f}秒")
+        time.sleep(5)

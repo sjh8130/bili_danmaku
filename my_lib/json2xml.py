@@ -40,7 +40,7 @@ def json2XML_CMD(this: dict[str, Any]) -> str:
     f_time = format(stime / 1000, ".5f")
     f_ctime = str(time.mktime(time.strptime(ctime + "+0800", "%Y-%m-%d %H:%M:%S%z")))
     # f_mtime = time.mktime(time.strptime(mtime + "+0800", "%Y-%m-%d %H:%M:%S%z")).__floor__().__str__()
-    midHash = hex(crc32(mid.encode()))[2:].lstrip("0")
+    midHash = hex(crc32(mid.encode()))[2:].lstrip("0")  # noqa: FURB116
     return f'\t<d p="{f_time},1,25,16777215,{f_ctime},999,{midHash},{dmid_2},11">{text}</d><!-- SPECIAL: {command}{extra} -->'
 
 
@@ -60,7 +60,7 @@ def json2XML(this: dict[str, Any]) -> str:
     mid_hash = this.get("midHash", this.get("uhash", "ffffffff"))
     # content 7
     content = this.get("content", this.get("text", ""))
-    if content == "":
+    if content == "":  # noqa: PLC1901
         return ""
     content = escape_html(content)
     # send_time 8
@@ -73,4 +73,4 @@ def json2XML(this: dict[str, Any]) -> str:
 
 
 def escape_html(s: str) -> str:
-    return s if s == "" else s.replace("<", "&lt;").replace(">", "&gt;").replace('"', "&quot;").replace("&", "&amp;").strip()
+    return s if s == "" else s.replace("<", "&lt;").replace(">", "&gt;").replace('"', "&quot;").replace("&", "&amp;").strip()  # noqa: PLC1901
