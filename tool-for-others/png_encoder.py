@@ -150,52 +150,52 @@ class _CHUNK_TYPE(StrEnum):
     """Image trailer"""
     # Ancillary chunks
     # # Transparency information
-    tRNS = "tRNS"
+    tRNS = "tRNS"  # noqa: N815
     """Transparency"""
     # # Color space information
-    cHRM = "cHRM"
+    cHRM = "cHRM"  # noqa: N815
     """Primary chromaticities and white point"""
-    gAMA = "gAMA"
+    gAMA = "gAMA"  # noqa: N815
     """Image gamma"""
-    iCCP = "iCCP"
+    iCCP = "iCCP"  # noqa: N815
     """Embedded ICC profile"""
-    sBIT = "sBIT"
+    sBIT = "sBIT"  # noqa: N815
     """Significant bits"""
-    sRGB = "sRGB"
+    sRGB = "sRGB"  # noqa: N815
     """Standard RGB color space"""
-    cICP = "cICP"
+    cICP = "cICP"  # noqa: N815
     """Coding-independent code points for video signal type identification***"""
-    mDCv = "mDCv"
+    mDCv = "mDCv"  # noqa: N815
     """Mastering Display Color Volume***"""
-    cLLi = "cLLi"
+    cLLi = "cLLi"  # noqa: N815
     """Content Light Level Information***"""
     # # Textual information
-    tEXt = "tEXt"
+    tEXt = "tEXt"  # noqa: N815
     """Textual data"""
-    zTXt = "zTXt"
+    zTXt = "zTXt"  # noqa: N815
     """Compressed textual data"""
-    iTXt = "iTXt"
+    iTXt = "iTXt"  # noqa: N815
     """International textual data"""
     # # Miscellaneous information
-    bKGD = "bKGD"
+    bKGD = "bKGD"  # noqa: N815
     """Background color***"""
-    hIST = "hIST"  # ***
+    hIST = "hIST"  # noqa: N815
     """Image histogram"""
-    pHYs = "pHYs"
+    pHYs = "pHYs"  # noqa: N815
     """Physical pixel dimensions"""
-    sPLT = "sPLT"  # ***
+    sPLT = "sPLT"  # noqa: N815
     """Suggested palette"""
-    eXIf = "eXIf"  # ***
+    eXIf = "eXIf"  # noqa: N815
     """Exchangeable Image File (Exif) Profile"""
     # # Time information
-    tIME = "tIME"
+    tIME = "tIME"  # noqa: N815
     """Image last-modification time"""
     # # Animation information
-    acTL = "acTL"
+    acTL = "acTL"  # noqa: N815
     """Animation Control Chunk"""
-    fcTL = "fcTL"
+    fcTL = "fcTL"  # noqa: N815
     """Frame Control Chunk"""
-    fdAT = "fdAT"
+    fdAT = "fdAT"  # noqa: N815
     """Frame Data Chunk"""
 
 

@@ -142,7 +142,7 @@ def _E(b: requests.Session, d: int | str) -> bytes:
 def _F(a: str, b: X1) -> None:
     d = json.dumps(b, ensure_ascii=False, separators=(",", ":"), indent="\t")
     e = ""
-    if os.path.isfile(a):
+    if Path(a).is_file():
         e = open(a, encoding="utf-8").read()
         if d == e:
             return
@@ -175,7 +175,7 @@ def _G(a: str, b: str) -> None:
     if isinstance(b, dict):
         b = json.dumps(b, ensure_ascii=False, separators=(",", ":"))
     """Csv / jsonl."""
-    if b in Z or (os.path.isfile(a) and b in open(a, encoding="utf-8").read()):
+    if b in Z or (Path(a).is_file() and b in open(a, encoding="utf-8").read()):
         return
     with open(a, "a", encoding="utf-8") as fp:
         fp.write(b + "\n")
@@ -337,13 +337,13 @@ def _N(j) -> None:
     match j:
         case "0":
             k = range(1, 9999)
-            m = 4450
+            m = 4424
         case "2":
             k = range(100000000, 199999999)
-            m = 1691 - 431
+            m = 1691
         case "3":
             k = range(200000000, 299999999)
-            m = 1061 - 166
+            m = 1061
         case "4":
             k = range(300000000, 399999999)
             m = 400 - 5
@@ -361,7 +361,10 @@ def _N(j) -> None:
         tqdm(total=m, initial=0, bar_format="{percentage:3.0f}%|{bar}| {n_fmt}->{total_fmt} [{elapsed}->{remaining}]") as d,
     ):
         for g in a:
-            if g in h or str(g) in h or (g not in k):
+            if g not in k:
+                continue
+            d.update()
+            if g in h or str(g) in h:
                 continue
             time.sleep(b)
             e = _E(c, g)
@@ -375,7 +378,6 @@ def _N(j) -> None:
                 print(n)
                 raise n
             _H(g, f)
-            d.update()
             d.write(f"{time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()):<32}{g:<12}{f['name']:20}{len(e):>8}")
 
 

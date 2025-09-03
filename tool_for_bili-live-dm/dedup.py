@@ -1,4 +1,5 @@
 import binascii
+import contextlib
 import gc
 import json
 import sys
@@ -8,12 +9,13 @@ from decimal import Decimal
 from pathlib import Path
 from typing import Any
 
+from loguru import logger
+from tqdm import tqdm
+
 try:
     import simdjson
 except ImportError:
     simdjson = json
-from loguru import logger
-from tqdm import tqdm
 
 _E_MD5 = "d41d8cd98f00b204e9800998ecf8427e"
 _log = logger.bind(user="deduplicate jsonl")
@@ -71,7 +73,8 @@ def _deduplicate_it(itm: dict[str, Any], timestamp: Decimal, str_itm: str) -> bo
         case "INTERACT_WORD":
             id_1 = f"""{cmd}${data["roomid"]}${data["score"]}${data["timestamp"]}${data["trigger_time"]}${data.get("uid", 0)}${data["uname"]}${msg_id}"""
             if not (data.get("uid", 0) == 0 and check_username(data["uname"])):
-                id_2 = f"""{cmd}${data["roomid"]}${data["score"]}${data["timestamp"]}${data["trigger_time"]}$0${data["uname"][0]}***${msg_id}"""
+                with contextlib.suppress(IndexError):
+                    id_2 = f"""{cmd}${data["roomid"]}${data["score"]}${data["timestamp"]}${data["trigger_time"]}$0${data["uname"][0]}***${msg_id}"""
         case "ENTRY_EFFECT" | "ENTRY_EFFECT_MUST_RECEIVE":
             id_1 = f"""{cmd}${data["trigger_time"]}${data.get("uid", 0)}${data["target_id"]}${msg_id}"""
         case "SEND_GIFT":
@@ -149,6 +152,7 @@ def _deduplicate_it(itm: dict[str, Any], timestamp: Decimal, str_itm: str) -> bo
             id_1 = f"""{cmd}${data["ts"]}${data["sid"]}${data["tid"]}${msg_id}"""
         case "RECALL_DANMU_MSG" | "RING_STATUS_CHANGE_V2" | "SYS_MSG" | "LIVE" | "PREPARING":
             id_1 = (str_itm, timestamp.to_integral("ROUND_DOWN"))
+            id_2 = (str_itm, timestamp.to_integral("ROUND_DOWN") + 1)
         case "INTERACT_WORD_V2":
             id_1 = f"""{cmd}${data["pb"]}"""
         case (
@@ -192,11 +196,13 @@ def _deduplicate_it(itm: dict[str, Any], timestamp: Decimal, str_itm: str) -> bo
             | "ANCHOR_LOT_NOTICE"
             | "ANCHOR_NORMAL_NOTIFY"
             | "BENEFIT_CARD_CLEAN"
+            | "BENEFIT_STATUS"
             | "CARD_MSG"
             | "CHANGE_ROOM_INFO"
             | "CUT_OFF"
             | "DANMU_ACTIVITY_CONFIG"
             | "FULL_SCREEN_SPECIAL_EFFECT"
+            | "GIFT_BOARD_RED_DOT"
             | "GIFT_PANEL_PLAN"
             | "GUARD_ACHIEVEMENT_ROOM"
             | "GUARD_LEADER_NOTICE"
@@ -205,6 +211,7 @@ def _deduplicate_it(itm: dict[str, Any], timestamp: Decimal, str_itm: str) -> bo
             | "LIVE_PANEL_CHANGE_CONTENT"
             | "LIVE_PANEL_CHANGE"
             | "MESSAGEBOX_USER_GAIN_MEDAL"
+            | "MESSAGEBOX_USER_MEDAL_CHANGE"
             | "OBS_SHIELD_STATUS_UPDATE"
             | "OFFICIAL_ROOM_EVENT"
             | "OTHER_SLICE_SETTING_CHANGED"
@@ -226,6 +233,8 @@ def _deduplicate_it(itm: dict[str, Any], timestamp: Decimal, str_itm: str) -> bo
             | "SHOPPING_CART_SHOW"
             | "SPECIAL_GIFT"
             | "STUDIO_ROOM_CLOSE"
+            | "USER_INFO_UPDATE"
+            | "USER_PANEL_RED_ALARM"
             | "VOICE_CHAT_UPDATE"
             | "VOICE_JOIN_LIST"
             | "VOICE_JOIN_ROOM_COUNT_INFO"
@@ -275,16 +284,17 @@ def _deduplicate(in_path: Path) -> int:
 
 
 if __name__ == "__main__":
+    st0 = time.time_ns()
     files_to_process = sys.argv[1:]
     try:
         for file in tqdm(files_to_process, leave=False, position=0):
-            st = time.time()
+            st1 = time.time()
             _deduplicate_dict.clear()
             gc.collect(2)
             gc.collect(1)
             gc.collect(0)
             total = _deduplicate(Path(file))
-            total_time = time.time() - st
+            total_time = time.time() - st1
             tqdm.write(f"{file}:{total_time:.3f}s, {(total / total_time):.0f} lines/s")
             # print(f"{file}:{total_time:.3f}s, {(total/total_time):.0f} lines/s")
     except KeyboardInterrupt:
@@ -292,5 +302,6 @@ if __name__ == "__main__":
     except Exception as e:
         _log.exception(e)
     finally:
-        print("Done")
+        et0 = time.time_ns()
+        print("Done", (et0 - st0) / 1e9)
         time.sleep(30)

@@ -55,7 +55,6 @@ output_txt = input_file.rsplit(".", 1)[-2] + "_P.txt"
 input_file = open(input_file, encoding="utf-8").read()
 Loaded_JSON = json.loads(input_file)
 del input_file
-srt_index = 0
 Final_SRT_Content = ""
 Final_LRC_Content = ""
 Final_TXT_Content = ""
@@ -75,8 +74,7 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 """
 aegisub_time_overflow = False
 lrc_time_overflow = False
-for line in Loaded_JSON["utterances"]:
-    srt_index += 1
+for srt_index, line in enumerate(Loaded_JSON["utterances"], 1):
     Final_SRT_Content += f"""{srt_index}\n{convert_srt_time(line["start_time"])} --> {convert_srt_time(line["end_time"])}\n{line["transcript"]}\n\n"""
     Final_LRC_Content += f"""{convert_lrc_time(line["start_time"])}{line["transcript"]}\n"""
     Final_TXT_Content += f"""{line["transcript"]}\n"""

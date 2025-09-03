@@ -143,19 +143,19 @@ def _main(video: _Video) -> None:
     }
     # video_info_0 = _get_json(video, session)
     # ================================ 视频信息1
-    video_info_1: dict = _downloader(f"https://api.bilibili.com/x/web-interface/view?bvid={video.bvid}", headers, session, _json=True)
+    video_info_1: dict = _downloader(f"https://api.bilibili.com/x/web-interface/view?bvid={video.bvid}", headers, session, _json=True)  # pyright: ignore[reportAssignmentType]
     with contextlib.suppress(KeyError):
         video_info_1["data"]["ugc_season"]["sections"] = []
     write_file(f"[{video.bvid}]_[0]_[Video]_[INFO].json", video_info_1)
     # ================================ 视频信息2
-    video_info_2: dict = _downloader(f"https://api.bilibili.com/x/web-interface/view/detail?bvid={video.bvid}", headers, session, _json=True)
+    video_info_2: dict = _downloader(f"https://api.bilibili.com/x/web-interface/view/detail?bvid={video.bvid}", headers, session, _json=True)  # pyright: ignore[reportAssignmentType]
     video_info_2["data"]["Related"] = []
     video_info_2["data"]["Reply"]["replies"] = []
     with contextlib.suppress(KeyError):
         video_info_2["data"]["View"]["ugc_season"]["sections"] = []
     write_file(f"[{video.bvid}]_[0]_[Video]_[INFO_2].json", video_info_2)
     # ================================ 视频信息3
-    video_info_3: dict = _downloader("https://api.bilibili.com/x/web-interface/wbi/view?" + gen_w_rid({"aid": video.avid_n}), headers, session, _json=True)
+    video_info_3: dict = _downloader("https://api.bilibili.com/x/web-interface/wbi/view?" + gen_w_rid({"aid": video.avid_n}), headers, session, _json=True)  # pyright: ignore[reportAssignmentType, reportArgumentType]
     write_file(f"[{video.bvid}]_[0]_[Video]_[INFO_3].json", video_info_3)
     # ================================ 加载
     json_info: dict = video_info_1["data"]
@@ -190,10 +190,8 @@ def _main(video: _Video) -> None:
             dms = dm_pb2.DmSegMobileReply()
             dms.ParseFromString(dm_bin)
             dms_j = MessageToDict(dms)
-            for dm in dms_j["elems"]:
-                danmaku_list.append(dm)
-            for dmc in dms_j["colorfulSrc"]:
-                danmakuColorful_list.append(dmc)
+            danmaku_list += dms_j["elems"]
+            danmakuColorful_list += dms_j["colorfulSrc"]
         final_json = {"elems": danmaku_list, "colorfulSrc": danmakuColorful_list}
         final_string = json.dumps(final_json, ensure_ascii=False, separators=(",", ":")).replace('{"id":', '\n\t{"id":')
         write_file(f"[{video.bvid}]_[{video.avid}].json", final_string)

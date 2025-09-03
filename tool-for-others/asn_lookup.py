@@ -437,7 +437,7 @@ def _download_file(url: str, file_name: Path, *, overwrite: bool) -> None:
         return
     # file {} , downloading...
     print(f"文件 {file_name} 不存在，正在下载...")
-    response = requests.get(url, headers={"Accept-Encoding": "gzip, deflate, bzip2, br, zstd"})
+    response = requests.get(url, headers={"Accept-Encoding": "gzip, deflate, bzip2, br, zstd"})  # noqa: S113
     if response.status_code == 200:
         file_name.write_bytes(response.content)
         # print(f"文件 {file_name} 下载完成.")
@@ -463,7 +463,7 @@ def _process_file(file_name: Path) -> None:
                 continue
             if line[1] in {"afrinic", "apnic", "arin", "iana", "lacnic", "ripe-ncc", "ripencc"}:
                 continue
-            region = "XX" if line[1] == "" else line[1]
+            region = "XX" if line[1] == "" else line[1]  # noqa: PLC1901
             if line[5] == "summary":
                 continue
             if line[3] in {"", "\t"}:

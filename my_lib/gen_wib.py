@@ -120,4 +120,4 @@ def gen_w_rid(query: dict[str, str]) -> str:
 
 
 if __name__ == "__main__":
-    gen_w_rid({"foo": "114", "bar": "514", "baz": 1919810})
+    gen_w_rid({"foo": "114", "bar": "514", "baz": 1919810})  # pyright: ignore[reportArgumentType]

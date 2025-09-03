@@ -39,4 +39,5 @@ if __name__ == "__main__":
     file_paths = sys.argv[1:]
     for path in file_paths:
         brec_xml_to_jsonl(Path(path).resolve())
+    print("Done,")
     time.sleep(10)

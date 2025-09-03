@@ -26,6 +26,7 @@ def _trim_file(in_path: str) -> None:
             out_file.write(date + json.dumps(x, ensure_ascii=False, separators=(",", ":")) + "\n")
 
 
-files_to_process = sys.argv[1:]
-for file in files_to_process:
-    _trim_file(file)
+if __name__ == "__main__":
+    files_to_process = sys.argv[1:]
+    for file in files_to_process:
+        _trim_file(file)

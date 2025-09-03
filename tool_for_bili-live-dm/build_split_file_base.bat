@@ -9,3 +9,5 @@ py -3.12 s_split_file_base.py build_ext --inplace
 del split_file_base.c
 py -3.13 s_split_file_base.py build_ext --inplace
 del split_file_base.c
+py -3.13t s_split_file_base.py build_ext --inplace
+del split_file_base.c
