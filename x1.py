@@ -301,8 +301,8 @@ def _I(a: str) -> None:
             f = 250000001
         case "4":
             e = 300000001
-            e = 322000001
-            f = 324000001
+            e = 324000001
+            f = 325000001
         case "0" | "1" | _:
             d = 1
             e = 73800
@@ -330,6 +330,7 @@ def _I(a: str) -> None:
                 raise e
             _H(i, k)
             h.write(f"{time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()):<32}{i:<12}{k['name']:20}{len(j):>8}")
+        h.write(f"{e} -> {f}")
 
 
 def _N(j) -> None:
