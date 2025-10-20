@@ -613,7 +613,7 @@ if __name__ == "__main__":
     try:
         encode_tile_image_to_apng(
             Path(),
-            Path(),
+            Path("Z:\\A_.png"),
             256,
             256,
             fps=30,

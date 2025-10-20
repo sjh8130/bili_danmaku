@@ -96,9 +96,7 @@ def _main(user: str, movie_id: str, host: str) -> None:
             out["info"]["title"] = str(bs4.BeautifulSoup(page, "lxml").select(".tw-basic-page-header-path", limit=1)[0].contents[3].contents[1].contents[0]).strip()  # pyright: ignore[reportAttributeAccessIssue]
             page_count = int(bs4.BeautifulSoup(page, "lxml").select(".tw-pager", limit=1)[0].contents[-1].contents[0])  # pyright: ignore[reportAttributeAccessIssue]
             print(page_count)
-        for comment in downloaded_comments:
-            comment_list.append(
-                {
+        comment_list.extend({
                     "type": "comment",
                     "id": int(comment.attrs["data-comment-id"]),  # pyright: ignore[reportArgumentType]
                     "message": str(comment.select(".tw-comment-history-item__content__text")[0].contents[0]).strip("\n").strip("\t").strip(),
@@ -108,8 +106,7 @@ def _main(user: str, movie_id: str, host: str) -> None:
                         "name": str(comment.select(".tw-comment-history-item__details__user-link")[0].contents[0]).strip("\n").strip("\t").strip(),
                         "profileImage": ("https:" + comment.select(".tw-comment-history-item__user__icon")[0].attrs["src"]).replace("https:https://", "https://"),  # pyright: ignore[reportOperatorIssue]
                     },
-                },
-            )
+                } for comment in downloaded_comments)
         current_page += 1
         if current_page >= page_count or current_page >= 100:
             break

@@ -58,16 +58,16 @@ class EmoteMain(TypedDict):
     emote: list[Emote]
 
 
-def _E(a: requests.Session, b: int | str, c: int) -> bytes:
+def _E(a: requests.Session, b: int | str, c: float) -> bytes:
     global _a  # noqa: PLW0603
     d = 0
-    while d < 5:
+    while d < 10:
         try:
             _a += 1
             f = a.get(_C.format(q=b), headers=_A, verify=False, timeout=20)
             f.raise_for_status()
             return f.content
-        except requests.RequestException as e:  # noqa: F841
+        except requests.RequestException as e:  # noqa: F841, PERF203
             d += 1
             print(" ")
             # log.exception(e)
@@ -128,7 +128,7 @@ def _K(a: int | str, item: dict) -> None:
 def _L(*, j: bool = False) -> None:
     a = _N()
     b = 1
-    c: int = 8600 if not j else 1
+    c: int = 8800 if not j else 1
     d = 10000
     with (
         requests.Session() as e,
@@ -142,6 +142,8 @@ def _L(*, j: bool = False) -> None:
             f.set_description(str(g))
             f.update()
             if g in a and not j:
+                continue
+            if 2450 < g < 3200:
                 continue
             if 6000 < g < 6800:
                 continue
@@ -176,8 +178,7 @@ def _M() -> None:
 def _N() -> list[int]:
     a = []
     try:
-        for b in _D.rglob("*.json"):
-            a.append(int(b.stem))
+        a.extend(int(b.stem) for b in _D.rglob("*.json"))
         a.sort()
         return list(set(a))
     except Exception as e:

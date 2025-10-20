@@ -67,18 +67,14 @@ def main(base_url: str, target) -> None:
     chunks = [(i * chunk_size, min((i + 1) * chunk_size, target + 1)) for i in range(num_threads)]
     print(chunks)
     with concurrent.futures.ThreadPoolExecutor(max_workers=num_threads) as executor:
-        futures = []
-        for xx in range(num_threads):
-            futures.append(
-                executor.submit(
+        futures = [executor.submit(
                     scrape_urls,
                     chunks[xx][0],
                     chunks[xx][1],
                     ip_addresses[xx],
                     base_url,
                     xx,
-                ),
-            )
+                ) for xx in range(num_threads)]
         # Wait for all futures to complete
         for future in concurrent.futures.as_completed(futures):
             try:

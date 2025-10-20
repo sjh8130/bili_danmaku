@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 import contextlib
 import csv
-import os
+import json
 import ssl
 import sys
 import time
@@ -11,11 +11,6 @@ from typing import TypedDict
 import requests
 from loguru import logger
 from tqdm import tqdm
-
-try:
-    import simdjson as json
-except ImportError:
-    import json
 
 from my_lib.xx_util import OPR, del_keys, replace_str, sort_list_dict, sort_p6_emoji, sort_str_list
 
@@ -123,19 +118,19 @@ class X1(TypedDict):
 def _E(b: requests.Session, d: int | str) -> bytes:
     global _a  # noqa: PLW0603
     retry = 0
-    while retry < 5:
+    while retry < 10:
         try:
             _a += 1
             c = b.get(_L.format(q=d), headers=_A, verify=False, timeout=20)
             c.raise_for_status()
             return c.content
-        except requests.RequestException as e:  # noqa: F841
+        except requests.RequestException as e:  # noqa: F841, PERF203
             retry += 1
             log.error(f" {d} {retry=}")
             # log.exception(e)
-            time.sleep(1)
+            time.sleep(retry)
         except KeyboardInterrupt:
-            raise KeyboardInterrupt  # noqa: B904
+            raise KeyboardInterrupt from None
     raise Exception(f"Failed to fetch {d}")
 
 
@@ -154,8 +149,8 @@ def _F(a: str, b: X1) -> None:
                 b[P]["fan_item_ids"] = sort_str_list(b[P]["fan_item_ids"] + "," + c[P]["fan_item_ids"])
         # ============================
         for i in c.get(S, {}):
-            if i in c[S]:
-                if i not in b[S]:
+            if i in c.get(S):
+                if i not in b.get(S):
                     b[S][i] = c[S][i]
                 else:
                     for g in c[S][i]:
@@ -289,7 +284,7 @@ def _H(a: int | str, item: X1) -> None:
 
 def _I(a: str) -> None:
     b = set(_K())
-    c = 1
+    c = 1.2
     d = 100
     match a:
         case "2":
@@ -301,12 +296,12 @@ def _I(a: str) -> None:
             f = 250000001
         case "4":
             e = 300000001
-            e = 324000001
-            f = 325000001
+            e = 328000001
+            f = 329000001
         case "0" | "1" | _:
             d = 1
-            e = 73800
-            f = 74000
+            e = 74200
+            f = 74400
     with (
         requests.Session() as g,
         tqdm(total=int((f - e) / d) + 1, initial=0, bar_format="{desc}{percentage:3.0f}%|{bar}| {n_fmt}->{total_fmt} [{elapsed}->{remaining}]") as h,
@@ -325,7 +320,7 @@ def _I(a: str) -> None:
                 print(f"{i:<12}N", end="\r")
             try:
                 k: X1 = json.loads(j)["data"]
-            except json.JSONDecodeError as e:  # pyright: ignore[reportAttributeAccessIssue]
+            except json.JSONDecodeError as e:
                 print(j)
                 raise e
             _H(i, k)
@@ -354,8 +349,8 @@ def _N(j) -> None:
         case _:
             k = range(2**32)
             m = len(a) - 660
-    # h: list[int] = json.loads(open(_M + f"{TRASH}.json", encoding="utf-8").read())
-    h = []
+    h: list[int] = json.loads(open(_M + f"{TRASH}.json", encoding="utf-8").read())
+    # h = []
     b = 1
     with (
         requests.Session() as c,
@@ -375,7 +370,7 @@ def _N(j) -> None:
                 continue
             try:
                 f: X1 = json.loads(e)["data"]
-            except json.JSONDecodeError as n:  # pyright: ignore[reportAttributeAccessIssue]
+            except json.JSONDecodeError as n:
                 print(n)
                 raise n
             _H(g, f)
@@ -413,7 +408,7 @@ def _J() -> None:
             else:
                 try:
                     e: X1 = json.loads(d)["data"]
-                except json.JSONDecodeError as f:  # pyright: ignore[reportAttributeAccessIssue]
+                except json.JSONDecodeError as f:
                     print(d)
                     raise f
                 _H(c, e)
@@ -424,8 +419,7 @@ def _J() -> None:
 def _K() -> list[int]:
     g: list[int] = []
     for a in ["PART_5_表情包", "PART_6_main"]:
-        for b in Path(_M + a).rglob("*.json"):
-            g.append(int(b.stem))
+        g.extend(int(b.stem) for b in Path(_M + a).rglob("*.json"))
     for a in Path(_M).rglob("PART*.jsonl"):
         c = a.read_text(encoding="utf-8")
         for d in c.splitlines():

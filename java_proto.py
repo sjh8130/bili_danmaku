@@ -94,14 +94,10 @@ def get_protobuf_type(a: str) -> str:
 
 
 def combine_msg(list_1: list[tuple[str, int]], list_2: list[str]) -> str:
-    ids = []
-    form_s2: list[list[str]] = []
     ret_str = ""
-    for i in list_1:
-        ids.append(i[1])
+    ids: list[int] = [i[1] for i in list_1]
     sorted_ids: list[int] = sorted(ids)
-    for i in list_2:
-        form_s2.append([c2s(i[0])[5], get_protobuf_type(i[1]), i[0]])
+    form_s2: list[list[str]] = [[c2s(i[0])[5], get_protobuf_type(i[1]), i[0]] for i in list_2]
     for i in sorted_ids:
         ret_str += "    //\n    "
         for j in list_1:
@@ -116,10 +112,8 @@ def combine_msg(list_1: list[tuple[str, int]], list_2: list[str]) -> str:
 
 
 def combine_enum(list_1: list[tuple[str, int]]) -> str:
-    ids = []
     ret_str = ""
-    for _id in list_1:
-        ids.append(_id[1])
+    ids = [_id[1] for _id in list_1]
     ids: list[int] = sorted(ids)
     for _id in ids:
         for j in list_1:

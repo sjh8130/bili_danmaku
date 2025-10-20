@@ -185,6 +185,7 @@ def _deduplicate_it(itm: dict[str, Any], timestamp: Decimal, str_itm: str) -> bo
         case "ANCHOR_LOT_CHECKSTATUS":
             id_1 = (cmd, data["id"], data["status"])
         case "LIKE_INFO_V3_CLICK":
+            return False
             id_1 = (cmd, data["uid"], timestamp.to_integral("ROUND_DOWN"))
         case (
             "ACTIVITY_BANNER_CHANGE_V2"
@@ -206,6 +207,7 @@ def _deduplicate_it(itm: dict[str, Any], timestamp: Decimal, str_itm: str) -> bo
             | "GIFT_PANEL_PLAN"
             | "GUARD_ACHIEVEMENT_ROOM"
             | "GUARD_LEADER_NOTICE"
+            | "LIKE_GUIDE_USER"
             | "LIVE_ANI_RES_UPDATE"
             | "LIVE_MULTI_VIEW_NEW_INFO"
             | "LIVE_PANEL_CHANGE_CONTENT"

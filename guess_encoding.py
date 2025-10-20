@@ -165,7 +165,7 @@ def safe_print(*valuse: tuple, sep=" ", end="\n", file=None, flush=False):
         s = s.replace("\x1d", "\\x1d")
         s = s.replace("\x1e", "\\x1e")
         s = s.replace("\x1f", "\\x1f")
-        print(s, sep=sep, end=end, file=file, flush=flush)
+        print(s, sep=sep, end=end, file=file, flush=flush)  # noqa: FURB105
 
 
 def guess_encoding(inn: str):
