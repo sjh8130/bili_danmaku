@@ -8,6 +8,7 @@ import json
 import struct
 import sys
 import zlib
+from decimal import Decimal
 from typing import NamedTuple
 
 import brotli
@@ -148,27 +149,33 @@ def main():
         try:
             for frame in freader.stream():
                 if isinstance(frame, http.HTTPFlow) and frame.websocket:
-                    if "live-comet" in frame.request.headers.get(b"Host", "") and "chat.bilibili.com" in frame.request.headers.get(b"Host", ""):
+                    host = frame.request.headers.get(b"Host", "")
+                    cond_1 = "broadcastlv.chat.bilibili.com" in host
+                    cond_2 = "live-comet" in host and "chat.bilibili.com" in host
+                    if cond_1 or cond_2:
                         pass
                     else:
+                        # pass
                         continue
+                    print("#####")
                     frame_uuid = frame.id
                     room_id: str = json.loads(frame.websocket.messages[0].content[16:])["roomid"]
                     for msg in frame.websocket.messages:
+                        # break
                         if msg.from_client:
                             continue
                         # if msg.content:
                         #     pass
                         #     # continue
-                        ts = (str(msg.timestamp).replace(".", "") + "00000000")[:16]
+                        ts = str(int(Decimal(str(msg.timestamp)) * 1_000_000))
                         dms = decode_blc(msg.content)
                         if dms == ['{"code":0}'] or dms == ['{"code": 0}']:
                             continue
                         if not dms:
                             continue
-                        with open(f"{room_id}_{frame_uuid}.jsonl", "a", encoding="utf-8") as fp:
+                        with open(f"{room_id}_{frame_uuid}.jsonl", "a", 2**20, encoding="utf-8") as fp:
                             fp.writelines((ts + dm + "\n") for dm in dms)
-                    print(frame.request.get_state())
+                    # print(frame.request.get_state())
                     print(frame)
             # print(f)
             # break

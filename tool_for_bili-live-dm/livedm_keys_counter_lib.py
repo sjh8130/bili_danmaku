@@ -75,7 +75,12 @@ def p_main(in_path: Path) -> dict[str, Any]:
     with in_path.open(encoding="utf-8") as file_in:
         for line in tqdm(file_in.readlines(), leave=False, desc=in_path.name):
             try:
-                item: dict = simdjson.loads(line[line.find("{") :])
+                lp = line.find("{")
+                if lp:
+                    item: dict = simdjson.loads(line[lp:])
+                else:
+                    item: dict = simdjson.loads(line)
+                # item: dict = simdjson.loads(line[line.find("{") :])
             except Exception:  # noqa: S112
                 continue
             _a(item["cmd"], item)

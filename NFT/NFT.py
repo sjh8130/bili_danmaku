@@ -107,7 +107,7 @@ def _get_data(item_id: int | str) -> int:
 
 
 def _main() -> None:
-    for item_id in range(2000, 3000):
+    for item_id in range(2000, 4000):
         if (_BP / f"NFT_{item_id}.json").exists():
             continue
         _get_data(item_id)

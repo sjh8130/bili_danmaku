@@ -45,7 +45,7 @@ def main(file_name: Path) -> None:
 \t<source>k-v</source>
 """
     xml_data = []
-    last_modified_time = int(os.stat(file_name).st_ctime)
+    last_modified_time = int(os.stat(file_name).st_ctime)  # noqa: PTH116
     xml_tail = f"</i>\n<!-- Create Time: {last_modified_time} -->"
     try:
         command_dms_count = len(data["commandDms"])
@@ -59,10 +59,8 @@ def main(file_name: Path) -> None:
         print("No Data")
         sys.exit()
     if command_dms_count > 0:
-        for this in data["commandDms"]:
-            xml_data.append(json2XML_CMD(this))
-    for this in data["elems"]:
-        xml_data.append(json2XML(this))
+        xml_data.extend(json2XML_CMD(this) for this in data.get("commandDms", []))
+    xml_data.extend(json2XML(this) for this in data.get("elems", []))
     write_file(file_name.with_suffix(".xml"), xml_head + "\n".join(xml_data) + xml_tail)
     end_time = time.time()
     print(f"\r{danmaku_count=:10}, 总计用时：{round(end_time - start_time, 4):10}")

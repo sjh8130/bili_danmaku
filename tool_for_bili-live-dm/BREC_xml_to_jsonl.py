@@ -1,3 +1,4 @@
+import decimal
 import json
 import sys
 import time
@@ -32,7 +33,7 @@ def brec_xml_to_jsonl(file_path: Path) -> None:
                 fp.write("\n")
         for gift in tqdm(gifts, leave=False):
             if gift_data := simdjson.loads(gift.attrib.get("raw", r"{}")):
-                fp.write(str(int(gift_data["timestamp"] * 1000)) + json.dumps({"cmd": "SEND_GIFT", "data": gift_data}, ensure_ascii=False, separators=(",", ":")) + "\n")
+                fp.write(str(int(decimal.Decimal(gift_data["timestamp"]) * 1000)) + json.dumps({"cmd": "SEND_GIFT", "data": gift_data}, ensure_ascii=False, separators=(",", ":")) + "\n")
 
 
 if __name__ == "__main__":
