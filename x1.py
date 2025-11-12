@@ -296,12 +296,12 @@ def _I(a: str) -> None:
             f = 250000001
         case "4":
             e = 300000001
-            e = 328000001
-            f = 329000001
+            e = 331000001
+            f = 332000001
         case "0" | "1" | _:
             d = 1
-            e = 74200
-            f = 74400
+            e = 74300
+            f = 74500
     with (
         requests.Session() as g,
         tqdm(total=int((f - e) / d) + 1, initial=0, bar_format="{desc}{percentage:3.0f}%|{bar}| {n_fmt}->{total_fmt} [{elapsed}->{remaining}]") as h,

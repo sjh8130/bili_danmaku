@@ -84,12 +84,17 @@ class ColorType(IntEnum):
     rgba64 = TRUECOLOR_WITH_ALPHA
 
 
-_ALLOWED_DEPTH_LIST: dict[ColorType, list[int]] = {
+_ALLOWED_DEPTH_LIST: dict[ColorType | int, list[int]] = {
     ColorType.GRAY: [1, 2, 4, 8, 16],
     ColorType.TRUECOLOR: [8, 16],
     ColorType.INDEXED_COLOR: [1, 2, 4, 8, 16],
     ColorType.GRAY_ALPHA: [8, 16],
     ColorType.TRUECOLOR_WITH_ALPHA: [8, 16],
+    ColorType.GRAY.value: [1, 2, 4, 8, 16],
+    ColorType.TRUECOLOR.value: [8, 16],
+    ColorType.INDEXED_COLOR.value: [1, 2, 4, 8, 16],
+    ColorType.GRAY_ALPHA.value: [8, 16],
+    ColorType.TRUECOLOR_WITH_ALPHA.value: [8, 16],
 }
 
 
@@ -125,10 +130,10 @@ class CompressionLevel(IntEnum):
 
 
 class _SRGB_RENDERING_INTENT(IntEnum):
-    SRGB_RENDERING_INTENT_PERCEPTUAL = 0
-    SRGB_RENDERING_INTENT_RELATIVE_COLORIMETRIC = 1
-    SRGB_RENDERING_INTENT_SATURATION = 2
-    SRGB_RENDERING_INTENT_ABSOLUTE_COLORIMETRIC = 3
+    PERCEPTUAL = 0
+    RELATIVE_COLORIMETRIC = 1
+    SATURATION = 2
+    ABSOLUTE_COLORIMETRIC = 3
 
 
 class _PHYS_UNIT(IntEnum):
@@ -150,52 +155,52 @@ class _CHUNK_TYPE(StrEnum):
     """Image trailer"""
     # Ancillary chunks
     # # Transparency information
-    tRNS = "tRNS"  # noqa: N815
+    tRNS = "tRNS"
     """Transparency"""
     # # Color space information
-    cHRM = "cHRM"  # noqa: N815
+    cHRM = "cHRM"
     """Primary chromaticities and white point"""
-    gAMA = "gAMA"  # noqa: N815
+    gAMA = "gAMA"
     """Image gamma"""
-    iCCP = "iCCP"  # noqa: N815
+    iCCP = "iCCP"
     """Embedded ICC profile"""
-    sBIT = "sBIT"  # noqa: N815
+    sBIT = "sBIT"
     """Significant bits"""
-    sRGB = "sRGB"  # noqa: N815
+    sRGB = "sRGB"
     """Standard RGB color space"""
-    cICP = "cICP"  # noqa: N815
+    cICP = "cICP"
     """Coding-independent code points for video signal type identification***"""
-    mDCv = "mDCv"  # noqa: N815
+    mDCv = "mDCv"
     """Mastering Display Color Volume***"""
-    cLLi = "cLLi"  # noqa: N815
+    cLLi = "cLLi"
     """Content Light Level Information***"""
     # # Textual information
-    tEXt = "tEXt"  # noqa: N815
+    tEXt = "tEXt"
     """Textual data"""
-    zTXt = "zTXt"  # noqa: N815
+    zTXt = "zTXt"
     """Compressed textual data"""
-    iTXt = "iTXt"  # noqa: N815
+    iTXt = "iTXt"
     """International textual data"""
     # # Miscellaneous information
-    bKGD = "bKGD"  # noqa: N815
+    bKGD = "bKGD"
     """Background color***"""
-    hIST = "hIST"  # noqa: N815
+    hIST = "hIST"
     """Image histogram"""
-    pHYs = "pHYs"  # noqa: N815
+    pHYs = "pHYs"
     """Physical pixel dimensions"""
-    sPLT = "sPLT"  # noqa: N815
+    sPLT = "sPLT"
     """Suggested palette"""
-    eXIf = "eXIf"  # noqa: N815
+    eXIf = "eXIf"
     """Exchangeable Image File (Exif) Profile"""
     # # Time information
-    tIME = "tIME"  # noqa: N815
+    tIME = "tIME"
     """Image last-modification time"""
     # # Animation information
-    acTL = "acTL"  # noqa: N815
+    acTL = "acTL"
     """Animation Control Chunk"""
-    fcTL = "fcTL"  # noqa: N815
+    fcTL = "fcTL"
     """Frame Control Chunk"""
-    fdAT = "fdAT"  # noqa: N815
+    fdAT = "fdAT"
     """Frame Data Chunk"""
 
 
@@ -348,7 +353,7 @@ class P1:
 
     def sRGB(
         self,
-        rendering_intent: _SRGB_RENDERING_INTENT = _SRGB_RENDERING_INTENT.SRGB_RENDERING_INTENT_PERCEPTUAL,
+        rendering_intent: _SRGB_RENDERING_INTENT = _SRGB_RENDERING_INTENT.PERCEPTUAL,
     ) -> bytes:
         data = struct.pack(">B", rendering_intent)
         return self._sign(_CHUNK_TYPE.sRGB, data)
@@ -418,7 +423,7 @@ class P1:
         pixels_per_unit_y: int,
         unit: _PHYS_UNIT = _PHYS_UNIT.PHYS_UNIT_METER,
     ) -> bytes:
-        data = struct.pack(">IIB", pixels_per_unit_x, pixels_per_unit_y, unit)
+        data = struct.pack(">IIB", pixels_per_unit_x, pixels_per_unit_y, _PHYS_UNIT(unit).value)
         return self._sign(_CHUNK_TYPE.pHYs, data)
 
     def tIME(self, year: int, month: int, day: int, hour: int, minute: int, second: int) -> bytes:

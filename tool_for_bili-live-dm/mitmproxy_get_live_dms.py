@@ -105,7 +105,7 @@ def _parse_business_message(header: HeaderTuple, body: bytes) -> list[str]:
                 try:
                     ret = jld(body.decode("utf-8"))
                     return [ret]
-                except Exception as e:
+                except Exception as e:  # noqa: BLE001
                     print(e)
                     return [repr(body)]
         else:

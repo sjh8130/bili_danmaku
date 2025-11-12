@@ -81,7 +81,7 @@ def p_main(in_path: Path) -> dict[str, Any]:
                 else:
                     item: dict = simdjson.loads(line)
                 # item: dict = simdjson.loads(line[line.find("{") :])
-            except Exception:  # noqa: S112
+            except Exception:  # noqa: BLE001, S112
                 continue
             _a(item["cmd"], item)
     return result
