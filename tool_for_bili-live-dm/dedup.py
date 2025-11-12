@@ -60,7 +60,7 @@ def _deduplicate_it(itm: dict[str, Any], timestamp: Decimal, str_itm: str) -> bo
     if not cmd:
         print("No CMD", str_itm)
         return True
-    data: dict[str, Any] = itm.get("data")  # pyright: ignore[reportAssignmentType]
+    data: dict[str, Any] = itm.get("data", {})
     msg_id = str(itm.get("msg_id", 0))
     match cmd:
         # sort by hot-spot
@@ -138,7 +138,7 @@ def _deduplicate_it(itm: dict[str, Any], timestamp: Decimal, str_itm: str) -> bo
             id_1 = f"""{cmd}${data["update_time"]}${msg_id}"""
         case "WEALTH_NOTIFY":
             id_1 = f"""{cmd}${data["info"]["send_time"]}${msg_id}"""
-        case "WIDGET_GIFT_STAR_PROCESS" | "CHG_RANK_REFRESH":
+        case "WIDGET_GIFT_STAR_PROCESS":
             id_1 = f"""{cmd}${data["version"]}${msg_id}"""
         case "SHOPPING_BUBBLES_STYLE":
             id_1 = f"""{cmd}${data["checksum"]}${msg_id}"""
@@ -157,10 +157,12 @@ def _deduplicate_it(itm: dict[str, Any], timestamp: Decimal, str_itm: str) -> bo
             id_1 = f"""{cmd}${data["pb"]}"""
         case (
             "AREA_RANK_CHANGED"
+            | "CHG_RANK_REFRESH"
             | "GUARD_HONOR_THOUSAND"
             | "HOT_ROOM_NOTIFY"
             | "LIKE_INFO_V3_NOTICE"
             | "LIKE_INFO_V3_UPDATE"
+            | "LIVE_ANI_RES_UPDATE"
             | "LOG_IN_NOTICE"
             | "master_qn_strategy_chg"
             | "ONLINE_RANK_COUNT"
@@ -170,6 +172,7 @@ def _deduplicate_it(itm: dict[str, Any], timestamp: Decimal, str_itm: str) -> bo
             | "OTHER_SLICE_LOADING_RESULT"
             | "PLAYURL_RELOAD"
             | "POPULAR_RANK_CHANGED"
+            | "POPULARITY_RANK_TAB_CHG"
             | "RANK_CHANGED_V2"
             | "RANK_CHANGED"
             | "REVENUE_RANK_CHANGED"
@@ -208,7 +211,6 @@ def _deduplicate_it(itm: dict[str, Any], timestamp: Decimal, str_itm: str) -> bo
             | "GUARD_ACHIEVEMENT_ROOM"
             | "GUARD_LEADER_NOTICE"
             | "LIKE_GUIDE_USER"
-            | "LIVE_ANI_RES_UPDATE"
             | "LIVE_MULTI_VIEW_NEW_INFO"
             | "LIVE_PANEL_CHANGE_CONTENT"
             | "LIVE_PANEL_CHANGE"
@@ -219,7 +221,6 @@ def _deduplicate_it(itm: dict[str, Any], timestamp: Decimal, str_itm: str) -> bo
             | "OTHER_SLICE_SETTING_CHANGED"
             | "PLAYTOGETHER_ICON_CHANGE"
             | "POPULAR_RANK_GUIDE_CARD"
-            | "POPULARITY_RANK_TAB_CHG"
             | "PROGRAM_CHANGE"
             | "REENTER_LIVE_ROOM"
             | "RING_STATUS_CHANGE_V2"
@@ -261,6 +262,7 @@ def _deduplicate(in_path: Path) -> int:
     with in_path.open(encoding="utf-8") as input_file:
         a = input_file.readlines()
         total_ = len(a)
+    _deduplicate_dict.add("w")
     with in_path.with_suffix(".DEDUP.jsonl").open("w", 50 * 2**20, "utf-8") as output_file:
         for line in tqdm(a, leave=False, desc=in_path.name, position=1):
             if line in _deduplicate_dict:
@@ -303,7 +305,6 @@ if __name__ == "__main__":
         pass
     except Exception as e:
         _log.exception(e)
-    finally:
-        et0 = time.time_ns()
-        print("Done", (et0 - st0) / 1e9)
-        time.sleep(30)
+        raise e
+    et0 = time.time_ns()
+    print("Done", (et0 - st0) / 1e9)

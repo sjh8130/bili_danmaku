@@ -3,11 +3,31 @@ import json
 import sys
 from decimal import Decimal
 from pathlib import Path
+from typing import TypedDict
 
 try:
     import simdjson
 except ImportError:
     simdjson = json
+
+
+class TYP_FilePackets(TypedDict):
+    codec_type: str
+    stream_index: int
+    pts: int | None
+    pts_time: str | None
+    dts: int | None
+    dts_time: str | None
+    duration: int
+    duration_time: str
+    size: str
+    pos: str
+    flags: str
+    data_hash: str
+
+
+class TYP_FFProbeFile(TypedDict):
+    packets: list[TYP_FilePackets]
 
 
 @dataclasses.dataclass
@@ -25,7 +45,7 @@ class FFProbeFilePackets:
     size: int
     stream_index: int
 
-    def __init__(self, d: dict) -> None:
+    def __init__(self, **d) -> None:
         self.codec_type = d.get("codec_type", "")
         self.data_hash = d.get("data_hash", "")
         self.dts = int(d.get("dts", -1))
@@ -43,10 +63,10 @@ class FFProbeFilePackets:
 class FFProbeFile:
     packets: list[FFProbeFilePackets]
 
-    def __init__(self, packet_list: list[dict[str, int | str]]) -> None:
-        if self.packets is None:
+    def __init__(self, packet_list: TYP_FFProbeFile) -> None:
+        if packet_list is None:
             self.packets = []
-        self.packets = [FFProbeFilePackets(pl) for pl in packet_list]
+        self.packets = [FFProbeFilePackets(**d) for d in packet_list.get("packets")]
 
     def __len__(self) -> int:
         return len(self.packets)
@@ -72,8 +92,8 @@ def _main() -> None:
             switch = True
     if switch:
         with (
-            open(in_path.with_suffix("V.txt"), "w", encoding="utf-8") as f1,
-            open(in_path.with_suffix("A.txt"), "w", encoding="utf-8") as f2,
+            open(in_path.with_suffix(".V.txt"), "w", encoding="utf-8") as f1,
+            open(in_path.with_suffix(".A.txt"), "w", encoding="utf-8") as f2,
         ):
             for i in d.packets:
                 if i.stream_index == 0:

@@ -55,7 +55,10 @@ def del_keys(d: Mapping[Any, Any], k: str, v: Any = None, operator: OPR = OPR.EQ
             case OPR.EQ:
                 if d.get(k) == v:
                     d.pop(k)
-            case OPR.IN | OPR.ANY:
+            case OPR.IN:
+                if d.get(k) in v:
+                    d.pop(k, None)
+            case OPR.ANY:
                 d.pop(k, None)
             case OPR.GT:
                 if isinstance(d[k], (int, float)) and d[k] > v:
