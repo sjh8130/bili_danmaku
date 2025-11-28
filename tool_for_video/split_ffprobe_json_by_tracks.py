@@ -13,13 +13,13 @@ def get_file_name_base(file_name: Path) -> Path:
     return file_name_base if file_name_base != file_name else file_name / "_"
 
 
-def write_json_file(file_name: Path, data_dict: dict) -> None:
+def write_json_file(file_name: Path, data_dict: dict):
     with file_name.open("w", encoding="utf-8") as fp:
         json_string = json.dumps(data_dict, indent="\t", separators=(",", ":"))
         fp.write(json_string.replace("\n\t\t\t", "").replace("\n\t\t}", "}"))
 
 
-def main(d: dict) -> None:
+def _main(d: dict):
     p_stream_index = []
     file_name_base = get_file_name_base(file_name)
     for stream in d.get("packets", []):
@@ -64,4 +64,4 @@ if __name__ == "__main__":
         data: dict = simdjson.load(f)
     if not data:
         sys.exit()
-    main(data)
+    _main(data)

@@ -65,7 +65,7 @@ def _s6(timestamp: int) -> datetime:
     return datetime.fromtimestamp(timestamp, tz=_TZ)
 
 
-def split_file_by_time(in_path: Path, b_name: Path, sp_type: SplitMode) -> None:
+def split_file_by_time(in_path: Path, b_name: Path, sp_type: SplitMode):
     if sp_type == SplitMode.YEAR:
         gd = _s0
         fmt = "%Y"

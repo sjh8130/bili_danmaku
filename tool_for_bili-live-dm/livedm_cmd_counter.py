@@ -14,7 +14,7 @@ except ImportError:
 _cmd_count: dict[str, int] = {}
 
 
-def _p1() -> None:
+def _p1():
     try:
         with _out_path.open(encoding="utf-8") as file_io:
             _cmd_count.update(simdjson.load(file_io))
@@ -27,12 +27,12 @@ def _p1() -> None:
             raise e
 
 
-def _p2() -> None:
+def _p2():
     with _out_path.open("w", encoding="utf-8") as file_io:
         json.dump(_cmd_count, file_io, ensure_ascii=False, indent="\t", sort_keys=True)
 
 
-def _main(in_paths: list[str]) -> None:
+def _main(in_paths: list[str]):
     if in_paths == []:
         return
     for in_path_s in in_paths:

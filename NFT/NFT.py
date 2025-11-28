@@ -51,7 +51,7 @@ def _downloader(pn: int | str, item_id: int | str, ps: int | str) -> bytes:
     return _A
 
 
-def _clean_it(ld: list[dict]) -> None:
+def _clean_it(ld: list[dict]):
     for d in ld:
         d.pop("item_name")
         d.pop("token_id")
@@ -106,7 +106,7 @@ def _get_data(item_id: int | str) -> int:
     return 200
 
 
-def _main() -> None:
+def _main():
     for item_id in range(2000, 4000):
         if (_BP / f"NFT_{item_id}.json").exists():
             continue

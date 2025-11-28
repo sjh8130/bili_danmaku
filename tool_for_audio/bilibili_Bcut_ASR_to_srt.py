@@ -43,7 +43,7 @@ def proc_ass(item: dict) -> str:
     return fi___itm + fi_k_itm.replace(" \n", "\n").replace("  ", " ").replace(",,0,0,0,, ", ",,0,0,0,,")
 
 
-def write(path: str, data: str) -> None:
+def write(path: str, data: str):
     open(path, "w", encoding="utf-8").write(data)
 
 

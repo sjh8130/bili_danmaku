@@ -143,7 +143,7 @@ def decode_blc(data: bytes) -> list[str]:
     return lst
 
 
-def main():
+def _main():
     with open(sys.argv[1], "rb") as logfile:
         freader = io.FlowReader(logfile)
         try:
@@ -184,4 +184,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    _main()

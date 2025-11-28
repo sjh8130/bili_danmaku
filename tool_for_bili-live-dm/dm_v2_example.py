@@ -13,7 +13,7 @@ from filters import FILTER_WORDS
 from google.protobuf.json_format import MessageToDict
 
 
-def main():
+def _main():
     in_path = Path(sys.argv[1]).resolve()
     out_path = Path("Z:\\test.json").resolve()
     # left_pos_cache = 0
@@ -42,7 +42,7 @@ def main():
 
 if __name__ == "__main__":
     st = time.time()
-    main()
+    _main()
     et = time.time()
     print("Done,", et - st)
     time.sleep(5)

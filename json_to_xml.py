@@ -11,10 +11,10 @@ try:
 except ImportError:
     simdjson = json
 from my_lib.file_writer import write_file
-from my_lib.json2xml import json2XML, json2XML_CMD
+from my_lib.json2xml_lib import json2XML, json2XML_CMD
 
 
-def main(file_name: Path) -> None:
+def _main(file_name: Path):
     start_time = time.time()
     with file_name.open("rb") as fp:
         preload = fp.read(4)
@@ -68,4 +68,4 @@ def main(file_name: Path) -> None:
 
 if __name__ == "__main__":
     for p in sys.argv[1:]:
-        main(Path(p))
+        _main(Path(p))

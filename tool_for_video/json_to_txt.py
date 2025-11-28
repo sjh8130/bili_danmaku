@@ -45,7 +45,7 @@ class FFProbeFilePackets:
     size: int
     stream_index: int
 
-    def __init__(self, **d) -> None:
+    def __init__(self, **d):
         self.codec_type = d.get("codec_type", "")
         self.data_hash = d.get("data_hash", "")
         self.dts = int(d.get("dts", -1))
@@ -63,7 +63,7 @@ class FFProbeFilePackets:
 class FFProbeFile:
     packets: list[FFProbeFilePackets]
 
-    def __init__(self, packet_list: TYP_FFProbeFile) -> None:
+    def __init__(self, packet_list: TYP_FFProbeFile):
         if packet_list is None:
             self.packets = []
         self.packets = [FFProbeFilePackets(**d) for d in packet_list.get("packets")]
@@ -75,7 +75,7 @@ class FFProbeFile:
         return self.packets.__getitem__(*k, **kw)
 
 
-def _main() -> None:
+def _main():
     """FFprobe json[data-hash] to txt."""
     in_path = Path(sys.argv[1])
     with open(in_path, encoding="utf-8") as fp:
