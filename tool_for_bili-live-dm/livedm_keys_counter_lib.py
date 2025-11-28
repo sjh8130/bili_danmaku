@@ -37,7 +37,7 @@ else:
         IGNORE_LIST = set()
 
 
-def _a(cmd: str, item: int | str | list[Any] | dict[str, Any] | bool | None, tk: str = "", /) -> None:  # noqa: FBT001
+def _a(cmd: str, item: int | str | list[Any] | dict[str, Any] | bool | None, tk: str = "", /):  # noqa: FBT001
     fk: str = f"{cmd}{tk}"
     typ: str = type(item).__name__
     if SW3 and fk in STR_LIST:

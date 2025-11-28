@@ -157,7 +157,7 @@ class MsgType(StrEnum):
     none = ""
 
 
-def process(data: list[str]) -> None:
+def process(data: list[str]):
     msg_type = MsgType.none
     msg_name = ""
     final_str = ""
@@ -218,7 +218,7 @@ def process(data: list[str]) -> None:
         sys.stderr.write("no data found\n")
 
 
-def main() -> None:
+def _main():
     in_strings: list[str] = []
     paste = False
     while True:
@@ -242,4 +242,4 @@ def main() -> None:
 
 if __name__ == "__main__":
     with contextlib.suppress(KeyboardInterrupt):
-        main()
+        _main()

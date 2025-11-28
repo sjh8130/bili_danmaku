@@ -13,7 +13,7 @@ from lxml import etree
 from tqdm import tqdm
 
 
-def brec_xml_to_jsonl(file_path: Path) -> None:
+def brec_xml_to_jsonl(file_path: Path):
     print(file_path)
     preload = file_path.open("rb").read(512)
     if preload.find(b"encoding="):

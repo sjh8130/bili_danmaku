@@ -13,7 +13,7 @@ import livedm_keys_counter_lib
 from tqdm import tqdm
 
 
-def main() -> None:
+def _main():
     n = "livedm_keys.json"
     if True and (a := (output_dir / n)).exists():
         with a.open(encoding="utf-8") as fp:
@@ -32,7 +32,7 @@ if __name__ == "__main__":
     paths = sys.argv[1:]
     output_dir = Path("Z:\\") if os.name == "nt" else Path("/mnt/z/")
     start_time = time.time()
-    main()
+    _main()
     total_time = time.time() - start_time
     print(f"处理完成，耗时：{total_time:.3f}秒")
     time.sleep(10)

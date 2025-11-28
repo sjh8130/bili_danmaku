@@ -14,7 +14,7 @@ from filters import FILTER_MID, FILTER_MID_HASH_STR_LOWER, FILTER_WORDS
 from tqdm import tqdm
 
 
-def main(in_paths: list[str], out_path: Path) -> None:
+def _main(in_paths: list[str], out_path: Path):
     line: str
     left_pos = 0
     if not in_paths:
@@ -104,7 +104,7 @@ if __name__ == "__main__":
     out_path = Path("Z:\\test.json").resolve()
     start_time = time.time()
     try:
-        main(in_path, out_path)
+        _main(in_path, out_path)
     except Exception as e:
         print(e)
     finally:

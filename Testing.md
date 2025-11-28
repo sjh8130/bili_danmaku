@@ -4557,9 +4557,13 @@ role 0 1 2
 | cmd		| str	| "SPREAD_ORDER_START" "SPREAD_ORDER_OVER" |
 | data		| obj	| |
 #### SPREAD_ORDER__data
-| key		| type	| value	|
+| key			| type	| value	|
 |-|-|-|
-| data	| xxx	| |
+| order_id		| num	| |
+| order_status	| num	| |
+| roomid		| num	| |
+| timestamp		| num	| |
+| uid			| num	| |
 ```json
 {"cmd":"SPREAD_ORDER_START","data":{"order_id":9999999999,"order_status":1,"roomid":9999999999,"timestamp":9999999999,"uid":9999999999}}
 {"cmd":"SPREAD_ORDER_OVER","data":{"order_id":9999999999,"order_status":0,"timestamp":9999999999,"uid":9999999999}}
@@ -4606,8 +4610,7 @@ role 0 1 2
 文档更新：2024-xx-xx  
 | key		| type	| value	|
 |-|-|-|
-| cmd		| str	| "MULTI_VOICE_APPLICATION_ANCHOR" |
-| cmd		| str	| "MULTI_VOICE_APPLICATION_USER" |
+| cmd		| str	| "MULTI_VOICE_APPLICATION_ANCHOR" "MULTI_VOICE_APPLICATION_USER" |
 | data		| obj	| |
 #### MULTI_VOICE_APPLICATION_ANCHOR__data
 | key		| type	| value	|
@@ -4629,9 +4632,9 @@ role 0 1 2
 | cmd		| str	| "GIFT_BOARD_RED_DOT" |
 | data		| obj	| |
 #### GIFT_BOARD_RED_DOT__data
-| key		| type	| value	|
+| key			| type	| value	|
 |-|-|-|
-| data	| xxx	| |
+| categoryL1	| str	| |
 ```json
 {"cmd":"GIFT_BOARD_RED_DOT","data":{"categoryL1":"3"}}
 ```
@@ -4646,7 +4649,11 @@ role 0 1 2
 #### LITTLE_MESSAGE_BOX__data
 | key		| type	| value	|
 |-|-|-|
-| data	| xxx	| |
+| from		| str	| |
+| msg		| str	| |
+| platform	| obj	| |
+| room_id	| num	| |
+| type		| num	| |
 ```json
 {"cmd":"LITTLE_MESSAGE_BOX","data":{"from":"fans_medal","msg":"今日首条弹幕发送成功~亲密度+100","platform":{"android":true,"ios":true,"web":true},"room_id":9999999999,"type":1}}
 ```
@@ -4662,7 +4669,10 @@ role 0 1 2
 #### ROOM_NEWS_AUDIT_CHANGE__data
 | key		| type	| value	|
 |-|-|-|
-| data	| xxx	| |
+| audit_status	| num	| |
+| news_content	| str	| |
+| news_type		| num	| |
+| room_id		| num	| |
 ```json
 {"cmd":"ROOM_NEWS_AUDIT_CHANGE","data":{"audit_status":1,"news_content":"xxx","news_type":2,"room_id":9999999999}}
 ```
@@ -4678,7 +4688,8 @@ role 0 1 2
 #### LIVE_ROOM_TOAST_MESSAGE__data
 | key		| type	| value	|
 |-|-|-|
-| data	| xxx	| |
+| message	| str	| |
+| timestamp	| num	| |
 ```json
 {"cmd":"LIVE_ROOM_TOAST_MESSAGE","data":{"message":"由于对方主播提前结束PK，本轮PK我方主播获胜","timestamp":9999999999},"timestamp":9999999999}
 {"cmd":"LIVE_ROOM_TOAST_MESSAGE","timestamp":9999999999,"data":{"timestamp":9999999999,"message":"对方主播结束了视频连线"}}
@@ -6185,10 +6196,15 @@ enum recall_type={NOTHING:0,DANMAKU:1,USER:2,ALL:3}
 |-|-|-|
 | cmd		| str	| "OTHER_SLICE_SETTING_CHANGED" |
 | data		| obj	| |
-#### OTHER_SLICE_SETTING_CHANGED__data__data
+#### OTHER_SLICE_SETTING_CHANGED__data
 | key		| type	| value	|
 |-|-|-|
-| data	| xxx	| |
+| data		| obj	| |
+#### OTHER_SLICE_SETTING_CHANGED__data__data
+| key				| type	| value	|
+|-|-|-|
+| uid				| num	| |
+| allow_other_edit	| num	| |
 ```json
 {"cmd":"OTHER_SLICE_SETTING_CHANGED","data":{"data":{"uid":9999999999,"allow_other_edit":1}}}
 ```
@@ -6201,11 +6217,13 @@ enum recall_type={NOTHING:0,DANMAKU:1,USER:2,ALL:3}
 | cmd		| str	| "TAB_LONG_LIVE_CHANGE" |
 | data		| obj	| |
 #### TAB_LONG_LIVE_CHANGE__data
-| key		| type	| value	|
+| key			| type	| value	|
 |-|-|-|
-| data	| xxx	| |
+| old_room_id	| num	| |
+| new_room_id	| num	| |
+| scatter_time	| num	| |
 ```json
-{"cmd":"TAB_LONG_LIVE_CHANGE","data":{"old_room_id":9999999999,"new_room_id":yyy,"scatter_time":9999999999}}
+{"cmd":"TAB_LONG_LIVE_CHANGE","data":{"old_room_id":9999999999,"new_room_id":9999999999,"scatter_time":9999999999}}
 ```
 ---
 ### CNY_SESSION_CHANGE
@@ -6329,19 +6347,19 @@ enum recall_type={NOTHING:0,DANMAKU:1,USER:2,ALL:3}
 {
 	"http_stream":{
 		"flv":{
-			"codec_name":["avc","hevc"], // one-of 
+			"codec_name":["avc","hevc"], // one-of
 		}
 	},
 	"http_hls":{
 		"fmp4":{
-			"codec_name":["av1","avc","hevc"], // one-of 
+			"codec_name":["av1","avc","hevc"], // one-of
 		},
 		"ts":{
-			"codec_name":["avc","hevc"], // one-of 
+			"codec_name":["avc","hevc"], // one-of
 		}
 	},
 	"#ALL":{
-		"current_qn":[10000,400,250], // one-of 
+		"current_qn":[10000,400,250], // one-of
 		"accept_qn":[] // from top to end [start:-1] eg:[10000],[10000,250],[10000,400,250],[400,250],[250]
 	}
 }
@@ -6372,7 +6390,8 @@ enum recall_type={NOTHING:0,DANMAKU:1,USER:2,ALL:3}
 #### PROGRAM_CHANGE__data
 | key		| type	| value	|
 |-|-|-|
-| data	| xxx	| |
+| room_id	| num	| |
+| link		| str	| |
 ```json
 {"cmd":"PROGRAM_CHANGE","data":{"room_id":5440,"link":""}}
 ```
@@ -6386,9 +6405,13 @@ enum recall_type={NOTHING:0,DANMAKU:1,USER:2,ALL:3}
 | data		| obj	| |
 | room_id	| num	| |
 #### VOICE_JOIN_SWITCH__data
-| key		| type	| value	|
+| key			| type	| value	|
 |-|-|-|
-| data	| xxx	| |
+| room_id		| num	| |
+| room_status	| num	| |
+| root_status	| num	| |
+| conn_type		| num	| |
+| anchor_uid	| num	| |
 ```json
 {"cmd":"VOICE_JOIN_SWITCH","data":{"room_id":9999999999,"room_status":0,"root_status":0,"conn_type":0,"anchor_uid":0},"room_id":9999999999}
 {"cmd":"VOICE_JOIN_SWITCH_V2","data":{"room_id":9999999999,"room_status":0,"root_status":9999999999,"conn_type":9999999999,"anchor_uid":9999999999},"room_id":9999999999}
@@ -6404,7 +6427,8 @@ enum recall_type={NOTHING:0,DANMAKU:1,USER:2,ALL:3}
 #### COLLABORATION_LIVE_POPULARITY__data
 | key		| type	| value	|
 |-|-|-|
-| data	| xxx	| |
+| num		| num	| |
+| text		| str	| |
 ```json
 // 1分钟1个
 {"cmd":"COLLABORATION_LIVE_POPULARITY","data":{"num":17903855,"text":"1790.3万"}}
@@ -6441,9 +6465,9 @@ enum recall_type={NOTHING:0,DANMAKU:1,USER:2,ALL:3}
 | cmd		| str	| "COMMERCE_BRAND_ANSWERING_ACTIVITY" |
 | data		| obj	| |
 #### COMMERCE_BRAND_ANSWERING_ACTIVITY__data
-| key		| type	| value	|
+| key			| type	| value	|
 |-|-|-|
-| data	| xxx	| |
+| activity_id	| str	| |
 ```json
 {"cmd":"COMMERCE_BRAND_ANSWERING_ACTIVITY","data":{"activity_id":"1ERA4wloghvz6m00"}}
 ```
@@ -6471,7 +6495,7 @@ enum recall_type={NOTHING:0,DANMAKU:1,USER:2,ALL:3}
 |-|-|-|
 | cmd		| str	| "AD_GAME_CARD_REFRESH" |
 | data		| obj	| |
-#### XXXXXXXXXXXX__data
+#### AD_GAME_CARD_REFRESH__data
 | key		| type	| value	|
 |-|-|-|
 | room_id	| str(num)	| |

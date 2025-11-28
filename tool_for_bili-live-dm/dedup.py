@@ -156,9 +156,11 @@ def _deduplicate_it(itm: dict[str, Any], timestamp: Decimal, str_itm: str) -> bo
         case "INTERACT_WORD_V2":
             id_1 = f"""{cmd}${data["pb"]}"""
         case (
-            "AREA_RANK_CHANGED"
+            "AD_GAME_CARD_REFRESH"
+            | "AREA_RANK_CHANGED"
             | "CHG_RANK_REFRESH"
             | "GUARD_HONOR_THOUSAND"
+            | "HEARTBEAT_REPLY"  # special
             | "HOT_ROOM_NOTIFY"
             | "LIKE_INFO_V3_NOTICE"
             | "LIKE_INFO_V3_UPDATE"
@@ -179,7 +181,8 @@ def _deduplicate_it(itm: dict[str, Any], timestamp: Decimal, str_itm: str) -> bo
             | "ROOM_REAL_TIME_MESSAGE_UPDATE"
             | "STOP_LIVE_ROOM_LIST"
             | "SUPER_CHAT_ENTRANCE"
-            | "HEARTBEAT_REPLY"  # special
+            | "VOICE_JOIN_LIST"
+            | "VOICE_JOIN_ROOM_COUNT_INFO"
             | "VOICE_JOIN_SWITCH_V2"
             | "VOICE_JOIN_SWITCH"
             | "WATCHED_CHANGE"
@@ -239,8 +242,6 @@ def _deduplicate_it(itm: dict[str, Any], timestamp: Decimal, str_itm: str) -> bo
             | "USER_INFO_UPDATE"
             | "USER_PANEL_RED_ALARM"
             | "VOICE_CHAT_UPDATE"
-            | "VOICE_JOIN_LIST"
-            | "VOICE_JOIN_ROOM_COUNT_INFO"
             | "WARNING"
         ):
             return True

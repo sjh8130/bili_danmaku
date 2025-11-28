@@ -216,7 +216,7 @@ class P1:
     color_type: ColorType
     data: bytes = b""
 
-    def __init__(self, compression_level: CompressionLevel) -> None:
+    def __init__(self, compression_level: CompressionLevel):
         self.compression_level = CompressionLevel(compression_level)
         self.data += _PNG_SIGNATURE
 
@@ -268,7 +268,7 @@ class P1:
         chunk_size: int,
         *,
         apng: bool = False,
-    ) -> None:
+    ):
         compressor = zlib.compressobj(self.compression_level, wbits=15, memLevel=9)
         match color_type:
             case 0:
@@ -494,7 +494,7 @@ def encode_tile_image_to_apng(
     fps=30,
     *,
     remove_alpha=False,
-) -> None:
+):
     if path_in == path_out:
         raise Exception(f"{path_in}=={path_out}::{path_in=}{path_out=}")
     logger.info(f"{path_in=},{path_out=}")
@@ -532,7 +532,7 @@ def encode_tile_image_to_apng(
     write(path_out, r)
 
 
-def recompress_png(png_path: Path, chunk_size=1048576, compression_level=CompressionLevel.LV_9) -> None:
+def recompress_png(png_path: Path, chunk_size=1048576, compression_level=CompressionLevel.LV_9):
     image = Image.open(png_path)
     logger.debug(image)
     width, height = image.size
@@ -603,7 +603,7 @@ def recompress_png(png_path: Path, chunk_size=1048576, compression_level=Compres
     write(png_path, r)
 
 
-def write(path: Path, data) -> None:
+def write(path: Path, data):
     if not (isinstance(data, (bytes, str))):
         raise TypeError
     if isinstance(data, str):

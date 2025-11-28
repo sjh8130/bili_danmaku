@@ -308,7 +308,7 @@ def deep_check(i, index) -> list[int] | list[Any]:
     return [1, string]
 
 
-def main(string) -> None:
+def _main(string):
     count = 0
     index = [0 for x in range(4)]
     i = 0
@@ -332,6 +332,6 @@ def main(string) -> None:
 # 2147483648
 if __name__ == "__main__":
     start_time = time.time()
-    main(sys.argv[1])
+    _main(sys.argv[1])
     end_time = time.time()
     print(f"耗时: {round(end_time - start_time, 2)}秒")

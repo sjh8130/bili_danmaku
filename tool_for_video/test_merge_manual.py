@@ -13,41 +13,28 @@ except ImportError:
 
 @dataclasses.dataclass
 class FFProbeFilePackets:
-    codec_type: str
-    data_hash: str
-    dts_time: Decimal
-    dts: int
-    duration_time: Decimal
-    duration: int
-    flags: str
-    pos: int
-    pts_time: Decimal
-    pts: int
-    size: int
-    stream_index: int
-
-    def __init__(self, d: dict) -> None:
-        self.codec_type = d.get("codec_type", "")
-        self.data_hash = d.get("data_hash", "")
-        self.dts = int(d.get("dts", -1))
-        self.dts_time = Decimal(d.get("dts_time", "0"))
-        self.duration = int(d.get("duration", -1))
-        self.duration_time = Decimal(d.get("duration_time", "0"))
-        self.pos = int(d.get("pos", -1))
-        self.pts = int(d.get("pts", -1))
-        self.pts_time = Decimal(d.get("pts_time", "0"))
-        self.size = int(d.get("size", -1))
-        self.stream_index = int(d.get("stream_index", -1))
+    codec_type: str = ""
+    data_hash: str = ""
+    dts_time: Decimal = Decimal(0)
+    dts: int = 0
+    duration_time: Decimal = Decimal(0)
+    duration: int = 0
+    flags: str = ""
+    pos: int = 0
+    pts_time: Decimal = Decimal(0)
+    pts: int = 0
+    size: int = 0
+    stream_index: int = 0
 
 
 @dataclasses.dataclass
 class FFProbeFile:
     packets: list[FFProbeFilePackets]
 
-    def __init__(self, packet_list: list[dict]) -> None:
+    def __init__(self, packet_list: list[dict]):
         if self.packets is None:
             self.packets = []
-        self.packets = [FFProbeFilePackets(pl) for pl in packet_list]
+        self.packets = [FFProbeFilePackets(**pl) for pl in packet_list]
 
     def __len__(self) -> int:
         return len(self.packets)
@@ -62,7 +49,7 @@ OA = "================"  # 文件1和文件2的帧内容相同
 OS = "++++++SKIP++++++"  # 跳过
 
 
-def _main() -> None:
+def _main():
     """修视频?"""
     err_count = 0
     argv = ["XXXX", "", "", ""]

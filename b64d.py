@@ -135,7 +135,7 @@ def decode_blc(data: bytes) -> list[str]:
     return lst
 
 
-def decode_input() -> None:
+def decode_input():
     while True:
         try:
             a = bytes(getpass.getpass("请输入数据: "), "utf-8")

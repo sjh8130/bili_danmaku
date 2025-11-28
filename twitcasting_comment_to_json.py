@@ -67,7 +67,7 @@ def _get_user_and_movie_id() -> tuple[str, str]:
     return user, movie_id
 
 
-def _main(user: str, movie_id: str, host: str) -> None:
+def _main(user: str, movie_id: str, host: str):
     session = requests.Session()
     page_count = 0
     comment_list: list[dict] = []

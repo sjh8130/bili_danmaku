@@ -5,10 +5,10 @@ from pathlib import Path
 
 import dm_pb2
 from my_lib.file_writer import write_file
-from my_lib.proto2xml_Lib import proto_to_xml
+from my_lib.proto2xml_lib import proto_to_xml
 
 
-def main(file_name: Path) -> None:
+def _main(file_name: Path):
     st = time.time()
     lmt = file_name.stat().st_mtime
     xml_head = """<?xml version="1.0" encoding="UTF-8"?>
@@ -38,4 +38,4 @@ def main(file_name: Path) -> None:
 
 if __name__ == "__main__":
     for p in sys.argv[1:]:
-        main(Path(p))
+        _main(Path(p))

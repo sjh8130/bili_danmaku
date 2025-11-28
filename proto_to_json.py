@@ -9,7 +9,7 @@ import dm_pb2
 from my_lib.file_writer import write_file
 
 
-def main():
+def _main():
     d: dict
     dms = dm_pb2.DmSegMobileReply()
     dms.ParseFromString(Path(sys.argv[1]).read_bytes())
@@ -28,4 +28,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    _main()

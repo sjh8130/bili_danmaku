@@ -18,20 +18,11 @@ log = logger.bind(user="X1")
 ssl._create_default_https_context = ssl._create_unverified_context  # noqa: S323, SLF001
 requests.packages.urllib3.disable_warnings()  # pyright: ignore[reportAttributeAccessIssue]
 config = json.loads(Path("config.json").read_text(encoding="utf-8"))
-_A = {
-    "User-Agent": config["ua"],
-    "Connection": "keep-alive",
-    "Accept-Encoding": config["ae"],
-}
+_A = {"User-Agent": config["ua"], "Connection": "keep-alive", "Accept-Encoding": config["ae"]}
 _B = b'{"code":0,"message":"0","ttl":1,"data":{"suit_items":null,"fan_user":{"mid":0,"nickname":"","avatar":""},"unlock_items":null,"activity_entrance":null}}'
+_BF = config["bar_format"]
 _EMPTY_FAN_USER = {"mid": 0, "nickname": "", "avatar": ""}
-_EMPTY_ACTIVITY_ENTRANCE = {
-    "id": 0,
-    "item_id": 0,
-    "title": "",
-    "image_cover": "",
-    "jump_link": "",
-}
+_EMPTY_ACTIVITY_ENTRANCE = {"id": 0, "item_id": 0, "title": "", "image_cover": "", "jump_link": ""}
 _L: str = config["x1"]["url"]
 _M = str(Path(config["x1"]["bp"]).resolve()) + "/"
 P = "properties"
@@ -134,13 +125,13 @@ def _E(b: requests.Session, d: int | str) -> bytes:
     raise Exception(f"Failed to fetch {d}")
 
 
-def _F(a: str, b: X1) -> None:
+def _F(a: str, b: X1):
     d = json.dumps(b, ensure_ascii=False, separators=(",", ":"), indent="\t")
     e = ""
     if Path(a).is_file():
         e = open(a, encoding="utf-8").read()
         if d == e:
-            return
+            return False
         c: X1 = json.loads(e)
         if isinstance(b.get(P), dict):
             if isinstance(b[P].get("item_ids"), str) and isinstance(c[P].get("item_ids"), str):
@@ -162,24 +153,27 @@ def _F(a: str, b: X1) -> None:
     # ============================
     d = json.dumps(b, ensure_ascii=False, separators=(",", ":"), indent="\t")
     if e and d == e:
-        return
-    open(a, "w", encoding="utf-8").write(d)
+        return False
+    with open(a, "w", encoding="utf-8") as fp:  # noqa: FURB103
+        fp.write(d)
+    return True
 
 
-def _G(a: str, b: str) -> None:
+def _G(a: str, b: str):
     if isinstance(b, dict):
         b = json.dumps(b, ensure_ascii=False, separators=(",", ":"))
     """Csv / jsonl."""
     if b in Z or (Path(a).is_file() and b in open(a, encoding="utf-8").read()):
-        return
+        return False
     with open(a, "a", encoding="utf-8") as fp:
         fp.write(b + "\n")
+    return True
 
 
-def _H(a: int | str, item: X1) -> None:
+def _H(a: int | str, item: X1):
     c = item["part_id"]
     d = _G
-    d(_M + IDCSV, f"{a},{item['name']},{item['group_id']},{c}")
+    g = d(_M + IDCSV, f"{a},{item['name']},{item['group_id']},{c}")
     if isinstance(item.get(P), dict):
         if isinstance(item[P].get("item_ids"), str):
             item[P]["item_ids"] = sort_str_list(item[P]["item_ids"])
@@ -253,7 +247,7 @@ def _H(a: int | str, item: X1) -> None:
     del_keys(item, "sale_left_time", operator=OPR.ANY)
     del_keys(item, "sale_promo", operator=OPR.ANY)
     del_keys(item, "sale_surplus", operator=OPR.ANY)
-    del_keys(item, "sale_time_end", recursive=False, operator=OPR.ANY)
+    del_keys(item, "sale_time_end", operator=OPR.ANY, recursive=False)
     del_keys(item, "state", operator=OPR.ANY)
     del_keys(item, "tag", operator=OPR.ANY)
     del_keys(item, "total_count_desc", operator=OPR.ANY)
@@ -279,10 +273,11 @@ def _H(a: int | str, item: X1) -> None:
     replace_str(item, "https://i1.hdslb.com", "https://i0.hdslb.com")
     replace_str(item, "https://i2.hdslb.com", "https://i0.hdslb.com")
     # replace_str(item, "fasle", "false")
-    d(_M + f, item)  # pyright: ignore[reportArgumentType]
+    h = d(_M + f, item)  # pyright: ignore[reportArgumentType]
+    return g or h
 
 
-def _I(a: str) -> None:
+def _I(a: str):
     b = set(_K())
     c = 1.2
     d = 100
@@ -300,12 +295,9 @@ def _I(a: str) -> None:
             f = 332000001
         case "0" | "1" | _:
             d = 1
-            e = 74300
-            f = 74500
-    with (
-        requests.Session() as g,
-        tqdm(total=int((f - e) / d) + 1, initial=0, bar_format="{desc}{percentage:3.0f}%|{bar}| {n_fmt}->{total_fmt} [{elapsed}->{remaining}]") as h,
-    ):
+            e = 74500
+            f = 75000
+    with requests.Session() as g, tqdm(total=int((f - e) / d) + 1, initial=0, bar_format=_BF) as h:
         for i in range(e, f + d, d):
             h.update()
             if i in b:
@@ -323,12 +315,12 @@ def _I(a: str) -> None:
             except json.JSONDecodeError as e:
                 print(j)
                 raise e
-            _H(i, k)
-            h.write(f"{time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()):<32}{i:<12}{k['name']:20}{len(j):>8}")
+            if _H(i, k):
+                h.write(f"{time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()):<32}{i:<12}{k['name']:20}{len(j):>8}")
         h.write(f"{e} -> {f}")
 
 
-def _N(j) -> None:
+def _N(j):
     a = _K()
     match j:
         case "0":
@@ -350,12 +342,9 @@ def _N(j) -> None:
             k = range(2**32)
             m = len(a) - 660
     h: list[int] = json.loads(open(_M + f"{TRASH}.json", encoding="utf-8").read())
-    # h = []
+    h = []
     b = 1
-    with (
-        requests.Session() as c,
-        tqdm(total=m, initial=0, bar_format="{percentage:3.0f}%|{bar}| {n_fmt}->{total_fmt} [{elapsed}->{remaining}]") as d,
-    ):
+    with requests.Session() as c, tqdm(total=m, initial=0, bar_format=_BF) as d:
         for g in a:
             if g not in k:
                 continue
@@ -365,19 +354,19 @@ def _N(j) -> None:
             time.sleep(b)
             e = _E(c, g)
             if e == _B:
-                _G(_M + IDCSV, f"{g},{TRASH},0,0")
-                d.write(f"{time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()):<32}{g:<12}🟥🟩🟦🟨⬛⬜ NOT Found")
+                if _G(_M + IDCSV, f"{g},{TRASH},0,0"):
+                    d.write(f"{time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()):<32}{g:<12}🟥🟩🟦🟨⬛⬜ NOT Found")
                 continue
             try:
                 f: X1 = json.loads(e)["data"]
             except json.JSONDecodeError as n:
                 print(n)
                 raise n
-            _H(g, f)
-            d.write(f"{time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()):<32}{g:<12}{f['name']:20}{len(e):>8}")
+            if _H(g, f):
+                d.write(f"{time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()):<32}{g:<12}{f['name']:20}{len(e):>8}")
 
 
-def _P(a: Path) -> None:
+def _P(a: Path):
     # for b in a.iterdir():
     for b in tqdm(list(a.iterdir()), leave=False):
         if b.is_dir():
@@ -397,7 +386,7 @@ def _P(a: Path) -> None:
                 _H(d["data"]["item_id"], d["data"])  # pyright: ignore[reportGeneralTypeIssues]
 
 
-def _J() -> None:
+def _J():
     a = 2
     with requests.Session() as b:
         while True:

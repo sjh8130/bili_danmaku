@@ -29,7 +29,7 @@ AE = config["ae"]
 
 @dataclasses.dataclass
 class _Video:
-    def __init__(self, avid: str, bvid: str, avid_n: int) -> None:
+    def __init__(self, avid: str, bvid: str, avid_n: int):
         self.avid = avid
         self.bvid = bvid
         self.avid_n = avid_n
@@ -37,7 +37,7 @@ class _Video:
 
 @dataclasses.dataclass
 class _VideoPart(_Video):
-    def __init__(self, V: _Video, cid: int, oid: int) -> None:
+    def __init__(self, V: _Video, cid: int, oid: int):
         super().__init__(V.avid, V.bvid, V.avid_n)
         self.cid = cid if cid is not None else oid
         if oid is not None and cid is not None and cid != oid:
@@ -130,7 +130,7 @@ def _get_special_danmaku(vp: _VideoPart, spdm: dm_pb2.DmWebViewReply, session: r
     return bas_danmakus
 
 
-def _main(video: _Video) -> None:
+def _main(video: _Video):
     if video is None:
         return
     session = requests.Session()

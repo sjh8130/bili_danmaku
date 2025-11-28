@@ -16,15 +16,11 @@ log = logger.bind(user="X3")
 ssl._create_default_https_context = ssl._create_unverified_context  # noqa: S323, SLF001
 requests.packages.urllib3.disable_warnings()  # pyright: ignore[reportAttributeAccessIssue]
 config = json.loads(Path("config.json").read_text(encoding="utf-8"))
-_A = {
-    "User-Agent": config["ua"],
-    "Connection": "keep-alive",
-    "Accept-Encoding": config["ae"],
-}
+_A = {"User-Agent": config["ua"], "Connection": "keep-alive", "Accept-Encoding": config["ae"]}
 _B = b'{"code":0,"message":"0","ttl":1,"data":{"packages":null}}'
+_BF = config["bar_format"]
 _C: str = config["x3"]["url"]
 _D: Path = Path(config["x3"]["bp"]).resolve()
-_O = [{}, {"no_access": True, "unlocked": False}, {"no_access": True}]
 _a = 0
 
 
@@ -77,13 +73,13 @@ def _E(a: requests.Session, b: int | str, c: float) -> bytes:
     raise Exception(f"Failed to fetch {b}")
 
 
-def _F(a: Path, b: EmoteMain) -> None:
+def _F(a: Path, b: EmoteMain):
     d = json.dumps(b, ensure_ascii=False, separators=(",", ":"), indent="\t")
     e = ""
     if a.is_file():
         e = a.read_text(encoding="utf-8")
         if d == e:
-            return
+            return False
         if "emote" in (c := json.loads(e)):
             if "emote" not in b:
                 b["emote"] = c["emote"]
@@ -96,22 +92,24 @@ def _F(a: Path, b: EmoteMain) -> None:
         sort_list_dict(b["emote"], "id", "text")
     d = json.dumps(b, ensure_ascii=False, separators=(",", ":"), indent="\t")
     if d == e:
-        return
+        return False
     a.write_text(d, encoding="utf-8")
+    return True
 
 
-def _G(a: Path, b: str) -> None:
+def _G(a: Path, b: str):
     """csv"""
     if a.is_file() and b in a.read_text(encoding="utf-8"):
-        return
+        return False
     with a.open("a", 1048576, "utf-8") as fp:
         fp.write(b)
+    return True
 
 
-def _K(a: int | str, item: dict) -> None:
+def _K(a: int | str, item: EmoteMain):
     del_keys(item, "suggest", [""])
-    del_keys(item, "flags", _O, OPR.IN)
-    del_keys(item, "activity", None, OPR.ANY)
+    del_keys(item, "flags", 0, OPR.ANY)
+    del_keys(item, "activity", 0, OPR.ANY)
     del_keys(item, "label", None)
     del_keys(item, "attr", 0)
     del_keys(item, "package_sub_title", "")
@@ -121,22 +119,19 @@ def _K(a: int | str, item: dict) -> None:
     replace_str(item, "https://i1.hdslb.com", "https://i0.hdslb.com")
     replace_str(item, "https://i2.hdslb.com", "https://i0.hdslb.com")
     # replace_str(item, "fasle", "false")
-    _F(_D / f"{a}.json", item)  # pyright: ignore[reportArgumentType]
-    _G(_D / "ids.csv", f"{a},{item['text']}\n")
+    s1 = _F(_D / f"{a}.json", item)
+    s2 = _G(_D / "ids.csv", f"{a},{item['text']}\n")
+    return s1 or s2
 
 
-def _L(*, j: bool = False) -> None:
+def _L(*, j: bool = False):
     a = _N()
     b = 1
-    c: int = 8900 if not j else 1
+    c: int = 9000 if not j else 1
     d = 10000
     with (
         requests.Session() as e,
-        tqdm(
-            total=d - c + 1,
-            initial=0,
-            bar_format="{desc}{percentage:3.0f}%|{bar}| {n_fmt}->{total_fmt} [{elapsed}->{remaining}]",
-        ) as f,
+        tqdm(total=d - c + 1, initial=0, bar_format=_BF) as f,
     ):
         for g in range(c, d + 1):
             f.set_description(str(g))
@@ -152,11 +147,11 @@ def _L(*, j: bool = False) -> None:
             if h == _B:
                 continue
             for i in json.loads(h)["data"]["packages"]:
-                _K(g, i)
-                f.write(f"{time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()):<32}{g:<12}{i['text']:20}")
+                if _K(g, i):
+                    f.write(f"{time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()):<32}{g:<12}{i['text']:20}")
 
 
-def _M() -> None:
+def _M():
     a = 1
     if sys.argv[1].lower() in {"main", "0"}:
         _L()

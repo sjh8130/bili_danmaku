@@ -188,7 +188,7 @@ def guess_encoding(inn: str):
     return final_set
 
 
-def main():
+def _main():
     last: set[result] = set()
     while True:
         inn = input()
@@ -207,4 +207,4 @@ def main():
 
 if __name__ == "__main__":
     with contextlib.suppress(KeyboardInterrupt):
-        main()
+        _main()
