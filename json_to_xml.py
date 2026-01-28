@@ -1,4 +1,3 @@
-#!/usr/bin/python3
 import gzip
 import json
 import os

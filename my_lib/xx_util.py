@@ -7,19 +7,31 @@ try:
 except ImportError:
     import json
 
+FALSE_CMP = [0, "", [], False, {}, None, set(), frozenset()]
+
 
 class OPR(IntEnum):
     EQ = auto()
+    "=="
     NEQ = auto()
+    "!="
     GT = auto()
+    ">"
     LT = auto()
+    "<"
     GEQ = auto()
+    ">="
     LEQ = auto()
+    "<="
     ANY = auto()
     IN = auto()
     NIN = auto()
+    "not in"
     IS = auto()
     NIS = auto()
+    "not is"
+    FALSE_CMP = auto()
+    "false compare"
 
 
 def sort_str_list(s: str, /) -> str:
@@ -49,14 +61,17 @@ def sort_p6_emoji(ld: list[Mapping[Any, Any]], /) -> list[Mapping[Any, Any]]:
     return ld
 
 
-def del_keys(d: Mapping[Any, Any], k: str, v: Any = None, operator: OPR = OPR.EQ, *, recursive: bool = True) -> None:
-    if isinstance(d, dict) and k in d and (type(d[k]) is type(v) or operator in {OPR.IN, OPR.ANY}):
+def del_keys(d: Mapping[str, Any], k: str, v: Any = None, operator: OPR = OPR.EQ, *, recursive=True) -> None:
+    if isinstance(d, dict) and k in d and (type(d[k]) is type(v) or operator in {OPR.IN, OPR.ANY, OPR.FALSE_CMP}):
         match operator:
             case OPR.EQ:
                 if d.get(k) == v:
                     d.pop(k)
             case OPR.IN:
                 if d.get(k) in v:
+                    d.pop(k, None)
+            case OPR.FALSE_CMP:
+                if d.get(k) in FALSE_CMP:
                     d.pop(k, None)
             case OPR.ANY:
                 d.pop(k, None)
@@ -130,3 +145,30 @@ def replace_str(d: Mapping[Any, Any] | list[str], old: str, new: str, count: int
                 d[index] = d[index].replace(old, new, count)
             elif isinstance(val, (dict, list)):
                 replace_str(val, old, new, count, recursive=recursive)
+
+
+def replace_str_regexp(d: Mapping[Any, Any] | list[str], old: str, new: str, count: int = -1, *, recursive: bool = True):
+    if not isinstance(d, (dict, list)):
+        return
+    if not recursive:
+        if isinstance(d, dict):
+            for key, val in d.items():
+                if isinstance(val, str):
+                    d[key] = val.replace(old, new, count)
+        elif isinstance(d, list):
+            for index, val in enumerate(d):
+                if isinstance(val, str):
+                    d[index] = val.replace(old, new, count)
+        return
+    if isinstance(d, dict):
+        for key, val in d.items():
+            if isinstance(val, str):
+                d[key] = val.replace(old, new, count)
+            elif isinstance(val, (dict, list)):
+                replace_str_regexp(val, old, new, count, recursive=recursive)
+    elif isinstance(d, list):
+        for index, val in enumerate(d):
+            if isinstance(val, str):
+                d[index] = d[index].replace(old, new, count)
+            elif isinstance(val, (dict, list)):
+                replace_str_regexp(val, old, new, count, recursive=recursive)

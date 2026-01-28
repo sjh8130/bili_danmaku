@@ -24,17 +24,17 @@ else:
         STR_LIST = set(_D1["STR_LIST"])
         SW3 = True
     except KeyError:
-        STR_LIST = set()
+        STR_LIST = []
     try:
-        DONT_CARE_INDEX_LIST: set[str] = set(_D1["DONT_CARE_INDEX_LIST"])
+        DONT_CARE_INDEX_LIST = set(_D1["DONT_CARE_INDEX_LIST"])
         SW1 = True
     except KeyError:
-        DONT_CARE_INDEX_LIST = set()
+        DONT_CARE_INDEX_LIST = []
     try:
-        IGNORE_LIST: set[str] = set(_D1["IGNORE_LIST"])
+        IGNORE_LIST = set(_D1["IGNORE_LIST"])
         SW2 = True
     except KeyError:
-        IGNORE_LIST = set()
+        IGNORE_LIST = []
 
 
 def _a(cmd: str, item: int | str | list[Any] | dict[str, Any] | bool | None, tk: str = "", /):  # noqa: FBT001
@@ -83,5 +83,5 @@ def p_main(in_path: Path) -> dict[str, Any]:
                 # item: dict = simdjson.loads(line[line.find("{") :])
             except Exception:  # noqa: BLE001, S112
                 continue
-            _a(item["cmd"], item)
+            _a(item.get("CMD", "__ERR_NO_CMD__"), item)
     return result

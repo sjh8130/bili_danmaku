@@ -1,5 +1,3 @@
-#! /usr/bin/env python3
-# mypy: ignore-errors
 import contextlib
 import re
 import string
@@ -113,15 +111,15 @@ def combine_msg(list_1: list[tuple[str, int]], list_2: list[str]) -> str:
 
 def combine_enum(list_1: list[tuple[str, int]]) -> str:
     ret_str = ""
-    ids = [_id[1] for _id in list_1]
+    ids = [id_[1] for id_ in list_1]
     ids: list[int] = sorted(ids)
-    for _id in ids:
+    for id_ in ids:
         for j in list_1:
-            if _id == j[1] and _id != -1:
+            if id_ == j[1] and id_ != -1:
                 ret_str += f"    {j[0][0:-6]} = {j[1]};\n"
-    for _id in ids:
+    for id_ in ids:
         for j in list_1:
-            if _id == j[1] and _id == -1:
+            if id_ == j[1] and id_ == -1:
                 ret_str += f"    {j[0][0:-6]} = {j[1]};\n"
                 return ret_str
     return ret_str

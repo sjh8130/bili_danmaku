@@ -1,8 +1,3 @@
-#!/usr/bin/env python
-"""
-Read a mitmproxy dump file.
-"""
-
 import enum
 import json
 import struct

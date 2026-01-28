@@ -1,4 +1,3 @@
-#!/usr/bin/python3
 import sys
 import time
 from pathlib import Path
@@ -10,7 +9,6 @@ from my_lib.proto2xml_lib import proto_to_xml
 
 def _main(file_name: Path):
     st = time.time()
-    lmt = file_name.stat().st_mtime
     xml_head = """<?xml version="1.0" encoding="UTF-8"?>
 <i>
 \t<chatserver>chat.bilibili.com</chatserver>
@@ -21,7 +19,7 @@ def _main(file_name: Path):
 \t<real_name>0</real_name>
 \t<source>k-v</source>
 """
-    xml_tail = f"</i>\n<!-- Create Time: {int(lmt)} -->"
+    xml_tail = f"</i>\n<!-- Create Time: {int(st)} -->"
     itm = dm_pb2.DmSegMobileReply()
     with file_name.open("rb") as fp:
         itm.ParseFromString(fp.read())

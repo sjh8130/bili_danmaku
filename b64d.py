@@ -81,11 +81,11 @@ def unpack_2(data: bytes) -> list[str]:
 
 def _parse_business_message(header: HeaderTuple, body: bytes) -> list[str]:
     ret: str = ""
-    if header.operation == Operation.HEARTBEAT:  # 2
+    if header.operation == Operation.HEARTBEAT:
         return [f"[HEARTBEAT]: {header}{str(body[20:], 'utf-8')}"]
-    if header.operation == Operation.HEARTBEAT_REPLY:  # 3
+    if header.operation == Operation.HEARTBEAT_REPLY:
         return [f"[HEARTBEAT_REPLY]: {header}{str(body[20:], 'utf-8')}"]
-    if header.operation == Operation.SEND_MSG_REPLY:  # 5
+    if header.operation == Operation.SEND_MSG_REPLY:
         if header.protover == ProtoVer.BROTLI:
             body = brotli.decompress(body)
             return unpack_2(body)
@@ -97,12 +97,12 @@ def _parse_business_message(header: HeaderTuple, body: bytes) -> list[str]:
                 try:
                     ret = jld(body.decode("utf-8"))
                     return [ret]
-                except Exception as e:
+                except json.JSONDecodeError as e:
                     print(e)
                     return [repr(body)]
         else:
             ret = repr(body)
-    elif header.operation in {Operation.AUTH, Operation.AUTH_REPLY}:  # 7
+    elif header.operation in {Operation.AUTH, Operation.AUTH_REPLY}:
         ret = (str(header)) + jld(body.decode("utf-8"))
     else:
         ret = repr(body)
@@ -118,9 +118,9 @@ def decode_blc(data: bytes) -> list[str]:
         header = HeaderTuple(*HEADER_STRUCT.unpack_from(data, offset))
     except struct.error:
         return lst
-    if header.operation == Operation.HEARTBEAT:  # 2
+    if header.operation == Operation.HEARTBEAT:
         return [f"[HEARTBEAT]: {str(data[16:], 'utf-8')}|{header}"]
-    if header.operation == Operation.HEARTBEAT_REPLY:  # 3
+    if header.operation == Operation.HEARTBEAT_REPLY:
         return [f"[HEARTBEAT_REPLY]: {str(data[20:], 'utf-8')},popularity:{int.from_bytes(data[16:20], 'big')}|{header}"]
     while True:
         body = data[offset + header.raw_header_size : offset + header.pack_len]
@@ -150,8 +150,8 @@ def decode_input():
             for i in c:
                 print(i)
             print(f"\033[1;42;33m {'#' * 30} \033[0m")
-        except Exception as ex:
-            print(f"处理时发生错误: {ex}")
+        except ValueError as e:
+            print(f"处理时发生错误: {e}")
 
 
 if __name__ == "__main__":

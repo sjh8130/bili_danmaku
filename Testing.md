@@ -3417,21 +3417,24 @@ timestamp: N×5
 ----
 ### PLAY_TAG
 [TOP](#直播弹幕)  
-文档更新：2024-11-01  
+文档更新：2026-01-01  
 比赛事件  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "PLAY_TAG" |
 | data		| obj	| |
 #### PLAY_TAG__data
-| key		| type	| value	|
+| key			| type	| value	|
 |-|-|-|
-| tag_id	| num	| |
-| pic		| str	| 事件pic |
-| timestamp	| num	| TimeStamp(秒) |
-| type		| str	| "ADD" |
+| tag_id		| num	| |
+| pic			| str	| 事件pic |
+| timestamp		| num	| TimeStamp(秒) |
+| type			| str	| "ADD" |
+| title			| str	| |
+| team_message	| str	| |
+| team_place	| num	| |
 ```json
-{"cmd":"PLAY_TAG","data":{"tag_id":9999999999,"pic":"https://__LB__/bfs/live/xxx.png","timestamp":9999999999,"type":"ADD"}}
+{"cmd":"PLAY_TAG","data":{"tag_id":9999999999,"pic":"https://__LB__/bfs/live/xxx.png","timestamp":9999999999,"type":"ADD","title":"xxx","team_message":"xxx","team_place":9999999999}}
 ```
 ----
 ### FULL_SCREEN_SPECIAL_EFFECT
@@ -3970,7 +3973,7 @@ RANK_REM_RANK_NEW
 ----
 ### COMBO_SEND
 [TOP](#直播弹幕)  
-文档更新：2024-04-12  
+文档更新：2026-01-12  
 礼物连击  
 | key		| type	| value	|
 |-|-|-|
@@ -3988,6 +3991,7 @@ RANK_REM_RANK_NEW
 | combo_total_coin	| num		| |
 | dmscore			| num		| |
 | gift_id			| num		| |
+| gift_info			| obj		| |
 | gift_name			| str		| |
 | gift_num			| num		| |
 | group_medal		| null/		| |
@@ -4006,6 +4010,16 @@ RANK_REM_RANK_NEW
 | uid				| num		| |
 | uname				| str		| 昵称 |
 | wealth_level		| num		| |
+#### COMBO_SEND__data__gift_info
+| key				| type	| value	|
+|-|-|-|
+| img_basic			| str		| |
+| webp				| str		| |
+#### COMBO_SEND__data__receive_user_info
+| key				| type	| value	|
+|-|-|-|
+| uid				| int		| |
+| uname				| str		| |
 ```python
 import hashlib
 hashlib.md5().hexdigest()
@@ -5839,29 +5853,35 @@ role 0 1 2
 ---
 ### WIN_ACTIVITY
 [TOP](#直播弹幕)  
-文档更新：2024-01-01  
+文档更新：2026-01-01  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "WIN_ACTIVITY" |
+| number	| num	| seq |
 | data		| obj	| |
-| number	 | num | |
 #### WIN_ACTIVITY__data
-| key		| type	| value	|
+| key				| type	| value	|
 |-|-|-|
-| delay_time_min| num	| |
-| delay_time_max| num	| |
-| activity_id	| num	| |
-| jump_url		| str	| |
-| weight		| num	| |
-| closeable		| num	| |
-| title			| str	| |
-| title_color	| str	| |
-| activity_pic	| str	| |
-| background	| str	| |
-| current_round	| num	| |
-| typeB			| \[\]obj	| |
+| delay_time_min	| num	| |
+| delay_time_max	| num	| |
+| activity_id		| num	| |
+| jump_url			| str	| |
+| weight			| num	| |
+| closeable			| num	| |
+| title				| str	| |
+| title_color		| str	| |
+| activity_pic		| str	| |
+| background		| str	| |
+| current_round		| num	| |
+| typeB				| \[.round_num\]obj	| |
+#### WIN_ACTIVITY__data__typeB
+| key				| type	| value	|
+|-|-|-|
+| join_start_time	| num	| |
+| join_end_time		| num	| |
+| round_num			| num	| |
 ```json
-{"cmd":"WIN_ACTIVITY","number":1,"data":{"delay_time_min":0,"delay_time_max":30,"activity_id":1090,"jump_url":"https://__bili_live_site__/p/html/live-app-treasurebox/index.html?...&aid={1090}","weight":20,"closeable":0,"title":"华为nova Flip新生之夜","title_color":"#FFFFFF","activity_pic":"https://__LB__/bfs/live/c3ed87683f6e87d256d1f5fdddbfb220fc4c2cdf.png","background":"https://__LB__/bfs/live/84cd59bcb1e977359df618dbeb0f7828751f457c.png","current_round":1,"typeB":[{"join_start_time":9999999999,"join_end_time":9999999999,"round_num":1}]}}
+{"cmd":"WIN_ACTIVITY","number":1,"data":{"delay_time_min":0,"delay_time_max":30,"activity_id":9999999999,"jump_url":"https://__bili_live_site__/p/html/live-app-treasurebox/index.html?...&aid={activity_id}","weight":20,"closeable":0,"title":"xxx","title_color":"#FFFFFF","activity_pic":"https://__LB__/bfs/live/xxx.png","background":"https://__LB__/bfs/live/xxx.png","current_round":1,"typeB":[{"join_start_time":9999999999,"join_end_time":9999999999,"round_num":1}]}}
 ```
 ---
 ### COMMON_ANIMATION
@@ -6324,24 +6344,15 @@ enum recall_type={NOTHING:0,DANMAKU:1,USER:2,ALL:3}
 	"data":{
 		"room_id":9999999999,
 		"reload_option":{
+			"reload_stream_name":["live_{roomid}_{1}"],
 			"reload_stream_name":["live_{roomid}_bs_{1}"],
 			"reload_format":[],
-			"reload_playurl":{
-				"need":false,
-				"scatter":10000,
-				"qn":10000
-			},
+			"reload_playurl":{"need":false,"scatter":10000,"qn":10000},
 			"fallback":false,
 			"scatter":0,
 			"qn":0
 		},
-		"playurl":{
-			"cid":0,
-			"g_qn_desc":null,
-			"stream":null,
-			"p2p_data":null,
-			"dolby_qn":null
-		}
+		"playurl":{"cid":0,"g_qn_desc":null,"stream":null,"p2p_data":null,"dolby_qn":null}
 	}
 }
 {
@@ -6506,9 +6517,82 @@ enum recall_type={NOTHING:0,DANMAKU:1,USER:2,ALL:3}
 {"cmd":"AD_GAME_CARD_REFRESH","data":{"card_id":"9999999999","game_card_click_uv":"9999999999","room_id":"9999999999"},"msg_id":"9999999999:10:10","p_is_ack":true,"send_time":9999999999}
 ```
 ---
-### XXXXXXXXXXXX
+### FULL_SCREEN_MASK_OPEN
 [TOP](#直播弹幕)  
 文档更新：2025-11-01  
+| key		| type	| value	|
+|-|-|-|
+| cmd		| str	| "FULL_SCREEN_MASK_OPEN" |
+| data		| obj	| |
+#### FULL_SCREEN_MASK_OPEN__data
+| key		| type	| value	|
+|-|-|-|
+| data		| xxx	| |
+```json
+{"cmd":"FULL_SCREEN_MASK_OPEN","data":{"has_mask":true,"icon":"https://__LB__/bfs/live/b79f2fed73580cd27846bc1222e5f74cfae970c1.png","lines":"主播及时更改，可继续直播，若继续违规，直播间将被关闭。","overlay_second":60,"room_id":9999999999,"title":"当前直播间涉嫌违规"}}
+```
+---
+### BOX_ACTIVITY_START
+[TOP](#直播弹幕)  
+文档更新：2026-01-01  
+| key		| type	| value	|
+|-|-|-|
+| cmd		| str	| "BOX_ACTIVITY_START" |
+| data		| obj	| |
+#### BOX_ACTIVITY_START__data
+| key		| type	| value	|
+|-|-|-|
+| data		| xxx	| |
+```json
+{
+	"aid": 9999999999,
+	"cmd": "BOX_ACTIVITY_START",
+	"data": {
+		"activity_id": 9999999999,
+		"activity_pic": "https://__LB__/bfs/live/xxx.png",
+		"background": "https://__LB__/bfs/live/xxx.png",
+		"closeable": 0,
+		"current_round": 1,
+		"jump_url": "https://live.bilibili.com/p/html/live-app-treasurebox/index.html?....&aid=${aid|activity_id}",
+		"last_round_finished": 0,
+		"title": "xxx",
+		"title_color": "#FFFFFF",
+		"typeB": [
+			{"join_end_time":9999999999,"join_start_time":9999999999,"round_num":1},
+			{"join_end_time":9999999999,"join_start_time":9999999999,"round_num":2},
+			{"join_end_time":9999999999,"join_start_time":9999999999,"round_num":3},
+			{"join_end_time":9999999999,"join_start_time":9999999999,"round_num":4},
+			{"join_end_time":9999999999,"join_start_time":9999999999,"round_num":5},
+			{"join_end_time":9999999999,"join_start_time":9999999999,"round_num":6},
+			{"join_end_time":9999999999,"join_start_time":9999999999,"round_num":7},
+			{"join_end_time":9999999999,"join_start_time":9999999999,"round_num":8}
+		],
+		"weight": 9999999999
+	},
+	"msg_id": "9999999999:9999999999:9999999999",
+	"p_is_ack": true,
+	"send_time": 9999999999
+}
+```
+---
+### PLAY_PROGRESS_BAR
+[TOP](#直播弹幕)  
+文档更新：2026-01-01  
+| key		| type	| value	|
+|-|-|-|
+| cmd		| str	| "PLAY_PROGRESS_BAR" |
+| data		| obj	| |
+#### PLAY_PROGRESS_BAR__data
+| key		| type	| value	|
+|-|-|-|
+| data		| xxx	| |
+```json
+{"cmd":"PLAY_PROGRESS_BAR","data":{"type":"DISABLE","platform":["web","ios","android","android_tv"],"scatter":{"min":10,"max":133},"bar_special_time":16200,"bar_start_time":9999999999}}
+```
+---
+### XXXXXXXXXXXX
+[TOP](#直播弹幕)  
+文档更新：2026-01-01  
 | key		| type	| value	|
 |-|-|-|
 | cmd		| str	| "XXXXXXXXXXXX" |
@@ -6791,7 +6875,7 @@ UNIXts(UTC+8)
 173 000 0000	2024-10-27 11:33:20
 174 000 0000	2025-02-20 05:20:00
 175 000 0000	2025-06-15 23:06:40
-176 000 0000	2025-10-09 16:53:20
-177 000 0000	2026-02-02 10:40:00
+176 000 0000	2025-10-09 16:53:20<<<
+177 000 0000	2026-02-02 10:40:00<<<
 180 000 0000	2027-01-15 16:00:00
 ```

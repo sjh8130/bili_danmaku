@@ -18,7 +18,7 @@ except ImportError:
     simdjson = json
 
 _E_MD5 = "d41d8cd98f00b204e9800998ecf8427e"
-_log = logger.bind(user="deduplicate jsonl")
+_logger = logger.bind(user="deduplicate jsonl")
 _deduplicate_dict: set[Hashable] = set()
 
 
@@ -64,7 +64,7 @@ def _deduplicate_it(itm: dict[str, Any], timestamp: Decimal, str_itm: str) -> bo
     msg_id = str(itm.get("msg_id", 0))
     match cmd:
         # sort by hot-spot
-        case "DANMU_MSG" | "DANMU_MSG:4:0:2:2:2:0":
+        case "DANMU_MSG" | "DANMU_MSG:4:0:2:2:2:0" | "DANMU_MSG_MIRROR":
             dm_id_str = simdjson.loads(itm["info"][0][15]["extra"]).get("id_str", "")
             id_1 = f"""{cmd}${itm["info"][0][7]}${itm["info"][0][4]}${itm["info"][0][5]}${itm["info"][9]["ct"]}${itm["info"][9]["ts"]}${itm["info"][2][0]}${itm["info"][2][1]}${dm_id_str}${msg_id}"""
             # mid_hash,time.Now().Unix(),rnd,ct,ts,uid,uname,extra:dm_id_str,msg_id
@@ -105,14 +105,7 @@ def _deduplicate_it(itm: dict[str, Any], timestamp: Decimal, str_itm: str) -> bo
             id_1 = f"""{cmd}${data["time"]}${data.get("uid", 0)}${data["ruid"]}${msg_id}"""
         case "DANMU_MSG:3:7:1:1:1:1":
             id_1 = f"""{cmd}${itm["info"][0][4]}${msg_id}"""
-        case (
-            "POPULARITY_RED_POCKET_NEW"
-            | "POPULARITY_RED_POCKET_START"
-            | "POPULARITY_RED_POCKET_V2_NEW"
-            | "POPULARITY_RED_POCKET_V2_START"
-            | "POPULARITY_RED_POCKET_V2_WINNER_LIST"
-            | "POPULARITY_RED_POCKET_WINNER_LIST"
-        ):
+        case "POPULARITY_RED_POCKET_V2_NEW" | "POPULARITY_RED_POCKET_V2_START" | "POPULARITY_RED_POCKET_V2_WINNER_LIST":
             id_1 = f"""{cmd}${data["lot_id"]}${msg_id}"""
         case "GUARD_BUY":
             id_1 = f"""{cmd}${data["start_time"]}${data.get("uid", 0)}${itm["data"]["num"]}${msg_id}"""
@@ -126,11 +119,11 @@ def _deduplicate_it(itm: dict[str, Any], timestamp: Decimal, str_itm: str) -> bo
             id_1 = f"""{cmd}${data["timestamp"]}${msg_id}"""
         case "DANMU_AGGREGATION":
             id_1 = f"""{cmd}${data["timestamp"]}${data["activity_identity"]}${msg_id}"""
-        case "WIDGET_BANNER" | "ROOM_BANNER":
+        case "PLAY_TAG" | "WIDGET_BANNER" | "ROOM_BANNER":
             id_1 = f"""{cmd}${data["timestamp"]}${msg_id}"""
         case "PK_BATTLE_ENTRANCE":
             id_1 = f"""{cmd}${itm["timestamp"]}${msg_id}"""
-        case "PLAY_TAG" | "VOICE_JOIN_STATUS":
+        case "VOICE_JOIN_STATUS":
             id_1 = f"""{cmd}${data["current_time"]}${msg_id}"""
         case "ROOM_SKIN_MSG":
             id_1 = f"""{cmd}${itm["current_time"]}${msg_id}"""
@@ -150,7 +143,7 @@ def _deduplicate_it(itm: dict[str, Any], timestamp: Decimal, str_itm: str) -> bo
             id_1 = str_itm
         case "WIDGET_WISH_INFO" | "WIDGET_WISH_INFO_V2":
             id_1 = f"""{cmd}${data["ts"]}${data["sid"]}${data["tid"]}${msg_id}"""
-        case "RECALL_DANMU_MSG" | "RING_STATUS_CHANGE_V2" | "SYS_MSG" | "LIVE" | "PREPARING":
+        case "RECALL_DANMU_MSG" | "RING_STATUS_CHANGE_V2" | "SYS_MSG" | "LIVE" | "PREPARING" | "COLLABORATION_LIVE_INFO":
             id_1 = (str_itm, timestamp.to_integral("ROUND_DOWN"))
             id_2 = (str_itm, timestamp.to_integral("ROUND_DOWN") + 1)
         case "INTERACT_WORD_V2":
@@ -159,6 +152,9 @@ def _deduplicate_it(itm: dict[str, Any], timestamp: Decimal, str_itm: str) -> bo
             "AD_GAME_CARD_REFRESH"
             | "AREA_RANK_CHANGED"
             | "CHG_RANK_REFRESH"
+            | "COLLABORATION_LIVE_ONLINE"
+            | "COLLABORATION_LIVE_POPULARITY"
+            | "COLLABORATION_LIVE_WATCHED"
             | "GUARD_HONOR_THOUSAND"
             | "HEARTBEAT_REPLY"  # special
             | "HOT_ROOM_NOTIFY"
@@ -173,8 +169,13 @@ def _deduplicate_it(itm: dict[str, Any], timestamp: Decimal, str_itm: str) -> bo
             | "ONLINE_RANK_V3"
             | "OTHER_SLICE_LOADING_RESULT"
             | "PLAYURL_RELOAD"
+            | "PLAYURL_RELOAD_MASTER"
             | "POPULAR_RANK_CHANGED"
+            | "POPULARITY_CHANGE"
             | "POPULARITY_RANK_TAB_CHG"
+            | "POPULARITY_RED_POCKET_NEW"
+            | "POPULARITY_RED_POCKET_START"
+            | "POPULARITY_RED_POCKET_WINNER_LIST"
             | "RANK_CHANGED_V2"
             | "RANK_CHANGED"
             | "REVENUE_RANK_CHANGED"
@@ -204,6 +205,7 @@ def _deduplicate_it(itm: dict[str, Any], timestamp: Decimal, str_itm: str) -> bo
             | "ANCHOR_NORMAL_NOTIFY"
             | "BENEFIT_CARD_CLEAN"
             | "BENEFIT_STATUS"
+            | "BOX_ACTIVITY_START"
             | "CARD_MSG"
             | "CHANGE_ROOM_INFO"
             | "CUT_OFF"
@@ -222,6 +224,7 @@ def _deduplicate_it(itm: dict[str, Any], timestamp: Decimal, str_itm: str) -> bo
             | "OBS_SHIELD_STATUS_UPDATE"
             | "OFFICIAL_ROOM_EVENT"
             | "OTHER_SLICE_SETTING_CHANGED"
+            | "PLAY_PROGRESS_BAR"
             | "PLAYTOGETHER_ICON_CHANGE"
             | "POPULAR_RANK_GUIDE_CARD"
             | "PROGRAM_CHANGE"
@@ -243,6 +246,7 @@ def _deduplicate_it(itm: dict[str, Any], timestamp: Decimal, str_itm: str) -> bo
             | "USER_PANEL_RED_ALARM"
             | "VOICE_CHAT_UPDATE"
             | "WARNING"
+            | "WIN_ACTIVITY"
         ):
             return True
         case _:
@@ -305,7 +309,8 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         pass
     except Exception as e:
-        _log.exception(e)
+        _logger.exception(e)
         raise e
     et0 = time.time_ns()
     print("Done", (et0 - st0) / 1e9)
+    time.sleep(10)

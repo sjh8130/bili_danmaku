@@ -1,4 +1,3 @@
-#!/usr/bin/python3
 import contextlib
 import csv
 import json
@@ -20,6 +19,8 @@ requests.packages.urllib3.disable_warnings()  # pyright: ignore[reportAttributeA
 config = json.loads(Path("config.json").read_text(encoding="utf-8"))
 _A = {"User-Agent": config["ua"], "Connection": "keep-alive", "Accept-Encoding": config["ae"]}
 _B = b'{"code":0,"message":"0","ttl":1,"data":{"suit_items":null,"fan_user":{"mid":0,"nickname":"","avatar":""},"unlock_items":null,"activity_entrance":null}}'
+_C = b'{"code":-500,"message":"\xe6\x9c\x8d\xe5\x8a\xa1\xe5\x99\xa8\xe9\x94\x99\xe8\xaf\xaf","ttl":1,"data":{"suit_items":null,"fan_user":{"mid":0,"nickname":"","avatar":""},"unlock_items":null,"activity_entrance":null}}'
+_D = b'{"code":0,"message":"OK","ttl":1,"data":{"suit_items":null,"fan_user":{"mid":0,"nickname":"","avatar":""},"unlock_items":null,"activity_entrance":null}}'
 _BF = config["bar_format"]
 _EMPTY_FAN_USER = {"mid": 0, "nickname": "", "avatar": ""}
 _EMPTY_ACTIVITY_ENTRANCE = {"id": 0, "item_id": 0, "title": "", "image_cover": "", "jump_link": ""}
@@ -30,7 +31,7 @@ S = "suit_items"
 _a: int = 0
 Properties = dict[str, str]
 TRASH: str = "🗑"
-IDCSV: str = "ids.csv"
+IDCSV: str = _M + "ids.csv"
 Z = {
     "2060,2:3,19,1",
     "67055,豆泥大陆收藏家勋章,106,2",
@@ -38,11 +39,6 @@ Z = {
     "206537601,-Yu酱-婚纱主题装扮,47,6",
     "69105,-ASAKI-动态表情包,8,5",
 }
-
-
-def read_text(path, encoding=None, errors=None):
-    with open(path, encoding=encoding, errors=errors) as f:  # noqa: FURB101
-        return f.read()
 
 
 class SuitItems(TypedDict):
@@ -55,10 +51,6 @@ class SuitItems(TypedDict):
     timing_online_unix: str
     type: str
     properties: Properties
-
-
-def __():  # noqa: N807
-    [] and _I  # pyright: ignore[reportUnusedExpression]  # noqa: B018, SIM223
 
 
 class CurrentNextActivity(TypedDict):
@@ -114,10 +106,12 @@ def _E(b: requests.Session, d: int | str) -> bytes:
             _a += 1
             c = b.get(_L.format(q=d), headers=_A, verify=False, timeout=20)
             c.raise_for_status()
+            if c.content == _C:
+                raise requests.HTTPError("-500", response=c)
             return c.content
-        except requests.RequestException as e:  # noqa: F841, PERF203
+        except requests.RequestException as e:  # noqa: PERF203
             retry += 1
-            log.error(f" {d} {retry=}")
+            log.error(f" {d} {retry=} {e}")
             # log.exception(e)
             time.sleep(retry)
         except KeyboardInterrupt:
@@ -125,7 +119,7 @@ def _E(b: requests.Session, d: int | str) -> bytes:
     raise Exception(f"Failed to fetch {d}")
 
 
-def _F(a: str, b: X1):
+def _F(a: str, b: X1) -> bool:
     d = json.dumps(b, ensure_ascii=False, separators=(",", ":"), indent="\t")
     e = ""
     if Path(a).is_file():
@@ -154,26 +148,38 @@ def _F(a: str, b: X1):
     d = json.dumps(b, ensure_ascii=False, separators=(",", ":"), indent="\t")
     if e and d == e:
         return False
-    with open(a, "w", encoding="utf-8") as fp:  # noqa: FURB103
-        fp.write(d)
+    while True:
+        try:
+            with open(a, "w", encoding="utf-8") as fp:  # noqa: FURB103
+                fp.write(d)
+                break
+        except PermissionError:
+            log.error("PermissionError")
+            time.sleep(10)
     return True
 
 
-def _G(a: str, b: str):
+def _G(a: str, b: str) -> bool:
+    """Csv / jsonl."""
     if isinstance(b, dict):
         b = json.dumps(b, ensure_ascii=False, separators=(",", ":"))
-    """Csv / jsonl."""
-    if b in Z or (Path(a).is_file() and b in open(a, encoding="utf-8").read()):
-        return False
-    with open(a, "a", encoding="utf-8") as fp:
-        fp.write(b + "\n")
+    while True:
+        try:
+            if b in Z or (Path(a).is_file() and b in open(a, encoding="utf-8").read()):
+                return False
+            with open(a, "a", encoding="utf-8") as fp:
+                fp.write(b + "\n")
+                break
+        except PermissionError:
+            # log.error("PermissionError")
+            time.sleep(10)
     return True
 
 
-def _H(a: int | str, item: X1):
+def _H(a: int | str, item: X1) -> bool:
     c = item["part_id"]
     d = _G
-    g = d(_M + IDCSV, f"{a},{item['name']},{item['group_id']},{c}")
+    g = d(IDCSV, f"{a},{item['name']},{item['group_id']},{c}")
     if isinstance(item.get(P), dict):
         if isinstance(item[P].get("item_ids"), str):
             item[P]["item_ids"] = sort_str_list(item[P]["item_ids"])
@@ -205,6 +211,15 @@ def _H(a: int | str, item: X1):
             f = "PART_1_头像框.jsonl"
         case 2:
             f = "PART_2_动态卡片.jsonl"
+            if (
+                item[P].get("image", "") == "https://i0.hdslb.com/bfs/activity-plat/static/20240223/3334b2daefb8be78dcc25a7ec37d60fe/sVvHUQ5IPV.png"
+                and item[P].get("image_preview_small", "") == "https://i0.hdslb.com/bfs/garb/item/edfb01bd0fa7de7c7e3f516a16a16e8b0cde9ef5.png"
+                and item[P].get("sale_type", "") == "collect_card"
+            ):
+                item[P].pop("image")
+                item[P].pop("image_preview_small")
+                item[P].pop("sale_type")
+                item[P]["X_Part2_collect_card"] = 1  # pyright: ignore[reportArgumentType]
         case 3:
             f = "PART_3_点赞效果.jsonl"
         case 4:
@@ -219,6 +234,15 @@ def _H(a: int | str, item: X1):
             f = "PART_7_空间背景.jsonl"
         case 8:
             f = "PART_8_勋章.jsonl"
+            if (
+                item[P].get("image", "") == "https://i0.hdslb.com/bfs/garb/item/bb95a716723fa17354aa18ae10323903747c79ec.png"
+                and item[P].get("image_preview_small", "") == "https://i0.hdslb.com/bfs/garb/item/edfb01bd0fa7de7c7e3f516a16a16e8b0cde9ef5.png"
+                and item[P].get("sale_type", "") == "collect_card"
+            ):
+                item[P].pop("image")
+                item[P].pop("image_preview_small")
+                item[P].pop("sale_type")
+                item[P]["X_Part8_collect_card"] = 1  # pyright: ignore[reportArgumentType]
         case 9:
             f = "PART_9_皮肤.jsonl"
         case 10:
@@ -263,7 +287,7 @@ def _H(a: int | str, item: X1):
     del_keys(item, "sale_time_end", 0, OPR.LEQ)
     del_keys(item, "sales_mode", 0)
     del_keys(item, "suit_item_id", 0)
-    del_keys(item, "tab_id", 0, OPR.EQ)
+    del_keys(item, "tab_id", 0)
     del_keys(item, "unlock_items", None)
     del_keys(item, "properties", {})
     del_keys(item, "suit_items", {})
@@ -287,16 +311,20 @@ def _I(a: str):
             f = 140000001
         case "3":
             e = 200000001
-            # e = 232434101
+            e = 232434101
             f = 250000001
         case "4":
             e = 300000001
-            e = 331000001
-            f = 332000001
+            e = 336000001
+            f = 337000001
+        case "5":
+            e = 400000001
+            e = 400000001
+            f = 402000001
         case "0" | "1" | _:
             d = 1
-            e = 74500
-            f = 75000
+            e = 75000
+            f = 76000
     with requests.Session() as g, tqdm(total=int((f - e) / d) + 1, initial=0, bar_format=_BF) as h:
         for i in range(e, f + d, d):
             h.update()
@@ -307,7 +335,7 @@ def _I(a: str):
             h.set_description(str(i))
             time.sleep(c)
             j = _E(g, i)
-            if j == _B:
+            if j in (_D, _B):
                 continue
                 print(f"{i:<12}N", end="\r")
             try:
@@ -328,13 +356,16 @@ def _N(j):
             m = 4424
         case "2":
             k = range(100000000, 199999999)
-            m = 1691
+            m = 1722
         case "3":
             k = range(200000000, 299999999)
-            m = 1061
+            m = 1069
         case "4":
             k = range(300000000, 399999999)
-            m = 400 - 5
+            m = 530
+        case "5":
+            k = range(400000000, 499999999)
+            m = 10
         case "1":
             k = range(10000, 100000000 - 1)
             m = 30000
@@ -346,24 +377,30 @@ def _N(j):
     b = 1
     with requests.Session() as c, tqdm(total=m, initial=0, bar_format=_BF) as d:
         for g in a:
+            # g += 1
             if g not in k:
                 continue
             d.update()
             if g in h or str(g) in h:
                 continue
             time.sleep(b)
-            e = _E(c, g)
-            if e == _B:
-                if _G(_M + IDCSV, f"{g},{TRASH},0,0"):
+            n = _E(c, g)
+            d.set_description(str(g))
+            if n in (_D, _B):
+                if _G(IDCSV, f"{g},{TRASH},0,0"):
                     d.write(f"{time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()):<32}{g:<12}🟥🟩🟦🟨⬛⬜ NOT Found")
                 continue
             try:
-                f: X1 = json.loads(e)["data"]
-            except json.JSONDecodeError as n:
-                print(n)
-                raise n
-            if _H(g, f):
-                d.write(f"{time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()):<32}{g:<12}{f['name']:20}{len(e):>8}")
+                f: X1 = json.loads(n)["data"]
+            except json.JSONDecodeError as e:
+                print(e)
+                raise e
+            try:
+                if _H(g, f):
+                    d.write(f"{time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()):<32}{g:<12}{f['name']:20}{len(n):>8}")
+            except KeyError as e:
+                d.write(n.decode())
+                raise e
 
 
 def _P(a: Path):
@@ -387,21 +424,25 @@ def _P(a: Path):
 
 
 def _J():
-    a = 2
+    a = 1.2
     with requests.Session() as b:
         while True:
+            d = b""
             c = input()
+            if not c:
+                print(":(")
+                continue
             d = _E(b, c)
-            if d == _B:
+            if d in (_D, _B):
                 print(f"{c:<12}None")
             else:
                 try:
-                    e: X1 = json.loads(d)["data"]
-                except json.JSONDecodeError as f:
-                    print(d)
-                    raise f
-                _H(c, e)
-                print(f"{time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()):<32}{c:<12}{e['name']:20}{len(d):>8}")
+                    f: X1 = json.loads(d)["data"]
+                except json.JSONDecodeError as e:
+                    print("JSONDecodeError", d)
+                    raise e
+                _H(c, f)
+                print(f"{time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()):<32}{c:<12}{f['name']:20}{len(d):>8}")
             time.sleep(a)
 
 
@@ -411,16 +452,14 @@ def _K() -> list[int]:
         g.extend(int(b.stem) for b in Path(_M + a).rglob("*.json"))
     for a in Path(_M).rglob("PART*.jsonl"):
         c = a.read_text(encoding="utf-8")
-        for d in c.splitlines():
-            f = json.loads(d)
-            g.append(int(f["item_id"]))
+        g.extend(int(json.loads(d)["item_id"]) for d in c.splitlines())
     return g
 
 
 def _O():
     a = []
     b = []
-    c = _M + IDCSV
+    c = IDCSV
     d = csv.reader(open(c, encoding="utf-8").read())
     next(d)
     for f in d:
@@ -433,9 +472,9 @@ def _O():
 
 if __name__ == "__main__":
     try:
-        if len(sys.argv) > 2 and sys.argv[1] not in "0u1U2x3X4":
+        if len(sys.argv) > 2 and sys.argv[1] not in "0u1U2x3X45":
             _J()
-        elif sys.argv[1] in {"0", "1", "2", "3", "4"}:
+        elif sys.argv[1] in {"0", "1", "2", "3", "4", "5"}:
             _I(sys.argv[1])
         elif sys.argv[1] in "Uu":
             _N(sys.argv[2])
@@ -451,7 +490,7 @@ if __name__ == "__main__":
         print("(script name)", "x", "path-to-dir", ": sync with local files")
     except KeyboardInterrupt:
         pass
-    except Exception as e:
-        log.exception(e)
+    except Exception as e_:
+        log.exception(e_)
     finally:
         log.error(f"📦 {_a}")
