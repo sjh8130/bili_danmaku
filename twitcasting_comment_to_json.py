@@ -3,6 +3,7 @@ import ssl
 import sys
 import time
 from pathlib import Path
+from urllib import request
 
 import bs4
 import requests
@@ -46,7 +47,7 @@ def _downloader(
         except KeyboardInterrupt:
             print("BREAK")
             return b"BREAK"
-        except Exception as e:
+        except request.HTTPError as e:
             retry_count += 1
             print(f"Error fetching {url}: {e}, {retry_count}")
             time.sleep(1)

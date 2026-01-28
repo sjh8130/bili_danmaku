@@ -44,7 +44,7 @@ def resolve_dns(domain):
         return []
 
 
-def scrape_urls(start, end, ip_address, base, trd):
+def scrape_urls(start, end, ip_address, base, thread_n):
     session = requests.Session()
     session.mount("https://", HostHeaderSSLAdapter(ip_address))
     for i in range(start, end):
@@ -67,19 +67,12 @@ def _main(base_url: str, target):
     chunks = [(i * chunk_size, min((i + 1) * chunk_size, target + 1)) for i in range(num_threads)]
     print(chunks)
     with concurrent.futures.ThreadPoolExecutor(max_workers=num_threads) as executor:
-        futures = [executor.submit(
-                    scrape_urls,
-                    chunks[xx][0],
-                    chunks[xx][1],
-                    ip_addresses[xx],
-                    base_url,
-                    xx,
-                ) for xx in range(num_threads)]
+        futures = [executor.submit(scrape_urls, chunks[thread_n][0], chunks[thread_n][1], ip_addresses[thread_n], base_url, thread_n) for thread_n in range(num_threads)]
         # Wait for all futures to complete
         for future in concurrent.futures.as_completed(futures):
             try:
                 future.result()
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001, PERF203
                 print(f"An error occurred: {e}")
 
 

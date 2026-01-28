@@ -206,5 +206,5 @@ if __name__ == "__main__":
     session = requests.Session()
     try:
         _main()
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001
         logger.exception(e)

@@ -1,4 +1,3 @@
-#!/usr/bin/python3
 import json
 import ssl
 import sys
@@ -65,7 +64,6 @@ def _E(a: requests.Session, b: int | str, c: float) -> bytes:
             return f.content
         except requests.RequestException as e:  # noqa: F841, PERF203
             d += 1
-            print(" ")
             # log.exception(e)
             time.sleep(c + d)
         except KeyboardInterrupt:
@@ -73,7 +71,7 @@ def _E(a: requests.Session, b: int | str, c: float) -> bytes:
     raise Exception(f"Failed to fetch {b}")
 
 
-def _F(a: Path, b: EmoteMain):
+def _F(a: Path, b: EmoteMain) -> bool:
     d = json.dumps(b, ensure_ascii=False, separators=(",", ":"), indent="\t")
     e = ""
     if a.is_file():
@@ -97,7 +95,7 @@ def _F(a: Path, b: EmoteMain):
     return True
 
 
-def _G(a: Path, b: str):
+def _G(a: Path, b: str) -> bool:
     """csv"""
     if a.is_file() and b in a.read_text(encoding="utf-8"):
         return False
@@ -106,7 +104,7 @@ def _G(a: Path, b: str):
     return True
 
 
-def _K(a: int | str, item: EmoteMain):
+def _K(a: int | str, item: EmoteMain) -> bool:
     del_keys(item, "suggest", [""])
     del_keys(item, "flags", 0, OPR.ANY)
     del_keys(item, "activity", 0, OPR.ANY)
@@ -127,12 +125,9 @@ def _K(a: int | str, item: EmoteMain):
 def _L(*, j: bool = False):
     a = _N()
     b = 1
-    c: int = 9000 if not j else 1
+    c: int = 9300 if not j else 1
     d = 10000
-    with (
-        requests.Session() as e,
-        tqdm(total=d - c + 1, initial=0, bar_format=_BF) as f,
-    ):
+    with requests.Session() as e, tqdm(total=d - c + 1, initial=0, bar_format=_BF) as f:
         for g in range(c, d + 1):
             f.set_description(str(g))
             f.update()
@@ -154,11 +149,9 @@ def _L(*, j: bool = False):
 def _M():
     a = 1
     if sys.argv[1].lower() in {"main", "0"}:
-        _L()
-        return
+        return _L()
     if sys.argv[1] in "uU":
-        _L(j=True)
-        return
+        return _L(j=True)
     with requests.Session() as b:
         while True:
             c: str = input("item_id:")
@@ -171,14 +164,11 @@ def _M():
 
 
 def _N() -> list[int]:
-    a = []
     try:
-        a.extend(int(b.stem) for b in _D.rglob("*.json"))
-        a.sort()
-        return list(set(a))
+        return sorted({int(b.stem) for b in _D.rglob("*.json")})
     except Exception as e:
         log.exception(e)
-        return a
+        return []
 
 
 if __name__ == "__main__":

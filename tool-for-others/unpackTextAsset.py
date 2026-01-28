@@ -1,7 +1,7 @@
 import struct
 from io import BytesIO
 
-propNameMap = {
+PropNameMap = {
     1: "id",
     2: "translated_name",
     3: "idk_name",
@@ -27,7 +27,7 @@ def unpackTextAsset(file_bytes, debug_name):
         offset += 4
         prop_id = struct.unpack("<I", file.read(4))[0]
         offset += 4
-        prop_name = propNameMap.get(prop_id, f"{propNameMap['default']}_{prop_id}")
+        prop_name = PropNameMap.get(prop_id, f"{PropNameMap['default']}_{prop_id}")
         props.append({"type": prop_type, "name": prop_name})
     entries = []
     for _ in range(entry_count):

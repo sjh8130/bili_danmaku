@@ -1,4 +1,3 @@
-#!/usr/bin/python3
 import contextlib
 import dataclasses
 import json

@@ -1,4 +1,3 @@
-#!/usr/bin/python3
 import base64
 import binascii
 import contextlib
@@ -107,7 +106,7 @@ def _get_data(item_id: int | str) -> int:
 
 
 def _main():
-    for item_id in range(2000, 4000):
+    for item_id in range(2900, 4000):
         if (_BP / f"NFT_{item_id}.json").exists():
             continue
         _get_data(item_id)

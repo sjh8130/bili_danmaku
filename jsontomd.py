@@ -3,10 +3,8 @@ import json
 
 with contextlib.suppress(ImportError):
     import pyperclip
-# 读取json数据
 f = input("input:")
 data: dict = json.loads(f)
-# 初始化结果字符串
 try:
     data["cmd"]
     data = data["data"]

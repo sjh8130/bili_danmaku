@@ -131,7 +131,7 @@ class result:
         return dd[self.enc] < dd[other.enc]
 
 
-def safe_print(*valuse: tuple, sep=" ", end="\n", file=None, flush=False):
+def safe_print(*valuse, sep=" ", end="\n", file=None, flush=False):
     for v in valuse:
         s = str(v).replace("\x00", "\\x00")
         s = s.replace("\x01", "\\x01")

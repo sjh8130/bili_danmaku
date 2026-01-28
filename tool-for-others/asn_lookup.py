@@ -8,7 +8,7 @@ from pathlib import Path
 import requests
 
 
-@dataclasses.dataclass
+@dataclasses.dataclass(order=True, frozen=True)
 class IP:
     ip_cidr: str = ""
     region: str = ""
@@ -26,20 +26,20 @@ class IP:
 def _init(*, overwrite: bool = False):
     PATH_BASE = Path("Z:\\")
     URL_BASE = "https://ftp.apnic.net/stats"
-    URL = [
-        f"{URL_BASE}/iana/delegated-iana-latest",
-        f"{URL_BASE}/apnic/delegated-apnic-latest",
-        f"{URL_BASE}/arin/delegated-arin-extended-latest",
-        f"{URL_BASE}/ripe-ncc/delegated-ripencc-latest",
-        f"{URL_BASE}/lacnic/delegated-lacnic-latest",
-        f"{URL_BASE}/afrinic/delegated-afrinic-latest",
+    URL: list[str] = [
+        "/iana/delegated-iana-latest",
+        "/apnic/delegated-apnic-latest",
+        "/arin/delegated-arin-extended-latest",
+        "/ripe-ncc/delegated-ripencc-latest",
+        "/lacnic/delegated-lacnic-latest",
+        "/afrinic/delegated-afrinic-latest",
     ]
     tld_url = "https://data.iana.org/TLD/tlds-alpha-by-domain.txt"
     _download_file(tld_url, PATH_BASE / "tlds-alpha-by-domain.txt", overwrite=overwrite)
     _process_tld(PATH_BASE / "tlds-alpha-by-domain.txt")
     for url in URL:
         file_name = PATH_BASE / url.split("/")[-1]
-        _download_file(url, file_name, overwrite=overwrite)
+        _download_file(URL_BASE + url, file_name, overwrite=overwrite)
         _process_file(file_name)
 
 
@@ -309,8 +309,7 @@ _IPS_DEFAULT = {
     IP("192.0.0.8/32", "XX", "[IANA]IPv4 dummy address", "reserved"),
     IP("192.0.0.9/32", "XX", "[IANA]Port Control Protocol Anycast", "reserved"),
     IP("192.0.0.10/32", "XX", "[IANA]Traversal Using Relays around NAT Anycast", "reserved"),
-    IP("192.0.0.170/32", "XX", "[IANA]NAT64/DNS64 Discovery", "reserved"),
-    IP("192.0.0.171/32", "XX", "[IANA]NAT64/DNS64 Discovery", "reserved"),
+    IP("192.0.0.170/31", "XX", "[IANA]NAT64/DNS64 Discovery", "reserved"),
     IP("192.0.2.0/24", "XX", "[IANA]Documentation (TEST-NET-1)", "reserved"),
     IP("192.31.196.0/24", "XX", "[IANA]AS112-v4", "reserved"),
     IP("192.52.193.0/24", "XX", "[IANA]AMT", "reserved"),
@@ -322,13 +321,38 @@ _IPS_DEFAULT = {
     IP("203.0.113.0/24", "XX", "[IANA]Documentation (TEST-NET-3)", "reserved"),
     IP("240.0.0.0/4", "XX", "[IANA]Reserved", "reserved"),
     IP("255.255.255.255/32", "XX", "[IANA]Limited Broadcast", "reserved"),
-    IP("224.0.0.0/28", "XX", "Multicast", "reserved"),
+    IP("224.0.0.0/4", "XX", "Multicast", "reserved"),
     IP("2000::/3", "XX", "global", "reserved"),
     IP("fe80::/10", "XX", "local", "reserved"),
     IP("fc00::/7", "XX", "local", "reserved"),
     IP("::1/128", "XX", "loopback", "reserved"),
     IP("::/128", "XX", "listening", "reserved"),
     IP("::/80", "XX", "ipv4-in-ipv6", "reserved"),
+    IP("::1/128", "XX", "[IANA]Loopback Address", "reserved"),
+    IP("::/128", "XX", "[IANA]Unspecified Address", "reserved"),
+    IP("::ffff:0:0/96", "XX", "[IANA]IPv4-mapped Address", "reserved"),
+    IP("64:ff9b::/96", "XX", "[IANA]IPv4-IPv6 Translat", "reserved"),
+    IP("64:ff9b:1::/48", "XX", "[IANA]IPv4-IPv6 Translat", "reserved"),
+    IP("100::/64", "XX", "[IANA]Discard-Only Address Block", "reserved"),
+    IP("100:0:0:1::/64", "XX", "[IANA]Dummy IPv6 Prefix", "reserved"),
+    IP("2001::/23", "XX", "[IANA]IETF Protocol Assignments", "reserved"),
+    IP("2001::/32", "XX", "[IANA]TEREDO", "reserved"),
+    IP("2001:1::1/128", "XX", "[IANA]Port Control Protocol Anycast", "reserved"),
+    IP("2001:1::2/128", "XX", "[IANA]Traversal Using Relays around NAT Anycast", "reserved"),
+    IP("2001:1::3/128", "XX", "[IANA]DNS-SD Service Registration Protocol Anycast", "reserved"),
+    IP("2001:2::/48", "XX", "[IANA]Benchmarking", "reserved"),
+    IP("2001:3::/32", "XX", "[IANA]AMT", "reserved"),
+    IP("2001:4:112::/48", "XX", "[IANA]AS112-v6", "reserved"),
+    IP("2001:10::/28", "XX", "[IANA]Deprecated", "reserved"),
+    IP("2001:20::/28", "XX", "[IANA]ORCHIDv2", "reserved"),
+    IP("2001:30::/28", "XX", "[IANA]Drone Remote ID Protocol Entity Tags (DETs) Prefix", "reserved"),
+    IP("2001:db8::/32", "XX", "[IANA][rfc3849]Documentation", "reserved"),
+    IP("2002::/16", "XX", "[IANA]6to4", "reserved"),
+    IP("2620:4f:8000::/48", "XX", "[IANA]Direct Delegation AS112 Service", "reserved"),
+    IP("3fff::/20", "XX", "[IANA][rfc9637]Documentation", "reserved"),
+    IP("5f00::/16", "XX", "[IANA]Segment Routing (SRv6) SIDs", "reserved"),
+    IP("fc00::/7", "XX", "[IANA]Unique-Local", "reserved"),
+    IP("fe80::/10", "XX", "[IANA]Link-Local Unicast", "reserved"),
     IP("103.21.244.0/22", "US", "Cloudflare", "allocated"),
     IP("103.22.200.0/22", "US", "Cloudflare", "allocated"),
     IP("103.31.4.0/22", "US", "Cloudflare", "allocated"),
@@ -473,7 +497,8 @@ def _process_file(file_name: Path):
             if line[2] == "ipv4":
                 cidr = f"{line[3]}/{_CIDR_CALC[line[4]]}" if line[4] in _CIDR_CALC else f"{line[3]}+{line[4]}"
                 ips.add(IP(cidr, region, line[0], line[6]))
-            elif line[2] == "ipv6":
+                continue
+            if line[2] == "ipv6":
                 cidr = f"{line[3]}/{line[4]}"
                 ips.add(IP(cidr, region, line[0], line[6]))
 
@@ -496,7 +521,6 @@ def _query_ip(d: str):
             _query_ip(i)
         print("done " + d)
         return
-    ip: IP
     for ip in ips:
         if d == ip.ip_cidr:
             print("".join(str(ip)))
