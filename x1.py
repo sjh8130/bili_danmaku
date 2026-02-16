@@ -19,7 +19,7 @@ requests.packages.urllib3.disable_warnings()  # pyright: ignore[reportAttributeA
 config = json.loads(Path("config.json").read_text(encoding="utf-8"))
 _A = {"User-Agent": config["ua"], "Connection": "keep-alive", "Accept-Encoding": config["ae"]}
 _B = b'{"code":0,"message":"0","ttl":1,"data":{"suit_items":null,"fan_user":{"mid":0,"nickname":"","avatar":""},"unlock_items":null,"activity_entrance":null}}'
-_C = b'{"code":-500,"message":"\xe6\x9c\x8d\xe5\x8a\xa1\xe5\x99\xa8\xe9\x94\x99\xe8\xaf\xaf","ttl":1,"data":{"suit_items":null,"fan_user":{"mid":0,"nickname":"","avatar":""},"unlock_items":null,"activity_entrance":null}}'
+_C = b'{"code":-500,"message":"\xe6\x9c\x8d\xe5\x8a\xa1\xe5\x99\xa8\xe9\x94\x99\xe8\xaf\xaf","ttl":1,"data":{"suit_items":null,"fan_user":{"mid":0,"nickname":"","avatar":""},"unlock_items":null,"activity_entrance":null}}'  # noqa: E501
 _D = b'{"code":0,"message":"OK","ttl":1,"data":{"suit_items":null,"fan_user":{"mid":0,"nickname":"","avatar":""},"unlock_items":null,"activity_entrance":null}}'
 _BF = config["bar_format"]
 _EMPTY_FAN_USER = {"mid": 0, "nickname": "", "avatar": ""}
@@ -116,7 +116,7 @@ def _E(b: requests.Session, d: int | str) -> bytes:
             time.sleep(retry)
         except KeyboardInterrupt:
             raise KeyboardInterrupt from None
-    raise Exception(f"Failed to fetch {d}")
+    raise requests.RequestException(f"Failed to fetch {d}")
 
 
 def _F(a: str, b: X1) -> bool:
@@ -255,42 +255,43 @@ def _H(a: int | str, item: X1) -> bool:
             f = "PART_13_NFT.jsonl"
         case _:
             f = "UNKNOWN_IDs.jsonl"
+    del_keys(item, "activity_entrance", _EMPTY_ACTIVITY_ENTRANCE, recursive=False)
+    del_keys(item, "activity_entrance", None, recursive=False)
+    del_keys(item, "associate_words", "")
     del_keys(item, "associate", operator=OPR.ANY)
     del_keys(item, "current_activity", operator=OPR.ANY)
     del_keys(item, "current_sources", operator=OPR.ANY)
+    del_keys(item, "fan_user", _EMPTY_FAN_USER, recursive=False)
+    del_keys(item, "finish_sources", None)
     del_keys(item, "gray_rule_type", operator=OPR.ANY)
     del_keys(item, "gray_rule", operator=OPR.ANY)
     del_keys(item, "hot", operator=OPR.ANY)
     del_keys(item, "is_symbol", operator=OPR.ANY)
     del_keys(item, "item_stock_surplus", operator=OPR.ANY)
+    del_keys(item, "items", None)
+    del_keys(item, "jump_link", "")
     del_keys(item, "next_activity", operator=OPR.ANY)
     del_keys(item, "non_associate", operator=OPR.ANY)
     del_keys(item, "open_platform_vip_discount", operator=OPR.ANY)
+    del_keys(item, "properties", {})
     del_keys(item, "realname_auth", operator=OPR.ANY)
+    del_keys(item, "ref_mid", "0")
     del_keys(item, "sale_count_desc", operator=OPR.ANY)
     del_keys(item, "sale_left_time", operator=OPR.ANY)
     del_keys(item, "sale_promo", operator=OPR.ANY)
     del_keys(item, "sale_surplus", operator=OPR.ANY)
+    del_keys(item, "sale_time_end", 0, OPR.LEQ)
     del_keys(item, "sale_time_end", operator=OPR.ANY, recursive=False)
+    del_keys(item, "sales_mode", 0)
     del_keys(item, "state", operator=OPR.ANY)
+    del_keys(item, "suit_item_id", 0)
+    del_keys(item, "suit_items", {})
+    del_keys(item, "tab_id", 0)
     del_keys(item, "tag", operator=OPR.ANY)
     del_keys(item, "total_count_desc", operator=OPR.ANY)
-    del_keys(item, "user_vas_order", operator=OPR.ANY)
-    del_keys(item, "activity_entrance", _EMPTY_ACTIVITY_ENTRANCE, recursive=False)
-    del_keys(item, "activity_entrance", None, recursive=False)
-    del_keys(item, "associate_words", "")
-    del_keys(item, "fan_user", _EMPTY_FAN_USER, recursive=False)
-    del_keys(item, "finish_sources", None)
-    del_keys(item, "items", None)
-    del_keys(item, "jump_link", "")
-    del_keys(item, "ref_mid", "0")
-    del_keys(item, "sale_time_end", 0, OPR.LEQ)
-    del_keys(item, "sales_mode", 0)
-    del_keys(item, "suit_item_id", 0)
-    del_keys(item, "tab_id", 0)
+    del_keys(item, "tracking_info", "")
     del_keys(item, "unlock_items", None)
-    del_keys(item, "properties", {})
-    del_keys(item, "suit_items", {})
+    del_keys(item, "user_vas_order", operator=OPR.ANY)
     with contextlib.suppress(KeyError):
         del item["fan_user"]["avatar"]  # pyright: ignore[reportGeneralTypeIssues]
     replace_str(item, "http://", "https://")
@@ -301,10 +302,11 @@ def _H(a: int | str, item: X1) -> bool:
     return g or h
 
 
-def _I(a: str):
+def _I(a: str) -> None:
     b = set(_K())
     c = 1.2
     d = 100
+    skip_1 = range(7000, 23300)
     match a:
         case "2":
             e = 100000001
@@ -319,36 +321,36 @@ def _I(a: str):
             f = 337000001
         case "5":
             e = 400000001
-            e = 400000001
-            f = 402000001
+            e = 403000001
+            f = 404000001
         case "0" | "1" | _:
             d = 1
-            e = 75000
+            e = 75400
             f = 76000
     with requests.Session() as g, tqdm(total=int((f - e) / d) + 1, initial=0, bar_format=_BF) as h:
         for i in range(e, f + d, d):
             h.update()
             if i in b:
                 continue
-            if 7000 < i < 23330:
+            if i in skip_1:
                 continue
             h.set_description(str(i))
             time.sleep(c)
             j = _E(g, i)
-            if j in (_D, _B):
+            if j in {_D, _B}:
                 continue
                 print(f"{i:<12}N", end="\r")
             try:
                 k: X1 = json.loads(j)["data"]
             except json.JSONDecodeError as e:
                 print(j)
-                raise e
+                raise
             if _H(i, k):
                 h.write(f"{time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()):<32}{i:<12}{k['name']:20}{len(j):>8}")
         h.write(f"{e} -> {f}")
 
 
-def _N(j):
+def _N(j) -> None:
     a = _K()
     match j:
         case "0":
@@ -362,10 +364,10 @@ def _N(j):
             m = 1069
         case "4":
             k = range(300000000, 399999999)
-            m = 530
+            m = 525
         case "5":
             k = range(400000000, 499999999)
-            m = 10
+            m = 50
         case "1":
             k = range(10000, 100000000 - 1)
             m = 30000
@@ -386,7 +388,7 @@ def _N(j):
             time.sleep(b)
             n = _E(c, g)
             d.set_description(str(g))
-            if n in (_D, _B):
+            if n in {_D, _B}:
                 if _G(IDCSV, f"{g},{TRASH},0,0"):
                     d.write(f"{time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()):<32}{g:<12}🟥🟩🟦🟨⬛⬜ NOT Found")
                 continue
@@ -394,16 +396,16 @@ def _N(j):
                 f: X1 = json.loads(n)["data"]
             except json.JSONDecodeError as e:
                 print(e)
-                raise e
+                raise
             try:
                 if _H(g, f):
                     d.write(f"{time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()):<32}{g:<12}{f['name']:20}{len(n):>8}")
-            except KeyError as e:
+            except KeyError:
                 d.write(n.decode())
-                raise e
+                raise
 
 
-def _P(a: Path):
+def _P(a: Path) -> None:
     # for b in a.iterdir():
     for b in tqdm(list(a.iterdir()), leave=False):
         if b.is_dir():
@@ -423,7 +425,7 @@ def _P(a: Path):
                 _H(d["data"]["item_id"], d["data"])  # pyright: ignore[reportGeneralTypeIssues]
 
 
-def _J():
+def _J() -> None:
     a = 1.2
     with requests.Session() as b:
         while True:
@@ -433,14 +435,14 @@ def _J():
                 print(":(")
                 continue
             d = _E(b, c)
-            if d in (_D, _B):
+            if d in {_D, _B}:
                 print(f"{c:<12}None")
             else:
                 try:
                     f: X1 = json.loads(d)["data"]
-                except json.JSONDecodeError as e:
+                except json.JSONDecodeError:
                     print("JSONDecodeError", d)
-                    raise e
+                    raise
                 _H(c, f)
                 print(f"{time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()):<32}{c:<12}{f['name']:20}{len(d):>8}")
             time.sleep(a)
@@ -456,7 +458,7 @@ def _K() -> list[int]:
     return g
 
 
-def _O():
+def _O() -> tuple[list[int], list[int]]:
     a = []
     b = []
     c = IDCSV

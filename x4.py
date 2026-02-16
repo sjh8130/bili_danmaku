@@ -90,7 +90,7 @@ def _Y(a, b) -> bool:
     return True
 
 
-def _Z():
+def _Z() -> None:
     a = 1.2
     b = 500
     c = 1
@@ -102,9 +102,9 @@ def _Z():
             i = _X(f, c)
             try:
                 j: _H = json.loads(i)["data"]
-            except json.JSONDecodeError as m:
+            except json.JSONDecodeError:
                 print(i.decode("utf-8").encode())
-                raise m
+                raise
             if len(j["list"]) == 0:
                 n += 1
                 h.write(f"{time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()):<22}{'empty':8}{n}")

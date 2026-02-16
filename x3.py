@@ -96,7 +96,7 @@ def _F(a: Path, b: EmoteMain) -> bool:
 
 
 def _G(a: Path, b: str) -> bool:
-    """csv"""
+    """Csv"""
     if a.is_file() and b in a.read_text(encoding="utf-8"):
         return False
     with a.open("a", 1048576, "utf-8") as fp:
@@ -122,10 +122,10 @@ def _K(a: int | str, item: EmoteMain) -> bool:
     return s1 or s2
 
 
-def _L(*, j: bool = False):
+def _L(*, j: bool = False) -> None:
     a = _N()
     b = 1
-    c: int = 9300 if not j else 1
+    c: int = 9400 if not j else 1
     d = 10000
     with requests.Session() as e, tqdm(total=d - c + 1, initial=0, bar_format=_BF) as f:
         for g in range(c, d + 1):
@@ -146,7 +146,7 @@ def _L(*, j: bool = False):
                     f.write(f"{time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()):<32}{g:<12}{i['text']:20}")
 
 
-def _M():
+def _M() -> None:
     a = 1
     if sys.argv[1].lower() in {"main", "0"}:
         return _L()

@@ -79,22 +79,26 @@ def del_keys(d: Mapping[str, Any], k: str, v: Any = None, operator: OPR = OPR.EQ
                 if isinstance(d[k], (int, float)) and d[k] > v:
                     del d[k]
                 else:
-                    raise ValueError(f"{d}|{k}|{operator}|{v}")
+                    pass
+                    # raise ValueError(f"{d}|{k}|{operator}|{v}")
             case OPR.LT:
                 if isinstance(d[k], (int, float)) and d[k] < v:
                     del d[k]
                 else:
-                    raise ValueError(f"{d}|{k}|{operator}|{v}")
+                    pass
+                    # raise ValueError(f"{d}|{k}|{operator}|{v}")
             case OPR.GEQ:
                 if isinstance(d[k], (int, float)) and d[k] >= v:
                     del d[k]
                 else:
-                    raise ValueError(f"{d}|{k}|{operator}|{v}")
+                    pass
+                    # raise ValueError(f"{d}|{k}|{operator}|{v}")
             case OPR.LEQ:
                 if isinstance(d[k], (int, float)) and d[k] <= v:
                     del d[k]
                 else:
-                    raise ValueError(f"{d}|{k}|{operator}|{v}")
+                    pass
+                    # raise ValueError(f"{d}|{k}|{operator}|{v}")
             case OPR.NEQ:
                 if d.get(k) != v:
                     d.pop(k)
@@ -147,7 +151,7 @@ def replace_str(d: Mapping[Any, Any] | list[str], old: str, new: str, count: int
                 replace_str(val, old, new, count, recursive=recursive)
 
 
-def replace_str_regexp(d: Mapping[Any, Any] | list[str], old: str, new: str, count: int = -1, *, recursive: bool = True):
+def replace_str_regexp(d: Mapping[Any, Any] | list[str], old: str, new: str, count: int = -1, *, recursive: bool = True) -> None:
     if not isinstance(d, (dict, list)):
         return
     if not recursive:

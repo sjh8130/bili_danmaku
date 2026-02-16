@@ -2311,7 +2311,7 @@ SC 删除
 ----
 ### DANMU_MSG
 [TOP](#直播弹幕)  
-文档更新：2025-09-03  
+文档更新：2026-02-13  
 弹幕！  
 每`n`秒广播一次，每次最多`n×20`个  
 | key 3,6		| type	| value	|
@@ -2457,7 +2457,7 @@ voiceConfig
 | show_player_type	| num	| 0 |
 | user				| obj	| [uinfo](#PUBLIC_uinfo) |
 #### DANMU_MSG__info__0__15__extra
-| key 37					| type		| value	| 备注	|
+| key 42					| type		| value	| 备注	|
 |-|-|-|-|
 | send_from_me				| bool		| false |
 | master_player_hidden		| bool		| false |
@@ -2472,16 +2472,18 @@ voiceConfig
 | emoticon_unique			| str		| 表情ID |
 | bulge_display				| num		| 0:官方表情包 / 1:房间表情包 |
 | recommend_score			| num		| ?弹幕推荐等级/智能屏蔽等级 | 抽奖:0
+| dm_score					| num		| |20260212
+| chronos_force_display		| num		| |20260212
 | main_state_dm_color		| str		| "" / "#RRGGBB" |
 | objective_state_dm_color	| str		| "" / "#RRGGBB" |
 | direction					| num		| 0 / 1 / 2 |
 | pk_direction				| num		| 0 / 1 / 2 |
 | quartet_direction			| num		| 0 |
 | anniversary_crowd			| num		| 0 |202206-
-| yeah_space_type			| str		| x |
+| yeah_space_type			| str		| "" |
 | yeah_space_url			| str		| "" |
 | jump_to_url				| str		| "" |
-| space_type				| str		| x |
+| space_type				| str		| "" |
 | space_url					| str		| "" |
 | animation					| obj		| |202206-
 | emots						| obj/null	| 新的表情包 k:v{obj...} |202206-
@@ -2494,10 +2496,13 @@ voiceConfig
 | reply_uname_color			| str		| 弹幕回复 |202206-
 | reply_is_mystery			| bool		| 弹幕回复 |202206-
 | reply_type_enum			| num		| 弹幕回复 |2025-
-| hit_combo					| num		| 0,1 +1弹幕 |202206-
+| hit_combo					| num		| +1弹幕 |202206-
 | esports_jump_url			| str		| |20240905
 | is_mirror					| bool		| |20250822 16:11
 | is_collaboration_member	| bool		| |20250822 16:11
+| card						| obj		| |20260115 16:22
+| voice						| null		| |20260115 16:22
+| background_type			| num		| |20260115 16:22
 #### DANMU_MSG__info__0__15__extra__emots
 | key 8				| type	| value	|
 |-|-|-|
@@ -2514,6 +2519,25 @@ voiceConfig
 |-|-|-|
 | type				| num	| |
 | resource			| str	| |
+#### DANMU_MSG__info__0__15__extra__card
+| key 8				| type	| value	|
+|-|-|-|
+| card_type			| num	| |
+| oid_str			| str	| |
+| oid_str_1			| str	| |
+| origin_oid_str	| str	| |
+| share_id			| str	| |
+| share_origin		| str	| |
+| from				| str	| |
+| card_content		| null	| |
+#### DANMU_MSG__info__0__15__extra__card__card_content
+| key 8				| type	| value	|
+|-|-|-|
+|x|x|x|
+#### DANMU_MSG__info__0__15__extra__voice
+| key 8				| type	| value	|
+|-|-|-|
+|x|x|x|
 #### DANMU_MSG__info__0__16
 抽奖
 | key 3				| type	| value	|
@@ -6875,7 +6899,8 @@ UNIXts(UTC+8)
 173 000 0000	2024-10-27 11:33:20
 174 000 0000	2025-02-20 05:20:00
 175 000 0000	2025-06-15 23:06:40
-176 000 0000	2025-10-09 16:53:20<<<
+176 000 0000	2025-10-09 16:53:20
 177 000 0000	2026-02-02 10:40:00<<<
+178 000 0000	2026-05-29 04:26:40<<<
 180 000 0000	2027-01-15 16:00:00
 ```
