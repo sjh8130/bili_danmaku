@@ -14,6 +14,7 @@ ssl._create_default_https_context = ssl._create_unverified_context  # noqa: S323
 requests.packages.urllib3.disable_warnings()  # type: ignore[attr-defined]
 config = json.loads(Path("..\\config.json").read_text(encoding="utf-8"))
 URL: str = config["nft"]["url"]
+MAX_RETRY = 3
 _BP: Path = Path(config["nft"]["bp"]).resolve()
 _HEADERS = {
     "Accept-Encoding": config["ae"],
@@ -34,7 +35,7 @@ def _downloader(pn: int | str, item_id: int | str, ps: int | str) -> bytes:
     global _a  # noqa: PLW0603
     retries = 0
     item_id = str(item_id)
-    while retries < 3:
+    while retries < MAX_RETRY:
         try:
             time.sleep(2)
             x: requests.Response = session.get(URL.format(ps=ps, pn=pn, item_id=item_id), headers=_HEADERS, verify=False, timeout=20)
@@ -43,24 +44,24 @@ def _downloader(pn: int | str, item_id: int | str, ps: int | str) -> bytes:
                 return x.content
         except requests.exceptions.Timeout:
             retries += 1
-        if retries == 3:
+        if retries == MAX_RETRY:
             # raise Exception("请求超时次数达到上限")
             ...
         retries += 1
     return _A
 
 
-def _clean_it(ld: list[dict]):
+def _clean_it(ld: list[dict]) -> None:
     for d in ld:
-        d.pop("item_name")
-        d.pop("token_id")
-        d.pop("avatar")
-        d.pop("detail_jump")
-        d.pop("mid")
-        d.pop("username")
-        d.pop("like_number")
-        d.pop("like_status")
-        d.pop("is_show")
+        d.pop("item_name", None)
+        d.pop("token_id", None)
+        d.pop("avatar", None)
+        d.pop("detail_jump", None)
+        d.pop("mid", None)
+        d.pop("username", None)
+        d.pop("like_number", None)
+        d.pop("like_status", None)
+        d.pop("is_show", None)
 
 
 def _get_data(item_id: int | str) -> int:
@@ -105,7 +106,7 @@ def _get_data(item_id: int | str) -> int:
     return 200
 
 
-def _main():
+def _main() -> None:
     for item_id in range(2900, 4000):
         if (_BP / f"NFT_{item_id}.json").exists():
             continue

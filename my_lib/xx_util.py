@@ -1,6 +1,7 @@
+import operator
 from collections.abc import Mapping, Sequence
 from enum import IntEnum, auto
-from typing import Any
+from typing import Any, TypeVar
 
 try:
     import simdjson as json
@@ -8,6 +9,8 @@ except ImportError:
     import json
 
 FALSE_CMP = [0, "", [], False, {}, None, set(), frozenset()]
+_T = TypeVar("_T")
+_T2 = TypeVar("_T2")
 
 
 class OPR(IntEnum):
@@ -35,7 +38,7 @@ class OPR(IntEnum):
 
 
 def sort_str_list(s: str, /) -> str:
-    """example: `'1,3,2,4,5'` -> `'1,2,3,4,5'`"""
+    """Example: `'1,3,2,4,5'` -> `'1,2,3,4,5'`"""  # noqa: D401
     if s.count(",") == 0:
         return s
     a = json.loads(f"[{s}]")
@@ -61,7 +64,19 @@ def sort_p6_emoji(ld: list[Mapping[Any, Any]], /) -> list[Mapping[Any, Any]]:
     return ld
 
 
-def del_keys(d: Mapping[str, Any], k: str, v: Any = None, operator: OPR = OPR.EQ, *, recursive=True) -> None:
+def sort_lc(ld: list[_T], key: str = "id", reverse: bool = False) -> list[_T]:
+    """Sort lict[class] with `class.{key}`"""
+    ld.sort(key=lambda x: getattr(x, key), reverse=reverse)
+    return ld
+
+
+def sort_ld(ld: list[dict[_T, _T2]], key: str = "id", reverse: bool = False) -> list[dict[_T, _T2]]:
+    """Sort lict[dict] with `dict[key]`"""
+    ld.sort(key=operator.itemgetter(key), reverse=reverse)
+    return ld
+
+
+def del_keys(d: Mapping[str, Any], k: str, v: Any = None, operator: OPR = OPR.EQ, *, recursive: bool = True) -> None:
     if isinstance(d, dict) and k in d and (type(d[k]) is type(v) or operator in {OPR.IN, OPR.ANY, OPR.FALSE_CMP}):
         match operator:
             case OPR.EQ:

@@ -13,11 +13,11 @@ del fp
 
 
 class HostHeaderSSLAdapter(requests.adapters.HTTPAdapter):
-    def __init__(self, resolved_ip):
+    def __init__(self, resolved_ip) -> None:
         super().__init__()
         self.resolved_ip = resolved_ip
 
-    def send(self, request, **kwargs):  # pyright: ignore[reportIncompatibleMethodOverride]
+    def send(self, request, **kwargs) -> requests.Response:  # pyright: ignore[reportIncompatibleMethodOverride]
         connection_pool_kwargs = self.poolmanager.connection_pool_kw
         result = urlparse(request.url)
         if result.scheme == "https" and self.resolved_ip:
@@ -44,7 +44,7 @@ def resolve_dns(domain):
         return []
 
 
-def scrape_urls(start, end, ip_address, base, thread_n):
+def scrape_urls(start, end, ip_address, base, thread_n) -> None:
     session = requests.Session()
     session.mount("https://", HostHeaderSSLAdapter(ip_address))
     for i in range(start, end):
@@ -57,7 +57,7 @@ def scrape_urls(start, end, ip_address, base, thread_n):
             print(f"Error accessing {url}: {e}")
 
 
-def _main(base_url: str, target):
+def _main(base_url: str, target) -> None:
     domain = base_url.split("/")[1]
     ip_addresses = resolve_dns(domain)
     num_ips = len(ip_addresses)

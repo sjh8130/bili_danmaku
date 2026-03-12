@@ -31,7 +31,7 @@ class OPR(StrEnum):
     NIS = auto()
 
 
-def _del_keys(d: dict[Any, Any], k: str, v: Any, o: OPR):
+def _del_keys(d: dict[Any, Any], k: str, v: Any, o: OPR) -> None:
     if k in d:
         match o:
             case OPR.EQ:
@@ -70,7 +70,7 @@ def _del_keys(d: dict[Any, Any], k: str, v: Any, o: OPR):
                 raise Exception("*ToDo")
 
 
-def _del_keys_prep(d: dict[Any, Any], k: str, v: Any, o: OPR, cmd="", dep: int = 0):  # noqa: ARG001
+def _del_keys_prep(d: dict[Any, Any], k: str, v: Any, o: OPR, cmd: str = "", dep: int = 0) -> None:  # noqa: ARG001
     cmd = d["cmd"] if cmd == "" else cmd  # noqa: PLC1901
     # print("_del_keys_prep", cmd)
     for key_1 in d:  # noqa: PLC0206
@@ -271,7 +271,7 @@ KEYS_DEL_IF_FALSE = [
 ]
 
 
-def _clean_dm(a: str):
+def _clean_dm(a: str) -> None:
     with open(a, encoding="utf-8") as g, open(a + "x_cleaned", "a", 10485760, "utf-8") as h:
         for _line_num, f in tqdm(enumerate(g.readlines()), leave=False, desc=f"{pathlib.Path(a).name}"):
             e = f.find("{")
@@ -293,7 +293,7 @@ def _clean_dm(a: str):
             _del_keys_prep(d, "title", E_11, OPR.EQ)
             _del_keys_prep(d, "wealth", E_12, OPR.EQ)
             # static
-            _del_keys_prep(d, "show_reply", True, OPR.EQ)  # noqa: FBT003
+            _del_keys_prep(d, "show_reply", True, OPR.EQ)
             # false compare region
             _del_keys_prep(d, "anchor_roomid", _FALSE_CMP, OPR.IN)
             _del_keys_prep(d, "anchor_uname", _FALSE_CMP, OPR.IN)

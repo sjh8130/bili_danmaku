@@ -20,7 +20,7 @@ DONT_CARE_INDEX_LIST = {
 }
 
 
-def _a(item: int | str | list[Any] | dict[str, Any] | bool | None, target_key: str = "root"):  # noqa: FBT001
+def _a(item: int | str | list[Any] | dict[str, Any] | bool | None, target_key: str = "root") -> None:
     typ: str = type(item).__name__
     if result.get(target_key) is None:
         result[target_key] = {"type": {}}
@@ -51,7 +51,7 @@ def _b(ii: Path) -> dict[str, Any]:
     return result
 
 
-def _main():
+def _main() -> None:
     p1 = "json_kvs.json"
     if True and (od / p1).exists():
         with (od / p1).open(encoding="utf-8") as fp:

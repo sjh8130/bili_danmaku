@@ -459,6 +459,7 @@ posY_2 = Math.round(posY / 375 * 100)
 | ACTIVITY_BANNER_CHANGE_V2				| [✅](#ACTIVITY_BANNER_CHANGE)				| |
 | ACTIVITY_MATCH_GIFT					| [❌](#ACTIVITY_MATCH_GIFT)					| |
 | ADMIN_SHIELD_KEYWORD					| [✅](#ADMIN_SHIELD_KEYWORD)				| 管理员屏蔽关键词操作记录 |
+| AI_GIFT_CUSTOM_TASK					| [❌](#AI_GIFT_CUSTOM_TASK)					| |
 | ANCHOR_BROADCAST						| [✅](#ANCHOR_BROADCAST)					| 直播时长里程碑广播 |
 | ANCHOR_ECOMMERCE_STATUS				| [✅](#ANCHOR_ECOMMERCE_STATUS)				| I?更新电商状态 |
 | ANCHOR_HELPER_DANMU					| [✅](#ANCHOR_HELPER_DANMU)					| 求主播多开播 |
@@ -479,7 +480,10 @@ posY_2 = Math.round(posY / 375 * 100)
 | CHANGE_ROOM_INFO						| [✅](#CHANGE_ROOM_INFO)					| WEB:更改直播间背景 |
 | CHASE_FRAME_SWITCH					| [❌](#CHASE_FRAME_SWITCH)					| |
 | CHG_RANK_REFRESH						| [✅](#CHG_RANK_REFRESH)					| 直播排名相关 |
+| CNY_OFFICIAL_RELAY_ROOM_ONLINE		| [✅](#CNY_OFFICIAL_RELAY_ROOM_ONLINE)		| 2026春节专用 |
+| CNY_REDPACKET							| [❌](#CNY_REDPACKET)						| |
 | CNY_SESSION_CHANGE					| [✅](#CNY_SESSION_CHANGE)					| 2025春节专用 |
+| COLLABORATION_LIVE_INFO				| [✅](#COLLABORATION_LIVE_INFO)				| |
 | COLLABORATION_LIVE_ONLINE				| [✅](#COLLABORATION_LIVE_POPULARITY)		| 联合直播: 在线人数 |
 | COLLABORATION_LIVE_POPULARITY			| [✅](#COLLABORATION_LIVE_POPULARITY)		| 联合直播: 观看人气 |
 | COLLABORATION_LIVE_WATCHED			| [✅](#WATCHED_CHANGE)						| 联合直播: 观看人数 |
@@ -513,6 +517,7 @@ posY_2 = Math.round(posY / 375 * 100)
 | FULL_SCREEN_MASK_OPEN					| [❌](#FULL_SCREEN_MASK_OPEN)				| |
 | FULL_SCREEN_SPECIAL_EFFECT			| [✅](#FULL_SCREEN_SPECIAL_EFFECT)			| |
 | FUNCTION_CARD							| [❌](#FUNCTION_CARD)						| |
+| GIFT_COMBO							| [✅](#GIFT_COMBO)							| |
 | GIFT_BOARD_RED_DOT					| [✅](#GIFT_BOARD_RED_DOT)					| |
 | GIFT_PANEL_PLAN						| [✅](#GIFT_PANEL_PLAN)						| I礼物面板计划调整 |
 | GIFT_STAR_PROCESS						| [✅](#GIFT_STAR_PROCESS)					| 礼物星球: 进度 |
@@ -523,6 +528,7 @@ posY_2 = Math.round(posY / 375 * 100)
 | GUARD_HONOR_THOUSAND					| [✅](#GUARD_HONOR_THOUSAND)				| 千舰 |
 | GUARD_LEADER_NOTICE					| [✅](#GUARD_LEADER_NOTICE)					| 舰队指挥官 |
 | GUARD_LOTTERY_START					| [❌](#GUARD_LOTTERY_START)					| |
+| GUARD_NOTICE_PUSH						| [❌](#GUARD_NOTICE_PUSH)					| |
 | GUARD_WINDOWS_OPEN					| [❌](#GUARD_WINDOWS_OPEN)					| |
 | HALF_SCREEN_TRIGGER					| [✅](#HALF_SCREEN_TRIGGER)					| |
 | HAS_GUARD_PILOT						| [❌](#HAS_GUARD_PILOT)						| |
@@ -599,6 +605,7 @@ posY_2 = Math.round(posY / 375 * 100)
 | OTHER_SLICE_PUBLISH_RESULT			| [❌](#OTHER_SLICE_PUBLISH_RESULT)			| |
 | OTHER_SLICE_SETTING_CHANGED			| [✅](#OTHER_SLICE_SETTING_CHANGED)			| |
 | PANEL_INTERACTIVE_NOTIFY_CHANGE		| [✅](#PANEL_INTERACTIVE_NOTIFY_CHANGE)		| |
+| PAY_LIVE_VALIDATE						| [❌](#PAY_LIVE_VALIDATE)					| |
 | PK_AGAIN								| [❓](#PK_ALL)								| PK |
 | PK_AUDIENCE							| [❓](#PK_ALL)								| PK |
 | PK_BATTLE_ABNORMAL					| [❓](#PK_ALL)								| PK |
@@ -650,6 +657,7 @@ posY_2 = Math.round(posY / 375 * 100)
 | PLAYURL_RELOAD_MASTER					| [✅](#PLAYURL_RELOAD)						| |
 | POPULAR_RANK_CHANGED					| [✅](#POPULAR_RANK_CHANGED)				| 直播排名 |
 | POPULAR_RANK_GUIDE_CARD				| [✅](#POPULAR_RANK_GUIDE_CARD)				| 直播排名：求用户投票 |
+| POPULARITY_CHANGE						| [❌](#POPULARITY_CHANGE)					| |
 | POPULARITY_RANK_TAB_CHG				| [✅](#POPULARITY_RANK_TAB_CHG)				| 直播排名相关 |
 | POPULARITY_RED_POCKET_NEW				| [✅](#POPULARITY_RED_POCKET_NEW)			| 人气红包 new(抽奖) |
 | POPULARITY_RED_POCKET_START			| [✅](#POPULARITY_RED_POCKET_START)			| 人气红包 抽奖开始 |
@@ -657,6 +665,7 @@ posY_2 = Math.round(posY / 375 * 100)
 | POPULARITY_RED_POCKET_V2_START		| [✅](#POPULARITY_RED_POCKET_START)			| 人气红包 抽奖开始 |
 | POPULARITY_RED_POCKET_V2_WINNER_LIST	| [✅](#POPULARITY_RED_POCKET_WINNER_LIST)	| 人气红包 抽奖结果 |
 | POPULARITY_RED_POCKET_WINNER_LIST		| [✅](#POPULARITY_RED_POCKET_WINNER_LIST)	| 人气红包 抽奖结果 |
+| POPULARITY_STATUS_CHANGE				| [❌](#POPULARITY_STATUS_CHANGE)			| |
 | PREPARING								| [✅](#PREPARING)							| 结束直播 |
 | PROGRAM_CHANGE						| [✅](#PROGRAM_CHANGE)						| |
 | RADIO_BACKGROUND						| [✅](#RADIO_BACKGROUND)					| |
@@ -709,7 +718,9 @@ posY_2 = Math.round(posY / 375 * 100)
 | SPREAD_ORDER							| [✅](#SPREAD_ORDER)						| |
 | SPREAD_SHOW_FEET_V2					| [✅](#SPREAD_SHOW_FEET_V2)					| |
 | STARLIVE_PK_MSG						| [❌](#STARLIVE_PK_MSG)						| |
+| START_RELAY							| [❌](#START_RELAY)							| |
 | STOP_LIVE_ROOM_LIST					| [✅](#STOP_LIVE_ROOM_LIST)					| |
+| STOP_RELAY							| [❌](#STOP_RELAY)							| |
 | STUDIO_ROOM_CLOSE						| [✅](#STUDIO_ROOM_CLOSE)					| |
 | SUPER_CHAT_AUDIT						| [❌](#SUPER_CHAT_AUDIT)					| |
 | SUPER_CHAT_ENTRANCE					| [✅](#SUPER_CHAT_ENTRANCE)					| SuperChat|
@@ -727,6 +738,7 @@ posY_2 = Math.round(posY / 375 * 100)
 | TRANSFER_FLOW_INFO					| [❌](#TRANSFER_FLOW_INFO)					| |
 | TV_END								| [❌](#TV_END)								| |
 | TV_START								| [❌](#TV_START)							| |
+| UNIVERSAL_ASR_TEXT					| [❌](#UNIVERSAL_ASR_TEXT)					| |
 | UNIVERSAL_EVENT_GIFT					| [✅](#UNIVERSAL_EVENT_GIFT)				| |
 | UNIVERSAL_EVENT_GIFT_V2				| [✅](#UNIVERSAL_EVENT_GIFT_V2)				| |
 | UNIVERSAL_INTERACT_INVITATION			| [❌](#UNIVERSAL_INTERACT_INVITATION)		| |
@@ -6423,12 +6435,16 @@ enum recall_type={NOTHING:0,DANMAKU:1,USER:2,ALL:3}
 | cmd		| str	| "PROGRAM_CHANGE" |
 | data		| obj	| |
 #### PROGRAM_CHANGE__data
-| key		| type	| value	|
+| key				| type	| value	|
 |-|-|-|
-| room_id	| num	| |
-| link		| str	| |
+| room_id			| num	| |
+| link				| str	| |
+| text				| str	| |
+| text_color		| str	| |
+| background_color	| str	| |
+| image				| str	| |
 ```json
-{"cmd":"PROGRAM_CHANGE","data":{"room_id":5440,"link":""}}
+{"cmd":"PROGRAM_CHANGE","data":{"room_id":1922214722,"link":"XXX","text":"2026春晚节目单","text_color":"#FFFFFFFF","background_color":"#DD092EFF","image":"https://i0.hdslb.com/bfs/live/55943e5026fe3849b6fe3707045bf0fd8b9684fa.png"}}
 ```
 ---
 ### VOICE_JOIN_SWITCH
@@ -6612,6 +6628,37 @@ enum recall_type={NOTHING:0,DANMAKU:1,USER:2,ALL:3}
 | data		| xxx	| |
 ```json
 {"cmd":"PLAY_PROGRESS_BAR","data":{"type":"DISABLE","platform":["web","ios","android","android_tv"],"scatter":{"min":10,"max":133},"bar_special_time":16200,"bar_start_time":9999999999}}
+```
+---
+### CNY_OFFICIAL_RELAY_ROOM_ONLINE
+[TOP](#直播弹幕)  
+文档更新：2026-02-16  
+| key		| type	| value	|
+|-|-|-|
+| cmd		| str	| "CNY_OFFICIAL_RELAY_ROOM_ONLINE" |
+| data		| obj	| |
+#### CNY_OFFICIAL_RELAY_ROOM_ONLINE__data
+| key				| type	| value	|
+|-|-|-|
+| online_count_str	| str	| |
+| room_id			| num	| |
+```json
+{"cmd":"CNY_OFFICIAL_RELAY_ROOM_ONLINE","data":{"online_count_str":"123","room_id":22747055}}
+```
+---
+### GIFT_COMBO
+[TOP](#直播弹幕)  
+文档更新：2026-03-10  
+| key		| type	| value	|
+|-|-|-|
+| cmd		| str	| "GIFT_COMBO" |
+| data		| obj	| |
+#### GIFT_COMBO__data
+| key		| type	| value	|
+|-|-|-|
+| data		| xxx	| |
+```json
+{"cmd":"GIFT_COMBO","data":{"biz_type":1,"unlock_benefit_url":"xxx.webp","giftId":xxx,"giftName":"你真好看","super_batch_gift_num":1,"demarcation":2,"uid":xxx,"uname":"xxx","face":"xxx/bfs/face/xxx","num":1,"guard_level":0,"price":1000,"discount_price":1000,"action":"投喂","crit_prob":0,"is_special_batch":0,"magnification":1,"combo_stay_time":5,"combo_resources_id":1,"tag_image":"","timestamp":1773072206,"batch_combo_id":"batch:gift:combo_id:xxx:xxx:34979:1773072206.x","combo_total_coin":1000,"total_coin":1000,"sender_uinfo":{"base":{"is_mystery":false}},"send_master":{"uname":"","uid":0},"receiver_uinfo":{"base":{"name":"xxx"}},"is_naming":false,"gift_info":{"gift_url":"","gif":"xxx.gif","has_imaged_gift":0,"img_basic":"xxx.png","webp":"xxx.webp"}}}
 ```
 ---
 ### XXXXXXXXXXXX
@@ -6902,5 +6949,6 @@ UNIXts(UTC+8)
 176 000 0000	2025-10-09 16:53:20
 177 000 0000	2026-02-02 10:40:00<<<
 178 000 0000	2026-05-29 04:26:40<<<
+179 000 0000	2026-09-21 22:13:20
 180 000 0000	2027-01-15 16:00:00
 ```

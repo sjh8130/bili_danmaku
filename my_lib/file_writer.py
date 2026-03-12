@@ -4,7 +4,7 @@ from pathlib import Path
 from typing import Any
 
 
-def write_file(filename: str | Path, data: str | bytes | dict[Any, Any], *, _gzip: bool = False):
+def write_file(filename: str | Path, data: str | bytes | dict[Any, Any], *, _gzip: bool = False) -> int:
     """输出文件."""
     if isinstance(data, str):
         data_ = data.encode("utf-8")
@@ -13,6 +13,5 @@ def write_file(filename: str | Path, data: str | bytes | dict[Any, Any], *, _gzi
     else:
         data_ = data
     if _gzip:
-        gzip.open(filename, "wb", compresslevel=9).write(data_)
-    else:
-        open(filename, "wb", 1048576).write(data_)
+        return gzip.open(filename, "wb", compresslevel=9).write(data_)
+    return open(filename, "wb", 1048576).write(data_)

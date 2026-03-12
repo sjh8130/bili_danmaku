@@ -98,7 +98,7 @@ def _get_user_page(pl: str, user_id: str, pn: int) -> UserPage:
     return UserPage(total=total, posts=posts)
 
 
-def _aria2_downloader(path: Path, url: str):
+def _aria2_downloader(path: Path, url: str) -> None:
     logger.info(f"[aria2Downloader] {path} {url}")
     if not isinstance(url, str):
         logger.error(f"[aria2Downloader] {url}")
@@ -143,7 +143,7 @@ def _get_users(p, u) -> tuple[str, str]:
     return ("", "")
 
 
-def _get_posts_file(bp: Path, p: Post):
+def _get_posts_file(bp: Path, p: Post) -> None:
     logger.info(f"[getPostsFile] {p.platform} {p.post_id} {p.title}")
     tz = datetime.timezone(datetime.timedelta(milliseconds=0))
     date = datetime.datetime.fromtimestamp(p.pub_time, tz).strftime("%Y%m%d")
@@ -152,7 +152,7 @@ def _get_posts_file(bp: Path, p: Post):
         _aria2_downloader(path, i)
 
 
-def _main():
+def _main() -> None:
     argv = sys.argv
     if len(argv) == 1:
         print(f"{argv[0]} <service> <user_id/user_name> [max_pn] [base_path] ")

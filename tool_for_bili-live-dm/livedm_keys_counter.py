@@ -13,7 +13,7 @@ import livedm_keys_counter_lib
 from tqdm import tqdm
 
 
-def _main():
+def _main() -> None:
     n = "livedm_keys.json"
     if True and (a := (output_dir / n)).exists():
         with a.open(encoding="utf-8") as fp:

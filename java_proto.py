@@ -9,10 +9,10 @@ try:
 except ImportError:
 
     class pyperclip:
-        def copy(self, s: str):
+        def copy(self, s: str) -> None:
             pass
 
-        def paste(self):
+        def paste(self) -> str:  # noqa: PLR6301
             return ""
 
 
@@ -155,7 +155,7 @@ class MsgType(StrEnum):
     none = ""
 
 
-def process(data: list[str]):
+def process(data: list[str]) -> None:
     msg_type = MsgType.none
     msg_name = ""
     final_str = ""
@@ -216,7 +216,7 @@ def process(data: list[str]):
         sys.stderr.write("no data found\n")
 
 
-def _main():
+def _main() -> None:
     in_strings: list[str] = []
     paste = False
     while True:

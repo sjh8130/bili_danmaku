@@ -14,11 +14,11 @@ def convert_lrc_time(t: int) -> str:
 
 
 @lru_cache
-def convert_ass_time(t: int):
+def convert_ass_time(t: int) -> str:
     return f"{(t // 3600000):01d}:{(t // 60000 % 60):02d}:{(t // 1000 % 60):02d}.{(t % 1000):03d}"[0:-1]
 
 
-def proc_karaoke(karaoke_item: dict):
+def proc_karaoke(karaoke_item: dict) -> str:
     karaoke_word = f"\x7b\\K{int((karaoke_item[0]['end_time'] - karaoke_item[0]['start_time']) / 10)}\x7d{karaoke_item[0]['label']}"
     if karaoke_item[0]["label"].isascii():
         karaoke_word += " "
@@ -41,7 +41,7 @@ def proc_ass(item: dict) -> str:
     return fi___itm + fi_k_itm.replace(" \n", "\n").replace("  ", " ").replace(",,0,0,0,, ", ",,0,0,0,,")
 
 
-def write(path: str, data: str):
+def write(path: str, data: str) -> None:
     open(path, "w", encoding="utf-8").write(data)
 
 

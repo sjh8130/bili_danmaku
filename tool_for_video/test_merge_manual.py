@@ -31,7 +31,7 @@ class FFProbeFilePackets:
 class FFProbeFile:
     packets: list[FFProbeFilePackets]
 
-    def __init__(self, packet_list: list[dict]):
+    def __init__(self, packet_list: list[dict]) -> None:
         if self.packets is None:
             self.packets = []
         self.packets = [FFProbeFilePackets(**pl) for pl in packet_list]
@@ -49,7 +49,7 @@ OA = "================"  # 文件1和文件2的帧内容相同
 OS = "++++++SKIP++++++"  # 跳过
 
 
-def _main():
+def _main() -> None:
     """修视频?"""
     err_count = 0
     argv = ["XXXX", "", "", ""]

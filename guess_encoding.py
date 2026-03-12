@@ -131,7 +131,7 @@ class result:
         return dd[self.enc] < dd[other.enc]
 
 
-def safe_print(*valuse, sep=" ", end="\n", file=None, flush=False):
+def safe_print(*valuse, sep=" ", end="\n", file=None, flush=False) -> None:  # noqa: ANN001
     for v in valuse:
         s = str(v).replace("\x00", "\\x00")
         s = s.replace("\x01", "\\x01")
@@ -168,7 +168,7 @@ def safe_print(*valuse, sep=" ", end="\n", file=None, flush=False):
         print(s, sep=sep, end=end, file=file, flush=flush)  # noqa: FURB105
 
 
-def guess_encoding(inn: str):
+def guess_encoding(inn: str) -> set[result]:
     final_set: set[result] = set()
     for enc in ALL_UNICODE_ENCODINGS:
         with contextlib.suppress(UnicodeError):
@@ -188,7 +188,7 @@ def guess_encoding(inn: str):
     return final_set
 
 
-def _main():
+def _main() -> None:
     last: set[result] = set()
     while True:
         inn = input()

@@ -138,7 +138,7 @@ def decode_blc(data: bytes) -> list[str]:
     return lst
 
 
-def _main():
+def _main() -> None:
     with open(sys.argv[1], "rb") as logfile:
         freader = io.FlowReader(logfile)
         try:
@@ -164,7 +164,7 @@ def _main():
                         #     # continue
                         ts = str(int(Decimal(str(msg.timestamp)) * 1_000_000))
                         dms = decode_blc(msg.content)
-                        if dms == ['{"code":0}'] or dms == ['{"code": 0}']:
+                        if dms in (['{"code":0}'], ['{"code": 0}']):
                             continue
                         if not dms:
                             continue

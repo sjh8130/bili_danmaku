@@ -28,7 +28,7 @@ AE = config["ae"]
 
 @dataclasses.dataclass
 class _Video:
-    def __init__(self, avid: str, bvid: str, avid_n: int):
+    def __init__(self, avid: str, bvid: str, avid_n: int) -> None:
         self.avid = avid
         self.bvid = bvid
         self.avid_n = avid_n
@@ -36,7 +36,7 @@ class _Video:
 
 @dataclasses.dataclass
 class _VideoPart(_Video):
-    def __init__(self, V: _Video, cid: int, oid: int):
+    def __init__(self, V: _Video, cid: int, oid: int) -> None:
         super().__init__(V.avid, V.bvid, V.avid_n)
         self.cid = cid if cid is not None else oid
         if oid is not None and cid is not None and cid != oid:
@@ -49,11 +49,12 @@ def _downloader(url: str, headers: dict[str, str], session: requests.Session, *,
         time.sleep(SLEEP_TIME)
         try:
             response = session.get(url, headers=headers, verify=False, timeout=10)
+        except requests.RequestException as e:
+            print(f"下载错误: {e}")
+        else:
             if _json:
                 return response.json()
             return response.content
-        except requests.RequestException as e:
-            print(f"下载错误: {e}")
     raise Exception("下载失败")
 
 
@@ -129,7 +130,7 @@ def _get_special_danmaku(vp: _VideoPart, spdm: dm_pb2.DmWebViewReply, session: r
     return bas_danmakus
 
 
-def _main(video: _Video):
+def _main(video: _Video) -> None:
     if video is None:
         return
     session = requests.Session()

@@ -23,7 +23,7 @@ class IP:
         return hash(self.ip_cidr + self.region)
 
 
-def _init(*, overwrite: bool = False):
+def _init(*, overwrite: bool = False) -> None:
     PATH_BASE = Path("Z:\\")
     URL_BASE = "https://ftp.apnic.net/stats"
     URL: list[str] = [
@@ -454,7 +454,7 @@ _CIDR_CALC: dict[str | int, str] = {
 }
 
 
-def _download_file(url: str, file_name: Path, *, overwrite: bool):
+def _download_file(url: str, file_name: Path, *, overwrite: bool) -> None:
     if file_name.is_file() and (not overwrite):
         # file {} exist
         # print(f"文件 {file_name} 已存在.")
@@ -467,7 +467,7 @@ def _download_file(url: str, file_name: Path, *, overwrite: bool):
         # print(f"文件 {file_name} 下载完成.")
 
 
-def _process_file(file_name: Path):
+def _process_file(file_name: Path) -> None:
     """处理CIDR数据,返回IPv4和IPv6的字典
     The version line:
     0       1        2      3       4         5       6
@@ -503,7 +503,7 @@ def _process_file(file_name: Path):
                 ips.add(IP(cidr, region, line[0], line[6]))
 
 
-def _process_tld(file_name: Path):
+def _process_tld(file_name: Path) -> None:
     with file_name.open(encoding="utf-8") as file:
         for i in file.readlines():
             if i.startswith("#"):
@@ -511,7 +511,7 @@ def _process_tld(file_name: Path):
             _tld.add(f".{i.lower().strip()}")
 
 
-def _query_ip(d: str):
+def _query_ip(d: str) -> None:
     try:
         ipaddress.ip_network(d, strict=False)
     except ValueError:
@@ -540,25 +540,25 @@ def _resolve_dns(host: str) -> list[str]:
         return []
 
 
-def _query_region(d: str):
+def _query_region(d: str) -> None:
     for ip in ips:
         if d == ip.region:
             print(ip)
 
 
-def _query_desc(d: str):
+def _query_desc(d: str) -> None:
     for ip in ips:
         if d == ip.desc:
             print(ip)
 
 
-def _query_status(d: str):
+def _query_status(d: str) -> None:
     for ip in ips:
         if d == ip.status:
             print(ip)
 
 
-def _list_all():
+def _list_all() -> None:
     for ip in ips:
         print(ip)
 

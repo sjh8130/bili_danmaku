@@ -310,7 +310,7 @@ if __name__ == "__main__":
         pass
     except Exception as e:
         _logger.exception(e)
-        raise e
+        raise
     et0 = time.time_ns()
     print("Done", (et0 - st0) / 1e9)
     time.sleep(10)

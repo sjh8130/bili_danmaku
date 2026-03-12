@@ -43,7 +43,6 @@ def _downloader(
                 timeout=30,
             )
             response.raise_for_status()
-            return response.content
         except KeyboardInterrupt:
             print("BREAK")
             return b"BREAK"
@@ -51,6 +50,8 @@ def _downloader(
             retry_count += 1
             print(f"Error fetching {url}: {e}, {retry_count}")
             time.sleep(1)
+        else:
+            return response.content
         if retry_count > 5:
             raise  # noqa: PLE0704
 
@@ -68,7 +69,7 @@ def _get_user_and_movie_id() -> tuple[str, str]:
     return user, movie_id
 
 
-def _main(user: str, movie_id: str, host: str):
+def _main(user: str, movie_id: str, host: str) -> None:
     session = requests.Session()
     page_count = 0
     comment_list: list[dict] = []
@@ -97,17 +98,20 @@ def _main(user: str, movie_id: str, host: str):
             out["info"]["title"] = str(bs4.BeautifulSoup(page, "lxml").select(".tw-basic-page-header-path", limit=1)[0].contents[3].contents[1].contents[0]).strip()  # pyright: ignore[reportAttributeAccessIssue]
             page_count = int(bs4.BeautifulSoup(page, "lxml").select(".tw-pager", limit=1)[0].contents[-1].contents[0])  # pyright: ignore[reportAttributeAccessIssue]
             print(page_count)
-        comment_list.extend({
-                    "type": "comment",
-                    "id": int(comment.attrs["data-comment-id"]),  # pyright: ignore[reportArgumentType]
-                    "message": str(comment.select(".tw-comment-history-item__content__text")[0].contents[0]).strip("\n").strip("\t").strip(),
-                    "createdAt": int(time.mktime(time.strptime(comment.select(".tw-comment-history-item__info__date")[0].attrs["datetime"], "%a, %d %b %Y %H:%M:%S %z"))),  # pyright: ignore[reportArgumentType]
-                    "author": {
-                        "id": comment.select(".tw-comment-history-item__details__user-link")[0].attrs["href"][1:],
-                        "name": str(comment.select(".tw-comment-history-item__details__user-link")[0].contents[0]).strip("\n").strip("\t").strip(),
-                        "profileImage": ("https:" + comment.select(".tw-comment-history-item__user__icon")[0].attrs["src"]).replace("https:https://", "https://"),  # pyright: ignore[reportOperatorIssue]
-                    },
-                } for comment in downloaded_comments)
+        comment_list.extend(
+            {
+                "type": "comment",
+                "id": int(comment.attrs["data-comment-id"]),  # pyright: ignore[reportArgumentType]
+                "message": str(comment.select(".tw-comment-history-item__content__text")[0].contents[0]).strip("\n").strip("\t").strip(),
+                "createdAt": int(time.mktime(time.strptime(comment.select(".tw-comment-history-item__info__date")[0].attrs["datetime"], "%a, %d %b %Y %H:%M:%S %z"))),  # pyright: ignore[reportArgumentType]
+                "author": {
+                    "id": comment.select(".tw-comment-history-item__details__user-link")[0].attrs["href"][1:],
+                    "name": str(comment.select(".tw-comment-history-item__details__user-link")[0].contents[0]).strip("\n").strip("\t").strip(),
+                    "profileImage": ("https:" + comment.select(".tw-comment-history-item__user__icon")[0].attrs["src"]).replace("https:https://", "https://"),  # pyright: ignore[reportOperatorIssue]
+                },
+            }
+            for comment in downloaded_comments
+        )
         current_page += 1
         if current_page >= page_count or current_page >= 100:
             break

@@ -1,5 +1,4 @@
 import contextlib
-import csv
 import json
 import ssl
 import sys
@@ -19,7 +18,7 @@ requests.packages.urllib3.disable_warnings()  # pyright: ignore[reportAttributeA
 config = json.loads(Path("config.json").read_text(encoding="utf-8"))
 _A = {"User-Agent": config["ua"], "Connection": "keep-alive", "Accept-Encoding": config["ae"]}
 _B = b'{"code":0,"message":"0","ttl":1,"data":{"suit_items":null,"fan_user":{"mid":0,"nickname":"","avatar":""},"unlock_items":null,"activity_entrance":null}}'
-_C = b'{"code":-500,"message":"\xe6\x9c\x8d\xe5\x8a\xa1\xe5\x99\xa8\xe9\x94\x99\xe8\xaf\xaf","ttl":1,"data":{"suit_items":null,"fan_user":{"mid":0,"nickname":"","avatar":""},"unlock_items":null,"activity_entrance":null}}'  # noqa: E501
+_C = b'{"code":-500,"message":"\xe6\x9c\x8d\xe5\x8a\xa1\xe5\x99\xa8\xe9\x94\x99\xe8\xaf\xaf","ttl":1,"data":{"suit_items":null,"fan_user":{"mid":0,"nickname":"","avatar":""},"unlock_items":null,"activity_entrance":null}}'
 _D = b'{"code":0,"message":"OK","ttl":1,"data":{"suit_items":null,"fan_user":{"mid":0,"nickname":"","avatar":""},"unlock_items":null,"activity_entrance":null}}'
 _BF = config["bar_format"]
 _EMPTY_FAN_USER = {"mid": 0, "nickname": "", "avatar": ""}
@@ -108,7 +107,6 @@ def _E(b: requests.Session, d: int | str) -> bytes:
             c.raise_for_status()
             if c.content == _C:
                 raise requests.HTTPError("-500", response=c)
-            return c.content
         except requests.RequestException as e:  # noqa: PERF203
             retry += 1
             log.error(f" {d} {retry=} {e}")
@@ -116,6 +114,8 @@ def _E(b: requests.Session, d: int | str) -> bytes:
             time.sleep(retry)
         except KeyboardInterrupt:
             raise KeyboardInterrupt from None
+        else:
+            return c.content
     raise requests.RequestException(f"Failed to fetch {d}")
 
 
@@ -257,6 +257,7 @@ def _H(a: int | str, item: X1) -> bool:
             f = "UNKNOWN_IDs.jsonl"
     del_keys(item, "activity_entrance", _EMPTY_ACTIVITY_ENTRANCE, recursive=False)
     del_keys(item, "activity_entrance", None, recursive=False)
+    del_keys(item, "addable", operator=OPR.ANY)
     del_keys(item, "associate_words", "")
     del_keys(item, "associate", operator=OPR.ANY)
     del_keys(item, "current_activity", operator=OPR.ANY)
@@ -266,6 +267,7 @@ def _H(a: int | str, item: X1) -> bool:
     del_keys(item, "gray_rule_type", operator=OPR.ANY)
     del_keys(item, "gray_rule", operator=OPR.ANY)
     del_keys(item, "hot", operator=OPR.ANY)
+    del_keys(item, "is_hide", operator=OPR.ANY)
     del_keys(item, "is_symbol", operator=OPR.ANY)
     del_keys(item, "item_stock_surplus", operator=OPR.ANY)
     del_keys(item, "items", None)
@@ -273,25 +275,35 @@ def _H(a: int | str, item: X1) -> bool:
     del_keys(item, "next_activity", operator=OPR.ANY)
     del_keys(item, "non_associate", operator=OPR.ANY)
     del_keys(item, "open_platform_vip_discount", operator=OPR.ANY)
-    del_keys(item, "properties", {})
+    del_keys(item, "permanent", operator=OPR.ANY)
+    del_keys(item, "preview", operator=OPR.ANY)
+    del_keys(item, "rank_investor_show", operator=OPR.ANY)
     del_keys(item, "realname_auth", operator=OPR.ANY)
+    del_keys(item, "recently_used", operator=OPR.ANY)
+    del_keys(item, "recommend", operator=OPR.ANY)
     del_keys(item, "ref_mid", "0")
+    del_keys(item, "removable", operator=OPR.ANY)
     del_keys(item, "sale_count_desc", operator=OPR.ANY)
     del_keys(item, "sale_left_time", operator=OPR.ANY)
     del_keys(item, "sale_promo", operator=OPR.ANY)
+    del_keys(item, "sale_quantity_limit", operator=OPR.ANY)
+    del_keys(item, "sale_reserve_switch", operator=OPR.ANY)
     del_keys(item, "sale_surplus", operator=OPR.ANY)
     del_keys(item, "sale_time_end", 0, OPR.LEQ)
     del_keys(item, "sale_time_end", operator=OPR.ANY, recursive=False)
     del_keys(item, "sales_mode", 0)
+    del_keys(item, "setting_pannel_not_show", operator=OPR.ANY)
+    del_keys(item, "sortable", operator=OPR.ANY)
     del_keys(item, "state", operator=OPR.ANY)
     del_keys(item, "suit_item_id", 0)
-    del_keys(item, "suit_items", {})
     del_keys(item, "tab_id", 0)
     del_keys(item, "tag", operator=OPR.ANY)
     del_keys(item, "total_count_desc", operator=OPR.ANY)
     del_keys(item, "tracking_info", "")
     del_keys(item, "unlock_items", None)
     del_keys(item, "user_vas_order", operator=OPR.ANY)
+    del_keys(item, "properties", {})
+    del_keys(item, "suit_items", {})
     with contextlib.suppress(KeyError):
         del item["fan_user"]["avatar"]  # pyright: ignore[reportGeneralTypeIssues]
     replace_str(item, "http://", "https://")
@@ -321,11 +333,11 @@ def _I(a: str) -> None:
             f = 337000001
         case "5":
             e = 400000001
-            e = 403000001
-            f = 404000001
+            e = 405000001
+            f = 407000001
         case "0" | "1" | _:
             d = 1
-            e = 75400
+            e = 75500
             f = 76000
     with requests.Session() as g, tqdm(total=int((f - e) / d) + 1, initial=0, bar_format=_BF) as h:
         for i in range(e, f + d, d):
@@ -350,7 +362,7 @@ def _I(a: str) -> None:
         h.write(f"{e} -> {f}")
 
 
-def _N(j) -> None:
+def _N(j: str) -> None:
     a = _K()
     match j:
         case "0":
@@ -364,10 +376,10 @@ def _N(j) -> None:
             m = 1069
         case "4":
             k = range(300000000, 399999999)
-            m = 525
+            m = 550
         case "5":
             k = range(400000000, 499999999)
-            m = 50
+            m = 80
         case "1":
             k = range(10000, 100000000 - 1)
             m = 30000
@@ -430,8 +442,10 @@ def _J() -> None:
     with requests.Session() as b:
         while True:
             d = b""
-            c = input()
-            if not c:
+            c = input().strip()
+            if c in "eeeexitExit":
+                return
+            if not c or not c.isdigit():
                 print(":(")
                 continue
             d = _E(b, c)
@@ -449,32 +463,18 @@ def _J() -> None:
 
 
 def _K() -> list[int]:
-    g: list[int] = []
+    d: list[int] = []
     for a in ["PART_5_表情包", "PART_6_main"]:
-        g.extend(int(b.stem) for b in Path(_M + a).rglob("*.json"))
+        d.extend(int(b.stem) for b in Path(_M + a).rglob("*.json"))
     for a in Path(_M).rglob("PART*.jsonl"):
         c = a.read_text(encoding="utf-8")
-        g.extend(int(json.loads(d)["item_id"]) for d in c.splitlines())
-    return g
-
-
-def _O() -> tuple[list[int], list[int]]:
-    a = []
-    b = []
-    c = IDCSV
-    d = csv.reader(open(c, encoding="utf-8").read())
-    next(d)
-    for f in d:
-        if f[1] == TRASH:
-            b.append(int(f[0]))
-        else:
-            a.append(int(f[0]))
-    return a, b
+        d.extend(int(json.loads(b)["item_id"]) for b in c.splitlines())
+    return d
 
 
 if __name__ == "__main__":
     try:
-        if len(sys.argv) > 2 and sys.argv[1] not in "0u1U2x3X45":
+        if len(sys.argv) > 2 and sys.argv[1] not in {"0", "1", "2", "3", "4", "5", "U", "u", "X", "x"}:
             _J()
         elif sys.argv[1] in {"0", "1", "2", "3", "4", "5"}:
             _I(sys.argv[1])

@@ -286,7 +286,7 @@ def get_crc_index(t) -> int:
     return -1
 
 
-def deep_check(i, index) -> list[int] | list[Any]:
+def deep_check(i: int, index) -> list[int] | list[Any]:
     string = ""
     tc = 0x00
     hashcode = crc32(i)
@@ -308,9 +308,9 @@ def deep_check(i, index) -> list[int] | list[Any]:
     return [1, string]
 
 
-def _main(string):
+def _main(string: str) -> None:
     count = 0
-    index = [0 for x in range(4)]
+    index: list[int] = [0 for x in range(4)]
     i = 0
     ht = int(f"0x{string}", 16) ^ 0xFFFFFFFF
     for i in range(3, -1, -1):

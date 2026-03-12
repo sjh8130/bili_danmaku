@@ -13,7 +13,7 @@ from my_lib.file_writer import write_file
 from my_lib.json2xml_lib import json2XML, json2XML_CMD
 
 
-def _main(file_name: Path):
+def _main(file_name: Path) -> None:
     start_time = time.time()
     with file_name.open("rb") as fp:
         preload = fp.read(4)

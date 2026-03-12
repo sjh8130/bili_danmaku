@@ -56,18 +56,19 @@ class EmoteMain(TypedDict):
 def _E(a: requests.Session, b: int | str, c: float) -> bytes:
     global _a  # noqa: PLW0603
     d = 0
-    while d < 10:
+    while d < 10:  # noqa: PLR2004
         try:
             _a += 1
             f = a.get(_C.format(q=b), headers=_A, verify=False, timeout=20)
             f.raise_for_status()
-            return f.content
         except requests.RequestException as e:  # noqa: F841, PERF203
             d += 1
             # log.exception(e)
             time.sleep(c + d)
         except KeyboardInterrupt:
             raise KeyboardInterrupt  # noqa: B904
+        else:
+            return f.content
     raise Exception(f"Failed to fetch {b}")
 
 
@@ -125,17 +126,23 @@ def _K(a: int | str, item: EmoteMain) -> bool:
 def _L(*, j: bool = False) -> None:
     a = _N()
     b = 1
-    c: int = 9400 if not j else 1
+    try:
+        k = int(sys.argv[2])
+    except IndexError:
+        k = 0
+    c: int = 9500 if not j else k or 1
     d = 10000
+    y = range(2450, 3200)
+    z = range(6000, 6800)
+    # y = []
+    # z = []
     with requests.Session() as e, tqdm(total=d - c + 1, initial=0, bar_format=_BF) as f:
         for g in range(c, d + 1):
             f.set_description(str(g))
             f.update()
             if g in a and not j:
                 continue
-            if 2450 < g < 3200:
-                continue
-            if 6000 < g < 6800:
+            if g in y or g in z:
                 continue
             time.sleep(b)
             h = _E(e, g, b)

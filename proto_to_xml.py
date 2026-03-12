@@ -7,7 +7,7 @@ from my_lib.file_writer import write_file
 from my_lib.proto2xml_lib import proto_to_xml
 
 
-def _main(file_name: Path):
+def _main(file_name: Path) -> None:
     st = time.time()
     xml_head = """<?xml version="1.0" encoding="UTF-8"?>
 <i>

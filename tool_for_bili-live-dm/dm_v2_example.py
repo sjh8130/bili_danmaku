@@ -13,7 +13,7 @@ from filters import FILTER_WORDS
 from google.protobuf.json_format import MessageToDict
 
 
-def _main():
+def _main() -> None:
     in_path = Path(sys.argv[1]).resolve()
     out_path = Path("Z:\\test.json").resolve()
     # left_pos_cache = 0

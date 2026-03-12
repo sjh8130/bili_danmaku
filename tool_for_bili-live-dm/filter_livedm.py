@@ -14,7 +14,7 @@ from filters import FILTER_MID, FILTER_MID_HASH_STR_LOWER, FILTER_WORDS
 from tqdm import tqdm
 
 
-def _main(in_paths: list[str], out_path: Path):
+def _main(in_paths: list[str], out_path: Path) -> None:
     line: str
     left_pos = 0
     if not in_paths:

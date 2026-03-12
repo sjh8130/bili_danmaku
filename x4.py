@@ -66,7 +66,6 @@ def _X(b: requests.Session, d: int | str) -> bytes:
             _a += 1
             c = b.get(_C.format(q=d), headers=_B, verify=False, timeout=20)
             c.raise_for_status()
-            return c.content
         except requests.RequestException as e:  # noqa: F841, PERF203
             retry += 1
             log.error(f" {d} {retry=}")
@@ -74,10 +73,12 @@ def _X(b: requests.Session, d: int | str) -> bytes:
             time.sleep(retry)
         except KeyboardInterrupt:
             raise KeyboardInterrupt from None
+        else:
+            return c.content
     raise Exception(f"Failed to fetch {d}")
 
 
-def _Y(a, b) -> bool:
+def _Y(a, b: dict | list | str | _F) -> bool:
     if isinstance(b, (dict, list)):
         b = json.dumps(b, ensure_ascii=False, separators=(",", ":"))
     while True:
@@ -97,7 +98,7 @@ def _Z() -> None:
     d = 20
     e = 0
     n = 0
-    with requests.Session() as f, open(_D, "a", encoding="utf-8") as g, tqdm(bar_format=_E) as h:
+    with requests.Session() as f, _D.open("a", encoding="utf-8") as g, tqdm(bar_format=_E) as h:
         while ((e < b) or (c * d > b + 1)) and n < 4:
             i = _X(f, c)
             try:
