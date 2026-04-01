@@ -478,7 +478,7 @@ def _process_file(file_name: Path) -> None:
     Record format:
     0        1  2    3     4     5    6       7
     registry|cc|type|start|value|date|status[|extensions...]
-    """
+    """  # noqa: D205
     # import math
     with file_name.open(encoding="utf-8") as file:
         for line_r in file.readlines():

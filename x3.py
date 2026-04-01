@@ -18,8 +18,10 @@ config = json.loads(Path("config.json").read_text(encoding="utf-8"))
 _A = {"User-Agent": config["ua"], "Connection": "keep-alive", "Accept-Encoding": config["ae"]}
 _B = b'{"code":0,"message":"0","ttl":1,"data":{"packages":null}}'
 _BF = config["bar_format"]
-_C: str = config["x3"]["url"]
-_D: Path = Path(config["x3"]["bp"]).resolve()
+config = config["x3"]
+_C: str = config["url"]
+_D: Path = Path(config["bp"]).resolve()
+Z: set = set(config["z"])
 _a = 0
 
 
@@ -56,6 +58,8 @@ class EmoteMain(TypedDict):
 def _E(a: requests.Session, b: int | str, c: float) -> bytes:
     global _a  # noqa: PLW0603
     d = 0
+    if b in Z:
+        return _B
     while d < 10:  # noqa: PLR2004
         try:
             _a += 1
@@ -68,7 +72,7 @@ def _E(a: requests.Session, b: int | str, c: float) -> bytes:
         except KeyboardInterrupt:
             raise KeyboardInterrupt  # noqa: B904
         else:
-            return f.content
+            return f.content if True else _B
     raise Exception(f"Failed to fetch {b}")
 
 
@@ -130,7 +134,7 @@ def _L(*, j: bool = False) -> None:
         k = int(sys.argv[2])
     except IndexError:
         k = 0
-    c: int = 9500 if not j else k or 1
+    c: int = 9600 if not j else k or 1
     d = 10000
     y = range(2450, 3200)
     z = range(6000, 6800)

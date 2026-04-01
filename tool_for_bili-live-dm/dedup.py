@@ -119,7 +119,7 @@ def _deduplicate_it(itm: dict[str, Any], timestamp: Decimal, str_itm: str) -> bo
             id_1 = f"""{cmd}${data["timestamp"]}${msg_id}"""
         case "DANMU_AGGREGATION":
             id_1 = f"""{cmd}${data["timestamp"]}${data["activity_identity"]}${msg_id}"""
-        case "PLAY_TAG" | "WIDGET_BANNER" | "ROOM_BANNER":
+        case "PLAY_TAG" | "ROOM_BANNER":
             id_1 = f"""{cmd}${data["timestamp"]}${msg_id}"""
         case "PK_BATTLE_ENTRANCE":
             id_1 = f"""{cmd}${itm["timestamp"]}${msg_id}"""
@@ -132,16 +132,22 @@ def _deduplicate_it(itm: dict[str, Any], timestamp: Decimal, str_itm: str) -> bo
         case "WEALTH_NOTIFY":
             id_1 = f"""{cmd}${data["info"]["send_time"]}${msg_id}"""
         case "WIDGET_GIFT_STAR_PROCESS":
+            return False
             id_1 = f"""{cmd}${data["version"]}${msg_id}"""
         case "SHOPPING_BUBBLES_STYLE":
             id_1 = f"""{cmd}${data["checksum"]}${msg_id}"""
         case "LIVE_INTERACT_GAME_STATE_CHANGE":
             id_1 = f"""{cmd}${data["game_id"]}${msg_id}"""
         # special:
-        case "COMMON_NOTICE_DANMAKU" | "GIFT_STAR_PROCESS" | "GOTO_BUY_FLOW" | "HOT_BUY_NUM" | "NOTICE_MSG" | "RADIO_BACKGROUND" | "SUPER_CHAT_MESSAGE_DELETE" | "WIDGET_GIFT_STAR_PROCESS":
+        case "RADIO_BACKGROUND" | "SUPER_CHAT_MESSAGE_DELETE":
+            # id_1 = f"""{cmd}${str(data)}${msg_id}"""
+            id_1 = str_itm
+        case "GIFT_STAR_PROCESS" | "GOTO_BUY_FLOW" | "HOT_BUY_NUM" | "NOTICE_MSG" | "WIDGET_GIFT_STAR_PROCESS":
+            return False
             # id_1 = f"""{cmd}${str(data)}${msg_id}"""
             id_1 = str_itm
         case "WIDGET_WISH_INFO" | "WIDGET_WISH_INFO_V2":
+            return False
             id_1 = f"""{cmd}${data["ts"]}${data["sid"]}${data["tid"]}${msg_id}"""
         case "RECALL_DANMU_MSG" | "RING_STATUS_CHANGE_V2" | "SYS_MSG" | "LIVE" | "PREPARING" | "COLLABORATION_LIVE_INFO":
             id_1 = (str_itm, timestamp.to_integral("ROUND_DOWN"))
@@ -152,9 +158,12 @@ def _deduplicate_it(itm: dict[str, Any], timestamp: Decimal, str_itm: str) -> bo
             "AD_GAME_CARD_REFRESH"
             | "AREA_RANK_CHANGED"
             | "CHG_RANK_REFRESH"
+            | "CNY_HOT_RANK"
             | "COLLABORATION_LIVE_ONLINE"
             | "COLLABORATION_LIVE_POPULARITY"
             | "COLLABORATION_LIVE_WATCHED"
+            | "COMMON_NOTICE_DANMAKU"
+            | "DM_INTERACTION"
             | "GUARD_HONOR_THOUSAND"
             | "HEARTBEAT_REPLY"  # special
             | "HOT_ROOM_NOTIFY"
@@ -168,9 +177,10 @@ def _deduplicate_it(itm: dict[str, Any], timestamp: Decimal, str_itm: str) -> bo
             | "ONLINE_RANK_V2"
             | "ONLINE_RANK_V3"
             | "OTHER_SLICE_LOADING_RESULT"
-            | "PLAYURL_RELOAD"
             | "PLAYURL_RELOAD_MASTER"
+            | "PLAYURL_RELOAD"
             | "POPULAR_RANK_CHANGED"
+            | "POPULAR_RANK_GUIDE_CARD"
             | "POPULARITY_CHANGE"
             | "POPULARITY_RANK_TAB_CHG"
             | "POPULARITY_RED_POCKET_NEW"
@@ -187,6 +197,7 @@ def _deduplicate_it(itm: dict[str, Any], timestamp: Decimal, str_itm: str) -> bo
             | "VOICE_JOIN_SWITCH_V2"
             | "VOICE_JOIN_SWITCH"
             | "WATCHED_CHANGE"
+            | "WIDGET_BANNER"
         ):
             return False
         case "ANCHOR_LOT_CHECKSTATUS":
@@ -226,7 +237,6 @@ def _deduplicate_it(itm: dict[str, Any], timestamp: Decimal, str_itm: str) -> bo
             | "OTHER_SLICE_SETTING_CHANGED"
             | "PLAY_PROGRESS_BAR"
             | "PLAYTOGETHER_ICON_CHANGE"
-            | "POPULAR_RANK_GUIDE_CARD"
             | "PROGRAM_CHANGE"
             | "REENTER_LIVE_ROOM"
             | "RING_STATUS_CHANGE_V2"
@@ -268,7 +278,7 @@ def _deduplicate(in_path: Path) -> int:
         a = input_file.readlines()
         total_ = len(a)
     _deduplicate_dict.add("w")
-    with in_path.with_suffix(".DEDUP.jsonl").open("w", 50 * 2**20, "utf-8") as output_file:
+    with in_path.with_suffix(".DEDUP.jsonl").open("a", 50 * 2**20, "utf-8") as output_file:
         for line in tqdm(a, leave=False, desc=in_path.name, position=1):
             if line in _deduplicate_dict:
                 continue

@@ -1,5 +1,6 @@
 import contextlib
 import json
+import os
 import ssl
 import sys
 import time
@@ -15,29 +16,24 @@ from my_lib.xx_util import OPR, del_keys, replace_str, sort_list_dict, sort_p6_e
 log = logger.bind(user="X1")
 ssl._create_default_https_context = ssl._create_unverified_context  # noqa: S323, SLF001
 requests.packages.urllib3.disable_warnings()  # pyright: ignore[reportAttributeAccessIssue]
-config = json.loads(Path("config.json").read_text(encoding="utf-8"))
+config = json.loads(open("config.json", encoding="utf-8").read())  # noqa: PTH123, SIM115
 _A = {"User-Agent": config["ua"], "Connection": "keep-alive", "Accept-Encoding": config["ae"]}
+_BF = config["bar_format"]
 _B = b'{"code":0,"message":"0","ttl":1,"data":{"suit_items":null,"fan_user":{"mid":0,"nickname":"","avatar":""},"unlock_items":null,"activity_entrance":null}}'
 _C = b'{"code":-500,"message":"\xe6\x9c\x8d\xe5\x8a\xa1\xe5\x99\xa8\xe9\x94\x99\xe8\xaf\xaf","ttl":1,"data":{"suit_items":null,"fan_user":{"mid":0,"nickname":"","avatar":""},"unlock_items":null,"activity_entrance":null}}'
 _D = b'{"code":0,"message":"OK","ttl":1,"data":{"suit_items":null,"fan_user":{"mid":0,"nickname":"","avatar":""},"unlock_items":null,"activity_entrance":null}}'
-_BF = config["bar_format"]
+config = config["x1"]
 _EMPTY_FAN_USER = {"mid": 0, "nickname": "", "avatar": ""}
 _EMPTY_ACTIVITY_ENTRANCE = {"id": 0, "item_id": 0, "title": "", "image_cover": "", "jump_link": ""}
-_L: str = config["x1"]["url"]
-_M = str(Path(config["x1"]["bp"]).resolve()) + "/"
+_L: str = config["url"]
+BP: str = config["bp"]
 P = "properties"
 S = "suit_items"
 _a: int = 0
 Properties = dict[str, str]
 TRASH: str = "🗑"
-IDCSV: str = _M + "ids.csv"
-Z = {
-    "2060,2:3,19,1",
-    "67055,豆泥大陆收藏家勋章,106,2",
-    '1882,("▔□▔)/,7,4',
-    "206537601,-Yu酱-婚纱主题装扮,47,6",
-    "69105,-ASAKI-动态表情包,8,5",
-}
+IDCSV: str = BP + "ids.csv"
+z: set = set(config["z"])
 
 
 class SuitItems(TypedDict):
@@ -100,7 +96,9 @@ class X1(TypedDict):
 def _E(b: requests.Session, d: int | str) -> bytes:
     global _a  # noqa: PLW0603
     retry = 0
-    while retry < 10:
+    if d in z:
+        return _D
+    while retry < 10:  # noqa: PLR2004
         try:
             _a += 1
             c = b.get(_L.format(q=d), headers=_A, verify=False, timeout=20)
@@ -122,8 +120,8 @@ def _E(b: requests.Session, d: int | str) -> bytes:
 def _F(a: str, b: X1) -> bool:
     d = json.dumps(b, ensure_ascii=False, separators=(",", ":"), indent="\t")
     e = ""
-    if Path(a).is_file():
-        e = open(a, encoding="utf-8").read()
+    if os.path.isfile(a):  # noqa: PTH113
+        e = open(a, encoding="utf-8").read()  # noqa: PTH123, SIM115
         if d == e:
             return False
         c: X1 = json.loads(e)
@@ -150,7 +148,7 @@ def _F(a: str, b: X1) -> bool:
         return False
     while True:
         try:
-            with open(a, "w", encoding="utf-8") as fp:  # noqa: FURB103
+            with open(a, "w", encoding="utf-8") as fp:  # noqa: FURB103, PTH123
                 fp.write(d)
                 break
         except PermissionError:
@@ -165,9 +163,9 @@ def _G(a: str, b: str) -> bool:
         b = json.dumps(b, ensure_ascii=False, separators=(",", ":"))
     while True:
         try:
-            if b in Z or (Path(a).is_file() and b in open(a, encoding="utf-8").read()):
+            if b in z or (os.path.isfile(a) and b in open(a, encoding="utf-8").read()):  # noqa: PTH113, PTH123, SIM115
                 return False
-            with open(a, "a", encoding="utf-8") as fp:
+            with open(a, "a", encoding="utf-8") as fp:  # noqa: PTH123
                 fp.write(b + "\n")
                 break
         except PermissionError:
@@ -176,7 +174,9 @@ def _G(a: str, b: str) -> bool:
     return True
 
 
-def _H(a: int | str, item: X1) -> bool:
+def _H(a: int, item: X1) -> bool:
+    if a in z:
+        return 1 != 1
     c = item["part_id"]
     d = _G
     g = d(IDCSV, f"{a},{item['name']},{item['group_id']},{c}")
@@ -226,10 +226,10 @@ def _H(a: int | str, item: X1) -> bool:
             f = "PART_4_表情.jsonl"
         case 5:
             d = _F
-            f = f"PART_5_表情包\\{a}.json"
+            f = f"\\PART_5_表情包\\{a}.json"
         case 6:
             d = _F
-            f = f"PART_6_main\\{a}.json"
+            f = f"\\PART_6_main\\{a}.json"
         case 7:
             f = "PART_7_空间背景.jsonl"
         case 8:
@@ -310,7 +310,7 @@ def _H(a: int | str, item: X1) -> bool:
     replace_str(item, "https://i1.hdslb.com", "https://i0.hdslb.com")
     replace_str(item, "https://i2.hdslb.com", "https://i0.hdslb.com")
     # replace_str(item, "fasle", "false")
-    h = d(_M + f, item)  # pyright: ignore[reportArgumentType]
+    h = d(BP + f, item)  # pyright: ignore[reportArgumentType]
     return g or h
 
 
@@ -333,8 +333,8 @@ def _I(a: str) -> None:
             f = 337000001
         case "5":
             e = 400000001
-            e = 405000001
-            f = 407000001
+            e = 407000001
+            f = 409000001
         case "0" | "1" | _:
             d = 1
             e = 75500
@@ -343,6 +343,8 @@ def _I(a: str) -> None:
         for i in range(e, f + d, d):
             h.update()
             if i in b:
+                continue
+            if i in z:
                 continue
             if i in skip_1:
                 continue
@@ -386,7 +388,7 @@ def _N(j: str) -> None:
         case _:
             k = range(2**32)
             m = len(a) - 660
-    h: list[int] = json.loads(open(_M + f"{TRASH}.json", encoding="utf-8").read())
+    h: list[int] = json.loads(open(BP + f"{TRASH}.json", encoding="utf-8").read())  # noqa: PTH123, SIM115
     h = []
     b = 1
     with requests.Session() as c, tqdm(total=m, initial=0, bar_format=_BF) as d:
@@ -396,6 +398,8 @@ def _N(j: str) -> None:
                 continue
             d.update()
             if g in h or str(g) in h:
+                continue
+            if g in z:
                 continue
             time.sleep(b)
             n = _E(c, g)
@@ -441,13 +445,13 @@ def _J() -> None:
     a = 1.2
     with requests.Session() as b:
         while True:
-            d = b""
             c = input().strip()
-            if c in "eeeexitExit":
+            if c in "eeeeeeeexitEEEEEEEExit":
                 return
             if not c or not c.isdigit():
                 print(":(")
                 continue
+            c = int(c)
             d = _E(b, c)
             if d in {_D, _B}:
                 print(f"{c:<12}None")
@@ -465,8 +469,8 @@ def _J() -> None:
 def _K() -> list[int]:
     d: list[int] = []
     for a in ["PART_5_表情包", "PART_6_main"]:
-        d.extend(int(b.stem) for b in Path(_M + a).rglob("*.json"))
-    for a in Path(_M).rglob("PART*.jsonl"):
+        d.extend(int(b.stem) for b in Path(BP + a).rglob("*.json") if int(b.stem) not in z)
+    for a in Path(BP).rglob("PART*.jsonl"):
         c = a.read_text(encoding="utf-8")
         d.extend(int(json.loads(b)["item_id"]) for b in c.splitlines())
     return d
@@ -474,7 +478,7 @@ def _K() -> list[int]:
 
 if __name__ == "__main__":
     try:
-        if len(sys.argv) > 2 and sys.argv[1] not in {"0", "1", "2", "3", "4", "5", "U", "u", "X", "x"}:
+        if len(sys.argv) > 2 and sys.argv[1] not in {"0", "1", "2", "3", "4", "5", "U", "u", "X", "x"}:  # noqa: PLR2004
             _J()
         elif sys.argv[1] in {"0", "1", "2", "3", "4", "5"}:
             _I(sys.argv[1])

@@ -4,8 +4,13 @@ from datetime import datetime, timedelta, timezone
 from enum import IntEnum
 from functools import lru_cache
 from pathlib import Path
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from io import TextIOWrapper
 
 _TZ = timezone(timedelta(hours=8))
+LRU_SIZE: int = 100000
 
 
 class SplitMode(IntEnum):
@@ -24,43 +29,43 @@ class SplitMode(IntEnum):
     MS = 5
 
 
-@lru_cache(10000)
+@lru_cache(LRU_SIZE)
 def _s0(timestamp: int) -> datetime:
     a = datetime.fromtimestamp(timestamp, tz=_TZ)
     return datetime(year=a.year, month=1, day=1, hour=0, minute=0, second=0, microsecond=0, tzinfo=_TZ)
 
 
-@lru_cache(10000)
+@lru_cache(LRU_SIZE)
 def _s1(timestamp: int) -> datetime:
     a = datetime.fromtimestamp(timestamp, tz=_TZ)
     return datetime(year=a.year, month=a.month, day=1, hour=0, minute=0, second=0, microsecond=0, tzinfo=_TZ)
 
 
-@lru_cache(10000)
+@lru_cache(LRU_SIZE)
 def _s2(timestamp: int) -> datetime:
     a = datetime.fromtimestamp(timestamp, tz=_TZ)
     return datetime(year=a.year, month=a.month, day=a.day, hour=0, minute=0, second=0, microsecond=0, tzinfo=_TZ)
 
 
-@lru_cache(10000)
+@lru_cache(LRU_SIZE)
 def _s3(timestamp: int) -> datetime:
     a = datetime.fromtimestamp(timestamp, tz=_TZ)
     return datetime(year=a.year, month=a.month, day=a.day, hour=a.hour, minute=0, second=0, microsecond=0, tzinfo=_TZ)
 
 
-@lru_cache(10000)
+@lru_cache(LRU_SIZE)
 def _s4(timestamp: int) -> datetime:
     a = datetime.fromtimestamp(timestamp, tz=_TZ)
     return datetime(year=a.year, month=a.month, day=a.day, hour=a.hour, minute=a.minute, second=0, microsecond=0, tzinfo=_TZ)
 
 
-@lru_cache(10000)
+@lru_cache(LRU_SIZE)
 def _s5(timestamp: int) -> datetime:
     a = datetime.fromtimestamp(timestamp, tz=_TZ)
     return datetime(year=a.year, month=a.month, day=a.day, hour=a.hour, minute=a.minute, second=a.second, microsecond=0, tzinfo=_TZ)
 
 
-@lru_cache(10000)
+@lru_cache(LRU_SIZE)
 def _s6(timestamp: int) -> datetime:
     return datetime.fromtimestamp(timestamp, tz=_TZ)
 
@@ -90,21 +95,20 @@ def split_file_by_time(in_path: Path, b_name: Path, sp_type: SplitMode) -> None:
     else:
         gd = _s2
         fmt = "%Y-%m-%d"
-    lines_by_day: dict[datetime, list[str]] = {}
-    base_name, ext = b_name.stem, in_path.suffix
     in_path = in_path.resolve()
-    base_path = in_path.parent
-    with in_path.open(encoding="utf-8") as input_file:
+    fps: dict[datetime, TextIOWrapper] = {}
+    with open(str(in_path), encoding="utf-8") as input_file:  # noqa: PTH123
         for line in input_file:
-            timestamp_match = re.search(r"^(\d+)", line)
+            timestamp_match: re.Match[str] | None = re.search(r"^(\d+)", line)
             if timestamp_match:
-                timestamp = timestamp_match.group(1)[0:13]
+                timestamp: str = timestamp_match.group(1)[0:13]
                 date: datetime = gd(int(timestamp) // 1_000)
-                if date not in lines_by_day:
-                    lines_by_day[date] = []
-                lines_by_day[date].append(line)
-    for date, lines_1 in lines_by_day.items():
-        output_file_name = f"{base_name}-{date.strftime(fmt)}{ext}"
-        out_path = base_path / output_file_name
-        with out_path.open("a", 1048576, "utf-8") as output_file:
-            output_file.writelines(lines_1)
+                fp: TextIOWrapper | None = fps.get(date)
+                if fp is None:
+                    fs = str(in_path.parent / f"{b_name.stem}-{date.strftime(fmt)}{in_path.suffix}")
+                    fp = open(fs, "a", 10485760, "utf-8")  # noqa: PTH123, SIM115
+                    fps[date] = fp
+                fp.write(line)
+
+    # for fp in fps.values():
+    #     fp.close()

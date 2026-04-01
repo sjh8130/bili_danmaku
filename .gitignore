@@ -31,3 +31,4 @@
 *.pyd
 *.tmp
 int
+*.html

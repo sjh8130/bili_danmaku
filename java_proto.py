@@ -9,10 +9,12 @@ try:
 except ImportError:
 
     class pyperclip:
-        def copy(self, s: str) -> None:
+        @classmethod
+        def copy(cls, s: str) -> None:
             pass
 
-        def paste(self) -> str:  # noqa: PLR6301
+        @classmethod
+        def paste(cls) -> str:
             return ""
 
 
@@ -158,7 +160,7 @@ class MsgType(StrEnum):
 def process(data: list[str]) -> None:
     msg_type = MsgType.none
     msg_name = ""
-    final_str = ""
+    final_str = []
     list_1 = []
     list_2 = []
     for i in data:
@@ -204,14 +206,15 @@ def process(data: list[str]) -> None:
             elif strs[:3] == ["private", "static", "volatile"] and strs[3].startswith("MethodDescriptor"):
                 list_2.append([*strs[3][17:-1].split(","), strs[4][3:-6]])
     if msg_type == MsgType.message:
-        final_str += f"\n//\n{MsgType.message} {msg_name} \x7b\n{combine_msg(list_1, list_2)}\x7d\n"
+        final_str.append(f"\n//\n{MsgType.message} {msg_name} \x7b\n{combine_msg(list_1, list_2)}\x7d\n")
     elif msg_type == MsgType.enum:
-        final_str += f"\n//\n{MsgType.enum} {msg_name} \x7b\n{combine_enum(list_1)}\x7d\n"
+        final_str.append(f"\n//\n{MsgType.enum} {msg_name} \x7b\n{combine_enum(list_1)}\x7d\n")
     elif msg_type == MsgType.service:
-        final_str += f"\n//\n{MsgType.service} {msg_name} \x7b{combine_rpc(list_1, list_2)}\n\x7d\n"
+        final_str.append(f"\n//\n{MsgType.service} {msg_name} \x7b{combine_rpc(list_1, list_2)}\n\x7d\n")
     if final_str:
-        print(final_str)
-        pyperclip.copy(final_str)  # pyright: ignore[reportCallIssue]
+        fs = "".join(final_str)
+        print(fs)
+        pyperclip.copy(fs)
     else:
         sys.stderr.write("no data found\n")
 

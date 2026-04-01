@@ -485,18 +485,21 @@ def create_png(
 
 
 def encode_tile_image_to_apng(
-    path_in,
-    path_out,
-    tile_width,
-    tile_height,
-    chunk_size=1048576,
-    frame_cont=-1,
-    fps=30,
+    path_in: Path,
+    path_out: Path,
+    tile_width: int,
+    tile_height: int,
+    chunk_size: int = 1048576,
+    frame_cont: int = -1,
+    fps: int = 30,
     *,
-    remove_alpha=False,
+    remove_alpha: bool = False,
 ) -> None:
     if path_in == path_out:
         raise Exception(f"{path_in}=={path_out}::{path_in=}{path_out=}")
+    path_in = Path(path_in)
+    path_out = Path(path_out)
+    remove_alpha = bool(remove_alpha)
     logger.info(f"{path_in=},{path_out=}")
     image: Image.Image = Image.open(path_in).convert("RGB" if remove_alpha else "RGBA")
     frames: list[bytes] = []
@@ -507,7 +510,7 @@ def encode_tile_image_to_apng(
         for h in range(horizontal_frames):
             box = (h * tile_width, v * tile_height, (h + 1) * tile_width, (v + 1) * tile_height)
             tile = image.crop(box)
-            # tile.save(f"Z:\\{fc+1}.png")
+            # tile.save(path_out.with_suffix(f"_{fc+1}.png"))
             frame_data = tile.tobytes()
             frames.append(frame_data)
             fc += 1
@@ -529,10 +532,10 @@ def encode_tile_image_to_apng(
         color_type=ColorType.RGB24 if remove_alpha else ColorType.RGBA32,
         compression_level=CompressionLevel.MAX,
     )
-    write(path_out, r)
+    path_out.write_bytes(r)
 
 
-def recompress_png(png_path: Path, chunk_size=1048576, compression_level=CompressionLevel.LV_9):
+def recompress_png(png_path: Path, chunk_size: int = 1048576, compression_level=CompressionLevel.LV_9) -> None:
     image = Image.open(png_path)
     logger.debug(image)
     width, height = image.size
@@ -617,10 +620,10 @@ def write(path: Path, data: str | bytes) -> None:
 if __name__ == "__main__":
     try:
         encode_tile_image_to_apng(
-            Path(),
-            Path("Z:\\A_.png"),
-            256,
-            256,
+            path_in=Path("A:\\.png"),
+            path_out=Path("Z:\\.png"),
+            tile_width=256,
+            tile_height=256,
             fps=30,
             frame_cont=120,
             remove_alpha=False,

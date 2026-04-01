@@ -138,8 +138,8 @@ def decode_blc(data: bytes) -> list[str]:
     return lst
 
 
-def _main() -> None:
-    with open(sys.argv[1], "rb") as logfile:
+def _main(f) -> None:
+    with open(f, "rb") as logfile:
         freader = io.FlowReader(logfile)
         try:
             for frame in freader.stream():
@@ -153,7 +153,7 @@ def _main() -> None:
                         # pass
                         continue
                     print("#####")
-                    frame_uuid = frame.id
+                    frame_uuid: str = frame.id
                     room_id: str = json.loads(frame.websocket.messages[0].content[16:])["roomid"]
                     for msg in frame.websocket.messages:
                         # break
@@ -163,7 +163,7 @@ def _main() -> None:
                         #     pass
                         #     # continue
                         ts = str(int(Decimal(str(msg.timestamp)) * 1_000_000))
-                        dms = decode_blc(msg.content)
+                        dms: list[str] = decode_blc(msg.content)
                         if dms in (['{"code":0}'], ['{"code": 0}']):
                             continue
                         if not dms:
@@ -179,4 +179,5 @@ def _main() -> None:
 
 
 if __name__ == "__main__":
-    _main()
+    for f in sys.argv[1:]:
+        _main(f)

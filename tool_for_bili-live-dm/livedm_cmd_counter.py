@@ -24,7 +24,7 @@ def _p1() -> None:
         if e.args[0] == "Expecting value: line 1 column 1 (char 0)":
             pass
         else:
-            raise e
+            raise
 
 
 def _p2() -> None:

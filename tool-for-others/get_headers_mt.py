@@ -21,10 +21,7 @@ class HostHeaderSSLAdapter(requests.adapters.HTTPAdapter):
         connection_pool_kwargs = self.poolmanager.connection_pool_kw
         result = urlparse(request.url)
         if result.scheme == "https" and self.resolved_ip:
-            request.url = request.url.replace(
-                "https://" + result.hostname,
-                "https://" + self.resolved_ip,
-            )
+            request.url = request.url.replace("https://" + result.hostname, "https://" + self.resolved_ip)
             connection_pool_kwargs["assert_hostname"] = result.hostname
             # overwrite the host header
             request.headers["Host"] = result.hostname

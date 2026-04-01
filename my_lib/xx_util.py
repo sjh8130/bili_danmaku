@@ -39,6 +39,8 @@ class OPR(IntEnum):
 
 def sort_str_list(s: str, /) -> str:
     """Example: `'1,3,2,4,5'` -> `'1,2,3,4,5'`"""  # noqa: D401
+    if s == "":
+        return ""
     if s.count(",") == 0:
         return s
     a = json.loads(f"[{s}]")
@@ -76,7 +78,7 @@ def sort_ld(ld: list[dict[_T, _T2]], key: str = "id", reverse: bool = False) -> 
     return ld
 
 
-def del_keys(d: Mapping[str, Any], k: str, v: Any = None, operator: OPR = OPR.EQ, *, recursive: bool = True) -> None:
+def del_keys(d: Mapping[str, Any] | Sequence[Any], k: str, v: Any = None, operator: OPR = OPR.EQ, *, recursive: bool = True, loop_detect: set[int] | None = None) -> None:
     if isinstance(d, dict) and k in d and (type(d[k]) is type(v) or operator in {OPR.IN, OPR.ANY, OPR.FALSE_CMP}):
         match operator:
             case OPR.EQ:
@@ -130,13 +132,14 @@ def del_keys(d: Mapping[str, Any], k: str, v: Any = None, operator: OPR = OPR.EQ
                 raise Exception("*ToDo")
     if not recursive:
         return
-    for key in d:
-        if isinstance(d[key], dict):
-            del_keys(d[key], k, v, operator, recursive=recursive)
-        elif isinstance(d[key], list):
-            for item in d[key]:
-                if isinstance(item, dict):
-                    del_keys(item, k, v, operator, recursive=recursive)
+    if loop_detect is None:
+        loop_detect = set()
+    if id(d) in loop_detect:
+        return
+    loop_detect.add(id(d))
+    for value in d.values() if isinstance(d, dict) else d:
+        if isinstance(value, (dict, list)):
+            del_keys(value, k, v, operator, recursive=recursive, loop_detect=loop_detect)
 
 
 def replace_str(d: Mapping[Any, Any] | list[str], old: str, new: str, count: int = -1, *, recursive: bool = True) -> None:
