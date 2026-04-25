@@ -14,7 +14,7 @@ from tqdm import tqdm
 from my_lib.xx_util import OPR, del_keys, replace_str, sort_list_dict, sort_p6_emoji, sort_str_list
 
 log = logger.bind(user="X1")
-ssl._create_default_https_context = ssl._create_unverified_context  # noqa: S323, SLF001
+ssl._create_default_https_context = ssl._create_unverified_context  # noqa: SLF001
 requests.packages.urllib3.disable_warnings()  # pyright: ignore[reportAttributeAccessIssue]
 config = json.loads(open("config.json", encoding="utf-8").read())  # noqa: PTH123, SIM115
 _A = {"User-Agent": config["ua"], "Connection": "keep-alive", "Accept-Encoding": config["ae"]}
@@ -98,7 +98,7 @@ def _E(b: requests.Session, d: int | str) -> bytes:
     retry = 0
     if d in z:
         return _D
-    while retry < 10:  # noqa: PLR2004
+    while retry < 10:
         try:
             _a += 1
             c = b.get(_L.format(q=d), headers=_A, verify=False, timeout=20)
@@ -148,7 +148,7 @@ def _F(a: str, b: X1) -> bool:
         return False
     while True:
         try:
-            with open(a, "w", encoding="utf-8") as fp:  # noqa: FURB103, PTH123
+            with open(a, "w", encoding="utf-8") as fp:  # noqa: PTH123
                 fp.write(d)
                 break
         except PermissionError:
@@ -478,7 +478,7 @@ def _K() -> list[int]:
 
 if __name__ == "__main__":
     try:
-        if len(sys.argv) > 2 and sys.argv[1] not in {"0", "1", "2", "3", "4", "5", "U", "u", "X", "x"}:  # noqa: PLR2004
+        if len(sys.argv) > 2 and sys.argv[1] not in {"0", "1", "2", "3", "4", "5", "U", "u", "X", "x"}:
             _J()
         elif sys.argv[1] in {"0", "1", "2", "3", "4", "5"}:
             _I(sys.argv[1])

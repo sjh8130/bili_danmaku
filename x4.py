@@ -11,7 +11,7 @@ from tqdm import tqdm
 from my_lib.xx_util import OPR, del_keys
 
 log = logger.bind(user="X4")
-ssl._create_default_https_context = ssl._create_unverified_context  # noqa: S323, SLF001
+ssl._create_default_https_context = ssl._create_unverified_context  # noqa: SLF001
 requests.packages.urllib3.disable_warnings()  # pyright: ignore[reportAttributeAccessIssue]
 _A = json.loads(Path("config.json").read_text(encoding="utf-8"))
 _B = {"User-Agent": _A["ua"], "Connection": "keep-alive", "Accept-Encoding": _A["ae"]}

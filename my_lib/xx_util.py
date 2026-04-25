@@ -52,8 +52,8 @@ def sort_list_dict(ld: Sequence[Mapping[str, Any]], k1: str = "item_id", k2: str
     list_temp = [json.loads(i2) for i2 in sorted(json.dumps(item) for item in ld)]
     items_with_k1 = [item for item in list_temp if item[k1] not in {0, "0"}]
     items_with_k2 = [item for item in list_temp if item[k1] in {0, "0"}]
-    items_with_k1.sort(key=lambda x: x[k1])  # noqa: FURB118
-    items_with_k2.sort(key=lambda x: x[k2])  # noqa: FURB118
+    items_with_k1.sort(key=lambda x: x[k1])
+    items_with_k2.sort(key=lambda x: x[k2])
     ld[:] = items_with_k1 + items_with_k2  # pyright: ignore[reportIndexIssue]
     return items_with_k1 + items_with_k2
 

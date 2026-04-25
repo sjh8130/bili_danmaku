@@ -232,7 +232,7 @@ def _main() -> None:
             in_strings.clear()
         elif a.startswith("/* loaded from:"):
             continue
-        elif a == "" and len(in_strings) == 0:  # noqa: PLC1901
+        elif a == "" and len(in_strings) == 0:
             if not paste:
                 paste = True
                 process(pyperclip.paste().splitlines())  # pyright: ignore[reportCallIssue]

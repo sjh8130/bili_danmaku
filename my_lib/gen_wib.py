@@ -7,7 +7,7 @@ from hashlib import md5
 
 import requests
 
-ssl._create_default_https_context = ssl._create_unverified_context  # noqa: S323, SLF001
+ssl._create_default_https_context = ssl._create_unverified_context  # noqa: SLF001
 requests.packages.urllib3.disable_warnings()  # type: ignore[attr-defined]
 with open("config.json", encoding="utf-8") as fp:
     config = json.load(fp)
@@ -88,8 +88,8 @@ def get_wbi_keys() -> tuple[str, str]:
     data = resp.json()
     img_url: str = data["data"]["wbi_img"]["img_url"]
     sub_url: str = data["data"]["wbi_img"]["sub_url"]
-    img_key = img_url.rsplit("/", 1)[1].split(".")[0]
-    sub_key = sub_url.rsplit("/", 1)[1].split(".")[0]
+    img_key = img_url.rsplit("/", 1)[1].split(".", maxsplit=1)[0]
+    sub_key = sub_url.rsplit("/", 1)[1].split(".", maxsplit=1)[0]
     return img_key, sub_key
 
 

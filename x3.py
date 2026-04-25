@@ -12,7 +12,7 @@ from tqdm import tqdm
 from my_lib.xx_util import OPR, del_keys, replace_str, sort_list_dict
 
 log = logger.bind(user="X3")
-ssl._create_default_https_context = ssl._create_unverified_context  # noqa: S323, SLF001
+ssl._create_default_https_context = ssl._create_unverified_context  # noqa: SLF001
 requests.packages.urllib3.disable_warnings()  # pyright: ignore[reportAttributeAccessIssue]
 config = json.loads(Path("config.json").read_text(encoding="utf-8"))
 _A = {"User-Agent": config["ua"], "Connection": "keep-alive", "Accept-Encoding": config["ae"]}
@@ -60,7 +60,7 @@ def _E(a: requests.Session, b: int | str, c: float) -> bytes:
     d = 0
     if b in Z:
         return _B
-    while d < 10:  # noqa: PLR2004
+    while d < 10:
         try:
             _a += 1
             f = a.get(_C.format(q=b), headers=_A, verify=False, timeout=20)

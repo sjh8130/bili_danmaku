@@ -10,7 +10,7 @@ import requests
 
 from my_lib.file_writer import write_file
 
-ssl._create_default_https_context = ssl._create_unverified_context  # noqa: S323, SLF001
+ssl._create_default_https_context = ssl._create_unverified_context  # noqa: SLF001
 requests.packages.urllib3.disable_warnings()  # pyright: ignore[reportAttributeAccessIssue]
 config = json.loads(Path("config.json").read_text(encoding="utf-8"))
 
